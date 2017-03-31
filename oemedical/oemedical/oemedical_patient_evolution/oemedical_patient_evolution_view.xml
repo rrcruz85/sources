@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="view_oemedical_patient_evolution_tree" model="ir.ui.view">
+			<field name="name">oemedical.patient.evolution.tree</field>
+			<field name="model">oemedical.patient.evolution</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Oemedical Patient Evolution">
+					<field name="evaluation_id" />
+					<field name="evolution_date" />
+					<field name="doctor" />
+					<field name="diagnosis" />
+					<field name="directions" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_oemedical_patient_evolution_form" model="ir.ui.view">
+			<field name="name">oemedical.patient.evolution.form</field>
+			<field name="model">oemedical.patient.evolution</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<form string="Oemedical Patient Evolution" version="7.0">
+				<sheet>
+					<div class="oe_right oe_button_box" name="buttons">
+                        <button type="object"
+                            name="evolution_print"
+                            string="Imprimir"/>
+                    </div>
+					<group>
+						<field name="evaluation_id" />
+						<field name="doctor" />
+						<field name="evolution_date" readonly="0"/>
+					</group>
+					<group colspan="2" col="2">
+                        <field name="evl_info" />
+						<field name="diagnosis" />
+						<field name="directions" />	
+						<field name="medicamentos" />							
+					</group>
+				</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_oemedical_patient_evolution_search" model="ir.ui.view">
+			<field name="name">oemedical.patient.evolution.search</field>
+			<field name="model">oemedical.patient.evolution</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<search string="Oemedical Patient Evolution">
+					<field name="evaluation_id" />
+					<field name="evolution_date" />
+					<field name="diagnosis" />
+					<field name="directions" />
+					<newline />
+					<group expand="0" string="Group By...">
+						<filter string="Diagnosis:" domain="[]"
+							context="{'group_by':'diagnosis'}" />
+						<filter string="Doctor" domain="[]"
+							context="{'group_by':'doctor'}" />
+						<filter string="Patient" domain="[]"
+							context="{'group_by':'patient_id'}" />
+						<filter string="Procedure" domain="[]"
+							context="{'group_by':'directions'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		
+<act_window domain="[('patient_id', '=', active_id)]" id="act_patient_evol_history" name="Evolution" res_model="oemedical.patient.evolution" src_model="oemedical.patient"/>
+
+		<record model="ir.actions.act_window" id="act_open_oemedical_patient_evolution_view">
+			<field name="name">Patient Evolution</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">oemedical.patient.evolution</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form,tree</field>
+			<field name="search_view_id" ref="view_oemedical_patient_evolution_search" />
+			<field name="domain">[]</field>
+			<field name="context">{}</field>
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_patient_evolution_view_form">
+			<field name="act_window_id" ref="act_open_oemedical_patient_evolution_view" />
+			<field name="sequence" eval="05" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_oemedical_patient_evolution_form" />
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_patient_evolution_view_tree">
+			<field name="act_window_id" ref="act_open_oemedical_patient_evolution_view" />
+			<field name="sequence" eval="10" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_oemedical_patient_evolution_tree" />
+		</record>
+
+	</data>
+</openerp>

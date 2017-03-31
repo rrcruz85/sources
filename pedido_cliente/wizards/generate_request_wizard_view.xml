@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        
+        <!-- FORM VIEW -->
+        <record id="generate_request_wizard_wizard_view_form" model="ir.ui.view">
+            <field name="name">generate.request.wizard.wizard.view.form</field>
+            <field name="model">generate.request.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Generar Pedidos" version="7.0">
+                        <group  colspan="4">
+                            <label string="Sino selecciona ningun cliente se generaran los pedidos para todos los clientes registrados en el sistema" colspan="4"/>
+                            <newline/><newline/>
+                            <field name="client_id" domain="[('customer','=',True)]"/>
+                            <newline/>
+                            <label string="¿Desea continuar?" colspan="4"/>
+                        </group>
+                        <footer>
+	            			<button name="generate_requests" string="Generar" type="object" class="oe_highlight"/>
+                        	or <button string="Cancelar" class="oe_link" special="cancel" />
+	            		</footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_generate_request_wizard" model="ir.actions.act_window">
+            <field name="name">Generar Pedidos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">generate.request.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="generate_request_wizard_wizard_view_form"/>
+        </record>
+
+        <menuitem name="Generar Pedidos" action="action_generate_request_wizard" id="menu_generate_request_wizard" parent="menu_pedido_cliente_menu" sequence="2"/>
+
+    </data>
+</openerp>

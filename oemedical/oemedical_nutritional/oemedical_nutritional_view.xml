@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<openerp>
+	<data>
+		<record id="view_oemedical_nutritional_tree" model="ir.ui.view">
+			<field name="name">oemedical.nutritional.tree</field>
+			<field name="model">oemedical.nutritional</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Oemedical Nutritional">
+					<field name="patient_id" />
+					<field name="eva_date" />
+					<field name="doctor" />
+					<!--field name="directions" /-->
+					<!--field name="eva_value" /-->
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_oemedical_nutritional_form" model="ir.ui.view">
+			<field name="name">oemedical.nutritional.form</field>
+			<field name="model">oemedical.nutritional</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<form string="Oemedical Nutritional" version="7.0">
+				<sheet>
+					<notebook>
+					<!--div class="oe_right oe_button_box" name="buttons">
+                        <button type="object"
+                            name="evolution_print"
+                            string="Imprimir"/>
+                    </div-->
+                    	<page string="Nutricional">
+                        	<group col="2" colspan="2">	
+							  <field name="patient_id"/>
+							  <field name="doctor"/>
+							 </group>
+							 <newline/>
+                        	<group col="4" colspan="2">	
+							  <field name="eva_date"/>
+							  <field name="fec_cir"/>
+							  <field name="met_qur"/>
+							  <field name="com_con"/>
+							 </group>
+							 <newline/>
+							 <group string="Antecedentes alimenticios, enfermedad presente y práctica de ejercicio: " col="4" colspan="2"> 
+							  <field name="vec_com"/>
+							  <field name="hab_des"/>
+							  <field name="reg_com"/>
+							  <field name="com_com"/>
+							  <field name="ans_com"/>
+							  <field name="pic_dia"/>
+							  <field name="sin_cnt"/>
+							 </group>
+							 <newline/>
+							 <group string="___________________________________ " col="4" colspan="2">
+							   <field name="mod_hal"/>
+							   <field name="por_qha"/>
+							   <field name="ioa_alm"/>
+							   <field name="cua_ioa"/>
+							 </group>	
+							 <newline/>
+							 <group string="___________________________________ " col="4" colspan="2">
+							   <field name="mez_car"/>
+							   <field name="frq_car"/> 
+							   <field name="con_frt"/>
+							   <field name="frq_frt"/>
+							 </group>
+							 <newline/>
+							 <group string="___________________________________ " col="4" colspan="2">
+							   <field name="tom_joa"/>
+							   <field name="frq_tom"/>
+							   <field name="con_sal"/>
+							   <field name="sal_ext"/>
+							   <field name="con_snk"/>
+							   <field name="frq_snk"/>
+							   <field name="con_azu"/>
+							   <field name="azu_ext"/>
+							   <field name="con_dlc"/>
+							   <field name="con_cfe"/>
+							   <field name="cta_dia"/>
+							   <field name="con_baz"/>
+							 </group>
+							 <newline/>
+							 <group string="¿Con que endulza sus comidas? " col="4" colspan="2">
+							   <field name="azc_bln"/>
+							   <field name="miel"/>
+							   <field name="azc_mor"/>
+							   <field name="pan_ras"/> 
+							   <field name="sin_azu"/>
+							   <field name="edu_azu"/>
+							   <field name="tip_edu"/>
+							   <field name="edu_usa"/>
+							   <field name="sbe_dia"/>
+							</group>
+							<newline/>
+							<group string="___________________________________ " col="4" colspan="2">
+							   <field name="vda_dia"/>
+							   <field name="prf_ali"/>
+							   <field name="dis_ali"/>
+							</group>
+							<newline/>
+							<group string="Hábitos" col="4" colspan="2">
+							   <field name="con_alc"/>
+							   <field name="frq_cal"/> 
+							   <field name="con_cig"/>
+							   <field name="frq_cig"/>
+							   <field name="ale_mdc"/>
+							   <field name="que_mdc"/>
+							   <field name="tom_mdc"/>
+							   <field name="cal_mdc"/>
+							   <field name="tom_asp"/>
+						       <field name="tmp_tap"/>
+							</group>
+							<newline/>
+							<group string="___________________________________ " col="4" colspan="2">
+							   <field name="pln_tnh"/>
+							   <field name="can_tnh"/>
+							   <field name="met_ant"/>
+							   <field name="fam_hcb"/>
+							   <field name="fam_qun"/>
+							</group>
+							<newline/>
+							<group string="Práctica de ejercicio físico" col="4" colspan="2">
+							   <field name="con_dep"/>
+							   <field name="pct_eje"/>
+							   <field name="lgh_eje"/>
+							   <field name="cvs_pre"/>
+							   <field name="qdp_pra"/>
+							   <field name="pro_pac"/>
+							   <field name="ofi_cmp"/>
+							</group>
+							<newline/>
+							<separator string="3.- Enfermedades y antescedentes patológicos familiares " colspan="2"/>
+							<newline/>
+							<newline/>
+							   <separator string="3.1.- Personales" colspan="2"/>
+							<newline/>
+							<group string="Problemas gastrointestinales" col="4" colspan="2">
+							    <field name="pro_vom"/>
+								<field name="pro_nau"/>
+								<field name="pro_drr"/>
+								<field name="pro_aci"/>
+								<field name="pro_flt"/>
+								<field name="pro_est"/>
+								<field name="frq_dep"/>
+							</group>
+							<newline/>
+							<group string="Problemas digestivos" col="4" colspan="2"> 
+								<field name="pro_gas"/>
+								<field name="pro_hel"/>
+								<field name="pro_rge"/>
+								<field name="pro_ulc"/>
+								<field name="pro_cir"/>
+							</group>
+							<newline/>
+							<group string="Enfermedades actuales asociadas a la obesidad" col="4" colspan="2">
+								<field name="pro_dia"/>
+								<field name="tmp_dia"/>
+								<field name="pro_hta"/>
+								<field name="pro_dsp"/>
+								<field name="pro_hpu"/>
+							    <field name="pro_hgr"/>
+								<field name="pro_aps"/>
+								<field name="pro_aod"/>
+								<field name="pro_pco"/>
+								<field name="pro_her"/>
+								<field name="pro_dvr"/>
+								<field name="pro_cir"/>
+								<field name="pro_tir"/>
+								<field name="pro_otr"/>
+								<field name="pro_dot"/>
+							</group>
+							<newline/>
+							<group string="3.2.- Alguien de su familia cercana sufre de alguna enfermedad como:" col="4" colspan="2">	
+								<field name="prf_dia"/>
+								<field name="par_dia"/>
+								<field name="prf_ptr"/>
+								<field name="par_prt"/>
+								<field name="prf_car"/>
+								<field name="par_car"/>
+								<field name="prf_hip"/>
+								<field name="par_hip"/>
+								<field name="prf_oys"/>
+								<field name="par_oys"/> 
+								<field name="prf_dis"/>
+								<field name="par_dis"/>
+							</group>
+							<newline/>
+							<newline/>
+							   <separator string=" 4.- Recordatorio de 24 Horas" colspan="2"/>
+							<newline/>
+							<newline/>
+							   <separator string="________________________________" colspan="2"/>
+							<newline/>
+							<newline/>
+							   <separator string="Desayuno" colspan="2"/>
+							<newline/>
+							<group col="4" colspan="2">
+							   <field name="des_hor"/>
+							   <field name="des_aar"/>
+                			   <field name="des_bat"/>
+                			   <field name="des_ayu"/>
+                			</group>
+                			<newline/>
+                			<group string="Café" col="4" colspan="2">
+                			   <field name="des_cea"/>
+                			   <field name="des_cel"/>
+                			   <field name="des_lec"/>
+                			   <field name="des_tle"/>
+                			   <field name="des_azu"/>
+                			</group>
+                			<newline/>
+                			<group string="Lácteos" col="4" colspan="2">
+                			   <field name="des_lsl"/>
+                			   <field name="des_lyc"/>
+                			   <field name="des_yog"/>
+                			   <field name="des_tla"/>
+                			   <field name="des_azl"/>
+                			</group>
+                			<newline/>	
+					        <group string="Cho" col="4" colspan="2"> 
+					           <field name="des_pae"/>
+					           <field name="des_rbn"/>
+					           <field name="des_cer"/>
+					           <field name="des_arr"/>
+					           <field name="des_otr"/>
+					           <field name="des_dot"/>
+					        </group>
+					        <newline/>
+					        <group string="Proteina" col="4" colspan="2">
+					           <field name="des_que"/>
+					           <field name="des_tqu"/>
+					           <field name="des_jam"/>
+					           <field name="des_pyc"/>
+					           <field name="des_hue"/>
+					           <field name="des_pre"/>
+					        </group>
+					        <newline/>
+					        <group string="Fruta" col="4" colspan="2">
+					           <field name="des_fre"/>
+					           <field name="des_frp"/>
+					           <field name="des_jup"/>
+					           <field name="des_jua"/>
+					           <field name="des_azf"/>
+					        </group>
+					        <newline/>
+					        <group string="Grasas" col="4" colspan="2">
+					           <field name="des_man"/>
+					           <field name="des_mar"/>
+					           <field name="des_ace"/>
+					           <field name="des_mcr"/>
+					           <field name="ext_inf"/>
+					        </group>
+					        <newline/>
+					        <group string="____________________________________">
+					           <field name="des_kca"/>
+					        </group>
+					        <newline/>
+					        <group string="Media Mañana" col="4" colspan="2">
+					           <field name="mma_hor"/>
+					           <field name="mma_snc"/>
+					           <field name="mma_frt"/>
+					           <field name="mma_ygt"/>
+					           <field name="mma_otr"/>
+					           <field name="mma_kca"/>
+					        </group>
+					        <newline/>
+					        <newline/>
+							   <separator string="Almuerzo" colspan="2"/>
+							<newline/>
+					        <group col="4" colspan="2">
+					           <field name="alm_hor"/>
+					           <field name="alm_sop"/>
+					           <field name="alm_con"/>
+					           <field name="alm_asp"/>
+					        </group>
+					        <newline/>
+					        <group string="Plato fuerte" col="4" colspan="2">
+					           <field name="alm_arr"/>
+					           <field name="alm_pco"/>
+					           <field name="alm_pfr"/>
+					           <field name="alm_fid"/>
+					           <field name="alm_pas"/>
+					           <field name="alm_cam"/>
+					           <field name="alm_grm"/>
+					           <field name="alm_otr"/>
+					        </group>
+					        <newline/>
+					        <group string="Verduras" col="4" colspan="2">
+					           <field name="alm_ver"/>
+					           <field name="alm_grn"/>
+					        </group>
+					        <newline/>
+					        <group col="4" colspan="2">
+					           <field name="alm_pol"/>
+					           <field name="alm_pes"/>
+					           <field name="alm_atn"/>
+					           <field name="alm_cro"/>
+					           <field name="alm_emb"/>
+					        </group>
+					        <newline/>
+					        <group col="4" colspan="2">
+					           <field name="alm_grs"/>
+					        </group>
+					        <newline/>
+					        <group string="Para tomar" col="4" colspan="2">
+					          <field name="alm_agu"/>
+					          <field name="alm_te"/>
+					          <field name="alm_coc"/>
+					          <field name="alm_jup"/>
+					          <field name="alm_jua"/>
+					          <field name="alm_azb"/>
+					        </group>
+					        <newline/>
+					        <group col="4" colspan="2">
+					          <field name="alm_pos"/>
+					          <field name="alm_tps"/>
+					          <field name="alm_frp"/>
+					          <field name="exi_alm"/>
+					        </group>
+					        <newline/>
+					        <group string="______________________">
+					          <field name="alm_kca"/>
+					        </group>
+					        <newline/>	
+					        <group string="Media Tarde" col="4" colspan="2">
+					          <field name="mta_hor"/>
+					          <field name="mta_snc"/>
+					          <field name="mta_frt"/>
+					          <field name="mta_ygt"/>
+					          <field name="mta_otr"/>
+					        </group>
+					        <newline/>
+					        <group string="______________________">
+					          <field name="mta_kca"/>
+					        </group>
+					        <newline/>
+					        <group string="Cena" col="4" colspan="2">
+					          <field name="cen_hor"/>
+					          <field name="cen_alm"/>
+					          <field name="exi_cen"/>
+					          <field name="cen_kca"/>
+					        </group>
+					        <newline/>
+					        <group string="TOTAL KILO CALORIAS">
+					          <field name="tot_kca"/>
+					        </group>
+					        <newline/>
+					        <group string="________________________" col="4" colspan="2">
+					        <field name="fds_com"/>
+					          <field name="fds_dia"/>
+					          <field name="fds_cpf"/>
+					        </group>
+					        <newline/>
+					        <group string="Datos antropométricos y crono patología del peso corporal" col="4" colspan="2">
+					          <field name="ini_obe"/>
+					          <field name="int_ppp"/>
+					          <field name="vis_nut"/>
+					          <field name="mot_ppp"/>
+					        </group>
+					        <newline/>
+					        <group string="____________________________________________" col="4" colspan="2"> 
+					          <field name="max_pak"/>
+					          <field name="max_pal"/>
+					          <field name="min_pak"/>
+					          <field name="min_pal"/>
+					          <field name="min_hac"/>
+					          <field name="pes_pak"/>
+					          <field name="pes_pal"/>
+					          <field name="imc"/>
+					        </group>
+					        <newline/>
+					        <group string="Exceso de peso" col="4" colspan="2">
+					        <field name="exs_pes"/>
+					        <field name="exs_pel"/>
+					        </group>
+					        <newline/>
+					        <group string="____________________________________________" col="4" colspan="2">  
+					          <field name="pac_age"/>
+					          <field name="est_pac"/>
+					          <field name="pea_pok"/>
+					          <field name="pea_pol"/>
+					          <field name="imc2"/>
+					          <field name="por_gra"/>
+					          <field name="est_obe"/>
+					          <field name="cin_pac"/> 
+						      <field name="cad_pac"/>
+						      <field name="icc"/> 
+					        </group>
+					        <newline/>
+					        <group string="____________________________________________" col="4" colspan="2"> 
+					          <field name="pei_pek"/>
+					          <field name="pei_pel"/>
+					          <field name="pob_pok"/>
+						      <field name="pob_pol"/>
+					          <field name="min_prk"/>
+						      <field name="min_prl"/>
+						      <field name="max_prk"/>
+						      <field name="max_prl"/>
+					        </group>
+					        <newline/>
+                        </page>
+                    	<page string="Evolucion Nutricional">
+                    		<field name="evolution_ids" context="{'evaluation_id': active_id}" />
+                    	</page>
+					</notebook>
+				</sheet>
+				</form>
+			</field>
+		</record>
+		
+	    <!--record id="view_oemedical_patient_dental_graph" model="ir.ui.view">
+    	     <field name="name">oemedical.patient.dental.graph</field>
+        	 <field name="model">oemedical.patient.dental</field>
+        	 <field name="type">graph</field>
+         	<field name="arch" type="xml">
+            	<graph string="Patient dental Graph" type="line">
+                	<field name="patient_id" group="False"/>
+                	<field name="date_str"/>
+                	<field name="eva_value"  group="False"/>
+            	</graph>
+			</field>
+		</record-->
+
+		<record id="view_oemedical_nutritional_search" model="ir.ui.view">
+			<field name="name">oemedical.nutritional.search</field>
+			<field name="model">oemedical.nutritional</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<search string="Oemedical Nutritional">
+					<field name="patient_id" />
+					<field name="eva_date" />
+					<!--field name="eva_value" /-->
+					<!--field name="directions" /-->
+					<newline />
+					<group expand="0" string="Group By...">
+						<!--filter string="Tratamiento:" domain="[]"
+							context="{'group_by':'directions'}" /-->
+						<filter string="Doctor" domain="[]"
+							context="{'group_by':'doctor'}" />
+						<filter string="Patient" domain="[]"
+							context="{'group_by':'patient_id'}" />
+						<!--filter string="EVA" domain="[]"
+							context="{'group_by':'eva_value'}" /-->
+					</group>
+				</search>
+			</field>
+		</record>
+		
+<act_window domain="[('patient_id', '=', active_id)]" id="act_nutritional_history" name="Nutritional" res_model="oemedical.nutritional" src_model="oemedical.patient"/>
+
+		<record id="view_oemedical_nutritional_inherit" model="ir.ui.view">
+			<field name="name">oemedical.ntritional.inherit</field>
+			<field name="model">oemedical.patient</field>
+			<field name="priority" eval="8" />
+			<field name="inherit_id" ref="oemedical.view_oemedical_patient_form"/>
+			<field name="arch" type="xml">
+				<notebook position="inside">
+                        <page string="Nutricional">
+                            <field name="nut_eval" context="{'patient_id': active_id}"/>
+                        </page>
+				</notebook>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="act_open_oemedical_nutritional_view">
+			<field name="name">Patient Nutritional</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">oemedical.nutritional</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form,tree</field>
+			<!--field name="view_id" ref="view_oemedical_patient_dental_graph"/-->
+			<field name="search_view_id" ref="view_oemedical_nutritional_search" />
+			<field name="domain">[]</field>
+			<field name="context">{}</field>
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_nutritional_view_form">
+			<field name="act_window_id" ref="act_open_oemedical_nutritional_view" />
+			<field name="sequence" eval="15" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_oemedical_nutritional_form" />
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_nutritional_view_tree">
+			<field name="act_window_id" ref="act_open_oemedical_nutritional_view" />
+			<field name="sequence" eval="10" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_oemedical_nutritional_tree" />
+		</record>
+		
+		<!--delete model="ir.ui.menu" id="oemedical.oemedical_patient_evaluation" /-->
+		
+        <menuitem id="oemedical_nutritional_tree" name="Nutricional"
+			parent="oemedical.oemedical_patient_root"
+			action="act_open_oemedical_nutritional_view" />
+
+
+	</data>
+</openerp>

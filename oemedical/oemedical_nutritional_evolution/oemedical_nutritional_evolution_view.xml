@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<openerp>
+	<data>
+		<record id="view_oemedical_nutritional_evolution_tree" model="ir.ui.view">
+			<field name="name">oemedical.nutritional.evolution.tree</field>
+			<field name="model">oemedical.nutritional.evolution</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Evolucion">
+					<!--field name="cir_date" /-->
+					<!--field name="cir_tip" /-->
+					<field name="date_nut" />
+					<field name="doctor" />
+					<!--field name="directions" /-->
+					<!--field name="eva_value" /-->
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_oemedical_nutritional_evolution_form" model="ir.ui.view">
+			<field name="name">oemedical.nutritional.evolution.form</field>
+			<field name="model">oemedical.nutritional.evolution</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<form string="Evolucion Nutricional" version="7.0">
+				<sheet>
+					<!--div class="oe_right oe_button_box" name="buttons">
+                        <button type="object"
+                            name="evolution_print"
+                            string="Imprimir"/>
+                    </div-->
+					<group col="2" colspan="2">
+						<field name="patient_id" />
+						<field name="doctor" />
+					</group>
+					<newline/>
+					<group col="4" colspan="2">	
+						<field name="date_nut" readonly="0"/>
+						<field name="pso_act" />
+			            <!--field name="pso_ant" /-->
+			            <field name="pgr_act" />
+			            <field name="pgr_ant" />
+			            <field name="cin_act" />
+			            <field name="cin_ant" />
+			        </group>
+			        <newline/>
+			        <group col="4" colspan="2">    
+			            <field name="imc_cot" />
+			            <field name="exp_per" />
+			        </group>
+			        <newline/>    
+			        <group col="4" colspan="2"> 
+                                    <field name="date_control" />    
+			            <field name="cita" />
+			            <field name="tip_dta" />
+			            <field name="car_die" />
+			        </group>
+			        <newline/> 
+			        <group col="4" colspan="2">
+			            <field name="sup_prt" />
+			            <field name="sup_vit" />
+			        </group>
+			        <newline/> 
+			        <group col="4" colspan="2">
+			            <field name="observ" />
+              			    <field name="hidratacion"/>
+              			    <field name="eje_freq" />
+                                    <field name="eje_dia" />
+			            <field name="tie_eje" />
+				</group>
+					
+				</sheet>
+				</form>
+			</field>
+		</record>
+		
+	    <!--record id="view_oemedical_patient_dental_graph" model="ir.ui.view">
+    	     <field name="name">oemedical.patient.dental.graph</field>
+        	 <field name="model">oemedical.patient.dental</field>
+        	 <field name="type">graph</field>
+         	<field name="arch" type="xml">
+            	<graph string="Patient dental Graph" type="line">
+                	<field name="patient_id" group="False"/>
+                	<field name="date_str"/>
+                	<field name="eva_value"  group="False"/>
+            	</graph>
+			</field>
+		</record-->
+
+		<record id="view_oemedical_nutritional_evolution_search" model="ir.ui.view">
+			<field name="name">oemedical.nutritional.evolution.search</field>
+			<field name="model">oemedical.nutritional.evolution</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<search string="Nutritional Evolution">
+					<!--field name="cir_tip" /-->
+					<!--field name="cir_date" /-->
+					<field name="date_nut" />
+					<!--field name="eva_value" /-->
+					<!--field name="directions" /-->
+					<newline />
+					<group expand="0" string="Group By...">
+						<!--filter string="Tipo cirugia:" domain="[]"
+							context="{'group_by':'cir_tip'}" /-->
+						<filter string="Doctor" domain="[]"
+							context="{'group_by':'doctor'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		
+<!--act_window domain="[('patient_id', '=', active_id)]" id="act_bariatric_evaluation_history" name="Historia Bariatrica" res_model="oemedical.bariatric.evaluation" src_model="oemedical.patient"/-->
+
+		<!--record id="view_oemedical_bariatric_evaluation_inherit" model="ir.ui.view">
+			<field name="name">oemedical.bariatric.evaluation.inherit</field>
+			<field name="model">oemedical.patient</field>
+			<field name="priority" eval="8" />
+			<field name="inherit_id" ref="oemedical.view_oemedical_patient_form"/>
+			<field name="arch" type="xml">
+				<notebook position="inside">
+                        <page string="Evaluación Bariatrica">
+                            <field name="bar_eval" context="{'patient_id': active_id}"/>
+                        </page>
+				</notebook>
+			</field>
+		</record-->
+
+		<record model="ir.actions.act_window" id="act_open_oemedical_nutritional_evolution_view">
+			<field name="name">Evolucion Nutricional</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">oemedical.nutritional.evolution</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<!--field name="view_id" ref="view_oemedical_patient_dental_graph"/-->
+			<field name="search_view_id" ref="view_oemedical_nutritional_evolution_search" />
+			<field name="domain">[]</field>
+			<field name="context">{}</field>
+		</record>
+
+	</data>
+</openerp>

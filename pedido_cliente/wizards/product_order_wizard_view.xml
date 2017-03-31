@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+        Wizard to add a product to the order...
+        model: pedido_cliente.product_order_wizard
+        -->
+        
+        <!-- FORM VIEW -->
+        <record id="pedido_cliente_product_order_wizard_view_form" model="ir.ui.view">
+            <field name="name">pedido_cliente_product_order_wizard_view_form</field>
+            <field name="model">pedido_cliente.product_order_wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Compras" version="7.0">
+                    <sheet>
+                        <field name="request_id" invisible='1'/>
+                        <field name="client_id" invisible='1'/>
+                        <field name="product_variant_id" invisible='1'/>
+                        <h2>Purchase Lines</h2>
+                        <field name="product_info_ids"  context="{'from_wizard': True, 'wizard_id': active_id, 'client_id':client_id, 'request_id': request_id,'product_variant_id':product_variant_id}">
+                            <tree editable='bottom'>
+                                <field name="wizard_id" invisible='1'/>
+                                <field name="client_id" invisible='1'/>
+                                <field name="request_id" invisible='1'/>
+                                <field name="product_variant_id" invisible='1'/>
+                                <field name="type" required='1'/>
+                                <field name="res_partner_id" on_change ="on_change_variety(product_variant_id,res_partner_id,product_id,variant_id)" required ="1" domain="[('supplier','=',True)]"  context="{'default_supplier': True, 'default_customer': False,'from_wizard': True, 'wizard_id': wizard_id}"/>
+                                <field name="product_id" required="1"/>
+                                <field name="variant_id"  required ="1" domain="[('product_id', '=', product_id)]" on_change ="on_change_variety(product_variant_id,res_partner_id,product_id,variant_id)"/>
+                                <field name="length_ids" required ="1" context="{'wzd_id':active_id}">
+                                    <tree string="Length" editable="bottom">
+                                        <field name="wzd_id" invisible="1"/>
+                                        <field name="length" required="1"/>
+                                        <field name="purchase_price"/>
+                                    </tree>
+                                    <form string="Length">
+                                        <field name="wzd_id" invisible="1"/>
+                                        <field name="length" required="1"/>
+                                        <field name="purchase_price"/>
+                                    </form>
+                                </field>
+								<field name="qty" />
+                                <field name="is_box_qty" />
+								<field name="bunch_per_box" required ="1"/>
+                                <field name="bunch_type" required ="1"/>
+                                <field name="uom" required ="1"/>
+								<field name="sale_price"/>
+                                <field name="origin"/>
+                                <field name="subclient_id" domain="[('customer','=', True)]" context="{'default_customer': True, 'default_supplier':False, 'subclient_of':client_id}"/>
+                                <field name="sucursal_id"/>
+                            </tree>
+                        </field>
+                        <footer>
+	            			<button name="action_create" string="Salvar" type="object" class="oe_highlight"/>
+                        	or <button string="Cancelar" class="oe_link" special="cancel" />
+	            		</footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

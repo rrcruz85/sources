@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="pos_credit_card_payment" model="account.journal">
+            <field name="name">Pago con Tarjeta de Crédito</field>
+            <field name="code">POSTRJ</field>
+            <field name="type">bank</field>
+            <field name="journal_user" eval="True" />
+            <field name="card_payment" eval="True" />
+        </record>
+    </data>
+</openerp>

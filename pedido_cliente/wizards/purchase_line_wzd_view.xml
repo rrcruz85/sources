@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="purchase_line_wzd_form" model="ir.ui.view">
+            <field name="name">purchase.line.wzd.form</field>
+            <field name="model">purchase.line.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Detalle de Compra" version="7.0">
+                    <sheet>
+                        <group col="8" colspan="8">
+                            <field name="pedido_id" invisible="1"/>
+                            <field name="product_variant_id" invisible="1"/>
+                            <newline/>
+                            <field name="type" required="1"/>
+                            <newline/>
+                            <field name="supplier_id" on_change="on_chance_supplier(supplier_id,product_id,variant_id)" context="{'default_supplier': True, 'default_customer': False}"
+                                   colspan="4" required="1" domain="[('supplier','=',True)]"/>
+                            <newline/>
+                            <field name="product_id" required="1" on_change="on_chance_supplier(supplier_id,product_id,variant_id)"/>
+                            <newline/>
+                            <field name="variant_id" colspan="4" required="1" on_change="on_chance_supplier(supplier_id,product_id,variant_id)" domain="[('product_id', '=', product_id)]"/>
+                            <newline/>
+                            <field name="sale_price" readonly = "1" colspan="4" required="1"/> <!--on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,purchase_price,sale_price)"-->
+                            <newline/>
+                            <field name="length_ids" context="{ 'wzd_id': active_id}">
+                                <tree string="Length" editable="bottom">
+                                    <field name="wzd_id" invisible="1"/>
+                                    <field name="length" required="1"/>
+                                    <field name="purchase_price"/>
+                                </tree>
+                                <form string="Length">
+                                    <field name="wzd_id" invisible="1"/>
+                                    <field name="length"/>
+                                    <field name="purchase_price"/>
+                                </form>
+                            </field>
+                            <newline/>
+                            <field name="is_box_qty" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)"/>
+                            <newline/>
+                            <field name="box_qty" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)" attrs="{'invisible': [('is_box_qty', '=', False)]}"/>
+                            <field name="tale_qty" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)" attrs="{'invisible': [('is_box_qty', '=', True)]}"/>
+                            <field name="bunch_per_box" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)"/>
+                            <newline/>
+                            <field name="uom" required="1" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)"/>
+                            <field name="bunch_type" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)"/>
+                            <newline/>
+                            <field name="stimated_stems" attrs="{'invisible': [('is_box_qty', '=', False)]}" />
+                            <newline/>
+                            <field name="qty_bxs" readonly="1"/>
+                            <newline/>
+                            <field name="full_boxes" colspan="4"/>
+                            <newline/>
+                            <!--<field name="total_purchase" colspan="4"/>-->
+                            <!--<newline/>-->
+                            <!--<field name="total_sale" colspan="4"/>-->
+                            <!--<newline/>-->
+                            <!--<field name="profit" colspan="4"/>-->
+                            <!--<newline/>-->
+                            <field name="origin" colspan="4"/>
+                            <newline/>
+                            <field name="subclient_id" colspan="4" domain="[('customer','=',True)]"/>
+                            <newline/>
+                            <field name="sucursal_id" colspan="4"/>
+                        </group>
+                        <footer>
+                            <button name="save" string="Salvar" type="object" class="oe_highlight"/>
+                            or
+                            <button string="Cancelar" class="oe_link" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

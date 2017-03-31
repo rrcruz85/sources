@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<openerp>
+	<data>
+		<record id="view_oemedical_bariatric_evaluation_tree" model="ir.ui.view">
+			<field name="name">oemedical.bariatric.evaluation.tree</field>
+			<field name="model">oemedical.bariatric.evaluation</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Oemedical Bariatric Evaluation">
+					<field name="patient_id" />
+					<field name="eva_date" />
+					<field name="doctor" />
+					<!--field name="directions" /-->
+					<!--field name="eva_value" /-->
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_oemedical_bariatric_evaluation_form" model="ir.ui.view">
+			<field name="name">oemedical.bariatric.evaluation.form</field>
+			<field name="model">oemedical.bariatric.evaluation</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<form string="Oemedical Bariatric Evaluation" version="7.0">
+				<sheet>
+					<notebook>
+					<!--div class="oe_right oe_button_box" name="buttons">
+                        <button type="object"
+                            name="evolution_print"
+                            string="Imprimir"/>
+                    </div-->
+                        <page string="Evaluacion Bariatrica">
+	                      <group>
+						    <field name="patient_id" string="Paciente" required="1"/>
+						  </group>
+                          <newline/>
+                    	  <group string="1. MOTIVO DE CONSULTA">
+							<field name="mot_cta" />
+							</group>
+							<group string="2. ANTECEDENTES PERSONALES">
+								<group col="2">
+								<field name="ant_qur" />
+								</group>
+								<newline/>
+								<group col="4">
+								<field name="ang_g" />
+				                <field name="ang_p" />
+				                <field name="ang_c" />
+				                <field name="ang_a" />
+				                <field name="ang_hv" />
+				                <field name="ang_fum" />
+				                <field name="ang_ant" />
+				                </group>
+							</group>
+							<group string="CLINICOS">
+								<group col="2">
+								<field name="anc_hta" />
+				              	<field name="anc_hdr" />
+					            <field name="anc_hto" />
+					            <field name="anc_hmd" />
+					            <field name="anc_hdc" />
+					            </group>
+					            <group col="2">
+					            <field name="anc_dm" />
+					            <field name="anc_ddr" />
+					            <field name="anc_dto" />
+					            <field name="anc_dmd" />
+					            <field name="anc_ddc" />
+					            </group>
+					            <newline/>
+					            <group col="2">
+					            <field name="anc_dlp" />
+					            <field name="anc_ldr" />
+					            <field name="anc_lto" />
+					            <field name="anc_lmd" />
+					            <field name="anc_ldc" />
+					            </group>
+					            <group col="2">
+					            <field name="anc_apn" />
+					            <field name="anc_adr" />
+					            <field name="anc_ato" />
+					            <field name="anc_amd" />
+					            <field name="anc_adc" />
+					            </group>
+					            <newline/>
+					            <group col="2">
+					            <field name="anc_ost"/>
+					            <field name="anc_odr"/>
+					            <field name="anc_oto"/>
+					            <field name="anc_omd"/>
+					            <field name="anc_odc"/>
+					            </group>
+					            <group col="2">
+					            <field name="anc_sop" />
+					            <field name="anc_sdr" />
+					            <field name="anc_sto" />
+					            <field name="anc_smd" />
+					            <field name="anc_sdc" />
+					            </group>
+					            <newline/>
+					            <group col="2">
+					            <field name="anc_otr" />
+					            <field name="anc_rdr" />
+					            <field name="anc_rto" />
+					            <field name="anc_rmd" />
+					            <field name="anc_rdc" />
+					            </group>
+					            <group col="2">
+					            <field name="anc_ots" />
+					            </group>
+							</group>
+							<group col="4">
+								<field name="anc_tab" />
+				                <field name="anc_alc" />
+				                <field name="anc_drg" />
+				                <field name="anc_tad" />
+							</group>
+							<group col="6">
+								<field name="med_med1"/>
+              					<field name="med_dos1"/>
+              					<field name="med_tmp1"/>
+							</group>
+							<group col="6">
+								<field name="med_med2"/>
+              					<field name="med_dos2"/>
+              					<field name="med_tmp2"/>
+							</group>
+							<group col="6">
+								<field name="med_med3"/>
+              					<field name="med_dos3"/>
+              					<field name="med_tmp3"/>
+							</group>
+							<group string="3. ANTECEDENTES FAMILIARES" col="4">
+								<field name="anf_mdr" />
+				                <field name="anf_hrm" />
+				                <field name="anf_hij" />
+				                <field name="anf_abp" />
+				                <field name="anf_aap" />
+				                <field name="anf_abm" />
+				                <field name="anf_aam" />
+				                <field name="anf_abp" />
+				                <field name="anf_otr" />
+							</group>
+							<group string="4. ENFERMEDAD PROBLEMA ACTUAL">
+								<group col="4">
+								<field name="epa_apa" />
+		                        <field name="epa_lug" />
+		              			<field name="epa_int" />
+					            <field name="epa_aco" />
+					            <field name="epa_rea" />
+					            </group>
+					            <newline/>
+					            <group col="4">
+					            <field name="epa_die" />
+					            <field name="epa_cdi" />
+					            <field name="epa_ddi" />
+					            <field name="epa_dre" />
+					            </group>
+					            <newline/>
+					            <group col="4">
+					            <field name="epa_eje" />
+					            <field name="epa_cej" />
+					            <field name="epa_dej" />
+					            <field name="epa_rej" />
+					            </group>
+					            <newline/>
+					            <group col="4">
+					            <field name="epa_med" />
+					            <field name="epa_cme" />
+					            <field name="epa_dme" />
+					            <field name="epa_rme" />
+					            </group>
+					            <newline/>
+					            <group col="4">
+					            <field name="epa_nut" />
+					            <field name="epa_cnu" />
+					            <field name="epa_dnu" />
+					            <field name="epa_rnu" />
+					            </group>
+							</group>
+							<group string="ALIMENTACION" col="4">
+								<field name="epa_afr" />
+				                <field name="epa_sal" />
+				                <field name="epa_dul" />
+				                <field name="epa_pic" />
+				                <field name="epa_atr" />
+				                <field name="epa_ans" />
+				                <field name="epa_vom" />
+				                <field name="epa_otr" />
+				                <field name="epa_ode" attrs="{'invisible': [('epa_otr', '=', False)]}"/>
+							</group>
+							<group col="4">
+								<field name="epa_pmx" />
+					            <field name="epa_pmn" />
+					            <field name="epa_pac" />
+					            <field name="epa_pid" />
+					            <field name="epa_pex" />
+					            <field name="epa_tal" />
+					            <field name="epa_imc" />
+					            <field name="epa_exi" />
+					            <field name="epa_qqx" />
+					            <field name="epa_cqx" />
+					            <field name="epa_qcu" />
+							</group>
+							<group string="5. REVISION ACTUAL DE ORGANOS Y SISTEMAS" col="4">
+								<field name="ros_des" nolabel="1" />
+							</group>
+							<group string="6. SIGNOS VITALES" col="4">
+								<field name="tem_info" />
+              					<field name="pat_info" />
+              					<field name="ppm_info" />
+							</group>
+							<group string="7. EXAMEN FISICO" col="4">
+              					<field name="epa_plb" />
+              					<field name="epa_pac" />
+              					<field name="epa_tal" />
+								<field name="epa_imc" />
+              					<field name="epa_pid" />
+              					<field name="epa_pex" />
+              					<field name="epa_pep" />
+              					<field name="epa_exi" />
+							</group>
+							<group col="4">
+								<field name="cir_cad" />
+                				<field name="cir_cin" />
+                				<field name="eva_pil" />
+                				<field name="eva_cab" />
+                				<field name="eva_cue" />
+                				<field name="eva_tir" />
+                				<field name="eva_pul" />
+                				<field name="eva_car" />
+                				<field name="eva_abd" />
+                				<field name="eva_gen" />
+                				<field name="eva_ext" />
+                				<field name="eva_ene" />
+                				<field name="eva_otr" />
+                			</group>
+							<group string="8. DIAGNOSTICOS">
+	                			<field name="diag_bariatric"/>
+	                			<field name="diag_bariatric_def"/>
+	                		</group>
+							<group string="9. OTROS" col="4">
+	                			<field name="exams"/>
+	                			<field name="evalucs"/>
+	                			<field name="cirugia"/>
+	                			<field name="fechaqx"/>
+	                			<field name="costo"/>
+	                			<field name="fianc"/>
+	                			<field name="fecha_control"/>
+	                			<field name="hora_fin"/>
+	                		</group>
+	                	</page>
+                    	<page string="Evolucion Bariatrica">
+                    		<field name="evolution_ids" context="{'evaluation_id': active_id}" />
+                    	</page>
+					</notebook>
+				</sheet>
+				</form>
+			</field>
+		</record>
+		
+	    <!--record id="view_oemedical_patient_dental_graph" model="ir.ui.view">
+    	     <field name="name">oemedical.patient.dental.graph</field>
+        	 <field name="model">oemedical.patient.dental</field>
+        	 <field name="type">graph</field>
+         	<field name="arch" type="xml">
+            	<graph string="Patient dental Graph" type="line">
+                	<field name="patient_id" group="False"/>
+                	<field name="date_str"/>
+                	<field name="eva_value"  group="False"/>
+            	</graph>
+			</field>
+		</record-->
+
+		<record id="view_oemedical_bariatric_evaluation_search" model="ir.ui.view">
+			<field name="name">oemedical.bariatric.evaluation.search</field>
+			<field name="model">oemedical.bariatric.evaluation</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<search string="Oemedical Bariatric Evaluation">
+					<field name="patient_id" />
+					<field name="eva_date" />
+					<!--field name="eva_value" /-->
+					<!--field name="directions" /-->
+					<newline />
+					<group expand="0" string="Group By...">
+						<!--filter string="Tratamiento:" domain="[]"
+							context="{'group_by':'directions'}" /-->
+						<filter string="Doctor" domain="[]"
+							context="{'group_by':'doctor'}" />
+						<filter string="Patient" domain="[]"
+							context="{'group_by':'patient_id'}" />
+						<!--filter string="EVA" domain="[]"
+							context="{'group_by':'eva_value'}" /-->
+					</group>
+				</search>
+			</field>
+		</record>
+		
+<act_window domain="[('patient_id', '=', active_id)]" id="act_bariatric_evaluation_history" name="Evaluación Bariátrica" res_model="oemedical.bariatric.evaluation" src_model="oemedical.patient"/>
+
+		<record id="view_oemedical_bariatric_evaluation_inherit" model="ir.ui.view">
+			<field name="name">oemedical.bariatric.evaluation.inherit</field>
+			<field name="model">oemedical.patient</field>
+			<field name="priority" eval="8" />
+			<field name="inherit_id" ref="oemedical.view_oemedical_patient_form"/>
+			<field name="arch" type="xml">
+				<notebook position="inside">
+                        <page string="Evaluación Bariatrica">
+                            <field name="bar_eval" context="{'patient_id': active_id}"/>
+                        </page>
+				</notebook>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="act_open_oemedical_bariatric_evaluation_view">
+			<field name="name">Patient Bariatric Evaluation</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">oemedical.bariatric.evaluation</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form,tree</field>
+			<!--field name="view_id" ref="view_oemedical_patient_dental_graph"/-->
+			<field name="search_view_id" ref="view_oemedical_bariatric_evaluation_search" />
+			<field name="domain">[]</field>
+			<field name="context">{}</field>
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_bariatric_evaluation_view_form">
+			<field name="act_window_id" ref="act_open_oemedical_bariatric_evaluation_view" />
+			<field name="sequence" eval="15" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_oemedical_bariatric_evaluation_form" />
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_bariatric_evaluation_view_tree">
+			<field name="act_window_id" ref="act_open_oemedical_bariatric_evaluation_view" />
+			<field name="sequence" eval="10" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_oemedical_bariatric_evaluation_tree" />
+		</record>
+		
+		<delete model="ir.ui.menu" id="oemedical.oemedical_patient_evaluation" />
+		
+        <menuitem id="oemedical_bariatriceval_tree" name="Evaluación Bariátrica"
+			parent="oemedical.oemedical_patient_root"
+			action="act_open_oemedical_bariatric_evaluation_view" />
+
+
+	</data>
+</openerp>
