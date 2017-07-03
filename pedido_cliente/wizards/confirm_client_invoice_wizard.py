@@ -41,6 +41,9 @@ class confirm_client_invoice_wizard(osv.osv_memory):
         'line_ids'       : fields.one2many('confirm.client.invoice.line.wizard','invoice_id','Invoice Lines'),
         'next'    : fields.boolean('Next?'),
         'confirmada'    : fields.boolean('Confirmada'),
+        #Nuevos Campos
+        'charge_account_id' : fields.many2one('account.account', string ="CxC", help = "Cuenta por Cobrar"),
+        'taxpayer_type' : fields.selection([('pn','Persona Natural'),('pnrs','Persona Natural con Regimen Simplificado(RISE)'),('s','Sociedades') ] ,string ="Taxpayer type"),
     }
 
     def _get_journal(self, cr, uid, context=None):
@@ -111,6 +114,9 @@ class confirm_client_invoice_wizard(osv.osv_memory):
             res['value']['fiscal_position'] = pedido.partner_id.property_account_position.id if pedido.partner_id and pedido.partner_id.property_account_position else False
             res['value']['date_invoice'] = pedido.request_date
 
+            res['value']['charge_account_id'] = pedido.partner_id.charge_account_id.id if pedido.partner_id.charge_account_id else False
+            res['value']['taxpayer_type'] = pedido.partner_id.taxpayer_type if pedido.partner_id.taxpayer_type else False
+
             p_ids = self.pool.get('confirm.client.invoice').search(cr,uid,[('pedido_id','=',pedido_id)])
             if p_ids:
                 obj = self.pool.get('confirm.client.invoice').browse(cr, uid, p_ids[0])
@@ -163,6 +169,9 @@ class confirm_client_invoice_wizard(osv.osv_memory):
                 res['value']['company_id'] = obj.company_id.id
                 res['value']['user_id'] = obj.user_id.id
                 res['value']['line_ids'] = list_vals
+                res['value']['charge_account_id'] = obj.charge_account_id.id if obj.charge_account_id else False
+                res['value']['taxpayer_type'] = obj.taxpayer_type if obj.taxpayer_type else False
+
             else:
                 product_accounts = []
                 uom = {'FB': 1, 'HB': 2, 'QB': 4, 'OB': 8}
@@ -207,7 +216,7 @@ class confirm_client_invoice_wizard(osv.osv_memory):
                 res['value']['line_ids'] = list_vals
                 if not list_vals:
                     warning = {
-                        'title': _('Informacion!'),
+                        'title': 'Informacion!',
                         'message': 'Para el pedido seleccionado ya todas las lineas han sido confirmadas.'
                     }
                     res['warning'] = warning
@@ -234,7 +243,6 @@ class confirm_client_invoice_wizard(osv.osv_memory):
                 raise osv.except_osv('Error', "Debe especificar al menos una linea de confirmacion")
 
             lines = []
-
             p_ids = self.pool.get('confirm.client.invoice').search(cr,uid,[('pedido_id','=',o.pedido_id.id)])
             l_ids = []
             if p_ids:
@@ -291,6 +299,8 @@ class confirm_client_invoice_wizard(osv.osv_memory):
                     'journal_id': o.journal_id.id if o.journal_id else False,
                     'company_id': o.company_id.id if o.company_id else False,
                     'user_id': o.user_id.id if o.user_id else False,
+                    'charge_account_id': o.charge_account_id.id if o.charge_account_id else False,
+                    'taxpayer_type': o.taxpayer_type if o.taxpayer_type else False,
                     'line_ids': lines,
                 })
             else:
@@ -304,6 +314,8 @@ class confirm_client_invoice_wizard(osv.osv_memory):
                     'journal_id': o.journal_id.id if o.journal_id else False,
                     'company_id': o.company_id.id if o.company_id else False,
                     'user_id': o.user_id.id if o.user_id else False,
+                    'charge_account_id': o.charge_account_id.id if o.charge_account_id else False,
+                    'taxpayer_type': o.taxpayer_type if o.taxpayer_type else False,
                     'line_ids': lines
                 }))
 
@@ -352,6 +364,11 @@ class confirm_client_invoice_wizard(osv.osv_memory):
                 if l.length:
                     name += ' - ' + l.length
 
+                if l.detalle_id and l.detalle_id.type == 'standing_order':
+                    name = 'SO ' + name
+                if l.detalle_id and l.detalle_id.type != 'standing_order':
+                    name = 'OM ' + name
+
                 taxes = [(4, t.id) for t in l.product_id.supplier_taxes_id]
 
                 qty_bxs = l.qty if l.is_box_qty else float(l.qty)/(int(l.bunch_type) * l.bunch_per_box)
@@ -394,7 +411,9 @@ class confirm_client_invoice_wizard(osv.osv_memory):
                 'company_id': o.company_id.id if o.company_id else None,
                 'invoice_line': lines,
                 'user_id': o.user_id.id if o.user_id else None,
-                'pedido_cliente_id': o.pedido_id.id if o.pedido_id else None
+                'pedido_cliente_id': o.pedido_id.id if o.pedido_id else None,
+                'charge_account_id': o.charge_account_id.id if o.charge_account_id else False,
+                'taxpayer_type': o.taxpayer_type if o.taxpayer_type else False,
             }
             self.pool.get('account.invoice').create(cr, uid, inv_vals, context)
 
@@ -444,12 +463,7 @@ class confirm_client_invoice_line_wizard(osv.osv_memory):
         'total_purchase'    : fields.float(string='Total'),
         'total_sale'    : fields.float(string='Total'),
         'bunch_per_box'   : fields.integer('Bunch per Box'),
-        'bunch_type'      : fields.selection([('6', '6'),
-                                              ('10', '10'),
-                                              ('12', '12'),
-										      ('15', '15'),
-											  ('20', '20'),
-                                              ('25', '25')], 'Stems x Bunch'),
+        'bunch_type'      : fields.integer('Stems x Bunch'),
         'uom'              : fields.selection([('FB', 'FB'),
                                                ('HB', 'HB'),
                                                ('QB', 'QB'),
@@ -514,7 +528,7 @@ class confirm_client_invoice_line_wizard(osv.osv_memory):
 
     _defaults = {
         'bunch_per_box': 10,
-        'bunch_type'   : '25',
+        'bunch_type'   : 25,
         'uom'          : 'HB',
         'type'  : 'open_market',
         'pedido_id'    :  lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else False,
@@ -523,6 +537,14 @@ class confirm_client_invoice_line_wizard(osv.osv_memory):
         'supplier_id'    :  lambda self, cr, uid, context : context['supplier_id'] if context and 'supplier_id' in context else False,
         'line_number'  : get_default_line_number,
     }
+
+    def _check_bunch_type(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.bunch_type > 0 and obj.bunch_type <= 25
+
+    _constraints = [
+           (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
+    ]
 
 confirm_client_invoice_line_wizard()
 

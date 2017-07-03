@@ -100,8 +100,12 @@
                             <field name="currency_id" required="1" colspan="4"/>
                             <field name="journal_id" required="1" colspan="4"/>
                             <newline/>
+                            <field name="charge_account_id" colspan="4"/>
+                            <field name="taxpayer_type" colspan="4"/>
+                            <newline/>
                             <field name="company_id" required="1" colspan="4"/>
                             <field name="user_id" required="1" colspan="4"/>
+
                             <field name="next" invisible="1"/>
                             <field name="confirmada" invisible="1"/>
                         </group>
@@ -125,7 +129,7 @@
             <field name="view_id" ref="confirm_client_invoice_wizard_view_form"/>
         </record>
 
-        <menuitem name="Confirmar Factura Cliente" action="action_confirm_invoice_client_wizard" id="menu_confirm_client_invoice_wizard" parent="menu_pedido_cliente_menu" sequence="5"/>
+        <!--<menuitem name="Confirmar Factura Cliente" action="action_confirm_invoice_client_wizard" id="menu_confirm_client_invoice_wizard" parent="menu_pedido_cliente_menu" sequence="5"/>-->
 
     </data>
 </openerp>

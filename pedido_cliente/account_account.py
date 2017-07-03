@@ -29,6 +29,8 @@ class account_invoice(osv.osv):
 
     _columns = {
         'pedido_cliente_id' : fields.many2one('pedido.cliente', string ="Pedido Cliente"),
+        'charge_account_id' : fields.many2one('account.account', string ="CxC", help = "Cuenta por Cobrar"),
+        'taxpayer_type' : fields.selection([('pn','Persona Natural'),('pnrs','Persona Natural con Regimen Simplificado(RISE)'),('s','Sociedades')] ,string ="Taxpayer type"),
     }
 
 account_invoice()
@@ -45,28 +47,34 @@ class account_invoice_line(osv.osv):
         return result
 
     _columns = {
-        'sequence_box'  : fields.integer(string = "SQ", help='Sequence'),
+        'sequence_box'  : fields.integer(string = "# Box", help='Numero de Caja'),
         'box'               : fields.float(string='FB', help="Full Boxes"),
+        'hb'               : fields.float(string='HB', help="Half Boxes"),
+        'qb'               : fields.float(string='QB', help="Quarter Boxes"),
         'qty_bxs'              : fields.char(string='BXS', size = 10),
         'uom'                   : fields.selection([('FB', 'FB'),
                                                             ('HB', 'HB'),
                                                             ('QB', 'QB'),
                                                             ('OB', 'OB')], string = "UOM", help='Unit of Measure'),
-        'bunch_type'            : fields.selection([('6', '6'),
-                                                    ('10', '10'),
-                                                    ('12', '12'),
-													('15', '15'),
-													('20', '20'),
-                                                    ('25', '25')], 'Stems x Bunch'),
+        'bunch_type'            : fields.integer( 'Stems x Bunch'),
         'bunches'            : fields.function(_get_bunches, type='integer', string='Total Bunches'),
         'is_box_qty'            : fields.boolean('Box Packing?'),
         'bunch_per_box'   : fields.integer('Bunch per Box'),
+        'mark_id' : fields.many2one('res.partner', string ="Marcacion"),
    }
 
     _defaults = {
         'uom': 'HB',
         'bunch_per_box' : 10,
-        'bunch_type': '25',
+        'bunch_type': 25,
     }
+
+    def _check_bunch_type(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.bunch_type > 0 and obj.bunch_type <= 25
+
+    _constraints = [
+            (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
+    ]
 
 account_invoice_line()

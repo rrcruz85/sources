@@ -25,17 +25,34 @@ from osv import fields
 class res_partner(osv.osv):
     _inherit = 'res.partner'
 
+    def search(self, cr, uid, args, offset=0, limit=None, order=None,context=None, count=False):
+        if context is None:
+            context = {}
+        customers_ids = super(res_partner, self).search(cr, uid, args,offset,limit,order, context,count)
+        if context and 'cliente_id' in context and context['cliente_id'] and context['cliente_id'] in customers_ids:
+            customers_ids.remove(context['cliente_id'])
+        if context and 'subcliente_de' in context and context['subcliente_de']:
+            customers_ids =[s.id for s in self.browse(cr, uid, context['subcliente_de']).sub_client_ids]
+        return customers_ids
+
     def name_search(self, cr, user, name='', args=None, operator='ilike', context=None, limit=100):
-        if context and 'subclient_of' in context and context['subclient_of']:
-            subclient_ids =[s.id for s in self.browse(cr, user, context['subclient_of']).sub_client_ids]
+
+        if context and 'cliente_id' in context and context['cliente_id']:
+            customers_ids = self.pool.get('res.partner').search(cr, user, [('customer','=',True)])
+            if context['cliente_id'] in customers_ids:
+                customers_ids.remove(context['cliente_id'])
+            return self.name_get(cr, user, customers_ids, context)
+
+        if context and 'subcliente_de' in context and context['subcliente_de']:
+            subclient_ids =[s.id for s in self.browse(cr, user, context['subcliente_de']).sub_client_ids]
             return self.name_get(cr, user, subclient_ids, context)
 
         if context.get('from_wizard_rqt', False):
             suppliers = []
             pedido = self.pool.get('pedido.cliente').browse(cr,user, context['from_wizard_rqt'])
             for v in pedido.purchase_line_ids:
-                    if v.supplier_id and v.supplier_id.id not in suppliers:
-                        suppliers.append(v.supplier_id.id)
+                if v.supplier_id and v.supplier_id.id not in suppliers:
+                    suppliers.append(v.supplier_id.id)
             return self.name_get(cr, user, suppliers, context)
 
         if context.get('search_just_suppliers', False):
@@ -64,12 +81,16 @@ class res_partner(osv.osv):
         return super(res_partner, self).name_search(cr, user, name, args, operator=operator, context=context, limit=limit)
 
     _columns = {
-        'sale_request_ids'      : fields.one2many('sale.request', 'partner_id', 'Ordenes de Ventas'),
-        'purchase_template_ids' : fields.one2many('purchase.request.template', 'partner_id', 'Plantillas de Compras'),
-        'sub_client_ids'        : fields.many2many('res.partner', 'subclient_relation', 'supplier_id', 'client_id', 'Subclientes'),
-        'tipo_neg_id'        : fields.many2one('res.partner.tipo.negociacion','Tipo Negociacion'),
-        'tipo_flete'            : fields.selection([('cf_f_0', 'C&F Flete Cero'),('fob_f_0', 'FOB Flete Cero'),('fob_f_p', 'FOB Flete Pagado')], string = 'Flete')
-    }
+            'sale_request_ids'      : fields.one2many('sale.request', 'partner_id', 'Ordenes de Ventas'),
+            'purchase_template_ids' : fields.one2many('purchase.request.template', 'partner_id', 'Plantillas de Compras'),
+            'sub_client_ids'        : fields.many2many('res.partner', 'subclient_relation', 'supplier_id', 'client_id', 'Subclientes'),
+            'tipo_neg_id'        : fields.many2one('res.partner.tipo.negociacion','Tipo Negociacion'),
+            'tipo_flete'            : fields.selection([('cf_f_0', 'C&F Flete Cero'),('fob_f_0', 'FOB Flete Cero'),('fob_f_p', 'FOB Flete Pagado')], string = 'Flete'),
+
+            #Campos a quitar
+           'charge_account_id' : fields.many2one('account.account', string ="CxC", help = "Cuenta por Cobrar"),
+           'taxpayer_type' : fields.selection([('pn','Persona Natural'),('pnrs','Persona Natural con Regimen Simplificado(RISE)'),('s','Sociedades') ] ,string ="Taxpayer type"),
+   }
 
     def create(self, cr, uid, vals, context=None):
         if context is None:
@@ -158,7 +179,7 @@ class sale_request_product_variant(osv.osv):
                 res[obj.id]['stimated_qty'] = str(res[obj.id]['stimated_boxs']) + ' BXS'
                 res[obj.id]['qty'] = str(obj.tale_qty) + ' Stems'
 
-            bxs_qty = obj.box_qty if obj.is_box_qty else  (1 if not (obj.tale_qty / (int(obj.bunch_type) * obj.bunch_per_box)) else (obj.tale_qty / (int(obj.bunch_type) * obj.bunch_per_box)))
+            bxs_qty = obj.box_qty if obj.is_box_qty else  (1 if obj.bunch_type and obj.bunch_per_box and not (obj.tale_qty / (int(obj.bunch_type) * obj.bunch_per_box)) else (obj.tale_qty / (int(obj.bunch_type) * obj.bunch_per_box)) if obj.bunch_type and obj.bunch_per_box else 0)
             prices = [l.sale_price for l in obj.length_ids]
             res[obj.id]['sale_price'] = sum(prices)/len(prices) if prices else 0
             res[obj.id]['str_sale_price'] = '-'.join([str(l.sale_price) for l in obj.length_ids])
@@ -170,6 +191,7 @@ class sale_request_product_variant(osv.osv):
 
     _columns = {
         'template_id'           : fields.many2one('sale.request', string ='Plantilla', required = True),
+        'cliente_id'           : fields.related('template_id','partner_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
         'product_id'            : fields.many2one('product.product','Product'),
         'variant_id'            : fields.many2one('product.variant','Variety'),        
         'length_ids'            : fields.one2many('sale.request.product.variant.length','variant_id','Length'),
@@ -177,12 +199,7 @@ class sale_request_product_variant(osv.osv):
         'box_qty'               : fields.integer('BXS'),
      	'tale_qty'              : fields.integer('Stems'),
 		'bunch_per_box'         : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.selection([('6', '6'),
-                                                    ('10', '10'),
-                                                    ('12', '12'),
-													('15', '15'),
-													('20', '20'),
-                                                    ('25', '25')], 'Bunch Type'),
+        'bunch_type'            : fields.integer( 'Stems x Bunch'),
         'uom'                   : fields.selection([('FB', 'FB'),
                                                     ('HB', 'HB'),
                                                     ('QB', 'QB'),
@@ -213,13 +230,27 @@ class sale_request_product_variant(osv.osv):
         res['value']['full_boxes'] = full_boxes
         return res
 
+    def get_client(self,cr, uid, context):
+        if context and 'cliente_id' in context and context['cliente_id']:
+            return context['cliente_id']
+        return  False
+
     _defaults = {
         'bunch_per_box'    :  10,
-        'bunch_type'    :  '25',
-		'uom'           :  'FB',
+        'bunch_type'    :  25,
+		'uom'           :  'HB',
         'product_id'     :  lambda self, cr, uid, context : context['product_id'] if context and 'product_id' in context else None,
         'template_id'   :  lambda self, cr, uid, context : context['template_id'] if context and 'template_id' in context else None,
+        'cliente_id'   :  get_client,
     }
+
+    def _check_bunch_type(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.bunch_type > 0 and obj.bunch_type <= 25
+
+    _constraints = [
+            (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
+    ]
 
 sale_request_product_variant()
 
@@ -273,11 +304,10 @@ class purchase_request_template(osv.osv):
 
     _columns = {
         'partner_id'            : fields.many2one('res.partner', string ='Supplier', required = True),
-        'client_id'             : fields.many2one('res.partner', string ='Client', required = True),
+        'client_id'             : fields.many2one('res.partner', string ='Cliente', required = True),
+        'sub_client_ids'        : fields.many2many('res.partner', 'supplier_subclient_relation', 'supplier_id', 'client_id', 'Subclientes'),
         'variant_ids'           : fields.one2many('purchase.request.product.variant','template_id', 'Products'),
-
         'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
-
         'lunes'                 : fields.boolean('Lunes'),
         'martes'                : fields.boolean('Martes'),
         'miercoles'             : fields.boolean('Miercoles'),
@@ -314,7 +344,7 @@ class purchase_request_product_variant(osv.osv):
                 res[obj.id]['stimated_qty'] = str(res[obj.id]['stimated_boxs']) + ' BXS'
                 res[obj.id]['request_qty'] = str(obj.tale_qty) + ' Stems'
 
-            bxs_qty = obj.box_qty if obj.is_box_qty else  (1 if not (obj.tale_qty / (int(obj.bunch_type) * obj.bunch_per_box)) else (obj.tale_qty / (int(obj.bunch_type) * obj.bunch_per_box)))
+            bxs_qty = obj.box_qty if obj.is_box_qty else  (1 if obj.bunch_type and obj.bunch_per_box and not (obj.tale_qty / (int(obj.bunch_type) * obj.bunch_per_box)) else (obj.tale_qty / (int(obj.bunch_type) * obj.bunch_per_box)) if obj.bunch_type and  obj.bunch_per_box else 0)
             prices = [l.purchase_price for l in obj.length_ids]
             res[obj.id]['purchase_price'] = sum(prices)/len(prices) if prices else 0
             res[obj.id]['lenghts'] =  '-'.join([l.length for l in obj.length_ids])
@@ -329,17 +359,15 @@ class purchase_request_product_variant(osv.osv):
         'template_id'           : fields.many2one('purchase.request.template', string ='Plantilla', required = True),
         'product_id'            : fields.many2one('product.product','Product'),
         'variant_id'            : fields.many2one('product.variant','Variety'),
+        'cliente_id'           : fields.related('template_id','client_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
+        'subclient_id'          : fields.many2one('res.partner', string ='SubCliente'),
+
         'length_ids'            : fields.one2many('purchase.request.product.variant.length','variant_id','Length'),
         'is_box_qty'            : fields.boolean('Box Packing?'),
         'box_qty'               : fields.integer('BXS'),
 		'tale_qty'              : fields.integer('Stems'),
 		'bunch_per_box'         : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.selection([('6', '6'),
-                                                    ('10', '10'),
-                                                    ('12', '12'),
-													('15', '15'),
-													('20', '20'),
-                                                    ('25', '25')], 'Bunch Type'),
+        'bunch_type'            : fields.integer( 'Stems x Bunch'),
         'uom'                   : fields.selection([('FB', 'FB'),
                                                     ('HB', 'HB'),
                                                     ('QB', 'QB'),
@@ -369,13 +397,27 @@ class purchase_request_product_variant(osv.osv):
         res['value']['full_boxes'] = full_boxes
         return res
 
+    def get_client(self,cr, uid, context):
+        if context and 'cliente_id' in context and context['cliente_id']:
+            return context['cliente_id']
+        return  False
+
     _defaults = {
         'bunch_per_box'    :  10,
-        'bunch_type'    :  '25',
-		'uom'           :  'FB',
+        'bunch_type'    :  25,
+		'uom'           :  'HB',
         'product_id'     :  lambda self, cr, uid, context : context['product_id'] if context and 'product_id' in context else None,
         'template_id'   :  lambda self, cr, uid, context : context['template_id'] if context and 'template_id' in context else None,
+        'cliente_id'   :  get_client,
     }
+
+    def _check_bunch_type(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.bunch_type > 0 and obj.bunch_type <= 25
+
+    _constraints = [
+        (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
+    ]
 
 purchase_request_product_variant()
 

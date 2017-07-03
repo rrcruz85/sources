@@ -34,16 +34,21 @@ class generate_request_wizard(osv.osv_memory):
 
     def generate_requests(self, cr, uid, ids, arg, context=None):
 
-        def proximo_dia(dia):
+        def proximo_dia(dia, dias_ant):
             dias = {'Mon':1,'Tue':2,'Wed':3,'Thu':4,'Fri':5,'Sat':6,'Sun':7}
             hoy = int(datetime.datetime.now().strftime('%w'))
             if hoy == 0:
                 hoy = 7
             fecha_tmp = datetime.datetime.now()
+            if hoy >= dias[dia]:
+                delta = 7 - hoy + dias[dia]
+                return (fecha_tmp + timedelta(days=delta)).date()
+            if dias[dia] - hoy <= dias_ant:
+                return (fecha_tmp + timedelta(days=7 + dias[dia] - hoy)).date()
             while hoy < dias[dia]:
                 hoy = hoy + 1
                 fecha_tmp = fecha_tmp + timedelta(days=1)
-            return (fecha_tmp + timedelta(days=7)).date()
+            return (fecha_tmp).date()
 
         def generar_pedido(fecha_pedido, p, cliente_id):
             list_details = []
@@ -71,7 +76,7 @@ class generate_request_wizard(osv.osv_memory):
                     'length_ids' : lengths,
                     'box_qty': v.box_qty if v.is_box_qty else 0,
                     'tale_qty': v.tale_qty if not v.is_box_qty else 0,
-                    'bunch_type': v.bunch_type,
+                    'bunch_type': v.bunch_type if v.bunch_type else 25,
                     'bunch_per_box': v.bunch_per_box,
                     'uom': v.uom,
                     'type':'standing_order',
@@ -86,68 +91,78 @@ class generate_request_wizard(osv.osv_memory):
                 for s in self.pool.get('purchase.request.product.variant').browse(cr, uid, v_ids):
                     purchase_lengths = [ss.length.upper() for ss in s.length_ids]
                     if set(sale_lengths) & set(purchase_lengths) and request_qty > 0:
-                        stems_qty = s.tale_qty if not s.is_box_qty else int((s.box_qty * int(s.bunch_type) * s.bunch_per_box) / uom[s.uom])
+                        stems_qty = s.tale_qty if not s.is_box_qty else s.box_qty * int(s.bunch_type) * s.bunch_per_box
                         qty = 0
                         if request_qty > stems_qty:
                             qty = stems_qty
                         else:
                             qty = request_qty
+
                         request_qty -= qty
+
+                        if s.is_box_qty and s.bunch_type:
+                            qty = qty/(int(s.bunch_type) * s.bunch_per_box)
 
                         lengths =  [(0,0,{'length': l.length,'purchase_price':l.purchase_price}) for l in s .length_ids]
 
-                        detalle_dict = {
-                            'supplier_id': s.template_id.partner_id.id,
-                            'type': 'standing_order',
-                            'product_id': v.product_id.id,
-                            'variant_id': v.variant_id.id,
-                            'length_ids': lengths,
-                            'qty': qty,
-                            'is_box_qty': s.is_box_qty,
-                            'bunch_type': s.bunch_type,
-                            'bunch_per_box': s.bunch_per_box,
-                            'uom': s.uom,
-                            'sale_price': sum(sale_prices)/len(sale_prices) if sale_prices else 0,
-                            'subclient_id': v.subclient_id.id if v.subclient_id else None,
-                            'sucursal_id': s.template_id.sucursal_id.id if s.template_id.sucursal_id else None,
-                        }
-                        list_details.append((0, 0, detalle_dict))
-                        l_key = str(s.template_id.partner_id.id) + ',' + str(v.product_id.id) + ',' + str(v.variant_id.id) + ',' + '-'.join(purchase_lengths)
-                        tmp_dict[key].append(l_key)
+                        subclient_id = False
+                        if s.subclient_id and v.subclient_id and s.subclient_id.id == v.subclient_id.id:
+                            subclient_id =  v.subclient_id.id
+                            detalle_dict = {
+                                'supplier_id': s.template_id.partner_id.id,
+                                'type': 'standing_order',
+                                'product_id': v.product_id.id,
+                                'variant_id': v.variant_id.id,
+                                'length_ids': lengths,
+                                'qty': qty,
+                                'is_box_qty': s.is_box_qty,
+                                'bunch_type': s.bunch_type if s.bunch_type else 25,
+                                'bunch_per_box': s.bunch_per_box,
+                                'uom': s.uom,
+                                'sale_price': sum(sale_prices) / len(sale_prices) if sale_prices else 0,
+                                'subclient_id': subclient_id,
+                                'sucursal_id': s.template_id.sucursal_id.id if s.template_id.sucursal_id else None,
+                            }
+                            list_details.append((0, 0, detalle_dict))
+                            l_key = str(s.template_id.partner_id.id) + ',' + str(v.product_id.id) + ',' + str(v.variant_id.id) + ',' + '-'.join(purchase_lengths)
+                            tmp_dict[key].append(l_key)
 
             cr.execute('select max(p.name) from pedido_cliente p where p.partner_id = %s', (p.partner_id.id,))
             result = cr.fetchone()
             name = result[0] + 1 if result[0] else 1
             fecha_pedido = fecha_pedido - timedelta(days=p.days)
 
-            tipo_flete = self.pool.get('res.partner').browse(cr, uid, cliente_id).tipo_flete
-            precio_flete = 0
-            if tipo_flete and tipo_flete == 'fob_f_p':
-                precio_flete = 0.01
+            if fecha_pedido >= datetime.datetime.now().date():
 
-            pedido_dict = {
-                'name': name,
-                'partner_id': cliente_id if cliente_id else p.partner_id.id,
-                'request_date': fecha_pedido,
-                'state': 'draft',
-                'type': 'standing_order',
-                'freight_agency_id': p.freight_agency_id.id if p.freight_agency_id else None,
-                'variant_ids': request_lines,
-                'purchase_line_ids': list_details,
-                'precio_flete': precio_flete
-            }
-            pedido_id = self.pool.get('pedido.cliente').create(cr, uid, pedido_dict)
+                tipo_flete = self.pool.get('res.partner').browse(cr, uid, cliente_id).tipo_flete
+                precio_flete = 0
+                if tipo_flete and tipo_flete == 'fob_f_p':
+                    precio_flete = 0.01
 
-            # Actulizando las lineas de compras
-            for key in tmp_dict.keys():
-                request = key.split(',')
-                request_ids = self.pool.get('request.product.variant').search(cr, uid, [('pedido_id', '=', pedido_id), ('product_id', '=', int(request[0])), ('variant_id', '=', int(request[1])),('lengths', '=', request[2])])
-                if request_ids:
-                    for line in tmp_dict[key]:
-                        line_vals = line.split(',')
-                        purchased_ids = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', pedido_id), ('supplier_id', '=', int(line_vals[0])), ('product_id', '=', int(line_vals[1])), ('variant_id', '=',int(line_vals[2])), ('lengths', '=',line_vals[3])])
-                        if purchased_ids:
-                            self.pool.get('detalle.lines').write(cr, uid, purchased_ids, {'line_id': request_ids[0]})
+                pedido_dict = {
+                    'name': name,
+                    'partner_id': cliente_id if cliente_id else p.partner_id.id,
+                    'request_date': fecha_pedido,
+                    'state': 'draft',
+                    'type': 'standing_order',
+                    'freight_agency_id': p.freight_agency_id.id if p.freight_agency_id else None,
+                    'variant_ids': request_lines,
+                    'purchase_line_ids': list_details,
+                    'precio_flete': precio_flete,
+                    'sale_request_id': p.id,
+                }
+                pedido_id = self.pool.get('pedido.cliente').create(cr, uid, pedido_dict)
+
+                # Actulizando las lineas de compras
+                for key in tmp_dict.keys():
+                    request = key.split(',')
+                    request_ids = self.pool.get('request.product.variant').search(cr, uid, [('pedido_id', '=', pedido_id), ('product_id', '=', int(request[0])), ('variant_id', '=', int(request[1])),('lengths', '=', request[2])])
+                    if request_ids:
+                        for line in tmp_dict[key]:
+                            line_vals = line.split(',')
+                            purchased_ids = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', pedido_id), ('supplier_id', '=', int(line_vals[0])), ('product_id', '=', int(line_vals[1])), ('variant_id', '=',int(line_vals[2])), ('lengths', '=',line_vals[3])])
+                            if purchased_ids:
+                                self.pool.get('detalle.lines').write(cr, uid, purchased_ids, {'line_id': request_ids[0]})
 
             return 0
 
@@ -180,12 +195,13 @@ class generate_request_wizard(osv.osv_memory):
                 days['Sun'] = 7
 
             for day in days.keys():
-                if days[day] >= hoy:
-                    fecha = proximo_dia(day)
-                    fechaTmp = fecha - timedelta(days= p.days)
-                    existe = self.pool.get('pedido.cliente').search(cr,uid,[('request_date','=',fechaTmp),('partner_id','=',p.partner_id.id),('type','=','standing_order'),('state','=','draft')], count=True)
-                    if not existe:
-                        generar_pedido(fecha, p, cliente_id)
+                #if days[day] >= hoy:
+                #if days[day] <> hoy:
+                fecha = proximo_dia(day, p.days)
+                fechaTmp = fecha - timedelta(days= p.days)
+                existe = self.pool.get('pedido.cliente').search(cr,uid,[('sale_request_id','=', p.id), ('request_date','=',fechaTmp),('partner_id','=',p.partner_id.id),('type','=','standing_order'),('state','=','draft')], count=True)
+                if not existe:
+                    generar_pedido(fecha, p, cliente_id)
         return {
             'name': 'Pedidos de Clientes',
             'view_type': 'form',

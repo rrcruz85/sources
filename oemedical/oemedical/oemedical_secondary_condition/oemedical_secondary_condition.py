@@ -19,9 +19,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #/#############################################################################
-from osv import osv
-from osv import fields
-
+#from osv import osv
+#from osv import fields
+from openerp.osv import fields, osv
 
 class OeMedicalSecondaryCondition(osv.Model):
     _name = 'oemedical.secondary_condition'

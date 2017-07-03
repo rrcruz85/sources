@@ -157,6 +157,9 @@
                             <field name="currency_id" required="1" colspan="4"/>
                             <field name="journal_id" required="1" colspan="4"/>
                             <newline/>
+                            <field name="charge_account_id" colspan="4"/>
+                            <field name="taxpayer_type" colspan="4"/>
+                            <newline/>
                             <field name="company_id" required="1" colspan="4"/>
                             <field name="user_id" required="1" colspan="4"/>
                             <field name="next" invisible="1"/>

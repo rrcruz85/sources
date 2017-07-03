@@ -58,12 +58,7 @@ class purchase_line_wzd(osv.osv_memory):
         'box_qty'               : fields.integer('Boxes'),
 		'tale_qty'              : fields.integer('Stems'),
 		'bunch_per_box'         : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.selection([('6', '6'),
-                                                    ('10', '10'),
-                                                    ('12', '12'),
-													('15', '15'),
-													('20', '20'),
-                                                    ('25', '25')], 'Stems x Bunch'),
+        'bunch_type'            : fields.integer('Stems x Bunch'),
         'uom'                   : fields.selection([('FB', 'FB'),
                                                     ('HB', 'HB'),
                                                     ('QB', 'QB'),
@@ -146,6 +141,14 @@ class purchase_line_wzd(osv.osv_memory):
             'context': context,
             'res_id': obj.pedido_id.id,
         }
+
+    def _check_bunch_type(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.bunch_type > 0 and obj.bunch_type <= 25
+
+    _constraints = [
+        (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
+    ]
 
 purchase_line_wzd()
 

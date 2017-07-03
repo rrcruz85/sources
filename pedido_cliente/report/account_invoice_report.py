@@ -278,10 +278,10 @@ class AccountInvoiceReport(report_rml):
             total_farm_stems = 0
             total_stems = 0
 
-            total_farm_bunch = 0
-            total_bunch = 0
+            total_farm_bunch = 0.0
+            total_bunch = 0.0
 
-            total_fb, total_hb, total_qb, total_price = 0.0, 0, 0, 0.0
+            total_fb, total_hb, total_qb, total_price = 0.0, 0.0, 0.0, 0.0
             last_supplier_name = ''
             summary = {}
 
@@ -289,11 +289,11 @@ class AccountInvoiceReport(report_rml):
 
             for line in invoice_line_obj.browse(cr, uid, invoices_ids):
                 stems_cant = line.qty * line.bunch_per_box * int(line.bunch_type) if line.is_box_qty else line.qty
-                bunch_cant = int(stems_cant) / int(line.bunch_type)
-                cant = int(stems_cant) / (int(line.bunch_type) * line.bunch_per_box)
-                if cant < 1:
-                    cant = 1
-                qb_cont, hb_cont = 0, 0
+                bunch_cant = float(stems_cant) / int(line.bunch_type)
+                cant = float(stems_cant) / (int(line.bunch_type) * line.bunch_per_box)
+                #if cant < 1:
+                #    cant = 1
+                qb_cont, hb_cont = 0.0, 0.0
                 if not line.is_box_qty:
                     if line.uom == 'QB':
                         qb_cont = cant
@@ -313,8 +313,8 @@ class AccountInvoiceReport(report_rml):
                     else:
                         hb_cont = line.qty / 4
 
-                total_farm_bunch += line.qty if line.is_box_qty else line.qty / int(line.bunch_type)
-                total_tmp = line.qty * int(line.bunch_type) * line.bunch_per_box * line.purchase_price if line.is_box_qty else line.qty * line.purchase_price
+                total_farm_bunch += line.qty if line.is_box_qty else float(line.qty) / int(line.bunch_type)
+                total_tmp = line.qty * int(line.bunch_type) * line.bunch_per_box * line.sale_price if line.is_box_qty else line.qty * line.sale_price
 
                 total_bunch += bunch_cant
                 total_price += total_tmp
@@ -325,7 +325,7 @@ class AccountInvoiceReport(report_rml):
                 total_qb += qb_cont
 
                 if last_supplier_name != line.supplier_id.name and not summary.get(line.supplier_id.id, False):
-                    summary[line.supplier_id.id] = [0, 0, 0.0]
+                    summary[line.supplier_id.id] = [0.0, 0.0, 0.0]
                     first = True
 
                 summary[line.supplier_id.id][0] += hb_cont
@@ -344,14 +344,14 @@ class AccountInvoiceReport(report_rml):
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(line.supplier_id.name[0:18] if first else '')) + """</para></td>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(line.variant_id.name[0:18])) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + (ustr(line.length)[0:15]) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + (str(stems_cant)) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + (ustr(bunch_cant)) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(hb_cont) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(qb_cont) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + (str(round(stems_cant,2))) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + (str(round(bunch_cant,2))) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(hb_cont,2)) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(qb_cont,2)) + """</para></td>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(line.product_id.name[0:20] if line.product_id else '')) + """</para></td>
 								<td><para style="P5_COURIER_JUSTIFY">""" + ustr(pedido.partner_id.name) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + (str(line.purchase_price) if line.purchase_price else '') + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(total_tmp)+ """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + (str(round(line.sale_price,2)) if line.sale_price else '') + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(total_tmp,2)) + """</para></td>
                             </tr>
                         </blockTable>"""
 
@@ -365,14 +365,14 @@ class AccountInvoiceReport(report_rml):
                                 <td><para style="P6_BOLD_CENTER_TITLE">Total Farm</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_farm_stems) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_farm_bunch) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_hb) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_qb) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_farm_stems,2)) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_farm_bunch,2)) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_hb,2)) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_qb,2)) + """</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_price) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_price,2)) + """</para></td>
                             </tr>
                         </blockTable>"""
 
@@ -381,11 +381,11 @@ class AccountInvoiceReport(report_rml):
                                 <td><para style="P6_BOLD_CENTER_TITLE">TOTAL</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_stems) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_bunch) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_hb) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_qb) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_fb) + """ Full Box</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_stems,2)) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_bunch,2)) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_hb,2)) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_qb,2)) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_fb,2)) + """ Full Box</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
@@ -418,17 +418,17 @@ class AccountInvoiceReport(report_rml):
                                         <tr>
                                             <td><para style="P6_LEFT">""" + ustr('TOTAL INVOICE') + """</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(total_price + total_tax) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round((total_price + total_tax), 2)) + """</para></td>
                                         </tr>
                                         <tr>
                                             <td><para style="P6_LEFT">I.V.A</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(total_tax) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_tax,2)) + """</para></td>
                                         </tr>
                                         <tr>
                                             <td><para style="P6_LEFT">SUBTOTAL</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(total_price) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_price,2)) + """</para></td>
                                         </tr>
                                         <tr>
                                             <td></td><td></td><td></td>
@@ -436,12 +436,12 @@ class AccountInvoiceReport(report_rml):
                                         <tr>
                                             <td><para style="P6_LEFT">""" + _('Freight') + ' ' + (ustr(pedido.freight_agency_id.name) if pedido.freight_agency_id else '') + """</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(flete_value) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(flete_value,2)) + """</para></td>
                                         </tr>
                                         <tr>
                                             <td><para style="P6_LEFT">TOTAL</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(total_price + total_tax + flete_value) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round((total_price + total_tax + flete_value),2)) + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
@@ -495,14 +495,14 @@ class AccountInvoiceReport(report_rml):
                     rml += """<tr>"""
                     rml += """<td><para style="P6_CENTER">""" + ustr(partner.name) + """</para></td>"""
                     for x in res:
-                        rml += """<td><para style="P6_CENTER">""" + (str(x) if x else '') + """</para></td>"""
+                        rml += """<td><para style="P6_CENTER">""" + (str(round(x,2)) if x else '') + """</para></td>"""
                     rml += """<td></td></tr>"""
 
             rml += """      <tr>
                                         <td><para style="P6_CENTER">TOTAL</para></td>
-                                        <td><para style="P6_CENTER">""" + str(total_hb) + """</para></td>
-                                        <td><para style="P6_CENTER">""" + str(total_qb) + """</para></td>
-                                        <td><para style="P6_CENTER">""" + str(float(total_fb)) + """</para></td>
+                                        <td><para style="P6_CENTER">""" + str(round(total_hb,2)) + """</para></td>
+                                        <td><para style="P6_CENTER">""" + str(round(total_qb,2)) + """</para></td>
+                                        <td><para style="P6_CENTER">""" + str(round(float(total_fb),2)) + """</para></td>
                                         <td></td>
                                     </tr>"""
 

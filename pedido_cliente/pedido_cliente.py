@@ -150,6 +150,7 @@ class pedido_cliente(osv.osv):
         'airline_id': fields.many2one('pedido_cliente.airline', string='Airline'),
         'number': fields.char('Flight Number'),
         'precio_flete'  : fields.float('Precio Flete', digits = (0,2)),
+        'sale_request_id' : fields.many2one('sale.request', 'Sale Request'),
     }
 
     def name_search(self, cr, user, name='', args=None, operator='ilike', context=None, limit=100):
@@ -299,12 +300,7 @@ class request_product_variant(osv.osv):
         'box_qty'               : fields.integer('BXS'),
 		'tale_qty'               : fields.integer('Stems'),
 		'bunch_per_box'     : fields.integer('Bunch per Box'),
-        'bunch_type'           : fields.selection([('6', '6'),
-                                                    ('10', '10'),
-                                                    ('12', '12'),
-													('15', '15'),
-													('20', '20'),
-                                                    ('25', '25')], 'Stems x Bunch'),
+        'bunch_type'            : fields.integer( 'Stems x Bunch'),
         'uom'                      : fields.selection([('FB', 'FB'),
                                                     ('HB', 'HB'),
                                                     ('QB', 'QB'),
@@ -348,7 +344,7 @@ class request_product_variant(osv.osv):
     _defaults = {
         'bunch_per_box'    :  10,
         'type'              : 'open_market',
-        'bunch_type'   :  '25',
+        'bunch_type'   :  25,
 		'uom'              :  'HB',
         'product_id'     :  lambda self, cr, uid, context : context['product_id'] if context and 'product_id' in context else None,
         'pedido_id'      :  lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else None,
@@ -444,7 +440,7 @@ class request_product_variant(osv.osv):
             'default_product_id': obj.product_id.id,
             'default_variant_id': obj.variant_id.id,
             'default_is_box_qty': obj.is_box_qty,
-            'default_box_qty': vals[ids[0]]['missing_qty'] if obj.is_box_qty else 0,
+            'default_box_qty': vals[ids[0]]['missing_qty']/(int(obj.bunch_type) * obj.bunch_per_box) if obj.is_box_qty else 0,
             'default_tale_qty': vals[ids[0]]['missing_qty'] if not obj.is_box_qty else 0,
             'default_bunch_type': obj.bunch_type,
             'default_bunch_per_box': obj.bunch_per_box,
@@ -465,6 +461,14 @@ class request_product_variant(osv.osv):
             'target': 'new',
             'context': context,
         }
+
+    def _check_bunch_type(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.bunch_type > 0 and obj.bunch_type <= 25
+
+    _constraints = [
+        (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
+    ]
 
 request_product_variant()
 
@@ -493,7 +497,6 @@ class request_product_variant_length(osv.osv):
         return result
 
 request_product_variant_length()
-
 
 class detalle_line(osv.osv):
     _name = 'detalle.lines'
@@ -541,22 +544,17 @@ class detalle_line(osv.osv):
         'product_id'            : fields.many2one('product.product', string='Product',required=True),
         'variant_id'            : fields.many2one('product.variant', 'Variety', required=True),
         'length_ids'            : fields.one2many('detalle.lines.length','detalle_id','Lengths'),
-        'qty'                      : fields.integer('Qty'),
+        'qty'                      : fields.float('Qty'),
         'is_box_qty'            : fields.boolean('Box Packing?'),
 		'bunch_per_box'         : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.selection([('6', '6'),
-                                                    ('10', '10'),
-                                                    ('12', '12'),
-                                                    ('15', '15'),
-                                                    ('20', '20'),
-                                                    ('25', '25')], 'Stems x Bunch', Required =True),
+        'bunch_type'            : fields.integer( 'Stems x Bunch'),
         'uom'                   : fields.selection([('FB', 'FB'),
                                                     ('HB', 'HB'),
                                                     ('QB', 'QB'),
                                                     ('OB', 'OB')], string = 'UOM', help= 'Unit of Measure'),
         'sale_price'            : fields.float(string='Sale Price'),
         'origin'                : fields.many2one('detalle.lines.origin', string='Origin'),
-        'subclient_id'          : fields.many2one('res.partner', 'SubClient'),
+        'subclient_id'          : fields.many2one('res.partner', 'SubCliente'),
         'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
         'purchase_price'      : fields.function(_get_info, type='float', string='Purchase Price', multi = '_data',
                                         store={
@@ -569,16 +567,23 @@ class detalle_line(osv.osv):
                                             'detalle.lines.length': (_get_ids, ['length'], 10),
                                         }),
         'confirmada'    : fields.boolean('Confirmada'),
-        'confirmada_cliente'    : fields.boolean('Confirmada'),
     }
 
     _defaults = {
-        'bunch_type': '25',
+        'bunch_type': 25,
         'uom': 'HB',
         'type': 'open_market',
         'bunch_per_box' : 10,
         'pedido_id'    :lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else None,
     }
+
+    def _check_bunch_type(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.bunch_type > 0 and obj.bunch_type <= 25
+
+    _constraints = [
+        (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
+    ]
 
 detalle_line()
 
@@ -685,9 +690,9 @@ class confirm_invoice_line(osv.osv):
     _description = 'Invoice Line'
 
     _columns = {
-        'invoice_id'      : fields.many2one('confirm.invoice','Invoice'),
-        'pedido_id'      : fields.many2one('pedido.cliente','Pedido'),
-        'detalle_id'      : fields.many2one('detalle.lines','Detalle'),
+        'invoice_id'      : fields.many2one('confirm.invoice','Invoice',ondelete='cascade'),
+        'pedido_id'      : fields.many2one('pedido.cliente','Pedido',ondelete='cascade'),
+        'detalle_id'      : fields.many2one('detalle.lines','Detalle', ondelete='cascade'),
         'supplier_id'    : fields.many2one('res.partner','Supplier'),
 
         'line_number'   : fields.char(size=128, string ='#', help='Line Number'),
@@ -696,17 +701,12 @@ class confirm_invoice_line(osv.osv):
         'length'              : fields.char(size=128, string ='Length'),
         'purchase_price'  : fields.float('Purchase Price'),
         'sale_price'  : fields.float('Sale Price'),
-        'qty'             : fields.integer('Qty', help = "Quantity"),
+        'qty'             : fields.float('Qty', help = "Quantity"),
         'boxes'             : fields.float('Full Boxes'),
         'total_purchase'    : fields.float(string='Total'),
         'total_sale'    : fields.float(string='Total'),
         'bunch_per_box'   : fields.integer('Bunch per Box'),
-        'bunch_type'      : fields.selection([('6', '6'),
-                                              ('10', '10'),
-                                              ('12', '12'),
-										      ('15', '15'),
-											  ('20', '20'),
-                                              ('25', '25')], 'Stems x Bunch'),
+        'bunch_type'            : fields.integer( 'Stems x Bunch'),
         'uom'              : fields.selection([('FB', 'FB'),
                                                ('HB', 'HB'),
                                                ('QB', 'QB'),
@@ -736,6 +736,8 @@ class confirm_client_invoice(osv.osv):
         'journal_id': fields.many2one('account.journal', 'Journal', domain=[('type', '=', 'purchase')]),
         'company_id': fields.many2one('res.company', 'Company'),
         'user_id': fields.many2one('res.users', 'Salesperson'),
+        'charge_account_id' : fields.many2one('account.account', string ="CxC", help = "Cuenta por Cobrar"),
+        'taxpayer_type' : fields.selection([('pn','Persona Natural'),('pnrs','Persona Natural con Regimen Simplificado(RISE)'),('s','Sociedades') ] ,string ="Taxpayer type"),
     }
 
 confirm_client_invoice()
@@ -761,12 +763,7 @@ class confirm_client_invoice_line(osv.osv):
         'total_purchase'    : fields.float(string='Total'),
         'total_sale'    : fields.float(string='Total'),
         'bunch_per_box'   : fields.integer('Bunch per Box'),
-        'bunch_type'      : fields.selection([('6', '6'),
-                                              ('10', '10'),
-                                              ('12', '12'),
-										      ('15', '15'),
-											  ('20', '20'),
-                                              ('25', '25')], 'Stems x Bunch'),
+        'bunch_type'            : fields.integer( 'Stems x Bunch'),
         'uom'              : fields.selection([('FB', 'FB'),
                                                ('HB', 'HB'),
                                                ('QB', 'QB'),

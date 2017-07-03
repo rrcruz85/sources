@@ -76,6 +76,9 @@ class puchase_lines_wzd(osv.osv_memory):
 
     def delete_lines(self, cr, uid, ids, *args):
         obj = self.browse(cr,uid,ids[0])
+        if obj.detalle_id.confirmada:
+            raise osv.except_osv('Error', "Esta linea de compra no puede ser borrada porque ya fue confirmada.")
+
         self.pool.get('detalle.lines').unlink(cr, uid, [obj.detalle_id.id])
         return {
                 'name'      : 'Pedidos de Clientes',
@@ -88,7 +91,10 @@ class puchase_lines_wzd(osv.osv_memory):
 
     def edit_lines(self, cr, uid, ids, *args):
         obj = self.browse(cr,uid,ids[0])
-        detalle = self.pool.get('detalle.lines').browse(cr, uid, obj.detalle_id.id)
+        detalle = obj.detalle_id
+
+        if detalle.confirmada:
+            raise osv.except_osv('Error', "Esta linea de compra no puede ser modificada porque ya fue confirmada.")
 
         lengths = [(0,0,{'length': l.length, 'purchase_price': l.purchase_price}) for l in detalle.length_ids]
 
@@ -163,12 +169,7 @@ class detalle_line_wzd(osv.osv_memory):
         'box_qty'               : fields.integer('BXS'),
 		'tale_qty'              : fields.integer('Stems'),
 		'bunch_per_box'         : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.selection([('6', '6'),
-                                                    ('10', '10'),
-                                                    ('12', '12'),
-													('15', '15'),
-													('20', '20'),
-                                                    ('25', '25')], 'Stems x Bunch'),
+        'bunch_type'            : fields.integer('Stems x Bunch'),
         'uom'                   : fields.selection([('FB', 'FB'),
                                                     ('HB', 'HB'),
                                                     ('QB', 'QB'),
@@ -269,6 +270,14 @@ class detalle_line_wzd(osv.osv_memory):
             'type': 'ir.actions.act_window',
             'context': context,
         }
+
+    def _check_bunch_type(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.bunch_type > 0 and obj.bunch_type <= 25
+
+    _constraints = [
+        (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
+    ]
 
 detalle_line_wzd()
 

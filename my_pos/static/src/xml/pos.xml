@@ -322,6 +322,32 @@
                 </tr>
             </table>
 		</t>
+
+		<t t-jquery=".pos-sale-ticket table:eq(0)" t-operation="replace">
+            <table>
+                <colgroup>
+                    <col width='50%' />
+                    <col width='25%' />
+                    <col width='25%' />
+                </colgroup>
+                <tr t-foreach="widget.currentOrderLines.toArray()" t-as="orderline">
+                    <td>
+                        <t t-esc="orderline.get_product().get('name')"/>
+                         <t t-if="orderline.get_discount() > 0">
+                            <div class="pos-disc-font">
+                                With a <t t-esc="orderline.get_discount()"/>% discount
+                            </div>
+                        </t>
+                    </td>
+                    <td class="pos-right-align big-text">
+                        <t t-esc="orderline.get_quantity_str_with_unit()"/>
+                    </td>
+                    <td class="pos-right-align big-text">
+                        <t t-esc="widget.format_currency(orderline.get_display_price())"/>
+                    </td>
+                </tr>
+            </table>
+        </t>
 	</t>
 	
 	<!-- <t t-extend="OrderWidget">

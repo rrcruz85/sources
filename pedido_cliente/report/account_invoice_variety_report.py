@@ -293,16 +293,16 @@ class AccountInvoiceVarietyReport(report_rml):
             total_farm_stems = 0
             total_stems = 0
 
-            total_farm_bunch = 0
-            total_bunch = 0
+            total_farm_bunch = 0.0
+            total_bunch = 0.0
 
-            total_fb, total_hb, total_qb, total_price = 0.0, 0, 0, 0.0
+            total_fb, total_hb, total_qb, total_price = 0.0, 0.0, 0.0, 0.0
             summary = {}
             total_tax = 0.0
             last_supplier_name = ''
 
-            subtotal_hb, subtotal_qb = 0, 0
-            subtotal_stems, subtotal_bunchcant = 0, 0
+            subtotal_hb, subtotal_qb = 0.0, 0.0
+            subtotal_stems, subtotal_bunchcant = 0.0, 0.0
             subtotal_amount = 0.0
 
             invoice_obj = pooler.get_pool(cr.dbname).get('confirm.invoice')
@@ -314,13 +314,11 @@ class AccountInvoiceVarietyReport(report_rml):
             uom = {'FB':1,'HB':2,'QB':4,'OB':8}
             for line in invoice_line_obj.browse(cr, uid, invoices_ids):
                 stems_cant = line.qty * line.bunch_per_box * int(line.bunch_type) if line.is_box_qty else line.qty
-                bunch_cant = int(stems_cant) / int(line.bunch_type)
-                cant = int(stems_cant) / (int(line.bunch_type) * line.bunch_per_box)
-                if cant < 1:
-                    cant = 1
-                qb_cont, hb_cont = 0, 0
+                bunch_cant = float(stems_cant) / int(line.bunch_type)
+                cant = float(stems_cant) / (int(line.bunch_type) * line.bunch_per_box)
+                qb_cont, hb_cont = 0.0, 0.0
 
-                bxs_qty = line.qty if line.is_box_qty else (1 if not (line.qty / (int(line.bunch_type) * line.bunch_per_box)) else (line.qty / (int(line.bunch_type) * line.bunch_per_box)))
+                bxs_qty = line.qty if line.is_box_qty else (1.0 if not (line.qty / (int(line.bunch_type) * line.bunch_per_box)) else (float(line.qty) / (int(line.bunch_type) * line.bunch_per_box)))
                 full_boxes = float(bxs_qty)/uom[line.uom]
 
                 if not line.is_box_qty:
@@ -342,8 +340,8 @@ class AccountInvoiceVarietyReport(report_rml):
                     else:
                         hb_cont = line.qty / 4
 
-                total_farm_bunch += line.qty if line.is_box_qty else line.qty / int(line.bunch_type)
-                total_tmp = line.qty * int(line.bunch_type) * line.bunch_per_box * line.purchase_price if line.is_box_qty else line.qty * line.purchase_price
+                total_farm_bunch += line.qty if line.is_box_qty else float(line.qty) / int(line.bunch_type)
+                total_tmp = line.qty * int(line.bunch_type) * line.bunch_per_box * line.sale_price if line.is_box_qty else line.qty * line.sale_price
 
                 total_bunch += bunch_cant
                 total_price += total_tmp
@@ -353,7 +351,8 @@ class AccountInvoiceVarietyReport(report_rml):
                 total_hb += hb_cont
                 total_qb += qb_cont
 
-                units_x_hb = stems_cant / hb_cont if hb_cont != 0 else 0
+                #units_x_hb = stems_cant / hb_cont if hb_cont != 0 else 0
+                units_x_hb =line.bunch_type
 
                 for tax in line.product_id.taxes_id:
                     if tax.type == 'percent':
@@ -371,7 +370,7 @@ class AccountInvoiceVarietyReport(report_rml):
                         stems_cant,
                         bunch_cant,
                         pedido.partner_id,
-                        line.purchase_price,
+                        line.sale_price,
                         total_tmp,
                         full_boxes,
                         qb_cont,
@@ -403,14 +402,14 @@ class AccountInvoiceVarietyReport(report_rml):
                             stems_cant,
                             bunch_cant,
                             pedido.partner_id,
-                            line.purchase_price,
+                            line.sale_price,
                             total_tmp,
                             full_boxes,
                             qb_cont
                         ])
 
             last_variant = ''
-            subtotal_hb, subtotal_qb, subtotal_bunchcant, subtotal_amount = 0, 0, 0, 0.0
+            subtotal_hb, subtotal_qb, subtotal_bunchcant, subtotal_amount = 0.0, 0.0, 0.0, 0.0
 
             for data in data_to_print:
                 if last_variant == '':
@@ -422,22 +421,22 @@ class AccountInvoiceVarietyReport(report_rml):
                             <tr>
                                 <td><para style="P5_COURIER_BOLD_JUSTIFY">""" + ustr('Total farm') + """</para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(subtotal_hb) + """</para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(subtotal_qb) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_hb,2)) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_qb,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(subtotal_stems) + """</para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(subtotal_bunchcant) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_stems,2)) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_bunchcant,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(subtotal_amount) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_amount,2)) + """</para></td>
                             </tr>
                         </blockTable>"""
 
-                    subtotal_hb = 0
-                    subtotal_qb = 0
-                    subtotal_stems = 0
-                    subtotal_bunchcant = 0
+                    subtotal_hb = 0.0
+                    subtotal_qb = 0.0
+                    subtotal_stems = 0.0
+                    subtotal_bunchcant = 0.0
                     subtotal_amount = 0.0
 
                 subtotal_hb += data[3]
@@ -451,15 +450,15 @@ class AccountInvoiceVarietyReport(report_rml):
                             <tr>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(data[1].name)[0:25]) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + (ustr(data[2])[0:15]) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(data[3]) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(data[11]) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(data[4]) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(data[5]) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(data[6]) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[3],2)) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[11],2)) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(int(data[4])) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[5],2)) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[6],2)) + """</para></td>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(data[1].product_id.name)[0:20] if data[1].product_id else '') + """</para></td>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + ustr(data[7].name) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(data[8]) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(data[9]) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[8],2)) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[9],2)) + """</para></td>
                             </tr>
                         </blockTable>"""
 
@@ -468,15 +467,15 @@ class AccountInvoiceVarietyReport(report_rml):
                             <tr>
                                 <td><para style="P5_COURIER_BOLD_JUSTIFY">""" + _('Total farm') + """</para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(subtotal_hb) + """</para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(subtotal_qb) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_hb,2)) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_qb,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(subtotal_stems) + """</para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(subtotal_bunchcant) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_stems,2)) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_bunchcant,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(subtotal_amount) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_amount,2)) + """</para></td>
                             </tr>
                         </blockTable>"""
 
@@ -486,15 +485,15 @@ class AccountInvoiceVarietyReport(report_rml):
                             <tr>
                                 <td><para style="P6_BOLD_CENTER_TITLE">TOTAL</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_hb) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_qb) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_hb,2)) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_qb,2)) + """</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_farm_stems) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_farm_bunch) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_fb) + """ Full Box</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_farm_stems,2)) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_farm_bunch,2)) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_fb,2)) + """ Full Box</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(total_price) + """</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_price,2)) + """</para></td>
                             </tr>
                         </blockTable>"""
 
@@ -524,17 +523,17 @@ class AccountInvoiceVarietyReport(report_rml):
                                         <tr>
                                             <td><para style="P6_LEFT">""" + ustr('TOTAL INVOICE') + """</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(total_price + total_tax) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_price + total_tax,2)) + """</para></td>
                                         </tr>
                                         <tr>
                                             <td><para style="P6_LEFT">I.V.A</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(total_tax) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_tax,2)) + """</para></td>
                                         </tr>
                                         <tr>
                                             <td><para style="P6_LEFT">SUBTOTAL</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(total_price) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_price,2)) + """</para></td>
                                         </tr>
                                         <tr>
                                             <td></td><td></td><td></td>
@@ -542,12 +541,12 @@ class AccountInvoiceVarietyReport(report_rml):
                                         <tr>
                                             <td><para style="P6_LEFT">""" + _('Freight') + ' ' + (ustr(pedido.freight_agency_id.name) if pedido.freight_agency_id else '') + """</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(flete_value) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(flete_value,2)) + """</para></td>
                                         </tr>
                                         <tr>
                                             <td><para style="P6_LEFT">TOTAL</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(total_price + total_tax + flete_value) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_price + total_tax + flete_value,2)) + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
@@ -582,7 +581,7 @@ class AccountInvoiceVarietyReport(report_rml):
 
             rml += """  <spacer length="0.5cm"/>"""
 
-            rml += """  <blockTable colWidths="110.0,30.0,35.0,30.0,300.0" rowHeights="12.0" style="TableZ">
+            rml += """<blockTable colWidths="110.0,30.0,35.0,30.0,300.0" rowHeights="12.0" style="TableZ">
                             <tr>
                                 <td><para style="P6_CENTER">FINCA</para></td>
                                 <td><para style="P6_CENTER">HALF</para></td>
@@ -597,14 +596,11 @@ class AccountInvoiceVarietyReport(report_rml):
 
             summary = {}
             last_supplier_name = ''
-
             for line in pedido.line_ids:
-                qb_cont, hb_cont = 0, 0
+                qb_cont, hb_cont = 0.0, 0.0
                 if not line.detalle_id.is_box_qty:
                     stems = int(str(line.total_qty_purchased).split(' ')[0])
-                    cant = stems / (int(line.bunch_type) * line.bunch_per_box)
-                    if cant < 1:
-                        cant = 1
+                    cant = float(stems) / (int(line.bunch_type) * line.bunch_per_box)
                     if line.uom == 'QB':
                         qb_cont = cant
                     elif line.uom == 'HB':
@@ -622,7 +618,7 @@ class AccountInvoiceVarietyReport(report_rml):
                         hb_cont = int(str(line.stimated_qty).split(' ')[0]) * 2
 
                 if last_supplier_name != line.supplier_id.name and not summary.get(line.supplier_id.id, False):
-                    summary[line.supplier_id.id] = [0, 0, 0.0]
+                    summary[line.supplier_id.id] = [0.0, 0.0, 0.0]
 
                 summary[line.supplier_id.id][0] += hb_cont
                 summary[line.supplier_id.id][1] += qb_cont
@@ -634,14 +630,14 @@ class AccountInvoiceVarietyReport(report_rml):
                     rml += """<tr>"""
                     rml += """<td><para style="P6_CENTER">""" + ustr(partner.name) + """</para></td>"""
                     for x in res:
-                        rml += """<td><para style="P6_CENTER">""" + (str(x) if x else '') + """</para></td>"""
+                        rml += """<td><para style="P6_CENTER">""" + (str(round(x,2)) if x else '') + """</para></td>"""
                     rml += """<td></td></tr>"""
 
-            rml += """      <tr>
+            rml += """ <tr>
                                 <td><para style="P6_CENTER">TOTAL</para></td>
-                                <td><para style="P6_CENTER">""" + str(total_hb) + """</para></td>
-                                <td><para style="P6_CENTER">""" + str(total_qb) + """</para></td>
-                                <td><para style="P6_CENTER">""" + str(float(total_fb)) + """</para></td>
+                                <td><para style="P6_CENTER">""" + str(round(total_hb,2)) + """</para></td>
+                                <td><para style="P6_CENTER">""" + str(round(total_qb,2)) + """</para></td>
+                                <td><para style="P6_CENTER">""" + str(round(float(total_fb),2)) + """</para></td>
                                 <td></td>
                             </tr>"""
 

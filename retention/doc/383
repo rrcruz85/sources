@@ -1,0 +1,4515 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		
+	
+	
+	
+	
+	
+	
+		
+		
+		
+	
+	
+		
+	
+	
+	
+	
+	
+
+	
+	
+	
+
+	
+	
+	
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="ltr" dir="ltr" lang="es-ES">
+
+<head><script id="f5_cspm">(function(){var f5_cspm={f5_p:'OBGCFIEJDBEJHDJDFHEPJDEKPCAMJMBLBBCBFDKIHHNBLGDOAEMMDHNOIGPAADKBCMICPPKAMIHEJHIIAGCGIBMFKIAMMLGJCHBDNGELHHBJPJJEHGDMGOOJNILBLADC',setCharAt:function(str,index,chr){if(index>str.length-1)return str;return str.substr(0,index)+chr+str.substr(index+1);},get_byte:function(str,i){var s=(i/16)|0;i=(i&15);s=s*32;return((str.charCodeAt(i+16+s)-65)<<4)|(str.charCodeAt(i+s)-65);},set_byte:function(str,i,b){var s=(i/16)|0;i=(i&15);s=s*32;str=f5_cspm.setCharAt(str,(i+16+s),String.fromCharCode((b>>4)+65));str=f5_cspm.setCharAt(str,(i+s),String.fromCharCode((b&15)+65));return str;},set_latency:function(str,latency){latency=latency&0xffff;str=f5_cspm.set_byte(str,32,(latency>>8));str=f5_cspm.set_byte(str,33,(latency&0xff));str=f5_cspm.set_byte(str,27,2);return str;},wait_perf_data:function(){try{var wp=window.performance.timing;if(wp.loadEventEnd>0){var res=wp.loadEventEnd-wp.navigationStart;if(res<60001){var cookie_val=f5_cspm.set_latency(f5_cspm.f5_p,res);window.document.cookie='aaaaaaaaaaaaaaa='+encodeURIComponent(cookie_val)+';path=/';}
+return;}}
+catch(err){return;}
+setTimeout(f5_cspm.wait_perf_data,100);return;},go:function(){var chunk=window.document.cookie.split(/\s*;\s*/);for(var i=0;i<chunk.length;++i){var pair=chunk[i].split(/\s*=\s*/);if(pair[0]=='f5_cspm'){if(pair[1]=='1234'){var d=new Date();d.setTime(d.getTime()-1);window.document.cookie='f5_cspm=;expires='+d.toUTCString()+';path=/;';setTimeout(f5_cspm.wait_perf_data,100);}}}}}
+f5_cspm.go();}());</script>
+    <title>Descarga software DIMM Anexos - Servicio de Rentas Internas del Ecuador</title>
+    
+    <script src="http://www.sri.gob.ec/nuevo-theme/js/jquery-latest.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://www.sri.gob.ec/nuevo-theme/js/jquery-ui.js" type="text/javascript" charset="utf-8"></script>
+    
+    <!--    <script src="http://www.sri.gob.ec/nuevo-theme/js/museutils.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://www.sri.gob.ec/nuevo-theme/js/jquery-1.8.3.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://www.sri.gob.ec/nuevo-theme/js/jquery.watch.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://www.sri.gob.ec/nuevo-theme/js/jquery.musemenu.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://www.sri.gob.ec/nuevo-theme/js/html5shiv.js" type="text/javascript" charset="utf-8"></script> -->
+    
+    <link rel="stylesheet" media="all" type="text/css" href="http://www.sri.gob.ec/nuevo-theme/css/pro_drop11.css" charset="utf-8" />
+    <link rel="stylesheet" media="all" type="text/css" href="http://www.sri.gob.ec/nuevo-theme/css/SpryTabbedPanels.css" charset="utf-8"/>
+    <link rel="stylesheet" media="all" type="text/css" href="http://www.sri.gob.ec/nuevo-theme/css/sin-t_tulo-2.css" charset="utf-8" />
+    <link rel="stylesheet" media="all" type="text/css" href="http://www.sri.gob.ec/nuevo-theme/css/site_global.css" charset="utf-8"/>
+    <!--<link rel="stylesheet" media="all" type="text/css" href="http://www.sri.gob.ec/nuevo-theme/css/index.css" charset="utf-8"/>-->
+    
+    <script src="http://www.sri.gob.ec/nuevo-theme/js/SpryTabbedPanels.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://www.sri.gob.ec/nuevo-theme/js/noticias.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://www.sri.gob.ec/nuevo-theme/js/sri-javascript.js" type="text/javascript" charset="utf-8"></script>
+    
+    <!--[if lte IE 6]>
+        <script src="http://www.sri.gob.ec/nuevo-theme/js/ie6.js" type="text/javascript" charset="utf-8"></script>
+    <![endif]-->
+    <!--[if ! IE 6]>
+        <script src="http://www.sri.gob.ec/nuevo-theme/js/other.js" type="text/javascript" charset="utf-8"></script>
+    <![endif]-->
+    <!--[if lte IE 6]>
+        <link rel="stylesheet" media="all" type="text/css" href="http://www.sri.gob.ec/nuevo-theme/css/pro_drop11_ie6.css" />
+    <![endif]-->
+    <!--[if IE 5]>
+        <style type="text/css"> 
+            /* place css box model fixes for IE 5* in this conditional comment */
+            .twoColFixRtHdr #sidebar1 { width: 220px; }
+        </style>
+    <![endif]-->
+    <!--[if IE]>
+        <style type="text/css"> 
+            /* place css fixes for all versions of IE in this conditional comment */
+            .twoColFixRtHdr #sidebar1 { padding-top: 30px; }
+            .twoColFixRtHdr #mainContent { zoom: 1; }
+            /* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
+        </style>
+    <![endif]-->
+    
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $("ul.breadcrumbs li").first().css("display", "none");
+    });
+    
+    /*$(function() {
+        var zIndexNumber = 10000;
+        $('div').each(function() {
+            $(this).css('zIndex', zIndexNumber);
+            zIndexNumber -= 10;
+        });
+        document.getElementById('ui-datepicker-div').style.zIndex="10000";
+    });*/
+    </script>
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+<link href="http://www.sri.gob.ec/nuevo-theme/images/liferay.ico" rel="Shortcut Icon" />
+
+
+
+
+
+	<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;descarga-software-dimm-anexos" rel="canonical" />
+
+	
+
+	
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;ar&#x2f;descarga-software-dimm-anexos" hreflang="ar-SA" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;eu&#x2f;descarga-software-dimm-anexos" hreflang="eu-ES" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;ca&#x2f;descarga-software-dimm-anexos" hreflang="ca-AD" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;ca_ES&#x2f;descarga-software-dimm-anexos" hreflang="ca-ES" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;zh&#x2f;descarga-software-dimm-anexos" hreflang="zh-CN" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;zh_TW&#x2f;descarga-software-dimm-anexos" hreflang="zh-TW" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;cs&#x2f;descarga-software-dimm-anexos" hreflang="cs-CZ" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;nl&#x2f;descarga-software-dimm-anexos" hreflang="nl-NL" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;en&#x2f;descarga-software-dimm-anexos" hreflang="en-US" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;fi&#x2f;descarga-software-dimm-anexos" hreflang="fi-FI" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;fr&#x2f;descarga-software-dimm-anexos" hreflang="fr-FR" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;de&#x2f;descarga-software-dimm-anexos" hreflang="de-DE" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;el&#x2f;descarga-software-dimm-anexos" hreflang="el-GR" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;hu&#x2f;descarga-software-dimm-anexos" hreflang="hu-HU" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;it&#x2f;descarga-software-dimm-anexos" hreflang="it-IT" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;ja&#x2f;descarga-software-dimm-anexos" hreflang="ja-JP" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;ko&#x2f;descarga-software-dimm-anexos" hreflang="ko-KR" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;nb&#x2f;descarga-software-dimm-anexos" hreflang="nb-NO" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;fa&#x2f;descarga-software-dimm-anexos" hreflang="fa-IR" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;pl&#x2f;descarga-software-dimm-anexos" hreflang="pl-PL" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;pt&#x2f;descarga-software-dimm-anexos" hreflang="pt-BR" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;pt_PT&#x2f;descarga-software-dimm-anexos" hreflang="pt-PT" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;ru&#x2f;descarga-software-dimm-anexos" hreflang="ru-RU" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;sk&#x2f;descarga-software-dimm-anexos" hreflang="sk-SK" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;sv&#x2f;descarga-software-dimm-anexos" hreflang="sv-SE" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;tr&#x2f;descarga-software-dimm-anexos" hreflang="tr-TR" rel="alternate" />
+
+		
+
+						<link href="http&#x3a;&#x2f;&#x2f;localhost&#x2f;vi&#x2f;descarga-software-dimm-anexos" hreflang="vi-VN" rel="alternate" />
+
+		
+
+	
+
+
+
+
+
+<link href="&#x2f;html&#x2f;css&#x2f;main&#x2e;css&#x3f;browserId&#x3d;other&#x26;themeId&#x3d;nuevo_WAR_nuevotheme&#x26;languageId&#x3d;es_ES&#x26;b&#x3d;6120&#x26;t&#x3d;1392241358000" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+
+
+	
+
+				<link href="/html/portlet/journal_content/css/main.css?browserId=other&amp;themeId=nuevo_WAR_nuevotheme&amp;languageId=es_ES&amp;b=6120&amp;t=1429158728000" rel="stylesheet" type="text/css" />
+
+	
+
+
+
+
+
+
+
+<script type="text/javascript">
+	// <![CDATA[
+		var Liferay = {
+			Browser: {
+				acceptsGzip: function() {
+					return false;
+				},
+				getMajorVersion: function() {
+					return 0.0;
+				},
+				getRevision: function() {
+					return "";
+				},
+				getVersion: function() {
+					return "";
+				},
+				isAir: function() {
+					return false;
+				},
+				isChrome: function() {
+					return false;
+				},
+				isFirefox: function() {
+					return false;
+				},
+				isGecko: function() {
+					return false;
+				},
+				isIe: function() {
+					return false;
+				},
+				isIphone: function() {
+					return false;
+				},
+				isLinux: function() {
+					return true;
+				},
+				isMac: function() {
+					return false;
+				},
+				isMobile: function() {
+					return false;
+				},
+				isMozilla: function() {
+					return false;
+				},
+				isOpera: function() {
+					return false;
+				},
+				isRtf: function() {
+					return false;
+				},
+				isSafari: function() {
+					return false;
+				},
+				isSun: function() {
+					return false;
+				},
+				isWap: function() {
+					return false;
+				},
+				isWapXhtml: function() {
+					return false;
+				},
+				isWebKit: function() {
+					return false;
+				},
+				isWindows: function() {
+					return false;
+				},
+				isWml: function() {
+					return false;
+				}
+			},
+
+			Data: {
+				isCustomizationView: function() {
+					return false;
+				},
+
+				notices: [
+					null
+
+					
+
+					
+				]
+			},
+
+			ThemeDisplay: {
+				getCDNDynamicResourcesHost: function() {
+					return "";
+				},
+				getCDNHost: function() {
+					return "";
+				},
+				getCompanyId: function() {
+					return "10114";
+				},
+				getCompanyGroupId: function() {
+					return "3923514";
+				},
+				getUserId: function() {
+					return "10117";
+				},
+
+				
+
+				getDoAsUserIdEncoded: function() {
+					return "";
+				},
+				getPlid: function() {
+					return "1491766";
+				},
+
+				
+					getLayoutId: function() {
+						return "383";
+					},
+					getLayoutURL: function() {
+						return "/web/guest/descarga-software-dimm-anexos";
+					},
+					isPrivateLayout: function() {
+						return "false";
+					},
+					getParentLayoutId: function() {
+						return "81";
+					},
+				
+
+				getScopeGroupId: function() {
+					return "10138";
+				},
+				getScopeGroupIdOrLiveGroupId: function() {
+					return "10138";
+				},
+				getParentGroupId: function() {
+					return "10138";
+				},
+				isImpersonated: function() {
+					return false;
+				},
+				isSignedIn: function() {
+					return false;
+				},
+				getDefaultLanguageId: function() {
+					return "es_ES";
+				},
+				getLanguageId: function() {
+					return "es_ES";
+				},
+				isAddSessionIdToURL: function() {
+					return true;
+				},
+				isFreeformLayout: function() {
+					return false;
+				},
+				isStateExclusive: function() {
+					return false;
+				},
+				isStateMaximized: function() {
+					return false;
+				},
+				isStatePopUp: function() {
+					return false;
+				},
+				getPathContext: function() {
+					return "";
+				},
+				getPathImage: function() {
+					return "/image";
+				},
+				getPathJavaScript: function() {
+					return "/html/js";
+				},
+				getPathMain: function() {
+					return "/c";
+				},
+				getPathThemeImages: function() {
+					return "http://www.sri.gob.ec/nuevo-theme/images";
+				},
+				getPathThemeRoot: function() {
+					return "/nuevo-theme/";
+				},
+				getURLControlPanel: function() {
+					return "/group/control_panel;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN?doAsGroupId=10138&refererPlid=1491766";
+				},
+				getURLHome: function() {
+					return "http://www.sri.gob.ec/web/guest";
+				},
+				getSessionId: function() {
+					
+						
+							return "v5pCJh1qvnXYYbbjdTZHxbiN";
+						
+						
+					
+				},
+				getPortletSetupShowBordersDefault: function() {
+					return false;
+				}
+			},
+
+			PropsValues: {
+				NTLM_AUTH_ENABLED: false
+			}
+		};
+
+		var themeDisplay = Liferay.ThemeDisplay;
+
+		
+
+		Liferay.AUI = {
+			getBaseURL: function() {
+				return 'http://www.sri.gob.ec/html/js/aui/';
+			},
+			getCombine: function() {
+				return true;
+			},
+			getComboPath: function() {
+				return '/combo/?browserId=other&minifierType=&languageId=es_ES&b=6120&t=1428811027000&p=/html/js&';
+			},
+			getFilter: function() {
+				
+					
+						return {
+							replaceStr: function(match, fragment, string) {
+								return fragment + 'm=' + (match.split('/html/js')[1] || '');
+							},
+							searchExp: '(\\?|&)/([^&]+)'
+						};
+					
+					
+					
+				
+			},
+			getJavaScriptRootPath: function() {
+				return '/html/js';
+			},
+			getLangPath: function () {
+				return 'aui_lang.jsp?browserId=other&themeId=nuevo_WAR_nuevotheme&colorSchemeId=01&minifierType=js&languageId=es_ES&b=6120&t=1428811027000';
+			},
+			getRootPath: function() {
+				return '/html/js/aui/';
+			}
+		};
+
+		window.YUI_config = {
+			base: Liferay.AUI.getBaseURL(),
+			comboBase: Liferay.AUI.getComboPath(),
+			fetchCSS: true,
+			filter: Liferay.AUI.getFilter(),
+			root: Liferay.AUI.getRootPath(),
+			useBrowserConsole: false
+		};
+
+		Liferay.authToken = 'An5VsmwW';
+
+		
+
+		Liferay.currentURL = '\x2fweb\x2f10138\x2f383';
+		Liferay.currentURLEncoded = '%2Fweb%2F10138%2F383';
+	// ]]>
+</script>
+
+
+	
+		
+			
+				<script src="/html/js/barebone.jsp?browserId=other&amp;themeId=nuevo_WAR_nuevotheme&amp;colorSchemeId=01&amp;minifierType=js&amp;minifierBundleId=javascript.barebone.files&amp;languageId=es_ES&amp;b=6120&amp;t=1428811027000" type="text/javascript"></script>
+			
+			
+		
+	
+	
+
+
+
+
+<script type="text/javascript">
+	// <![CDATA[
+		
+
+			
+
+			
+				Liferay.Portlet.list = ['56_INSTANCE_i5QH'];
+			
+		
+
+		
+
+		
+	// ]]>
+</script>
+
+
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+
+		_gaq.push(['_setAccount', 'UA-17155653-2']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script');
+
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+
+			ga.setAttribute('async', 'true');
+
+			document.documentElement.firstChild.appendChild(ga);
+		})();
+	</script>
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+<link class="lfr-css-file" href="http&#x3a;&#x2f;&#x2f;www&#x2e;sri&#x2e;gob&#x2e;ec&#x2f;nuevo-theme&#x2f;css&#x2f;main&#x2e;css&#x3f;browserId&#x3d;other&#x26;themeId&#x3d;nuevo_WAR_nuevotheme&#x26;languageId&#x3d;es_ES&#x26;b&#x3d;6120&#x26;t&#x3d;1428423238000" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+
+	<style type="text/css">
+
+		
+
+			
+
+		
+
+	</style>
+
+
+
+</head>
+
+<body class=" yui3-skin-sam controls-visible guest-site signed-out public-page site">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="wrapper">
+    <div id="container">
+        <div id="header" > <!--  -->
+            <div id="cargarTabsVerde"></div>
+            <div id="cargarTabsAzul"></div>
+            <div id="cargarTabsNaranja"></div>
+            <div id="cargarTabsRojo"></div>
+        <div id="page_position_content" class="position_content">   
+            <div id="pu8644" class="clearfix colelem">
+          			  <div id="u8644">
+            <table style="width:100%">
+                <tr>
+                    <td align="right">
+                        <div id="buscador">
+                            <form name="buscar" action="/web/guest/resultados-de-la-busqueda" method="get" onsubmit="enviarBuscar();" accept-charset="ISO-8859-1">
+                                <input type="hidden" name="_48_INSTANCE_Gp6m_iframe_query" value=""/>
+                                <input type="text" name="query_texto" alt="Buscar" value="Buscar" id="searchInput"/>
+                                <input type="hidden" name="p_p_id" value="48_INSTANCE_Gp6m"/>
+                                <input type="hidden" name="_48_INSTANCE_Gp6m_iframe_index" value="Default"/>
+                                <input type="hidden" name="_48_INSTANCE_Gp6m_iframe_queryTimeout" value="3000"/>
+                                <input type="hidden" name="_48_INSTANCE_Gp6m_iframe_ref" value="" id="wref"/>                       
+                                <input name="btnSubmit" type="image" src="http://www.sri.gob.ec/nuevo-theme/images/searchBtnSubmit.gif" class="btnSubmitBuscador" value="&nbsp;" alt="Buscar"/>
+                            </form>
+                        </div>
+                    </td> 
+                </tr>
+            </table> 
+            </div>
+            
+            <div id="u8644" class="clip_frame grpelem">
+                <img width="963" height="131" alt="" src="/nuevo-theme/images/sri/newSri.jpg" id="u8644_img" class="block" alt="Servicio de Rentas Internas">       
+            </div>
+
+            <div id="u10170" class="clip_frame grpelem"><!-- image -->
+                <img width="321" height="301" alt="" src="/nuevo-theme/images/sri/circulo.png" id="u10170_img" class="block">
+            </div>
+            <div id="u10182" class="clip_frame grpelem"><!-- image -->
+                <img width="187" height="89" alt="" src="/nuevo-theme/images/sri/texto.jpg" id="u10182_img" class="block">
+            </div>
+            </div>
+            </div>
+        </div>
+        
+                    <div id="menuDesplegable">
+
+	<div id="linksPrincipales" >
+		<ul class="menu2">	
+												<!--<li class="top"><a href="http://www.sri.gob.ec/web/guest/home;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" class="top_link" ><span>Inicio</span></a></li>-->
+											<li class="top"><a href="http://www.sri.gob.ec/web/guest/inicio;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" class="top_link" ><span>Inicio</span><!--[if gte IE 7]><!--></a><!--<![endif]-->
+												<!--false || -->
+																		</li>
+											<li class="top"><a href="http://www.sri.gob.ec/web/guest/el-sri;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" class="top_link" ><span>El SRI</span><!--[if gte IE 7]><!--></a><!--<![endif]-->
+												<!--false || -->
+																			<!--[if lte IE 6]><table><tr><td><![endif]-->
+							<ul class="sub" style="margin:2px;">
+																																																					<li style="width:160px;" class='subtop'>
+									<!--<li  class='subtop'>-->
+										<a href="http://www.sri.gob.ec/web/guest/67;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >¿Qué es el SRI?</a>
+									</li>								
+																																																														<li style="width:160px;" >
+									<!--<li  >-->
+										<a href="http://www.sri.gob.ec/web/guest/plan-estrategico-institucional;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Plan Estratégico Institucional</a>
+									</li>								
+																																																														<li style="width:160px;" >
+									<!--<li  >-->
+										<a href="http://www.sri.gob.ec/web/guest/estructura-organica;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Estructura orgánica</a>
+									</li>								
+																																																														<li style="width:160px;" >
+									<!--<li  >-->
+										<a href="http://www.sri.gob.ec/web/guest/perfil-directora;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Perfil Directora General</a>
+									</li>								
+																																																														<li style="width:160px;" >
+									<!--<li  >-->
+										<a href="http://www.sri.gob.ec/web/guest/codigo-de-etica1;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Código de ética</a>
+									</li>								
+																																																														<li style="width:160px;" >
+									<!--<li  >-->
+										<a href="http://www.sri.gob.ec/web/guest/derechos-del-contribuyente;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Derechos del Contribuyente</a>
+									</li>								
+																																																														<li style="width:160px;" >
+									<!--<li  >-->
+										<a href="http://www.sri.gob.ec/web/guest/oportunidades-laborales;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Trabaja con nosotros</a>
+									</li>								
+																																																														<li style="width: 160px;" class="fly">
+									<!--<li class="fly">-->
+										<!--[if gte IE 7]><!-->
+										<div class="tieneSubmenu"></div>
+										<!--<![endif]-->
+										<a href="http://www.sri.gob.ec/web/guest/cef;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Centro de Estudios Fiscales
+										<!--[if lte IE 6]><img border="0" style="margin-left:45px;" src="/PortalInternetSRI-theme/images/menuSuperior/tieneSubmenu.png" width="8" height="12" /><![endif]-->
+										<!--[if gte IE 7]><!--></a><!--<![endif]-->
+										<ul style="left: 155px;">
+																						
+																																																							
+											<li class='subtop' style="width: 140px;"><a href="https://cef.sri.gob.ec/cefvirtual/">Campus Virtual</a></li>
+											<!--<li class='subtop'><a href="https://cef.sri.gob.ec/cefvirtual/">Campus Virtual</a></li>-->
+																						
+																																																							
+											<li class='subbot' style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/biblioteca-virtual;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Biblioteca Virtual</a></li>
+											<!--<li class='subbot'><a href="http://www.sri.gob.ec/web/guest/biblioteca-virtual;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Biblioteca Virtual</a></li>-->
+																					</ul>
+										<!--[if lte IE 6]><table><tr><td><![endif]-->
+																								</ul>
+							<!--[if lte IE 6]></td></tr></table></a><![endif]-->
+												</li>
+											<li class="top"><a href="http://www.sri.gob.ec/web/guest/transparencia2;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" class="top_link" ><span>Transparencia</span><!--[if gte IE 7]><!--></a><!--<![endif]-->
+												<!--false || -->
+																		</li>
+											<li class="top"><a href="http://www.sri.gob.ec/web/guest/rend.-cuentas-2014;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" class="top_link" ><span>Rendición de cuentas 2014</span><!--[if gte IE 7]><!--></a><!--<![endif]-->
+												<!--false || -->
+																		</li>
+											<li class="top"><a href="http://www.sri.gob.ec/web/guest/informacion;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" class="top_link" ><span>Información</span><!--[if gte IE 7]><!--></a><!--<![endif]-->
+												<!--false || -->
+																			<!--[if lte IE 6]><table><tr><td><![endif]-->
+							<ul class="sub" style="margin:2px;">
+																																																					<li style="width: 160px;" class="fly">
+									<!--<li class="fly">-->
+										<!--[if gte IE 7]><!-->
+										<div class="tieneSubmenu"></div>
+										<!--<![endif]-->
+										<a href="http://www.sri.gob.ec/web/guest/sala-de-prensa;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Sala de Prensa
+										<!--[if lte IE 6]><img border="0" style="margin-left:45px;" src="/PortalInternetSRI-theme/images/menuSuperior/tieneSubmenu.png" width="8" height="12" /><![endif]-->
+										<!--[if gte IE 7]><!--></a><!--<![endif]-->
+										<ul style="left: 155px;">
+																						
+																																																							
+											<li class='subtop' style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/boletines;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Boletines de Prensa</a></li>
+											<!--<li class='subtop'><a href="http://www.sri.gob.ec/web/guest/boletines;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Boletines de Prensa</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/campanas;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Campañas</a></li>
+											<!--<li ><a href="http://www.sri.gob.ec/web/guest/campanas;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Campañas</a></li>-->
+																						
+																																																							
+											<li class='subbot' style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/boletin-trimestral;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Boletín Trimestral</a></li>
+											<!--<li class='subbot'><a href="http://www.sri.gob.ec/web/guest/boletin-trimestral;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Boletín Trimestral</a></li>-->
+																					</ul>
+										<!--[if lte IE 6]><table><tr><td><![endif]-->
+																																																														<li style="width: 160px;" class="fly">
+									<!--<li class="fly">-->
+										<!--[if gte IE 7]><!-->
+										<div class="tieneSubmenu"></div>
+										<!--<![endif]-->
+										<a href="http://www.sri.gob.ec/web/guest/estadisticas;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Estadísticas
+										<!--[if lte IE 6]><img border="0" style="margin-left:45px;" src="/PortalInternetSRI-theme/images/menuSuperior/tieneSubmenu.png" width="8" height="12" /><![endif]-->
+										<!--[if gte IE 7]><!--></a><!--<![endif]-->
+										<ul style="left: 155px;">
+																						
+																																																							
+											<li class='subtop' style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/estadisticas-generales-de-recaudacion;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Estadísticas Generales de Recaudación</a></li>
+											<!--<li class='subtop'><a href="http://www.sri.gob.ec/web/guest/estadisticas-generales-de-recaudacion;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Estadísticas Generales de Recaudación</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/tasas-de-interes-por-mora-tributaria;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Tasas de Interés por Mora Tributaria</a></li>
+											<!--<li ><a href="http://www.sri.gob.ec/web/guest/tasas-de-interes-por-mora-tributaria;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Tasas de Interés por Mora Tributaria</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/saiku-ui">Estadísticas Multidimensionales</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/saiku-ui">Estadísticas Multidimensionales</a></li>-->
+																						
+																																																							
+											<li class='subbot' style="width: 140px;"><a href="http://www.sri.gob.ec/DocumentosAlfrescoPortlet/descargar/6ba6deb8-7e12-498e-b351-95d52923558e/Manual+de+Usuario_Estadisticas_Multidimensionales.pdf;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Manual de uso Estad. Multidimensionales</a></li>
+											<!--<li class='subbot'><a href="http://www.sri.gob.ec/DocumentosAlfrescoPortlet/descargar/6ba6deb8-7e12-498e-b351-95d52923558e/Manual+de+Usuario_Estadisticas_Multidimensionales.pdf;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Manual de uso Estad. Multidimensionales</a></li>-->
+																					</ul>
+										<!--[if lte IE 6]><table><tr><td><![endif]-->
+																																																														<li style="width: 160px;" class="fly">
+									<!--<li class="fly">-->
+										<!--[if gte IE 7]><!-->
+										<div class="tieneSubmenu"></div>
+										<!--<![endif]-->
+										<a href="http://www.sri.gob.ec/web/guest/preguntas-frecuentes;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Preguntas Frecuentes
+										<!--[if lte IE 6]><img border="0" style="margin-left:45px;" src="/PortalInternetSRI-theme/images/menuSuperior/tieneSubmenu.png" width="8" height="12" /><![endif]-->
+										<!--[if gte IE 7]><!--></a><!--<![endif]-->
+										<ul style="left: 155px;">
+																						
+																																																							
+											<li class='subtop' style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/obligaciones-pendientes;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Obligaciones Pendientes</a></li>
+											<!--<li class='subtop'><a href="http://www.sri.gob.ec/web/guest/obligaciones-pendientes;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Obligaciones Pendientes</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/preguntas-frecuentes7;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Comprobantes Electrónicos</a></li>
+											<!--<li ><a href="http://www.sri.gob.ec/web/guest/preguntas-frecuentes7;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Comprobantes Electrónicos</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/declaraciones-de-impuestos;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Declaraciones de Impuestos</a></li>
+											<!--<li ><a href="http://www.sri.gob.ec/web/guest/declaraciones-de-impuestos;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Declaraciones de Impuestos</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/vehiculos1;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Vehículos</a></li>
+											<!--<li ><a href="http://www.sri.gob.ec/web/guest/vehiculos1;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Vehículos</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/deducciones-del-impuesto-a-la-renta;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Deducciones del Impuesto a la Renta</a></li>
+											<!--<li ><a href="http://www.sri.gob.ec/web/guest/deducciones-del-impuesto-a-la-renta;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Deducciones del Impuesto a la Renta</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/llenado-de-formularios;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Llenado de Formularios</a></li>
+											<!--<li ><a href="http://www.sri.gob.ec/web/guest/llenado-de-formularios;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Llenado de Formularios</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/ruc-y-rise;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">RISE</a></li>
+											<!--<li ><a href="http://www.sri.gob.ec/web/guest/ruc-y-rise;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">RISE</a></li>-->
+																						
+																																																							
+											<li class='subbot' style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/facturacion;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Facturación</a></li>
+											<!--<li class='subbot'><a href="http://www.sri.gob.ec/web/guest/facturacion;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Facturación</a></li>-->
+																					</ul>
+										<!--[if lte IE 6]><table><tr><td><![endif]-->
+																								</ul>
+							<!--[if lte IE 6]></td></tr></table></a><![endif]-->
+												</li>
+											<li class="top"><a href="http://www.sri.gob.ec/web/guest/servicios-en-linea3;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" class="top_link" ><span>Servicios en línea</span><!--[if gte IE 7]><!--></a><!--<![endif]-->
+												<!--false || -->
+																			<!--[if lte IE 6]><table><tr><td><![endif]-->
+							<ul class="sub" style="margin:2px;">
+																																																					<li style="width: 160px;" class="fly">
+									<!--<li class="fly">-->
+										<!--[if gte IE 7]><!-->
+										<div class="tieneSubmenu"></div>
+										<!--<![endif]-->
+										<a href="http://www.sri.gob.ec/web/guest/servicios-en-linea4;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Servicios en línea
+										<!--[if lte IE 6]><img border="0" style="margin-left:45px;" src="/PortalInternetSRI-theme/images/menuSuperior/tieneSubmenu.png" width="8" height="12" /><![endif]-->
+										<!--[if gte IE 7]><!--></a><!--<![endif]-->
+										<ul style="left: 155px;">
+																						
+																																																							
+											<li class='subtop' style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Notificación Electrónica</a></li>
+											<!--<li class='subtop'><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Notificación Electrónica</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Obtención de Clave</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Obtención de Clave</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Certificados Tributarios</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Certificados Tributarios</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/actualizacion-ruc-p.-natural;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Actualización RUC</a></li>
+											<!--<li ><a href="http://www.sri.gob.ec/web/guest/actualizacion-ruc-p.-natural;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Actualización RUC</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Suspensión del RUC</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Suspensión del RUC</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Comprobantes electrónicos</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Comprobantes electrónicos</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Declaraciones</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Declaraciones</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Anexos</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Anexos</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Datos Fiscales para Renta</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Datos Fiscales para Renta</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Devoluciones</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Devoluciones</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Matriculación Vehicular</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Matriculación Vehicular</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Notas de Crédito</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Notas de Crédito</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Devolución IVA extranjeros</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Devolución IVA extranjeros</a></li>-->
+																						
+																																																							
+											<li class='subbot' style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Sistema Venta Alcohol</a></li>
+											<!--<li class='subbot'><a href="https://declaraciones.sri.gob.ec/tuportal-internet/">Sistema Venta Alcohol</a></li>-->
+																					</ul>
+										<!--[if lte IE 6]><table><tr><td><![endif]-->
+																																																														<li style="width: 160px;" class="fly">
+									<!--<li class="fly">-->
+										<!--[if gte IE 7]><!-->
+										<div class="tieneSubmenu"></div>
+										<!--<![endif]-->
+										<a href="http://www.sri.gob.ec/web/guest/servicios-mas-utilizados;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Consultas en línea
+										<!--[if lte IE 6]><img border="0" style="margin-left:45px;" src="/PortalInternetSRI-theme/images/menuSuperior/tieneSubmenu.png" width="8" height="12" /><![endif]-->
+										<!--[if gte IE 7]><!--></a><!--<![endif]-->
+										<ul style="left: 155px;">
+																						
+																																																							
+											<li class='subtop' style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/seguimiento-tramites-internet/publico/consultaTramites.jsf?redireccion=564&amp;idGrupo=1003&amp;contextoMPT=https://declaraciones.sri.gob.ec/tuportal-internet&amp;pathMPT=SEGUIMIENTO%20TRAMITES&amp;actualMPT=Seguimiento%20Tramites%20&amp;linkMPT=%2Fseguimiento-tramites-internet%2Fpublico%2FconsultaTramites.jsf%3Fredireccion%3D564%26idGrupo%3D1003&amp;esFavorito=N">Seguimiento de trámites</a></li>
+											<!--<li class='subtop'><a href="https://declaraciones.sri.gob.ec/seguimiento-tramites-internet/publico/consultaTramites.jsf?redireccion=564&amp;idGrupo=1003&amp;contextoMPT=https://declaraciones.sri.gob.ec/tuportal-internet&amp;pathMPT=SEGUIMIENTO%20TRAMITES&amp;actualMPT=Seguimiento%20Tramites%20&amp;linkMPT=%2Fseguimiento-tramites-internet%2Fpublico%2FconsultaTramites.jsf%3Fredireccion%3D564%26idGrupo%3D1003&amp;esFavorito=N">Seguimiento de trámites</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/rec-declaraciones-internet/publico/consultas/consultaRise.jspa?redireccion=115&amp;idGrupo=151&amp;contextoMPT=https://declaraciones.sri.gob.ec/tuportal-internet&amp;pathMPT=REGIMEN%20SIMPLIFICADO%20DE%20TRIBUTACION%20RISE&amp;actualMPT=Consultas%20de%20Obligaciones%20del%20RISE%20&amp;linkMPT=%2Frec-declaraciones-internet%2Fpublico%2Fconsultas%2FconsultaRise.jspa%3Fredireccion%3D115%26idGrupo%3D151&amp;esFavorito=N">Obligaciones RISE</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/rec-declaraciones-internet/publico/consultas/consultaRise.jspa?redireccion=115&amp;idGrupo=151&amp;contextoMPT=https://declaraciones.sri.gob.ec/tuportal-internet&amp;pathMPT=REGIMEN%20SIMPLIFICADO%20DE%20TRIBUTACION%20RISE&amp;actualMPT=Consultas%20de%20Obligaciones%20del%20RISE%20&amp;linkMPT=%2Frec-declaraciones-internet%2Fpublico%2Fconsultas%2FconsultaRise.jspa%3Fredireccion%3D115%26idGrupo%3D151&amp;esFavorito=N">Obligaciones RISE</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/consultas-renta-internet/inicio.jsf">Impuesto Renta Causado</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/consultas-renta-internet/inicio.jsf">Impuesto Renta Causado</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/facturacion-internet/consultas/publico/consultar-listablanca.jsp">Estado Tributario</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/facturacion-internet/consultas/publico/consultar-listablanca.jsp">Estado Tributario</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/facturacion-internet/consultas/publico/ruc_consulta.jsp?&amp;amp;contextoMPT=https://declaraciones.sri.gov.ec/tuportal-internet&amp;amp;pathMPT=REGISTRO%20%DANICO%20DE%20CONTRIBUYENTES&amp;amp;actualMPT=Consulta%20de%20RUC%20&amp;amp;linkMPT=%2Ffacturacion-internet%2Fconsultas%2Fpublico%2Fruc_consulta.jsp%3F&amp;amp;esFavorito=N">Consultas de RUC</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/facturacion-internet/consultas/publico/ruc_consulta.jsp?&amp;amp;contextoMPT=https://declaraciones.sri.gov.ec/tuportal-internet&amp;amp;pathMPT=REGISTRO%20%DANICO%20DE%20CONTRIBUYENTES&amp;amp;actualMPT=Consulta%20de%20RUC%20&amp;amp;linkMPT=%2Ffacturacion-internet%2Fconsultas%2Fpublico%2Fruc_consulta.jsp%3F&amp;amp;esFavorito=N">Consultas de RUC</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/facturacion-internet/consultas/publico/consulta-validez-documento.jsp">Validez Comp. físicos</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/facturacion-internet/consultas/publico/consulta-validez-documento.jsp">Validez Comp. físicos</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/comprobantes-electronicos-internet/publico/validezComprobantes.jsf">Validez Comp. electrónicos</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/comprobantes-electronicos-internet/publico/validezComprobantes.jsf">Validez Comp. electrónicos</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/consultas-renta-internet/inicio_deuda.jsf?redireccion=264&amp;idGrupo=602&amp;contextoMPT=https://declaraciones.sri.gov.ec/tuportal-internet&amp;pathMPT=DEUDAS%20FIRMES&amp;actualMPT=Consulta%20Contribuyentes%20con%20Obligaciones%20Firmes%20&amp;linkMPT=%2Fconsultas-renta-internet%2Finicio_deuda.jsf%3Fredireccion%3D264%26idGrupo%3D602&amp;esFavorito=N">Consulta de deudas</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/consultas-renta-internet/inicio_deuda.jsf?redireccion=264&amp;idGrupo=602&amp;contextoMPT=https://declaraciones.sri.gov.ec/tuportal-internet&amp;pathMPT=DEUDAS%20FIRMES&amp;actualMPT=Consulta%20Contribuyentes%20con%20Obligaciones%20Firmes%20&amp;linkMPT=%2Fconsultas-renta-internet%2Finicio_deuda.jsf%3Fredireccion%3D264%26idGrupo%3D602&amp;esFavorito=N">Consulta de deudas</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest /flyers-informativos-de-cobro;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Informativos de Cobro SRI</a></li>
+											<!--<li ><a href="http://www.sri.gob.ec/web/guest /flyers-informativos-de-cobro;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Informativos de Cobro SRI</a></li>-->
+																						
+																																																							
+											<li  style="width: 140px;"><a href="https://declaraciones.sri.gob.ec/mat-vehicular-internet/reportes/general/valoresAPagar.jsp?redireccion=45&amp;idGrupo=48&amp;contextoMPT=https://declaraciones.sri.gob.ec/tuportal-internet&amp;pathMPT=MATRICULACIÓN%20VEHICULAR%20%2F%20Reportes%20Generales&amp;actualMPT=Valores%20a%20pagar%20&amp;linkMPT=%2Fmat-vehicular-internet%2Freportes%2Fgeneral%2FvaloresAPagar.jsp%3Fredireccion%3D45%26idGrupo%3D48&amp;esFavorito=N">Valor matrícula vehicular</a></li>
+											<!--<li ><a href="https://declaraciones.sri.gob.ec/mat-vehicular-internet/reportes/general/valoresAPagar.jsp?redireccion=45&amp;idGrupo=48&amp;contextoMPT=https://declaraciones.sri.gob.ec/tuportal-internet&amp;pathMPT=MATRICULACIÓN%20VEHICULAR%20%2F%20Reportes%20Generales&amp;actualMPT=Valores%20a%20pagar%20&amp;linkMPT=%2Fmat-vehicular-internet%2Freportes%2Fgeneral%2FvaloresAPagar.jsp%3Fredireccion%3D45%26idGrupo%3D48&amp;esFavorito=N">Valor matrícula vehicular</a></li>-->
+																						
+																																																							
+											<li class='subbot' style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/tasas-de-interes-por-mora-tributaria;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN?p_p_id=busquedaTasaInteres_WAR_BibliotecaPortlet_INSTANCE_ZjF1&amp;p_p_lifecycle=1&amp;p_p_state=normal&amp;p_p_mode=view&amp;p_p_col_id=column-3&amp;p_p_col_count=1&amp;_busquedaTasaInteres_WAR_BibliotecaPortlet_INSTANCE_ZjF1_com.sun.faces.portlet.VIEW_ID=%2Fpages%2FbusquedaTasasInteres.xhtml&amp;_busquedaTasaInteres_WAR_BibliotecaPortlet_INSTANCE_ZjF1_com.sun.faces.portlet.NAME_SPACE=_busquedaTasaInteres_WAR_BibliotecaPortlet_INSTANCE_ZjF1_">Tasa de Interés</a></li>
+											<!--<li class='subbot'><a href="http://www.sri.gob.ec/web/guest/tasas-de-interes-por-mora-tributaria;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN?p_p_id=busquedaTasaInteres_WAR_BibliotecaPortlet_INSTANCE_ZjF1&amp;p_p_lifecycle=1&amp;p_p_state=normal&amp;p_p_mode=view&amp;p_p_col_id=column-3&amp;p_p_col_count=1&amp;_busquedaTasaInteres_WAR_BibliotecaPortlet_INSTANCE_ZjF1_com.sun.faces.portlet.VIEW_ID=%2Fpages%2FbusquedaTasasInteres.xhtml&amp;_busquedaTasaInteres_WAR_BibliotecaPortlet_INSTANCE_ZjF1_com.sun.faces.portlet.NAME_SPACE=_busquedaTasaInteres_WAR_BibliotecaPortlet_INSTANCE_ZjF1_">Tasa de Interés</a></li>-->
+																					</ul>
+										<!--[if lte IE 6]><table><tr><td><![endif]-->
+																																																														<li style="width: 160px;" class="fly">
+									<!--<li class="fly">-->
+										<!--[if gte IE 7]><!-->
+										<div class="tieneSubmenu"></div>
+										<!--<![endif]-->
+										<a href="http://www.sri.gob.ec/web/guest/generacion-de-clave;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Claves
+										<!--[if lte IE 6]><img border="0" style="margin-left:45px;" src="/PortalInternetSRI-theme/images/menuSuperior/tieneSubmenu.png" width="8" height="12" /><![endif]-->
+										<!--[if gte IE 7]><!--></a><!--<![endif]-->
+										<ul style="left: 155px;">
+																						
+																																																							
+											<li class='subtop' style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/generacion-claves;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Generación claves</a></li>
+											<!--<li class='subtop'><a href="http://www.sri.gob.ec/web/guest/generacion-claves;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Generación claves</a></li>-->
+																						
+																																																							
+											<li class='subbot' style="width: 140px;"><a href="http://www.sri.gob.ec/web/guest/recuperacion-de-clave1;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Recuperación de clave</a></li>
+											<!--<li class='subbot'><a href="http://www.sri.gob.ec/web/guest/recuperacion-de-clave1;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Recuperación de clave</a></li>-->
+																					</ul>
+										<!--[if lte IE 6]><table><tr><td><![endif]-->
+																								</ul>
+							<!--[if lte IE 6]></td></tr></table></a><![endif]-->
+												</li>
+											<li class="top"><a href="http://www.sri.gob.ec/web/guest/admin-capacitaciones;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" class="top_link" ><span>Capacitaciones</span><!--[if gte IE 7]><!--></a><!--<![endif]-->
+												<!--false || -->
+																			<!--[if lte IE 6]><table><tr><td><![endif]-->
+							<ul class="sub" style="margin:2px;">
+																																																					<li style="width:160px;" class='subtop'>
+									<!--<li  class='subtop'>-->
+										<a href="http://www.sri.gob.ec/web/guest/capacitaciones2;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Presenciales</a>
+									</li>								
+																																																														<li style="width:160px;" >
+									<!--<li  >-->
+										<a href="http://www.sri.gob.ec/web/guest/campus-virtual1;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Virtuales</a>
+									</li>								
+																																																														<li style="width:160px;" class='subbot'>
+									<!--<li  class='subbot'>-->
+										<a href="http://www.sri.gob.ec/DocumentosAlfrescoPortlet/descargar/20d9b7c3-e691-4adb-bc83-fd459041f7dc/BRIGADAS+MOVILES+ABRIL+listo.pdf;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Brigadas Móviles</a>
+									</li>								
+																								</ul>
+							<!--[if lte IE 6]></td></tr></table></a><![endif]-->
+												</li>
+											<li class="top"><a href="http://www.sri.gob.ec/web/guest/normativa-tributaria;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" class="top_link" ><span>Normativa Tributaria</span><!--[if gte IE 7]><!--></a><!--<![endif]-->
+												<!--false || -->
+																			<!--[if lte IE 6]><table><tr><td><![endif]-->
+							<ul class="sub" style="margin:2px;">
+																																																					<li style="width:160px;" class='subtop'>
+									<!--<li  class='subtop'>-->
+										<a href="http://www.sri.gob.ec/web/guest/bases-legales;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Legislación Nacional</a>
+									</li>								
+																																																														<li style="width:160px;" class='subbot'>
+									<!--<li  class='subbot'>-->
+										<a href="http://www.sri.gob.ec/web/guest/fiscalidad-internacional;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Fiscalidad Internacional</a>
+									</li>								
+																								</ul>
+							<!--[if lte IE 6]></td></tr></table></a><![endif]-->
+												</li>
+											<li class="top"><a href="http://www.sri.gob.ec/web/guest/buzones-de-contacto;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" class="top_link" ><span>Contacto</span><!--[if gte IE 7]><!--></a><!--<![endif]-->
+												<!--false || -->
+																			<!--[if lte IE 6]><table><tr><td><![endif]-->
+							<ul class="sub" style="margin:2px;">
+																																																					<li style="width:160px;" class='subtop'>
+									<!--<li  class='subtop'>-->
+										<a href="http://www.sri.gob.ec/DocumentosAlfrescoPortlet/descargar/fd43fa08-a7f5-479a-89ec-d6c41ddadcaa/INFORMACIO%B4N+DE+AGENCIAS+A+NIVEL+NACIONALok.pdf;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Agencias SRI</a>
+									</li>								
+																																																														<li style="width:160px;" >
+									<!--<li  >-->
+										<a href="http://www.sri.gob.ec/web/guest/consultas-tributarias;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Cómo hacer consultas tributarias</a>
+									</li>								
+																																																														<li style="width:160px;" >
+									<!--<li  >-->
+										<a href="http://www.sri.gob.ec/web/guest/quejas-sugerencias-y-felicitaciones;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Quejas, Sugerencias y Felicitaciones</a>
+									</li>								
+																																																														<li style="width:160px;" >
+									<!--<li  >-->
+										<a href="http://www.sri.gob.ec/web/guest/denuncias-tributarias1;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Denuncias Tributarias</a>
+									</li>								
+																																																														<li style="width:160px;" class='subbot'>
+									<!--<li  class='subbot'>-->
+										<a href="http://www.sri.gob.ec/web/guest/denuncias-administrativas1;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Denuncias Administrativas</a>
+									</li>								
+																								</ul>
+							<!--[if lte IE 6]></td></tr></table></a><![endif]-->
+												</li>
+																																																								</ul>		
+	</div>
+</div>                
+        <div id="content" style="z-index:65;position:relative;">
+                            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	<div class="portlet-boundary portlet-boundary_103_  portlet-static portlet-static-end portlet-borderless  " id="p_p_id_103_" >
+		<span id="p_103"></span>
+
+		<div class="portlet-body">
+
+
+
+	
+	
+	
+	
+
+		
+
+	
+
+
+
+
+
+			
+		</div>
+	</div>
+
+
+
+
+
+	
+
+<div class="columns-1-2" id="main-content" role="main" style="z-index: 65; position: relative; background-color: rgb(255, 255, 255); margin-left: 2px; margin-top: 2px;">
+			<div class="portlet-layout" style="padding:0px;">
+			<div class="portlet-column portlet-column-only" id="column-1" style="padding-left: 232px;">
+				
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	<div class="portlet-boundary portlet-boundary_73_  portlet-static portlet-static-end portlet-borderless portlet-breadcrumb " id="p_p_id_73_" >
+		<span id="p_73"></span>
+
+		<div class="portlet-body">
+
+
+
+	
+	
+	
+	
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+		
+
+		
+			
+			
+
+				
+
+				<div class="portlet-borderless-container" style="">
+					
+
+					
+
+
+	<div class="portlet-body">
+
+
+
+	
+		
+			
+			
+				
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+				
+
+				
+					
+					
+						
+
+
+	
+	
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ul class="breadcrumbs breadcrumbs-horizontal lfr-component">
+	<li class="first"><span><a href="/web/guest;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN">Servicio de Rentas Internas del Ecuador</a></span></li><li><span><a href="http://www.sri.gob.ec/web/guest/home;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Inicio</a></span></li><li><span><a href="http://www.sri.gob.ec/web/guest/guia-basica-tributaria;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Guía Básica Tributaria</a></span></li><li class="last"><span><a href="http://www.sri.gob.ec/web/guest/descarga-software-dimm-anexos;jsessionid=v5pCJh1qvnXYYbbjdTZHxbiN" >Descarga software DIMM Anexos</a></span></li>
+</ul>
+
+	
+
+					
+				
+			
+			
+		
+	
+	
+
+
+
+	</div>
+
+				</div>
+
+				
+			
+		
+	
+
+
+	
+
+
+
+
+
+			
+		</div>
+	</div>
+
+
+
+
+
+				<!--<div class="portlet-dropzone empty portlet-column-content portlet-column-content-only" id="layout-column_column-1"></div>-->
+			</div>
+		</div>
+
+		<div class="portlet-layout">
+			<div class="portlet-column portlet-column-first" id="column-2">
+				<div class="portlet-dropzone portlet-column-content portlet-column-content-first" id="layout-column_column-2">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	<div class="portlet-boundary portlet-boundary_56_  portlet-static portlet-static-end portlet-borderless portlet-journal-content " id="p_p_id_56_INSTANCE_i5QH_" >
+		<span id="p_56_INSTANCE_i5QH"></span>
+
+		<div class="portlet-body">
+
+
+
+	
+	
+	
+	
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+		
+
+		
+			
+			
+
+				
+
+				<div class="portlet-borderless-container" style="">
+					
+
+					
+
+
+	<div class="portlet-body">
+
+
+
+	
+		
+			
+			
+				
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+				
+
+				
+					
+					
+						
+
+
+	
+	
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+
+		
+
+		
+			
+
+				
+
+				
+
+				<div class="journal-content-article" id="article_10114_10138_1491779_7.5">
+					<div id="barraCelesteInterna">
+    <span>DESCARGA SOFTWARE DIMM ANEXOS</span>
+</div>
+<div id="textoInternasCeleste"><p>
+	<strong>Software DIMM Anexos</strong></p>
+<p>
+	<span style="font-size: larger"><strong>DIMM</strong></span></p>
+<p>
+	<span style="display: none">&nbsp;</span><span style="display: none">&nbsp;</span></p>
+<ul>
+	<li>
+		<a href="https://declaraciones.sri.gob.ec/descargas/prerrequisitos.jsp">Requerimientos de Hardware y Software</a></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dimm/windows/dimm.exe">Instalador Windows - dimm.exe</a> <span style="color: #ff9900">76.6 MB </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dimm/linux/Dimm-1.0-Linux-x86-Install">Instalador Linux - DIMM-1.0-Linux-x86-Install</a> <span style="color: #ff9900">81.4 MB </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dimm/mac/dimm.dmg">Instalador Mac OS X-dimm.dmg 50 MB</a> <span style="color: #ff9900">(fecha actualización: 29 de julio de 2009) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dimm/MANUAL_DE_USUARIO_DIMM.pdf">Manual de usuario DIMM</a> <span style="color: #ff9900">1 KB</span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/declaraciones/dimm2012/jaxb-api.exe ">Librería DIMM Anexos</a><font color="#000000"> </font><span style="color: #ff9900">130 KB</span></span></li>
+	<li>
+		<span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/declaraciones/dimm2012/manuales/Manual_instalacion_Libreria_Windows_V1.pdf">Manual de instalación librería DIMM Anexos</a><font color="#000000"> </font><span style="color: #ff9900">145 KB</span></span></span></span><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<span style="font-size: larger"><strong>Anexo de Gastos Personales </strong></span></p>
+<p>
+	&nbsp;</p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/agp/RES.NAC-DGERCGC09-00391.pdf">Resolución NAC-DGERCGC09-00391</a> <span style="color: #ff9900">67.8 KB (fecha publicación: 19 de junio de 2009)&nbsp;</span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/agp/RES_NAC-DGERCG11-00432.pdf">Resolución NAC-DGERCGC11-00432</a> 97KB (fecha publicación: 19 de diciembre de 2011)</span></li>
+	<li>
+		<span style="background-color: #ffffff"><a href="http://descargas.sri.gob.ec/download/anexos/agp/CIRCULAR_NAC-DGECCGC12-00006.pdf">Circular NAC-DGECCGC12-00006</a></span><span style="background-color: #ffffff"> </span><span style="color: #ff9900"><span style="background-color: #ffffff">236 KB (fecha de publicación: 8 de mayo de 2012)</span></span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/agp/agp_1_0_3.zip">Programa AGP</a> <span style="color: #ff9900">4.62 MB (fecha actualización: 17 de&nbsp;mayo de 2012)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/agp/Catalogo_AGP.XLS">Catálogo</a>&nbsp;<span style="color: #ff9900">69</span><span style="color: #ff9900"> </span><span style="color: #ff9900">KB (fecha publicación:&nbsp;17 de mayo de 2012) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/agp/agp.xsd">Esquema</a> <span style="color: #ff9900">13.1 KB (fecha publicación: 25 de mayo de 2009)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/agp/FICHA_TECNICA_Anexo_Gastos_Personales.doc">Ficha Técnica</a>&nbsp;<span style="color: #ff9900">277 KB (fecha publicación:&nbsp;17 de mayo de 2012) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/agp/EJEMPLO_XML_AGP.xml">Ejemplo de archivo XML</a> <span style="color: #ff9900">1.27 KB (fecha publicación: 25 de mayo de 2009)</span></li>
+</ul>
+<p>
+	<span style="font-size: larger"><strong>Declaración Patrimonial (DPT) </strong></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dpt/dpt_1_0_2.zip">Programa DPT</a> <span style="color: #ff9900">4.75 MB (fecha actualización: 18 de marzo de 2010)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dpt/Catalogo_dpt.xls">Catálogo</a> <span style="color: #ff9900">198 KB (fecha publicación: 06 de mayo de 2009) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dpt/decPat.xsd">Esquema</a> <span style="color: #ff9900">13.1 KB (fecha publicación: 06 de mayo de 2009) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dpt/catalogos.zip">CODIFICACION DE TABLAS- catalogo.zip</a> <span style="color: #ff9900">5.85 KB (fecha publicación: 06 de mayo de 2009) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dpt/Ejemplo_dpt.xml">Ejemplo de archivo XML</a> <span style="color: #ff9900">1.27 KB (fecha publicación: 06 de mayo de 2009)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dpt/RES_NAC-DGER2008-1510.pdf">Resolución NAC-DGER2008-1510 </a><span style="color: #ff9900">135 KB (fecha publicación: 06 de mayo de 2009) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dpt/RES_NAC-DGERCGC09-0089.pdf">Resolución NAC-DGERCGC09-00089 </a><span style="color: #ff9900">31.9 KB (fecha publicación: 06 de mayo de 2009)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dpt/RES_NAC-DGERCGC09-00257.pdf">Resolución NAC-DGERCGC09-00257 </a><span style="color: #ff9900">31.9 (fecha publicación: 06 de mayo de 2009) </span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://www.sri.gob.ec/DocumentosAlfrescoPortlet/descargar/52d822b1-2fc6-48d6-a499-28561ca675af/NAC-DGERCGC14-00100.pdf">Resolución NAC-DGERCGC14-00100</a> <span style="color: #ff9900">357 KB&nbsp;(fecha publicación:&nbsp;21 de febrero&nbsp;de 2014) </span></span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/dpt/DECRETO_1613-03-2009.pdf">Decreto Presidencial 1613 </a><span style="color: #ff9900">31.9 KB (fecha publicación: 06 de mayo de 2009)</span><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<span style="font-size: larger"><strong>Anexo de Retenciones en la Fuente Bajo Relación de Dependencia (RDEP) </strong></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/rdep/2013/NAC-DGER2006-0791_R.O.420_19-12-06.pdf">Resolución No. NAC-DGER2006-0791</a>&nbsp;<span style="color: #ff9900">72 </span><span style="color: #ff9900">KB (fecha publicación: 19 de&nbsp;diciembre de 2006) </span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/rdep/RES_NACDGER2007-1352.pdf">Resolución No. NAC-DGER2007-1352</a><font color="#000000"> </font><span style="color: #ff9900">56 KB (fecha publicación: 12 de febrero de 2008) </span></span></li>
+	<li>
+		<span style="color: #ff9900"><span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/rdep/2013/NAC-DGERCGC12-00829 2S_R.O._857_26-12-2012.pdf">Resolución No. NAC-DGER2012-0829</a><font color="#000000">&nbsp;</font><span style="color: #ff9900">2</span><span style="color: #ff9900"> MB (fecha publicación:&nbsp;26 de&nbsp;diciembre de 2012) </span></span></span></li>
+	<li>
+		<span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/rdep/2013/NAC-DGERCGC13-00880.pdf">Resolución No. NAC-DGER2013-0880</a></span></span><font color="#000000">&nbsp;</font><font color="#ff9900">159<span style="color: #ff9900"> KB (fecha publicación:&nbsp;23 de&nbsp;diciembre de 2013) </span></font></span></span></span></span></span></li>
+	<li>
+		<span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><font color="#ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><a href="http://www.sri.gob.ec/DocumentosAlfrescoPortlet/descargar/2a728fa3-5d4b-4710-b242-e3d263fee2ff/NAC-DGERCGC14-00124.pdf">Resolución No. NAC-DGERCGC14-00124&nbsp;</a><span style="color: #ff9900">49 KB <font color="#ff9900">(fecha publicación:&nbsp;24 de&nbsp;febrero de 2014) </font></span></span></span></span></span></span></span></span></span></font></span></span></span></span></span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/rdep/2014_dic/rdp-3.1.1.zip">Programa RDEP</a><a href="http://descargas.sri.gob.ec/download/anexos/rdep/2014_dic/rdp-3.1.1.zip"> </a><span style="color: #ff9900">9.00 MB (fecha actualización:&nbsp;22 de&nbsp;diciembre de 2014) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/rdep/2014_dic/FICHA_TECNICA_RDEP_2014.doc">Ficha Técnica</a> <span style="color: #ff9900">393 KB (fecha actualización:&nbsp;22 de&nbsp;diciembre de 2014) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/rdep/2014_dic/CatalogoRDEP2014_27112014.xls">Catálogo</a><a href="http://descargas.sri.gob.ec/download/anexos/rdep/2014_dic/CatalogoRDEP2014_27112014.xls">&nbsp;</a> <span style="color: #ff9900">155 KB (fecha actualización:&nbsp;22 de&nbsp;diciembre de 2014)&nbsp;</span></li>
+</ul>
+<p>
+	<em><strong>Especificaciones Técnicas para generar los archivos XML </strong></em></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/rdep/2013_dic/rdepv3.xsd">ESQUEMA - RDEP.xsd</a>&nbsp;<span style="color: #ff9900">17 KB (fecha actualización:&nbsp;09 de&nbsp;diciembre de 2013) </span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/rdep/2013_dic/Instructivo_instalacion_Plugin_RDEP_2013.pdf">Instructivo de instalación RDEP</a><font color="#000000"> </font><span style="color: #ff9900">726 KB (fecha actualización: 09 de&nbsp;diciembre de 2013)</span></span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/rdep/2013_dic/Instructivo_instalacion_JRE_para_RDEP_Linux.pdf">Instructivo de instalación Linux</a><font color="#000000">&nbsp;</font><span style="color: #ff9900">470 KB (fecha actualización: 09 de&nbsp;diciembre de 2013)</span></span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/rdep/2013_dic/Instructivo_para_generar_Anexo_RDEP_Excel.pdf">Instructivo&nbsp;para formato Excel</a><font color="#000000">&nbsp;</font><span style="color: #ff9900">52 KB (fecha actualización: 09 de&nbsp;diciembre de 2013)</span></span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/rdep/2013_dic/Plantilla_RDEP_2013.xls">Plantilla Excel</a><font color="#000000">&nbsp;</font><span style="color: #ff9900">49 KB (fecha actualización: 09 de&nbsp;diciembre de 2013)</span></span></li>
+	<li>
+		<span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/rdep/2013_dic/Ejemplo_Archivo_Excel_RDEP2013.xls">Ejemplo Excel</a><font color="#000000">&nbsp;</font><span style="color: #ff9900">49 KB (fecha actualización: 09 de&nbsp;diciembre de 2013)</span></span></span></span></li>
+	<li>
+		<span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/rdep/2013_dic/Ejemplo_TXT_2013.txt">Ejemplo&nbsp;TXT</a><font color="#000000">&nbsp;</font><span style="color: #ff9900">49 KB (fecha actualización: 09 de&nbsp;diciembre de 2013)</span></span></span></span></span></span></span></span></li>
+	<li>
+		<span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/rdep/2013_dic/Ejemplo_XML_Nuevo_esquema_RDEP2013.xml">Ejemplo&nbsp;XML</a><font color="#000000">&nbsp;</font><span style="color: #ff9900">49 KB (fecha actualización: 09 de&nbsp;diciembre de 2013)</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<span style="font-size: larger"><strong>Anexo Transaccional Simplificado (ATS) </strong></span></p>
+<ul>
+	<li>
+		<a href="http://www.sri.gob.ec/BibliotecaPortlet/descargar/2126db64-3bbc-415e-a0da-f2fc4e3f048d/NAC-DGER2007-1319+%28REFORMADA%29+S.R.O.+244%2C+3-I-2008.pdf">Resolución No. NAC-DGER2007-1319</a>&nbsp;<span style="color: #ff9900">121 KB (fecha publicación:&nbsp;3 de&nbsp;enero de 2008) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/reoc/NAC-DGERCGC12-00001_CAMBIO_OBLIGACION_ATS_Y_REOC.pdf">Resolución No. NAC-DGERCGC12-00001</a> <span style="color: #ff9900">124 KB (fecha publicación: 2 de&nbsp;marzo de 2012) </span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://www.sri.gob.ec/BibliotecaPortlet/descargar/9ceb0624-ee8a-4929-b1fd-014d2d6ab60d/Resoluci%F3n+No.+NAC-DGERCGC12-00846%2C+publicada+en+el+3SR.O.+865+de+08-1-2013.pdf">Resolución No. NAC-DGERCGC12-00846</a> <span style="color: #ff9900">151 KB (fecha publicación:&nbsp;8 de&nbsp;enero&nbsp; de 2013) </span></span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://www.sri.gob.ec/BibliotecaPortlet/descargar/e12f6fdc-3719-4a15-a1b5-01fe28b54c3b/Resoluci%F3n+No.+NAC-DGERCGC13-00071%2C+publicada+en+el+Suplemento+del+Registro+Oficial+No.+897+de+22-02-2013.pdf">Resolución No. NAC-DGERCGC13-00071</a><font color="#000000"> </font><span style="color: #ff9900">124 KB (fecha publicación: 22 de&nbsp;febrero de 2013) </span></span></li>
+	<li>
+		<span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/ats/NAC-DGERCGC13-00237.pdf">Resolución No. NAC-DGERCGC13-00237</a><span style="color: #ff9900"> (fecha publicación: 23 de&nbsp;mayo de 2013) </span></span></span></span></li>
+	<li>
+		<span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><a href="http://www.sri.gob.ec/DocumentosAlfrescoPortlet/descargar/a0219347-46a2-4096-a91f-0c630996c055/NAC-DGERCGC13-00450.pdf">Resolución No. NAC-DGERCGC13-00450 </a>(fecha&nbsp;publicación: 27 de agosto de 2013)</span></span></span></span></li>
+</ul>
+<p style="text-align: center">
+	<span style="color: #003399"><span style="font-size: larger"><strong><strong>Para actualizar a la nueva versión 1.1 por favor seleccionar la opción "agregar nuevos programas" y no por la opción actualizar programas.</strong></strong></span></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ats/ats.1.1.2.zip">Programa ATS&nbsp;V 1.1.2</a>&nbsp;<span style="color: #ff9900">6 MB (fecha actualización:&nbsp;13 de&nbsp;noviembre de 2014) </span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/ats/Instructivo_instal_Plugin_ATS_2013_V1 2013-06-19.pdf">Instructivo de instalación Plugin ATS 2013<font color="#000000">&nbsp;</font></a><span style="color: #ff9900">644 KB </span><span style="color: #ff9900">(fecha actualización:&nbsp;19 de&nbsp;junio de 2013) </span></span></li>
+	<li>
+		<span style="color: #ff9900"><span style="color: #ff9900"><span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/ats/Instrucciones_previas_instalacion_JRE_para_ATS_Linux 2013-06-19.pdf">Instructivo de instalación&nbsp;JRE para ATS&nbsp;Linux<font color="#000000">&nbsp;</font></a><span style="color: #ff9900">443 KB </span><span style="color: #ff9900">(fecha actualización:&nbsp;19 de&nbsp;junio de 2013) </span></span></span></span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ats/CATALAGO_ATS_NUEVO_01102014.xls">Catálogo</a> <span style="color: #ff9900">318 KB (fecha actualización:&nbsp;10 de&nbsp;noviembre de 2014) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ats/FICHA_TECNICA_ATS_NOVIEMBRE2014.doc">Ficha Técnica</a>&nbsp;<span style="color: #ff9900">2 </span><span style="color: #ff9900">MB (fecha actualización:&nbsp;10 de&nbsp;noviembre de 2014) </span></li>
+</ul>
+<p>
+	<em><strong>Especificaciones Técnicas para generar los archivos XML </strong></em></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ats/at.xsd">ESQUEMA - at.xsd</a>&nbsp;<span style="color: #ff9900">41</span><span style="color: #ff9900"> KB (fecha publicación: 13 de noviembre&nbsp;de 2014)</span></li>
+	<li>
+		<span style="color: #0033cc"><a href="http://descargas.sri.gob.ec/download/anexos/ats/Instructivo_Generacion_ATS_desde_Excel.pdf">Instructivo para generar un archivo en excel</a>&nbsp;<span style="color: #ff9900">2 </span><span style="color: #ff9900">MB</span>&nbsp;</span><span style="color: #ff9900">(fecha publicación:19 de&nbsp;junio de 2013)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ats/EJEMPLO_ATS_2013_para_Excel.xls">Ejemplo de archivo en&nbsp;Excel</a> <span style="color: #ff9900">185 KB (fecha publicación:19 de&nbsp;junio de 2013)</span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/ats/Plantilla_ATS_2013_para_Excel_2007_2010_2013.xls">Plantilla de formato excel 2007 - 2010 - 2013</a>&nbsp;<span style="color: #ff9900">67 KB (fecha publicación:&nbsp;7 de&nbsp;junio de 2013)</span></span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/ats/Plantilla_ATS_2013_para_Excel_2003.xls">Plantilla de formato excel 2003</a>&nbsp;<span style="color: #ff9900">174 KB (fecha publicación:7 de&nbsp;junio de 2013)</span></span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ats/Ejemplo_ATS_XML.xml">Ejemplo de archivo en XML </a><span style="color: #ff9900">16 KB (fecha publicación:&nbsp;10 de&nbsp;junio de 2013) </span><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<span style="font-size: larger"><strong>Anexo de Retenciones en la Fuente de Impuesto a la Renta por Otros Conceptos (REOC) </strong></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/reoc/NAC-DGERCGC12-00001_CAMBIO_OBLIGACION_ATS_Y_REOC.pdf">Resolución No. NAC-DGERCGC12-00001</a> <span style="color: #ff9900">124 KB (fecha publicación: 2 de&nbsp;marzo de 2012) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/reoc/reoc_2_0_4.zip">Programa REOC </a><span style="color: #ff9900">684 KB (fecha actualización:&nbsp;02 de&nbsp;marzo de 2012) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/reoc/FICHA_TECNICA_REOC.doc">Ficha Técnica</a> <span style="color: #ff9900">505 KB (fecha actualización:&nbsp;2 de&nbsp;marzo de 2012) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/reoc/CATALOGO_REOC.xls">Catálogo</a> <span style="color: #ff9900">101 KB (fecha actualización:&nbsp;2 de&nbsp;marzo de 2012) </span></li>
+</ul>
+<p>
+	<em><strong>Especificaciones Técnicas para generar los archivos XML </strong></em></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/reoc/reoc.xsd">ESQUEMA - reoc.xsd </a><span style="color: #ff9900">8 KB (fecha publicación: 2 de&nbsp;marzo de 2012) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/reoc/catalogo.zip">CODIFICACIÓN DE TABLAS - catalogo.zip</a> <span style="color: #ff9900">4 KB (fecha publicación: 2 de&nbsp;marzo de 2012) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/reoc/Ejemplo_REOC_XML.xml">Ejemplo de archivo en XML</a> <span style="color: #ff9900">4 KB (fecha publicación: 2 de&nbsp;marzo de 2012) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/reoc/Ejemplo_REOC_TXT.txt">Ejemplo de archivo en txt</a> <span style="color: #ff9900">4 KB (fecha publicación: 2 de&nbsp;marzo de 2012)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/reoc/Ejemplo_REOC_XLS.xls">Consideraciones para generar un archivo txt</a> <span style="color: #ff9900">4 KB (fecha publicación: 2 de&nbsp;marzo de 2012)</span><span style="color: #ff9900">&nbsp;&nbsp;&nbsp;</span><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<span style="font-size: larger"><strong>Anexo de Notarios y Registradores de la Propiedad y Mercantiles</strong></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/not/RES_NAC-DGERCGC10-00132.pdf">Resolución NAC-DGERCGC10-00132 </a><span style="color: #ff9900">121 KB (fecha publicación: 04 de mayo de 2010) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/not/RES_NAC-DGERCGC10-00267.pdf">Resolución NAC-DGERCGC10-00267 </a><span style="color: #ff9900">50 KB (fecha publicación: 30 de junio de 2010) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/not/anr_1_0_2.zip">Programa de Anexo de Notarios y Registradores de la Propiedad y Mercantiles (plug-in)</a> <span style="color: #ff9900">4.38 MB (fecha actualización: 17 de enero de 2011) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/not/Ficha_tecnica_NRPM.xls">Ficha Técnica</a> <span style="color: #ff9900">120 KB (fecha publicación: 30 de junio de 2010) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/not/Instructivo_NRPM.doc">Instructivo de referencia del anexo</a> <span style="color: #ff9900">600 KB (fecha publicación: 30 de junio de 2010)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/not/Guia_basica_llenado_anexo_NRPM.ppt">Guía básica de llenado del anexo</a> <span style="color: #ff9900">1.05 MB (fecha publicación: 30 de junio de 2010)</span><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<span style="font-size: larger"><strong>Listado para Devolución de IVA (DevIVA) </strong></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/devIva/NAC-DGERCGC14-001561.pdf  ">Resolución No. NAC-DGERCGC14-00156</a>&nbsp;<span style="color: #ff9900">KB</span><span style="color: #ffcc00"> </span><span style="color: #ff9900">(fecha publicación: 26 de&nbsp;marzo de 2014)</span></li>
+</ul>
+<p style="text-align: center">
+	<span style="color: #000099"><span style="font-size: larger"><strong><strong>Para actualizar a la versión&nbsp;del programa deviva 1.0.4 por favor desinstalar&nbsp;dimm y borrar la carpeta sridimm del disco del equipo, volver a instalar dimm, seleccionar&nbsp;la opción "agregar nuevos programas" y actualización mediante archivo.&nbsp;</strong></strong></span></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/devIva/devIva_1_0_4.zip">Programa DevIVA</a> <span style="color: #ff9900">1.28 MB (fecha actualización:&nbsp;02 de abril de 2014)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/devIva/FICHA_TECNICA_DEVIVA_1 0 41.doc">Ficha Técnica</a> <span style="color: #ff9900">140 KB (fecha publicación: <font color="#ff9900">02 de abril de 2014</font>)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/devIva/CATALOGO_DevIVA_1 0 4.xls">Catálogo</a>&nbsp;<span style="color: #ff9900">102 KB (fecha publicación: <font color="#ff9900">02 de abril de 2014</font>) </span></li>
+</ul>
+<p>
+	<em><strong>Especificaciones Técnicas para generar los archivos XML</strong></em></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/devIva/devIva.xsd">ESQUEMA- devIVA.xsd</a> <span style="color: #ff9900">10 KB (fecha publicación: 02 de enero de 2009)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/devIva/catalogo.zip">CODIFICACIÓN DE TABLAS - catalogo.zip </a><span style="color: #ff9900">3 KB (fecha publicación: 02 de enero de 2009)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/devIva/Ejemplo_Listado_DevIVA.xml">Ejemplo de archivo en XML</a> <span style="color: #ff9900">23 KB (fecha publicación: 02 de enero de 2009)</span><br />
+		<br />
+		<strong>&nbsp;</strong></li>
+</ul>
+<p class="section1" style="text-align: justify; margin: 0cm 0cm 0pt">
+	<span style="font-family: 'Arial','sans-serif'; font-size: 14pt"><o:p></o:p></span></p>
+<p>
+	<span style="font-size: larger"><strong>Anexo de Operaciones con Partes Relacionadas (OPR) </strong></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/opre/RES_NAC-DGER2008-0464.pdf">Resolución NAC-DGER2008-0464</a> <span style="color: #ff9900">146.7 KB (fecha publicación: 02 de junio de 2009) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/opre/RES_NAC-DGERCGC09-00286.pdf">Resolución NAC-DGERCGC09-00286</a> <span style="color: #ff9900">90.3 KB (fecha publicación: 02 de junio de 2009)</span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/opre/NAC-DGERCGC13-00011 2S.R.O. 878 24-01-2013.pdf">Resolución NAC-DGERCGC13-00011<font color="#000000">&nbsp;</font></a><span style="color: #ff9900">107</span><span style="color: #ff9900"> KB (fecha publicación:&nbsp;24 de&nbsp;enero de 2013)</span></span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/opre/opre_1_0_11.zip">Programa OPR</a>&nbsp;<span style="color: #ff9900">4 </span><span style="color: #ff9900">MB (fecha actualización:&nbsp;7 de&nbsp;junio de 2013) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/opre/FICHA_TECNICA_OPRE_062013.doc">Ficha Técnica</a> <span style="color: #ff9900">324 KB (fecha publicación:&nbsp;7 de&nbsp;junio de 2013) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/opre/Catalogo_OPRE_062013.xls">Catálogo</a> <span style="color: #ff9900">121 KB (fecha actualización:&nbsp;7 de&nbsp;junio de 2013) </span></li>
+</ul>
+<p>
+	<em><strong>Especificaciones Técnicas para generar los archivos XML </strong></em></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/opre/esquema.xsd">Esquema</a> <span style="color: #ff9900">8.2 KB (fecha actualización: 19 de octubre de 2009) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/opre/CATALOGOS.zip">Codificación de tablas</a> <span style="color: #ff9900">8.9 KB (fecha publicación: 02 de junio de 2009) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/opre/Ejemplo_xml_OPRE.xml">Ejemplo de archivo en XML</a> <span style="color: #ff9900">2.5 KB (fecha publicación: 02 de junio de 2009) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/opre/Ejemplo_txt_OPRE.txt">Ejemplo de archivo en TXT</a> <span style="color: #ff9900">291 bytes (fecha publicación: 02 de junio de 2009) </span><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<span style="color: #000000"><span style="font-size: larger"><strong><strong><font size="2"><strong>Reporte de precios de venta, anexo botellas plásticas&nbsp;y anexo de<br />
+	productos gravados con ICE</strong></font></strong></strong></span></span></p>
+<ul>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/ice/Resolucion_anexos_052.pdf">Anexos - Resolución NAC-DGERCGC09-00052</a> <span style="color: #ff9900">100 KB (fecha publicación: 29 de enero de 2009) </span></span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/pvp/2014/NAC-DGERCGC14-00200.pdf ">Reporte de precios de venta - Resolución NAC-DGERCGC14-00200 225 KB</a> (fecha publicación: 01 de abril de 2014)&nbsp;&nbsp;</span></li>
+	<li>
+		<font color="#ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/ibp/2014/NAC-DGERCGC14-00201.pdf">Anexos - Resolución NAC-DGERCGC14-00201</a> 230 KB (fecha publicación: 01 de abril de 2014)</font></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ice/2014/NAC-DGERCGC14-00202.pdf ">Anexos - Resolución NAC-DGERCGC14-00202 161 KB</a> <font color="#ff9900">(fecha publicación: 01 de abril de 2014)&nbsp;</font></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ice/2014/ice.1.0.0.zip">Programa Anexos ICE, PVP, IBP 18.4 MB</a> <font color="#ff9900">(fecha publicación: 09 de abril de 2014)&nbsp;</font></li>
+</ul>
+<p>
+	<strong><em>Actualización catálogo a Abril 2014 (ANEXOS, PRECIOS DE VENTA, IBP) </em></strong></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/pvp/2014/CATALAGO_ANEXO_PVP.xls ">Catálogo Anexo PVP 175 KB</a> <font color="#ff9900">(fecha publicación: 09 de abril de 2014)&nbsp;</font></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ice/2014/CATALOGO_ANEXO_ICE.xls">Catálogo Anexo ICE 175 KB</a>&nbsp;<font color="#ff9900">(fecha publicación: 09 de abril de 2014)</font></li>
+	<li>
+		<font color="#ff9900"><font color="#ff9900"><font color="#ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/ibp/2014/CATALOGO_IBP.xls">Catálogo IBP 175 KB</a> (fecha publicación: 09 de abril de 2014)</font></font></font></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/pvp/2014/Ficha_tecnica_Anexo_PVP.doc ">Ficha técnica del Anexo PVP 28 KB</a> <font color="#ff9900">(fecha publicación: 09 de abril de 2014)</font></li>
+</ul>
+<p>
+	<strong><em>Actualización códigos a Junio 2014&nbsp;(ANEXOS ICE, ANEXO PVP, ANEXO IBP) </em></strong></p>
+<ul>
+	<li>
+		<a href="http://www.sri.gob.ec/DocumentosAlfrescoPortlet/descargar/0e46a192-a24a-4d00-a54c-e21b80e1a72e/C%F3digos_ICE.xls"><span style="color: #0066ff">Códigos ICE&nbsp;</span></a><span style="color: #0066ff"> </span></li>
+	<li>
+		<a href="http://www.sri.gob.ec/DocumentosAlfrescoPortlet/descargar/ec2fda39-9290-471c-9b89-7efc2ead2e7e/Codigos_IBP.xls"><span style="color: #0066ff">Códigos IBP</span></a></li>
+</ul>
+<p>
+	<strong><em>Especificaciones Técnicas para generar los archivos XML</em></strong></p>
+<p>
+	<span style="font-size: larger"><strong><em><b><span style="font-style: normal; font-family: 'Verdana','sans-serif'; color: #3f99d5; font-size: 7.5pt">ANEXO PVP – Anexo Reporte de Precios de Venta</span></b></em></strong></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/pvp/2014/pvp.xsd">Esquema del Anexo PVP</a><font color="#ff9900"> 4.94 MB <font color="#ff9900">(fecha publicación: 09 de abril de 2014)</font></font></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/pvp/2014/Ficha_tecnica_Anexo_PVP.doc">Ficha técnica del Anexo PVP</a><font color="#ff9900"> 28 KB <font color="#ff9900">(fecha publicación: 09 de abril de 2014)</font></font></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/pvp/2014/EJEMPLO_PVP.xml ">Ejemplo de archivo de Anexos PVP en XML</a><font color="#ff9900"> 801 Bytes <font color="#ff9900">(fecha publicación: 09 de abril de 2014)</font></font></li>
+</ul>
+<p>
+	<span style="font-size: larger"><strong><em><b><span style="font-style: normal; font-family: 'Verdana','sans-serif'; color: #3f99d5; font-size: 7.5pt">ANEXO ICE – Anexo a los Consumos Especiales</span></b></em></strong></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ice/2014/ice.xsd">Esquema del Anexo ICE</a><font color="#ff9900"> 9.93 KB <font color="#ff9900">(fecha publicación: 09 de abril de 2014)</font></font></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ice/2014/Ficha_tecnica_Anexo_ICE_mensual.doc">Ficha técnica del Anexo ICE</a><font color="#ff9900"> 1.76 KB <font color="#ff9900">(fecha publicación: 09 de abril de 2014)</font></font></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ice/2014/EJEMPLO_ICE.xml">Ejemplo de archivo de Anexos ICE en XML</a><font color="#ff9900"> 1.15 Bytes <font color="#ff9900">(fecha publicación: 09 de abril de 2014)</font></font></li>
+</ul>
+<p style="text-align: justify">
+	<span style="font-size: larger"><strong><em><b><span style="font-style: normal; font-family: 'Verdana','sans-serif'; color: #3f99d5; font-size: 7.5pt"><span id="cke_bm_343S" style="display: none">&nbsp;</span></span></b></em><em><b><span style="font-style: normal; font-family: 'Verdana','sans-serif'; color: #3f99d5; font-size: 7.5pt">ANEXO IBP – Anexo Impuesto Redimible a las Botellas Plásticas no Retornables</span></b></em></strong></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ibp/2014/Ficha_Tecnica_IBP.doc ">Ficha técnica del Anexo IBP</a> <font color="#ff9900">1.96 MB (fecha publicación: 09 de abril de 2014)</font></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ibp/2014/Esquema_XSD.xsd">Esquema del Anexo IBP</a><font color="#ff9900"> 4.94 MB <font color="#ff9900">(fecha publicación: 09 de abril de 2014)</font></font><span id="cke_bm_359S" style="display: none">&nbsp; </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/ibp/2014/EJEMPLO_IBP.xml ">Ejemplo de archivo de Anexos de IBP en XML</a><font color="#ff9900"> 801 Bytes <font color="#ff9900">(fecha publicación: 09 de abril de 2014)</font></font><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<span style="font-size: larger"><strong><strong>Anexo movimiento internacional de divisas</strong></strong></span><span style="font-size: larger">&nbsp;<strong>(ANEXO - ISD) </strong></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/RES_NAC-DGERCGC09-00567.pdf">Anexo MID (ISD).-Resolución NAC-DGERCGC09-00567</a> <span style="color: #ff9900">(fecha publicación: 14 de agosto de 2009)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/RES.NAC-DGERCGC09-00696.pdf">Anexo MID (ISD).-Resolución NAC-DGERCGC09-00696</a> <span style="color: #ff9900">(fecha publicación: 13 de noviembre de 2009) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/dimm-mid-validador.zip">Validador MID</a><span style="color: #ff9900"> (fecha publicación: 31 de Diciembre del 2014) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/dimm-mid-plugin-v1.0.5.zip">Plugin MID_</a><span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/mid/dimm-mid-plugin-v1.0.5.zip">1_0_5</a> (fecha publicación: 31 de Diciembre del 2014) </span></li>
+</ul>
+<p>
+	<em><strong>Especificaciones Técnicas para generar los archivos XML - Esquema IFIS </strong></em></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/xsd_mid_ifi_v2.xsd">Esquema del Anexo - Esquema IFIS</a> <span style="color: #ff9900">(fecha publicación: 31 de diciembre del 2014) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/FICHA_TECNICA_IFIS_AGOSTO_2010.pdf">Ficha técnica del Anexo MID - Esquema IFIS</a> <span style="color: #ff9900">(fecha publicación: 31 de agosto de 2010)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/CATALOGO_IFIS_2014.xls">Catálogo - Esquema IFIS</a> <span style="color: #ff9900">(fecha publicación: </span><span style="color: #ff9900">31 de diciembre del 2014) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/ejemplo_excel.xlsx">Ejemplo de archivo de Anexo MID - Esquema IFIS en formato XLSX </a><span style="color: #ff9900">(fecha publicación: <span style="color: #ff9900">31 de diciembre del 2014</span>) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/ejemplo_excel.txt">Ejemplo de archivo de Anexo MID - Esquema IFIS en formato TXT </a><span style="color: #ff9900">(fecha publicación: <span style="color: #ff9900">31 de diciembre del 2014</span>) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/MID102014.xml">Ejemplo de archivo de Anexo MID - Esquema IFIS en formato XML </a><span style="color: #ff9900">(fecha publicación: <span style="color: #ff9900">31 de diciembre del 2014</span>) </span></li>
+</ul>
+<p>
+	<em><strong>Especificaciones Técnicas para generar los archivos XML de Anexos - Esquema Courier's </strong></em></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/courier.xml">Esquema del Anexo - Esquema Courier's</a> <span style="color: #ff9900">(fecha publicación: 13 de noviembre de 2009) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/FICHA_TECNICA_COURIERS_AGOSTO_2010.pdf">Ficha técnica del Anexo MID - Esquema Courier's</a> <span style="color: #ff9900">(fecha publicación: 31 de agosto de 2010)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/CATALOGO_COURIER_AGOSTO2010.xls">Catálogo -Esquema Courier's </a><span style="color: #ff9900">(fecha publicación: 31 de agosto de 2010) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/mid/Ejemplos_XML_Esquema_Couriers.zip">Ejemplo de archivo de Anexo MID - Esquema COURIERS en formato XML</a> <span style="color: #ff9900">(fecha publicación: 14 de agosto de 2009)</span><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<span style="font-size: 12px"><strong><strong>Anexo reporte de operaciones y transacciones económicas financieras </strong>(ANEXO - ROTEF) </strong></span></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/rotef/NAC-DGERCGC12-00101.pdf">Resolución NAC-DGERCGC12-00101 <span style="color: #ff9900">(fecha publicación: 02 de mayo de 2012)</span></a></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/rotef/NAC-DGERCGC12-00568788.pdf">Resolución NAC-DGERCGC12-00568</a> <span style="color: #ff9900">(fecha publicación: 13 de septiembre de 2012)</span></li>
+	<li>
+		<span style="color: #ff9900"><a href="http://descargas.sri.gob.ec/download/anexos/rotef/NAC-DGERCGC13-00085.pdf">Resolución NAC-DGERCGC13-0085</a><font color="#000000"> </font><span style="color: #ff9900">(fecha publicación:&nbsp;6 de&nbsp;marzo de 2013)</span></span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/rotef/validador-consola-inst-1.2.zip">Validador de Consola ROTEF&nbsp;42 MB</a> <span style="color: #ff9900">(fecha publicación:&nbsp;15 de&nbsp;mayo de 2014) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/rotef/Manual_Validador_ROTEF_Version_1_2.doc">Manual de instalación Validador de Consola ROTEF 2 MB</a> <span style="color: #ff9900">(fecha publicación: 02 de agosto de 2012) </span></li>
+</ul>
+<p>
+	<em><strong>Especificaciones Técnicas para generar los archivos XML </strong></em></p>
+<p>
+	• <a href="http://descargas.sri.gob.ec/download/anexos/rotef/Ficha_tecnica_anexo_RTF_NOV2012.doc">Ficha técnica del Anexo ROTEF</a> <span style="color: #ff9900">1MB <span style="color: #ff9900">(</span>fecha publicación: 27 de&nbsp;noviembre de 2012)</span></p>
+<p>
+	• <a href="http://descargas.sri.gob.ec/download/anexos/rotef/catálogo_ROTEF_NOV2012.xls">Catálogo</a> <span style="color: #ff9900">122KB <span style="color: #ff9900">(</span>fecha </span><span style="color: #ff9900">publicación:&nbsp;27 de&nbsp;noviembre de 2012)</span></p>
+<p>
+	<a href="http://descargas.sri.gob.ec/download/anexos/rotef/ROTEF.xsd">•&nbsp;Esquema&nbsp;XSD&nbsp;<span style="color: #ff9900">9KB <span style="color: #ff9900">(</span>fecha publicación: 07 de junio de 2012)</span></a></p>
+<p>
+	<a href="http://descargas.sri.gob.ec/download/anexos/rotef/Ejemplo_RTF.xml">•&nbsp;Ejemplo de archivo XML <span style="color: #ff9900">2KB <span style="color: #ff9900">(</span>fecha publicación: 07 junio de 2012)</span></a><br />
+	&nbsp;</p>
+<p>
+	<span style="font-size: 12px"><strong>Anexo de incentivos y beneficios tributarios COPCI</strong><b>&nbsp;</b></span></p>
+<ul>
+	<li>
+		<span style="font-size: xx-small"><b><span style="color: #0070c0"><span style="font: 7pt 'Times New Roman'">&nbsp;&nbsp;</span></span></b></span><a href="http://descargas.sri.gob.ec/download/anexos/rotef/NAC-DGERCGC12-00670.pdf">Resolución NAC-DGERCGC12-00670 </a><span style="color: #ff9900">(fecha publicación: 18 de octubre de 2012)</span></li>
+	<li>
+		&nbsp;<span style="color: #336699; font-size: 8.5pt"><a href="http://descargas.sri.gov.ec/download/anexos/rotef/dimm-abt.1.1.11.zip">Programa ABT</a> </span><span style="color: #ff9900"><span style="font-size: 8.5pt">4</span><span style="font-size: 8.5pt"><span style="line-height: 115%; font-family: 'Verdana','sans-serif'; font-size: 8.5pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: Arial; mso-ansi-language: ES; mso-fareast-language: ES; mso-bidi-language: AR-SA; mso-bidi-font-size: 11.0pt">.</span></span></span><span style="color: #ff9900"><span style="font-size: 8.5pt"><span style="line-height: 115%; font-family: 'Verdana','sans-serif'; font-size: 8.5pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: Arial; mso-ansi-language: ES; mso-fareast-language: ES; mso-bidi-language: AR-SA; mso-bidi-font-size: 11.0pt">00 MB (fecha actualización: 29 de&nbsp;noviembre de 2012)</span></span></span><span style="color: #ff9900; font-size: 8.5pt"> </span></li>
+	<li>
+		&nbsp;<a href="http://descargas.sri.gob.ec/download/anexos/rotef/Catalogo_ABT.xls"><span style="color: #336699; font-size: 8.5pt">Catálogo </span><span style="color: #ff9900"><span style="font-size: 8.5pt"><span style="line-height: 115%; font-family: 'Verdana','sans-serif'; font-size: 8.5pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: Arial; mso-ansi-language: ES; mso-fareast-language: ES; mso-bidi-language: AR-SA; mso-bidi-font-size: 11.0pt"><span style="line-height: 115%; font-family: 'Verdana','sans-serif'; font-size: 8.5pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: Arial; mso-ansi-language: ES; mso-fareast-language: ES; mso-bidi-language: AR-SA; mso-bidi-font-size: 11.0pt">132 KB (fecha actualización:&nbsp;1 de&nbsp;octubre de 2012)</span></span></span></span></a><span style="color: #ff9900; font-size: 8.5pt"> </span></li>
+</ul>
+<div style="text-align: justify; line-height: normal">
+	<b>&nbsp;</b><em><b><span style="font-size: 8.5pt"><span style="line-height: 115%; font-family: 'Verdana','sans-serif'; color: #3f99d5; font-size: 8.5pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: Arial; mso-ansi-language: ES; mso-fareast-language: ES; mso-bidi-language: AR-SA; mso-bidi-font-size: 11.0pt">Especificaciones Técnicas para generar los archivos XML</span> </span></b></em></div>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/rotef/abt.xsd"><span style="color: #336699; font-size: 8.5pt">ESQUEMA - ABT.xsd </span><span style="color: #ff9900"><span style="font-size: 8.5pt"><span style="line-height: 115%; font-family: 'Verdana','sans-serif'; font-size: 8.5pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: Arial; mso-ansi-language: ES; mso-fareast-language: ES; mso-bidi-language: AR-SA; mso-bidi-font-size: 11.0pt"><span style="line-height: 115%; font-family: 'Verdana','sans-serif'; font-size: 8.5pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: Arial; mso-ansi-language: ES; mso-fareast-language: ES; mso-bidi-language: AR-SA; mso-bidi-font-size: 11.0pt">28 KB (fecha actualización:&nbsp;1 de&nbsp;octubre de 2012)</span></span></span></span></a></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/rotef/ejemplo.xml"><span style="line-height: 115%; color: #336699; font-size: 8.5pt">Ejemplo de archivo en XML </span><span style="color: #ff9900"><span style="line-height: 115%; font-size: 8.5pt"><span style="line-height: 115%; font-family: 'Verdana','sans-serif'; font-size: 8.5pt; mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: Arial; mso-ansi-language: ES; mso-fareast-language: ES; mso-bidi-language: AR-SA; mso-bidi-font-size: 11.0pt">8 KB (fecha actualización:&nbsp;1 de&nbsp;octubre de 2012)</span></span></span></a><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<span style="font-size: 12px"><strong><strong>Anexo &nbsp;de accionistas, &nbsp;partícipes, socios, miembros de directorio y administradores </strong>- APS</strong>&nbsp;&nbsp;</span></p>
+<ul>
+	<li>
+		&nbsp;&nbsp;<a href="http://descargas.sri.gob.ec/download/anexos/acc/NAC-DGERCGC12-00777.pdf">Resolución NAC-DGERCGC12-00777 </a><span style="color: #ffa500">(fecha publicación:&nbsp;20 de diciembre de 2012)</span></li>
+	<li>
+		&nbsp;<a href="http://descargas.sri.gob.ec/download/anexos/acc/NAC-DGERCGC13-00059_15-02-2013.pdf">Resolución NAC-DGERCGC13-00059</a> <span style="color: #ffa500">(fecha publicación:&nbsp;15 de&nbsp;febrero de 2013)</span></li>
+	<li>
+		&nbsp;<a href="http://descargas.sri.gob.ec/download/anexos/acc/ANEXO_ACCIONISTAS_CATÁLOGO_ 28122012.xls">Catálogo</a> <span style="color: #ffa500">(fecha actualización: 28 de&nbsp;diciembre de 2012)</span></li>
+	<li>
+		&nbsp;<a href="http://descargas.sri.gob.ec/download/anexos/acc/dimm-aps.1.0.55.zip">Programa APS</a> <span style="color: #ffa500">4.00 MB (fecha publicación:&nbsp;6 de&nbsp;marzo de 2013)</span></li>
+	<li>
+		&nbsp;<a href="http://descargas.sri.gob.ec/download/anexos/acc/FICHA TECNICA ANEXO ACCIONISTAS.doc">Ficha Técnica&nbsp;</a><span style="color: #ffa500">(fecha actualización:&nbsp;9 de&nbsp;enero de 2013)</span></li>
+	<li>
+		&nbsp;<a href="http://descargas.sri.gob.ec/download/anexos/acc/INSTRUCTIVO ANEXO APS .doc">Instructivo Anexo APS </a><span style="color: #ffa500">(fecha publicación: 24 de enero de 2013)</span></li>
+</ul>
+<div>
+	&nbsp;<em><strong><strong><em>Especificaciones Técnicas para generar los archivos XML&nbsp;</em></strong> </strong></em></div>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/acc/EsquemaAPS.XSD">ESQUEMA - APS.xsd&nbsp;</a><span style="color: #ffa500">10 KB (fecha actualización:&nbsp;28 de&nbsp;diciembre de 2012)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/acc/APS-28-12-2012.xml">Ejemplo de archivo en XML<span style="color: #ffa500"> </span></a><span style="color: #ffa500">8 KB (fecha actualización:&nbsp;28 de&nbsp;diciembre de 2012)</span><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<strong><span style="font-size: 12px"><strong>Anexo de calculo actuarial </strong>- ACA</span></strong></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/aca/NAC-DGERCGC14-00096.pdf">Resolución No. NAC-DGERCGC14-00096</a><span style="color: #ffa500">&nbsp;227 KB (fecha publicación:&nbsp;21 de&nbsp;febrero de 2014)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/aca/aca.1.0.1.zip">Programa ACA</a> <span style="color: #ffa500">9 MB (fecha actualización:&nbsp;12 de&nbsp;septiembre de 2014)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/aca/Instructivo_instalaci_n_Plugin_ACA_032014.pdf">Instructivo programa ACA&nbsp;</a><span style="display: none">&nbsp;</span><span style="color: #ffa500">854 KB (fecha actualización:&nbsp;15 de&nbsp;marzo de 2014)</span></li>
+</ul>
+<p>
+	<strong>&nbsp;<em>Especificaciones Técnicas para generar los archivos XML </em></strong></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/aca/Ficha_T_cnica-ACA_032014.pdf">Ficha Técnica&nbsp;</a><span style="color: #ffa500">455 KB (fecha actualización:&nbsp;15 de&nbsp;marzo de 2014) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/aca/Cat_logo_Anexo_C_lculo_Actuarial_032014.xls">Catálogo</a> <span style="color: #ffa500">82 KB (fecha actualización:&nbsp;15 de&nbsp;marzo de 2014) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/aca/aca.xsd">Esquema&nbsp;XSD</a> <span style="color: #ffa500">11 KB (fecha actualización:&nbsp;15 de&nbsp;marzo de 2014) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/aca/ACA_2013_ejemplo.xml">Ejemplo de archivo Anexo ACA en XML</a> <span style="color: #ffa500">1 KB (fecha actualización:&nbsp;15 de&nbsp;marzo de 2014)</span><br />
+		&nbsp;</li>
+</ul>
+<p>
+	<strong><span style="font-size: 12px"><strong>Anexo&nbsp;de fideicomisos mercantiles,&nbsp;fondos de inversión y fondos complementarios </strong>- AFIC </span></strong></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/afic/NAC-DGERCGC14-00132.pdf">Resolución No. NAC-DGERCG14-00132&nbsp;</a><span style="color: #ffa500">391 KB (fecha de publicación: 05 de&nbsp;marzo de 2014) </span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/afic/AFIC.1.0.0.zip">Programa AFIC&nbsp;</a>&nbsp;<span style="display: none">&nbsp;</span><span style="color: #ffa500">5 MB (fecha actualización:&nbsp;01 de&nbsp;abril de 2014)</span></li>
+</ul>
+<p>
+	<em><strong>Especificaciones Técnicas para generar los archivos XML</strong></em></p>
+<ul>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/afic/FICHA_TECNICA_ANEXO_AFIC.pdf">Ficha Técnica</a>&nbsp;<span style="color: #ffa500">604 KB (fecha actualización:&nbsp;01 de&nbsp;abril de 2014)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/afic/Catalogo_Anexo_AFIC.xls">Catálogo</a> <span style="color: #ffa500">82 kb (fecha actualización 01 de abril de 2014)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/afic/EJMPLO_XML.xml">Ejemplo XML</a> <span style="color: #ffa500">7k</span><span style="color: #ffa500">b (fecha actualización 01 de abril de 2014)</span></li>
+	<li>
+		<a href="http://descargas.sri.gob.ec/download/anexos/afic/ESQUEMA_XSD.xsd">Esquema XSD</a>&nbsp;<span style="color: #ffa500">22 kb (fecha actualización 01 de abril de 2014)</span></li>
+</ul>
+<p>
+	<span style="color: #ffa500">&nbsp;</span></p>
+</div>
+				</div>
+
+				
+			
+			
+		
+	
+
+
+
+
+
+
+
+	
+		<div class="entry-links">
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</div>
+	
+
+	
+
+	
+
+	
+
+					
+				
+			
+			
+		
+	
+	
+
+
+
+	</div>
+
+				</div>
+
+				
+			
+		
+	
+
+
+	
+
+
+
+
+
+			
+		</div>
+	</div>
+
+
+
+
+
+	
+	
+</div>
+			</div>
+
+			<div class="portlet-column portlet-column-last" id="column-3" style="width: 240px; padding: 5px 0px 0px 5px;">
+				<div id="barraCelesteInternaDelgada" style="margin-top: -5px; margin-left: -5px;">&nbsp;</div>
+				<div>&nbsp;</div>
+				
+				
+					<!--
+						---- DESARROLLO ---
+					
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	<div class="portlet-boundary portlet-boundary_56_  portlet-static portlet-static-end portlet-borderless portlet-journal-content " id="p_p_id_56_INSTANCE_APCEGcdGe06e_" >
+		<span id="p_56_INSTANCE_APCEGcdGe06e"></span>
+
+		<div class="portlet-body">
+
+
+
+	
+	
+	
+	
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+		
+
+		
+			
+			
+
+				
+
+				<div class="portlet-borderless-container" style="">
+					
+
+					
+
+
+	<div class="portlet-body">
+
+
+
+	
+		
+			
+			
+				
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+				
+
+				
+					
+					
+						
+
+
+	
+	
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+			
+			
+				<div class="portlet-msg-error">
+					El contenido web seleccionado ya no existe.
+				</div>
+			
+		
+	
+	
+	
+
+
+
+
+
+
+
+	
+
+					
+				
+			
+			
+		
+	
+	
+
+
+
+	</div>
+
+				</div>
+
+				
+			
+		
+	
+
+
+	
+
+
+
+
+
+			
+		</div>
+	</div>
+
+
+
+
+-->
+					<!-- Pre-->
+					<!--
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	<div class="portlet-boundary portlet-boundary_56_  portlet-static portlet-static-end portlet-borderless portlet-journal-content " id="p_p_id_56_INSTANCE_u7D9_" >
+		<span id="p_56_INSTANCE_u7D9"></span>
+
+		<div class="portlet-body">
+
+
+
+	
+	
+	
+	
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+		
+
+		
+			
+			
+
+				
+
+				<div class="portlet-borderless-container" style="">
+					
+
+					
+
+
+	<div class="portlet-body">
+
+
+
+	
+		
+			
+			
+				
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+				
+
+				
+					
+					
+						
+
+
+	
+	
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+			
+			
+				<div class="portlet-msg-error">
+					El contenido web seleccionado ya no existe.
+				</div>
+			
+		
+	
+	
+	
+
+
+
+
+
+
+
+	
+
+					
+				
+			
+			
+		
+	
+	
+
+
+
+	</div>
+
+				</div>
+
+				
+			
+		
+	
+
+
+	
+
+
+
+
+
+			
+		</div>
+	</div>
+
+
+
+
+-->
+					<!--Pre 
+					-->
+					<!--Desarrollo-->
+					
+					
+				
+				
+				<div class="portlet-dropzone empty portlet-column-content portlet-column-content-last" id="layout-column_column-3"></div>
+			</div>
+		</div>
+	</div>
+
+
+
+	
+
+
+
+
+
+
+
+<form action="#" id="hrefFm" method="post" name="hrefFm">
+	<span></span>
+</form>
+                    </div>
+    </div>
+
+<div id="page" class="hfeed" style="z-index:1"><!-- #branding -->
+    <div id="main">
+
+    <footer id="colophon" role="contentinfo">
+    
+    <div style="">
+        <img src="/nuevo-theme/images/sri/BARRA-ESCUDO.JPG" width="958" height="62">
+        <div id="footer">
+            <div id="links" style="text-align:left">
+                <div class="first block">
+                    <dl>
+                        <dt>Presidencia</dt>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.presidencia.gob.ec%2Fel-presidente%2F" target="_blank">El Presidente</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.presidencia.gob.ec" target="_blank">La Presidencia</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.presidencia.gob.ec%2Fpalacio-de-gobierno%2F" target="_blank">Palacio de Gobierno</a></dd>
+                        <dt class="vice">Vicepresidencia</dt>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.vicepresidencia.gob.ec%2Fvicepresidente%2F" target="_blank">El Vicepresidente</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.vicepresidencia.gob.ec" target="_blank">La Vicepresidencia</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.vicepresidencia.gob.ec%2Fprogramas%2F" target="_blank">Programas / Servicios</a></dd>
+                    </dl>
+                </div>
+                <div class="block">
+                    <dl>
+                        <dt>Secretar&iacute;as Nacionales</dt>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.administracionpublica.gob.ec" target="_blank">Administraci&oacute;n P&uacute;blica</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.comunicacion.gob.ec" target="_blank">Comunicaci&oacute;n</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.politica.gob.ec" target="_blank">Gesti&oacute;n de la Pol&iacute;tica</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.planificacion.gob.ec" target="_blank">Planificaci&oacute;n y Desarrollo</a></dd>
+                        <dd>&nbsp;</dd>
+                        <dt>Secretar&iacute;as</dt>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.Agua.gob.ec" target="_blank">Agua</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.educacionsuperior.gob.ec" target="_blank">Educaci&oacute;n Superior, Ciencia, Tecnolog&iacute;a e Innovaci&oacute;n</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.desarrolloamazonico.gob.ec" target="_blank">Desarrollo Amaz&oacute;nico</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.gestionderiesgos.gob.ec" target="_blank">Gesti&oacute;n de Riesgos</a></dd>
+                    </dl>
+                </div>
+                <div class="block">
+                    <dl>
+                        <dt>Ministerios Coordinadores</dt>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.desarrollosocial.gob.ec" target="_blank">Desarrollo Social</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.politicaeconomica.gob.ec" target="_blank">Pol&iacute;tica Econ&oacute;mica</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.produccion.gob.ec" target="_blank">Producci&oacute;n, Empleo y Competitividad</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.sectoresestrategicos.gob.ec" target="_blank">Sectores Estrat&eacute;gicos</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.seguridad.gob.ec" target="_blank">Seguridad</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.conocimiento.gob.ec" target="_blank">Conocimiento</a></dd>
+                    </dl>
+                </div>
+                <div class="block">
+                    <dl>
+                        <dt>Ministerios</dt>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.agricultura.gob.ec" target="_blank">Agricultura, Ganader&iacute;a, Acuacultura y Pesca</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.ambiente.gob.ec" target="_blank">Ambiente</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.comercioexterior.gob.ec" target="_blank">Comercio Exterior</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.culturaypatrimonio.gob.ec" target="_blank">Cultura y Patrimonio</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.defensa.gob.ec" target="_blank">Defensa Nacional</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.deporte.gob.ec" target="_blank">Deporte</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.habitatyvivienda.gob.ec" target="_blank">Desarrollo Urbano y Vivienda</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.educacion.gob.ec" target="_blank">Educaci&oacute;n</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.energia.gob.ec" target="_blank">Electricidad y Energ&iacute;a Renovable</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.finanzas.gob.ec" target="_blank">Finanzas</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.inclusion.gob.ec" target="_blank">Inclusi&oacute;n Econ&oacute;mica y Social</a></dd>
+                    </dl>
+                </div>
+                <div class="last block">
+                    <dl>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.industrias.gob.ec" target="_blank">Industrias y Productividad</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.ministeriointerior.gob.ec" target="_blank">Interior</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.justicia.gob.ec" target="_blank">Justicia, Derechos Humanos y Cultos</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.recursosnaturales.gob.ec" target="_blank">Recursos Naturales no Renovables</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.cancilleria.gob.ec" target="_blank">Relaciones Exteriores y Movilidad Humana</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.relacioneslaborales.gob.ec" target="_blank">Relaciones Laborales</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.salud.gob.ec" target="_blank">Salud P&uacute;blica</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.telecomunicaciones.gob.ec" target="_blank">Telecomunicaciones y de la Sociedad de la Informaci&oacute;n</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.obraspublicas.gob.ec" target="_blank">Transporte y Obras P&uacute;blicas</a></dd>
+                        <dd><a href="http://adserver.contactociudadano.gob.ec/www/delivery/ck.php?oaparams=2__bannerid=7__zoneid=922__cb=7444f7e204__oadest=http%3A%2F%2Fwww.turismo.gob.ec" target="_blank">Turismo</a></dd>
+                    </dl>
+                </div>
+            </div>      
+        </div>
+                    <div class="base_foo">
+                        <div class="logo1">
+                            <img title="SRI" alt="SRI" class="logo22" src="/nuevo-theme/images/sri/sri-logo.png" width="87" height="55"> 
+                        </div> 
+                        <div class="logo2">
+                            <img title="Ecuador Ama la Vida" alt="Ecuador Ama la Vida" width="245" height="67" src="/nuevo-theme/images/sri/ecuadoramalavida_logo.png">
+                        </div>
+                        <div class="logradouro">Salinas N17-203 y Santiago, Edif Alhambra<br>
+                            Tel&eacute;fono: 1700-SRI SRI (774 774)<br>           Quito - Ecuador            
+                        </div>
+                    </div>      
+            
+    </div><!-- #page -->
+    </footer><!-- #colophon -->
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+	
+
+	
+
+
+
+	
+
+
+	
+
+
+
+	
+
+
+
+	
+
+	
+
+
+
+	
+
+
+	
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+// <![CDATA[
+
+	Liferay.Util.addInputFocus();
+
+	
+		Liferay.Portlet.runtimePortletIds = ['103'];
+	
+
+	
+
+	
+		
+		
+
+			
+
+			
+		
+	
+
+// ]]>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+// <![CDATA[
+
+				Liferay.Portlet.onLoad(
+					{
+						canEditTitle: false,
+						columnPos: 0,
+						isStatic: 'end',
+						namespacedId: 'p_p_id_103_',
+						portletId: '103',
+						refreshURL: '\x2fc\x2fportal\x2frender_portlet\x3fp_l_id\x3d1491766\x26p_p_id\x3d103\x26p_p_lifecycle\x3d0\x26p_t_lifecycle\x3d0\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26p_p_col_id\x3d\x26p_p_col_pos\x3d0\x26p_p_col_count\x3d0\x26p_p_isolated\x3d1\x26currentURL\x3d\x252Fweb\x252F10138\x252F383'
+					}
+				);
+			
+				Liferay.Portlet.onLoad(
+					{
+						canEditTitle: false,
+						columnPos: 0,
+						isStatic: 'end',
+						namespacedId: 'p_p_id_73_',
+						portletId: '73',
+						refreshURL: '\x2fc\x2fportal\x2frender_portlet\x3fp_l_id\x3d1491766\x26p_p_id\x3d73\x26p_p_lifecycle\x3d0\x26p_t_lifecycle\x3d0\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26p_p_col_id\x3d\x26p_p_col_pos\x3d0\x26p_p_col_count\x3d0\x26p_p_isolated\x3d1\x26currentURL\x3d\x252Fweb\x252F10138\x252F383'
+					}
+				);
+			
+				Liferay.Portlet.onLoad(
+					{
+						canEditTitle: false,
+						columnPos: 0,
+						isStatic: 'end',
+						namespacedId: 'p_p_id_56_INSTANCE_APCEGcdGe06e_',
+						portletId: '56_INSTANCE_APCEGcdGe06e',
+						refreshURL: '\x2fc\x2fportal\x2frender_portlet\x3fp_l_id\x3d1491766\x26p_p_id\x3d56_INSTANCE_APCEGcdGe06e\x26p_p_lifecycle\x3d0\x26p_t_lifecycle\x3d0\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26p_p_col_id\x3d\x26p_p_col_pos\x3d0\x26p_p_col_count\x3d0\x26p_p_isolated\x3d1\x26currentURL\x3d\x252Fweb\x252F10138\x252F383'
+					}
+				);
+			
+				Liferay.Portlet.onLoad(
+					{
+						canEditTitle: false,
+						columnPos: 0,
+						isStatic: 'end',
+						namespacedId: 'p_p_id_56_INSTANCE_u7D9_',
+						portletId: '56_INSTANCE_u7D9',
+						refreshURL: '\x2fc\x2fportal\x2frender_portlet\x3fp_l_id\x3d1491766\x26p_p_id\x3d56_INSTANCE_u7D9\x26p_p_lifecycle\x3d0\x26p_t_lifecycle\x3d0\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26p_p_col_id\x3d\x26p_p_col_pos\x3d0\x26p_p_col_count\x3d0\x26p_p_isolated\x3d1\x26currentURL\x3d\x252Fweb\x252F10138\x252F383'
+					}
+				);
+			
+				Liferay.Portlet.onLoad(
+					{
+						canEditTitle: false,
+						columnPos: 0,
+						isStatic: 'end',
+						namespacedId: 'p_p_id_noticiasDestacadas_WAR_NoticiasSriPortlet_INSTANCE_sEdMxKC1x7ps_',
+						portletId: 'noticiasDestacadas_WAR_NoticiasSriPortlet_INSTANCE_sEdMxKC1x7ps',
+						refreshURL: '\x2fc\x2fportal\x2frender_portlet\x3fp_l_id\x3d1491766\x26p_p_id\x3dnoticiasDestacadas_WAR_NoticiasSriPortlet_INSTANCE_sEdMxKC1x7ps\x26p_p_lifecycle\x3d0\x26p_t_lifecycle\x3d0\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26p_p_col_id\x3d\x26p_p_col_pos\x3d0\x26p_p_col_count\x3d0\x26p_p_isolated\x3d1\x26currentURL\x3d\x252Fweb\x252F10138\x252F383'
+					}
+				);
+			
+				Liferay.Portlet.onLoad(
+					{
+						canEditTitle: false,
+						columnPos: 0,
+						isStatic: 'end',
+						namespacedId: 'p_p_id_noticiasDestacadas_WAR_NoticiasSriPortlet_INSTANCE_or03oOylMdYw_',
+						portletId: 'noticiasDestacadas_WAR_NoticiasSriPortlet_INSTANCE_or03oOylMdYw',
+						refreshURL: '\x2fc\x2fportal\x2frender_portlet\x3fp_l_id\x3d1491766\x26p_p_id\x3dnoticiasDestacadas_WAR_NoticiasSriPortlet_INSTANCE_or03oOylMdYw\x26p_p_lifecycle\x3d0\x26p_t_lifecycle\x3d0\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26p_p_col_id\x3d\x26p_p_col_pos\x3d0\x26p_p_col_count\x3d0\x26p_p_isolated\x3d1\x26currentURL\x3d\x252Fweb\x252F10138\x252F383'
+					}
+				);
+			
+				Liferay.Portlet.onLoad(
+					{
+						canEditTitle: false,
+						columnPos: 0,
+						isStatic: 'end',
+						namespacedId: 'p_p_id_56_INSTANCE_i5QH_',
+						portletId: '56_INSTANCE_i5QH',
+						refreshURL: '\x2fc\x2fportal\x2frender_portlet\x3fp_l_id\x3d1491766\x26p_p_id\x3d56_INSTANCE_i5QH\x26p_p_lifecycle\x3d0\x26p_t_lifecycle\x3d0\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26p_p_col_id\x3dcolumn-2\x26p_p_col_pos\x3d0\x26p_p_col_count\x3d1\x26p_p_isolated\x3d1\x26currentURL\x3d\x252Fweb\x252F10138\x252F383'
+					}
+				);
+			AUI().use('aui-base', 'liferay-menu', 'liferay-notice', 'liferay-poller', function(A) {(function() {
+	Liferay.Util.addInputType();
+
+	Liferay.Portlet.ready(
+		function(portletId, node) {
+			Liferay.Util.addInputType(node);
+		}
+	);
+})();(function() {
+	new Liferay.Menu();
+
+	var liferayNotices = Liferay.Data.notices;
+
+	for (var i = 1; i < liferayNotices.length; i++) {
+		new Liferay.Notice(liferayNotices[i]);
+	}
+
+	
+})();});
+// ]]>
+</script>
+
+
+
+
+
+
+
+
+
+<script src="http://www.sri.gob.ec/nuevo-theme/js/main.js?browserId=other&amp;minifierType=js&amp;languageId=es_ES&amp;b=6120&amp;t=1428423238000" type="text/javascript"></script>
+
+
+
+	
+
+	
+
+	<script type="text/javascript">
+		// <![CDATA[
+			
+
+			
+		// ]]>
+	</script>
+
+
+
+
+
+
+</html>
+

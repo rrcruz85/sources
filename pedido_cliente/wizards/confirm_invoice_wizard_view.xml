@@ -11,9 +11,9 @@
                     <field name="invoice_id" invisible='1'/>
                     <field name="pedido_id" invisible='1'/>
                     <field name="detalle_id" invisible='1'/>
-                    <field name="line_number" readonly="1"/>
+                    <field name="line_number"/>
                     <field name="type" required="1"/>
-                    <field name="supplier_id" required="1" context="{'default_supplier': True, 'default_customer': False}"/>
+                    <field name="supplier_id" required="1" domain="[('supplier','=', True)]" context="{'default_supplier': True, 'default_customer': False}"/>
                     <field name="product_id" required="1" on_change="on_change_variety(pedido_id,supplier_id,product_id,variant_id)"/>
                     <field name="variant_id"  required="1" domain="[('product_id','=', product_id)]" on_change="on_change_variety(pedido_id,supplier_id,product_id,variant_id)"/>
                     <field name="length"  required="1"/>

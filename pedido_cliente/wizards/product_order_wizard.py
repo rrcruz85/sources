@@ -113,12 +113,7 @@ class product_order_wizard_info(osv.osv_memory):
         'qty'                   : fields.integer('Quantity'),
         'is_box_qty'         : fields.boolean('Box Packing'),
         'bunch_per_box'         : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.selection([('6', '6'),
-                                                    ('10', '10'),
-                                                    ('12', '12'),
-                                                    ('15', '15'),
-                                                    ('20', '20'),
-                                                    ('25', '25')], 'Stems x Bunch'),
+        'bunch_type'            : fields.integer('Stems x Bunch'),
         'uom'                   : fields.selection([('FB', 'FB'),
                                                            ('HB', 'HB'),
                                                            ('QB', 'QB'),
@@ -150,7 +145,7 @@ class product_order_wizard_info(osv.osv_memory):
 
     _defaults = {
         'type': 'open_market',
-        'bunch_type'       : '25',
+        'bunch_type'       : 25,
         'bunch_per_box' : 10,
         'uom'                 : 'HB',
         'wizard_id'          : lambda self, cr, uid, context : context['wizard_id'] if context and 'wizard_id' in context else None,
@@ -158,6 +153,14 @@ class product_order_wizard_info(osv.osv_memory):
         'request_id'              : lambda self, cr, uid, context : context['request_id'] if context and 'request_id' in context else 0,
         'product_variant_id'              : lambda self, cr, uid, context : context['product_variant_id'] if context and 'product_variant_id' in context else 0,
 	}
+
+    def _check_bunch_type(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.bunch_type > 0 and obj.bunch_type <= 25
+
+    _constraints = [
+        (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
+    ]
 
 product_order_wizard_info()
 
