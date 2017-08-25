@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <report auto="False"
+                id="oemedical_patient_MSP"
+                model="oemedical.patient.evaluation"
+                name="oemedical.patient.MSPprint.webkit"
+                file="oemedical/report/oemedical_patient_eval_MSP.mako"
+                string="Formato MSP"
+                header="False"
+				report_type="webkit" />
+    <!--webkit_header="oemedical_header_webkit"-->
+    </data>
+</openerp>

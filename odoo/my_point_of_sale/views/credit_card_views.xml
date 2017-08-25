@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!-- ======================================================================================
+		POS CREDIT CARD
+		Model: pos.credit_card
+		=========================================================================================== -->
+
+        <!-- FORM VIEW -->
+        <record model="ir.ui.view" id="my_point_of_sale_pos_credit_card_form_view">
+            <field name="name">my_point_of_sale_pos_credit_card_form_view</field>
+            <field name="model">pos.credit_card</field>
+            <field name="arch" type="xml">
+                <form string="POS Credit Card">
+                    <sheet>
+                        <group>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="is_active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- TREE VIEW -->
+        <record id="my_point_of_sale_pos_credit_card_tree_view" model="ir.ui.view">
+            <field name="name">my_point_of_sale_pos_credit_card_tree_view</field>
+            <field name="model">pos.credit_card</field>
+            <field name="arch" type="xml">
+                <tree string="POS Credit Card">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="is_active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- ACTION -->
+        <record id="my_point_of_sale_pos_credit_card_action" model="ir.actions.act_window">
+            <field name="name">Credit Card</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pos.credit_card</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Credit Cards"
+                  id="my_point_of_sale_pos_credit_card_menu_item"
+                  action="my_point_of_sale_pos_credit_card_action"
+                  parent="point_of_sale.menu_point_config_product"
+                  sequence="20"/>
+    </data>
+</openerp>

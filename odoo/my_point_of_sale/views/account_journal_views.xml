@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+    	<!-- ======================================================================================
+		ACCOUNT JOURNAL
+		Model: account.journal
+		=========================================================================================== -->
+
+	    <!-- FORM VIEW -->
+        <!--<record id="account_journal_pos_user_form_view_inherit" model="ir.ui.view">
+            <field name="name">account_journal_pos_user_form_view_inherit</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="point_of_sale.view_account_journal_pos_user_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='self_checkout_payment_method']" position="after">
+                    <field name="card_payment"/>
+                    <field name="check_payment"/>
+                </xpath>
+            </field>
+        </record>-->
+	</data>
+</openerp>

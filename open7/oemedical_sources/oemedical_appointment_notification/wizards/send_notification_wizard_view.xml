@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!--
+        Wizard to create an email quickly...
+        Model: oemedical.send_notification_wizard
+        -->
+
+        <record id="oemedical_send_notification_wizard_form_view" model="ir.ui.view">
+            <field name="name">oemedical_send_notification_wizard_form_view</field>
+            <field name="model">oemedical.send_notification_wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Crear correo electrónico..." version="7.0">
+                    <div class="oe_right" style="display: flex;">
+                        <span style="width: 200px;padding: 5px 5px;margin: 0px;text-align: right;">
+                            Usar plantilla:
+                        </span>
+
+                        <field name="email_template_id" col="1" colspan="8"
+                               on_change="on_change_template(email_template_id)"/>
+
+                        <div>
+                            <button icon="/email_template/static/src/img/email_template_save.png" type="object"
+                                    name="save_as_template" string=" " class="oe_link"
+                                    help="Salvar como plantilla..."/>
+                        </div>
+                    </div>
+
+                    <group col="8">
+                        <group>
+                            <field name="subject"/>
+
+                            <!--widget="many2many_tags_email"-->
+                            <field name="email_to" context="{'force_email':True, 'show_email':True}">
+                                <tree string="Paciente">
+                                    <field name="name"/>
+                                    <field name="email"/>
+                                </tree>
+                            </field>
+
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </group>
+                    </group>
+
+                    <h3>Mensaje...</h3>
+                    <field name="body_html" widget='html'/>
+
+                    <footer>
+                        <button name="action_create" string="Enviar" type="object" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="oemedical_action_send_mail_wizard" model="ir.actions.act_window">
+            <field name="name">Crear correo electrónico...</field>
+            <field name="res_model">oemedical.send_notification_wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!--<menuitem name="Send email to patients..."
+                  id="oemedical_send_notification_wizard_menu_item"
+				  parent="oemedical.oemedical_patient_root"
+				  action="oemedical_action_send_mail_wizard"
+                  sequence="100"/>-->
+
+        <!--<act_window name="Send notifications..." id="oemedical_send_notification_launch_wizard_action"
+					res_model="oemedical.send_notification_wizard" src_model="oemedical.appointment"
+		            view_mode="form" view_type="form" target="new" key2="client_action_multi"/>-->
+    </data>
+</openerp>

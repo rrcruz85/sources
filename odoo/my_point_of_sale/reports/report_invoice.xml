@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+        <template id="my_point_of_sale_report_invoice_document_inherit" inherit_id="account.report_invoice_document">
+            <xpath expr="//table[2]/tr[3]" position="replace">
+                <tr class="border-black">
+                    <td><strong>Total</strong></td>
+                    <td class="text-right">
+                        <span t-field="o.amount_total_with_iva_compensation"
+                              t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                    </td>
+                </tr>
+            </xpath>
+
+            <xpath expr="//table[2]/tr[2]" position="after">
+                <tr>
+                    <td>IVA Compensation</td>
+                    <td class="text-right">
+                        <span t-field="o.iva_compensation"
+                              t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                    </td>
+                </tr>
+            </xpath>
+        </template>
+    </data>
+</openerp>

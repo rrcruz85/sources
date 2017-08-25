@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_purchase_line_wzd_tree" model="ir.ui.view">
+            <field name="name">purchase.lines.wzd.tree</field>
+            <field name="model">purchase.lines.wzd</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Purchase Lines" editable="top"> <!-- colors="red: request_qty &gt; total_qty; green: request_qty == total_qty; MediumVioletRed : request_qty &lt; total_qty"-->
+                    <field name="detalle_id" invisible="1"/>
+                    <field name="pedido_id" invisible="1"/>
+                    <field name="request_qty" invisible="1"/>
+                    <field name="line"/>
+                    <field name="type"/>
+                    <field name="supplier_id"/>
+                    <field name="product_id"/>
+                    <field name="variant_id"/>
+                    <field name="lenght"/>
+                    <field name="subclient_id"/>
+                    <field name="total_qty_purchased"/>
+                    <field name="bunch_type"/>
+                    <field name="bunch_per_box"/>
+                    <field name="uom"/>
+                    <field name="qty"/>
+                    <field name="stimated_qty"/>
+                    <field name="purchase_price"/>
+                    <field name="farm_total" sum="Total Farm"/>
+                    <field name="sale_price"/>
+                    <field name="total" sum="Total Sale"/>
+                    <field name="profit" sum="Total Profit"/>
+                    <field name="origin_id"/>
+                    <field name="sucursal_id"/>
+                    <button name="edit_lines" string="Edit" type="object" icon="gtk-edit"/>
+                    <button name="delete_lines" string="Delete" type="object" icon="gtk-close"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_detalle_line_wzd_form" model="ir.ui.view">
+            <field name="name">detalle.line.wzd.form</field>
+            <field name="model">detalle.line.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Detalle Line" version="7.0">
+                    <sheet>
+                        <group col="8" colspan="8">
+                            <field name="detalle_id" invisible="1"/>
+                            <field name="cliente_id" invisible="1"/>
+                            <field name="supplier_ids" invisible="1"/>
+                            <newline/>
+                            <field name="type" required="1"/>
+                            <newline/>
+                            <field name="supplier_id" context="{'default_supplier': True, 'default_customer': False,'get_supplier_ids' : supplier_ids}"
+                                   colspan="4" required="1" domain="[('supplier','=',True)]"/>
+                            <newline/>
+                            <field name="product_id" required="1"/>
+                            <field name="variant_id" colspan="4" required="1" domain="[('product_id', '=', product_id)]"/>
+                            <newline/>
+                            <field name="length_ids" context="{ 'detalle_id': active_id}">
+                                <tree string="Length" editable="bottom">
+                                    <field name="detalle_id" invisible="1"/>
+                                    <field name="length" required="1"/>
+                                    <field name="purchase_price"/>
+                                </tree>
+                                <form string="Length">
+                                    <field name="detalle_id" invisible="1"/>
+                                    <field name="length"/>
+                                    <field name="purchase_price"/>
+                                </form>
+                            </field>
+                            <newline/>
+                            <field name="is_box_qty" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price,length_ids)"/>
+                            <newline/>
+                            <field name="box_qty" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price,length_ids)" attrs="{'invisible': [('is_box_qty', '=', False)]}"/>
+                            <field name="tale_qty" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price,length_ids)" attrs="{'invisible': [('is_box_qty', '=', True)]}"/>
+                            <field name="bunch_per_box" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price,length_ids)"/>
+                            <newline/>
+                            <field name="uom" required="1" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price,length_ids)"/>
+                            <field name="bunch_type" required="1" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price,length_ids)"/>
+                            <newline/>
+                            <field name="stimated_stems" colspan="4" attrs="{'invisible': [('is_box_qty', '=', False)]}"/>
+                            <newline/>
+                            <field name="qty_bxs" colspan="4"/>
+                            <newline/>
+                            <field name="full_boxes" colspan="4"/>
+                            <newline/>
+                            <field name="sale_price" colspan="4" required="1" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price,length_ids)"/>
+                            <newline/>
+                            <field name="origin" colspan="4"/>
+                            <newline/>
+                            <field name="subclient_id" colspan="4" required="1" domain="[('customer','=',True)]" context="{'default_supplier': False, 'default_customer': True,'subcliente_de' : cliente_id}"/>
+                            <newline/>
+                            <field name="sucursal_id" colspan="4"/>
+                            <newline/>
+                            <field name="total_purchase" colspan="4"/>
+                            <newline/>
+                            <field name="total_sale" colspan="4"/>
+                            <newline/>
+                            <field name="profit" colspan="4"/>
+                        </group>
+                        <footer>
+                            <button name="save" string="Salvar" type="object" class="oe_highlight"/>
+                            or
+                            <button string="Cancelar" class="oe_link" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

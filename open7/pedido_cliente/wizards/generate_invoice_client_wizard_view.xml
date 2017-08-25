@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="invoice_client_line_wizard_view_tree" model="ir.ui.view">
+            <field name="name">invoice_client_line_wizard_view_tree</field>
+            <field name="model">invoice.client.line.wizard</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Sale Lines" editable="bottom">
+                    <field name="invoice_id" invisible='1'/>
+                    <field name="pedido_id" invisible='1'/>
+                    <field name="detalle_id" invisible='1'/>
+                    <field name="line_number" readonly="1" required="1"/>
+                    <field name="type"  required="1"/>
+                    <field name="supplier_id" required="1"/>
+                    <field name="product_id" required="1" on_change="on_change_variety(pedido_id,supplier_id,product_id,variant_id)"/>
+                    <field name="variant_id"  required="1" domain="[('product_id','=', product_id)]" on_change="on_change_variety(pedido_id,supplier_id,product_id,variant_id)"/>
+                    <field name="length"  required="1" />
+                    <field name="subclient_id"  required="1" />
+                    <field name="uom"  required="1" on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"/>
+                    <field name="is_box_qty"   on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"/>
+                    <field name="qty" on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"
+                           required="1"/>
+                    <field name="bunch_per_box" on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"
+                           required="1"/>
+                    <field name="bunch_type" on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"
+                           required="1"/>
+                    <field name="qty_bxs" />
+                    <field name="boxes" readonly="1" sum="Boxes"/>
+                    <field name="purchase_price" on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"
+                           required="1"/>
+                    <field name="total_purchase" readonly="1" sum="Total"/>
+                    <field name="sale_price" on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"
+                           required="1"/>
+                    <field name="total_sale" readonly="1" sum="Total"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="invoice_client_line_wizard_view_form" model="ir.ui.view">
+            <field name="name">invoice_client_line_wizard_view_form</field>
+            <field name="model">invoice.client.line.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sale Lines">
+                    <field name="invoice_id" invisible='1'/>
+                    <field name="detalle_id" invisible='1'/>
+                    <field name="pedido_id" invisible='1'/>
+                    <field name="product_id" readonly="1" required="1"/>
+                    <field name="variant_id" readonly="1" required="1" domain="[('product_id','=', product_id)]"/>
+                    <field name="length" readonly="1" required="1"/>
+                    <field name="subclient_id" readonly="1" required="1"/>
+                    <field name="uom" readonly="1" required="1"
+                           on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"/>
+                    <field name="is_box_qty" readonly="1"
+                           on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"/>
+                    <field name="bunch_per_box" readonly="1"
+                           on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"
+                           required="1"/>
+                    <field name="bunch_type" readonly="1"
+                           on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"
+                           required="1"/>
+                    <field name="qty" readonly="1"
+                           on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"
+                           required="1"/>
+                    <field name="boxes" readonly="1" sum="Boxes"/>
+                    <field name="purchase_price" readonly="1"
+                           on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"
+                           required="1"/>
+                    <field name="total_purchase" readonly="1" sum="Total"/>
+                    <field name="sale_price" readonly="1"
+                           on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"
+                           required="1"/>
+                    <field name="total_sale" readonly="1" sum="Total"/>
+                </form>
+            </field>
+        </record>
+        
+        <!-- FORM VIEW -->
+        <record id="invoice_client_wizard_view_form" model="ir.ui.view">
+            <field name="name">invoice_client_wizard_view_form</field>
+            <field name="model">invoice.client.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Generate Invoice" version="7.0">
+                    <sheet>
+                        <group col="8">
+                            <field name="pedido_id" colspan="4"  attrs="{'readonly':[('next', '=', True)]}" required="1" on_change="on_change_pedido(pedido_id)" context="{'from_wizard_request':1}"/>
+                            <newline/>
+							<field name="client_id" colspan="4" readonly="1" />
+                            <newline/>
+							<field name="line_ids" attrs="{'readonly':['|',('next', '=', True), ('pedido_id', '=', False)]}" colspan="8" context="{'invoice_id':active_id,'client_id': client_id,'lines':line_ids,'pedido_id': pedido_id}"/>
+                            <newline/>
+                            <field name="box_line_ids" attrs="{'invisible':[('next', '=', False)]}" colspan="8" on_change="on_change_box_line_ids(box_line_ids)" context="{'invoice_id':active_id,'lines': line_ids, 'pedido_id': pedido_id}">
+                                <tree string="Box Lines">
+                                    <field name="invoice_id" invisible='1'/>
+                                    <field name="boxes"/>
+                                    <field name="line_wzd_ids" widget="many2many_tags"/>
+                                </tree>
+                                <form string="Box Lines">
+                                    <field name="invoice_id" invisible='1'/>
+                                    <field name="boxes"/>
+                                    <newline/>
+                                    <field name="line_wzd_ids" context="{'lines':line_wzd_ids,'client_invoice':True,'invoice_id':invoice_id}">
+                                        <tree string="Purchase Lines" editable="bottom">
+                                            <field name="invoice_id" invisible='1'/>
+                                            <field name="pedido_id" invisible='1'/>
+                                            <field name="detalle_id" invisible='1'/>
+                                            <field name="supplier_id" invisible='1'/>
+                                            <field name="line_number" readonly="1"/>
+                                            <field name="type" readonly="1"/>
+                                            <field name="product_id" readonly="1"/>
+                                            <field name="variant_id" readonly="1"/>
+                                            <field name="length" readonly="1"/>
+                                            <field name="uom" readonly="1"/>
+                                            <field name="is_box_qty" readonly="1"/>
+                                            <field name="qty" readonly="1"/>
+                                            <field name="bunch_per_box" readonly="1"/>
+                                            <field name="bunch_type" readonly="1"/>
+                                            <field name="qty_bxs" />
+                                            <field name="boxes" readonly="1" sum="Boxes"/>
+                                            <field name="purchase_price" readonly="1"/>
+                                            <field name="total_purchase" readonly="1" sum="Total"/>
+                                            <field name="sale_price" readonly="1"/>
+                                            <field name="total_sale" readonly="1" sum="Total"/>
+                                        </tree>
+                                        <form string="Purchase Lines">
+                                            <field name="invoice_id" invisible='1'/>
+                                            <field name="pedido_id" invisible='1'/>
+                                            <field name="detalle_id" invisible='1'/>
+                                            <field name="supplier_id" invisible='1'/>
+                                            <field name="line_number" readonly="1"/>
+                                            <field name="type" readonly="1"/>
+                                            <field name="product_id" readonly="1"/>
+                                            <field name="variant_id" readonly="1"/>
+                                            <field name="length" readonly="1"/>
+                                            <field name="uom" readonly="1"/>
+                                            <field name="is_box_qty" readonly="1"/>
+                                            <field name="qty" readonly="1"/>
+                                            <field name="bunch_per_box" readonly="1"/>
+                                            <field name="bunch_type" readonly="1"/>
+                                            <field name="boxes" readonly="1" sum="Boxes"/>
+                                            <field name="purchase_price" readonly="1"/>
+                                            <field name="total_purchase" readonly="1" sum="Total"/>
+                                            <field name="sale_price" readonly="1"/>
+                                            <field name="total_sale" readonly="1" sum="Total"/>
+                                        </form>
+                                    </field>
+                                </form>
+                            </field>
+                            <newline/>
+                            <field name="account_id" colspan="4" required="1"/>
+                            <field name="date_invoice" colspan="4" required="1"/>
+                            <newline/>
+                            <field name="fiscal_position" required="1" colspan="4"/>
+                            <field name="period_id" required="1" colspan="4"/>
+                            <newline/>                            
+                            <field name="currency_id" required="1" colspan="4"/>
+                            <field name="journal_id" required="1" colspan="4"/>
+                            <newline/>
+                            <field name="company_id" required="1" colspan="4"/>
+                            <field name="user_id" required="1" colspan="4"/>
+                            <field name="next" invisible="1"/>
+						</group>
+                        <footer>
+                            <button name="go_next" attrs="{'invisible':[('next', '=', True)]}" string="Next" type="object" class="oe_highlight" context="{'from_wizard_request':True}"/>
+                            <button name="go_previous" attrs="{'invisible':[('next', '=', False)]}" string="Previous" type="object" class="oe_highlight" context="{'from_wizard_request':True}"/>
+                            <button name="generate_invoice" attrs="{'invisible':[('next', '=', False)]}"  string="Generate Invoice" type="object" class="oe_highlight" context="{'line_ids': line_ids,'from_wizard_request':True}"/>
+                        	or <button string="Cancel" class="oe_link" special="cancel" />
+	            		</footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_generate_invoice_client_wizard" model="ir.actions.act_window">
+            <field name="name">Generate Client Invoice</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">invoice.client.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'type': 'out_invoice'}</field>
+            <field name="view_id" ref="invoice_client_wizard_view_form"/>
+        </record>
+
+        <menuitem name="Generar Factura Cliente" action="action_generate_invoice_client_wizard" id="menu_generate_invoice_client_wizard" parent="menu_pedido_cliente_menu" sequence="6"/>
+
+    </data>
+</openerp>

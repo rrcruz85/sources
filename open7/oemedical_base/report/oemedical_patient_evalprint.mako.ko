@@ -1,0 +1,267 @@
+## -*- coding: utf-8 -*-
+<!DOCTYPE html SYSTEM "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <style type="text/css">
+            .overflow_ellipsis {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+			.header1 {
+				position:absolute;
+				left:0.0cm;
+				top:0.0cm;
+				width:5cm;
+			}
+
+			.header2 {
+				position:absolute;
+				left:11cm;
+				top:0.0cm;
+				width:10cm;
+				font-size:14pt;
+			}
+			table.paciente1 {
+		        border-bottom: 1pt solid #000000;
+        		border-right: 1pt solid #000000;
+        		border-top: 1pt solid #000000;
+        		border-left: 1pt solid #000000;
+				left:0.0cm;
+				top:0.0cm;
+				width:21cm;
+			}
+			table.paciente2 {
+		        border-bottom: 1pt solid #000000;
+        		border-right: 1pt solid #000000;
+        		border-top: 1pt solid #000000;
+        		border-left: 1pt solid #000000;
+				left:0.0cm;
+				top:0.0cm;
+				width:21cm;
+			}
+			table.presuntivo {
+		        border-bottom: 1pt solid #000000;
+        		border-right: 1pt solid #000000;
+        		border-top: 1pt solid #000000;
+        		border-left: 1pt solid #000000;
+				left:0.0cm;
+				top:0.0cm;
+				width:21cm;
+				font-size:12pt;
+			}
+            ${css}
+        </style>
+    </head>
+    <body>
+        <!-- we use div with css instead of table for tabular data because div do not cut rows at half at page breaks -->
+        %for o in objects:
+        <table class="header1" style="border-bottom: 0px solid black;width:100%">
+            <tr>
+                <td><img src="data:image/jpeg;base64,${company.logo}" width="300px" height="100px"/></td>
+            </tr>
+        </table>
+        <table class="header2" style="width:110%">
+            <tr>
+                <td style="text-align:right">${company.partner_id.street or ''|entity}</td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Telf: ${company.partner_id.phone or ''|entity} </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">email: ${company.partner_id.email or ''|entity}</td>
+            </tr>
+        </table>
+        	<div class="act_as_table data_table" style="width: 1205px; margin-top:3cm;">
+            	<div class="act_as_row labels">
+                	<div class="act_as_cell" style="font-size: 16pt; text-align: center"><b>Dr(a) ${o.doctor.physician_id.name}</b></div>
+                	<div class="act_as_cell" style="font-size: 16pt; text-align: center"><b>${o.doctor.specialty.name}</b></div>
+            	</div>
+        	</div>
+        	<div class="act_as_table data_table" style="width:1205px;margin-top:0.7cm;">
+            	<div class="act_as_row labels">
+                	<div class="act_as_cell" style="font-size:14pt;text-align:center;background-color:lightgray;">
+                		<b>${_('FICHA DE EVALUACION')}</b>
+                	</div>
+            	</div>
+        	</div>
+            <div class="act_as_table list_table" >
+                <div class="act_as_caption account_title">
+                	<table class="paciente1" style="width:176%">
+                		<thead>
+				    		<tr style="font-size:14pt;">
+    							<td style="width:35%;text-align:center;"><b>Paciente</b></td>
+    							<td style="width:15%;text-align:center;"><b>Cédula</b></td>
+    							<td style="width:15%;text-align:center;"><b>Género</b></td>
+    							<td style="width:20%;text-align:center;"><b>Fecha Nacimiento</b></td>
+    							<td style="width:15%;text-align:center;""><b>Tipo Sanguíneo</b></td>
+    						</tr>
+    					</thead>
+				        <tbody>
+				        	<tr style="font-size:14pt;">
+    	    					<td style="width:35%;text-align:center;">${o.patient_id.name or ''}</td>
+            					<td style="width:15%;text-align:center;">${o.patient_id.ced_ruc or ''}</td>
+            					%if o.patient_id.sex == 'f':
+	            					<td style="width:15%;text-align:center;">Femenino</td>
+            					%endif
+            					%if o.patient_id.sex == 'm':
+            						<td style="width:15%;text-align:center;">Masculino</td>
+            					%endif
+            					<td style="width:20%;text-align:center;">${o.patient_id.dob or ''}</td>
+            					<td style="width:15%;text-align:center;">${o.patient_id.blood_type or ''} ${o.patient_id.rh or ''}</td>
+            				</tr>
+        				</tbody>
+    				</table>
+                	<table class="paciente2" style="width:176%">
+                		<thead>
+				    		<tr style="border-collapse:collapse;font-size:14pt;">
+    							<td style="width:35%;text-align:center;"><b>Dirección</b></td>
+    							<td style="width:15%;text-align:center;"><b>Teléfono</b></td>
+    							<td style="width:15%;text-align:center;"><b>Cuidad</b></td>
+    							<td style="width:20%;text-align:center;"><b>Estado Civil</b></td>
+    							<td style="width:15%;text-align:center;""><b>Aseguradora</b></td>
+    						</tr>
+    					</thead>
+				        <tbody>
+				    	    <tr style="border-collapse:collapse;font-size:14pt;">
+    	    					<td style="width:35%;text-align:center;">${o.patient_id.street or ''}</td>
+            					<td style="width:15%;text-align:center;">${o.patient_id.phone or ''}</td>
+            					<td style="width:15%;text-align:center;">${o.patient_id.city or ''}</td>
+            					<td style="width:20%;text-align:center;">${o.patient_id.marital_status or ''}</td>
+            					<td style="width:15%;text-align:center;">${o.patient_id.cmp_pac or ''}</td>
+            				</tr>
+        				</tbody>
+    				</table>
+                </div>
+                <div class="act_as_thead">
+                    <div class="act_as_row labels">
+                        <div class="act_as_cell first_column" style="width:1205px;background-color:lightgray;margin-top:10px;font-size:14pt;">
+                        	<b>${_('MOTIVO DE CONSULTA')}</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act_as_tbody">
+                      <div class="act_as_row lines">
+                          <div class="act_as_cell first_column" style="width:1205px;font-size:14pt;">
+                          	${o.mdc_info or ''}
+                          </div>
+                      </div>
+                </div>
+                
+                <div class="act_as_thead">
+                    <div class="act_as_row labels">
+                        <div class="act_as_cell first_column" style="width: 1205px;background-color:lightgray;margin-top:10px;font-size:14pt;">
+                        	<b>${_('ENFERMEDAD ACTUAL')}</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act_as_tbody">
+                      <div class="act_as_row lines">
+                          <div class="act_as_cell first_column" style="width:1205px;font-size:14pt;">${o.eac_info or ''}</div>
+                      </div>
+                </div>
+
+                <div class="act_as_thead">
+                    <div class="act_as_row labels">
+                        <div class="act_as_cell first_column" style="width: 1205px;background-color:lightgray;margin-top:10px;font-size:14pt;">
+                        	<b>${_('EXAMEN FÍSICO')}</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act_as_tbody">
+                      <div class="act_as_row lines">
+                          <div class="act_as_cell first_column" style="width:1205px;font-size:14pt;">${o.ena_info or ''}</div>
+                      </div>
+                </div>
+
+                <div class="act_as_thead">
+                    <div class="act_as_row labels">
+                        <div class="act_as_cell first_column" style="width: 1205px;background-color:lightgray;margin-top:10px;font-size:14pt;">
+                        	<b>${_('LABORATORIO Y RAYOS X')}</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act_as_tbody">
+                      <div class="act_as_row lines">
+                          <div class="act_as_cell first_column" style="width:1205px;font-size:14pt;">${o.rxl_complaint or ''}</div>
+                      </div>
+                </div>
+
+                <div class="act_as_thead">
+                    <div class="act_as_row labels">
+                        <div class="act_as_cell first_column" style="width: 1205px;background-color:lightgray;margin-top:10px;font-size:14pt;">
+                        	<b>${_('REVISIÓN DE ORGANOS Y SISTEMAS')}</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act_as_tbody">
+                      <div class="act_as_row lines">
+                          <div class="act_as_cell first_column" style="width:1205px;font-size:14pt;">${o.revision_organos or ''}</div>
+                      </div>
+                </div>
+
+                <div class="act_as_thead">
+                    <div class="act_as_row labels">
+                        <div class="act_as_cell first_column" style="width: 1205px;background-color:lightgray;margin-top:10px;font-size:14pt;">
+                        	<b>${_('DIAGNÓSTICO PRESUNTIVO')}</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="presuntivo_info">
+    				<table class="presuntivo" style="width:1205px;border-collapse:collapse;font-size:14pt;">
+    					<tbody>
+							%for pre in o.diagnosis:
+    							<tr>
+    								<td style="width:20%;text-align:left">${pre.code}</td>
+    								<td style="width:80%;text-alirn:left">${pre.name}</td>
+					    		</tr>
+							%endfor
+						</tbody>
+    				</table>
+                </div>
+
+                <div class="act_as_thead">
+                    <div class="act_as_row labels">
+                        <div class="act_as_cell first_column" style="width: 1205px;background-color:lightgray;margin-top:10px;font-size:14pt;">
+                        	<b>${_('DIAGNÓSTICO DEFINITIVO')}</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="presuntivo_info">
+    				<table class="presuntivo" style="width:1205px;border-collapse:collapse;font-size:14pt;">
+    					<tbody>
+							%for pre in o.definitive_diagnosis:
+    							<tr>
+    								<td style="width:20%;text-align:left">${pre.code}</td>
+    								<td style="width:80%;text-alirn:left">${pre.name}</td>
+					    		</tr>
+							%endfor
+						</tbody>
+    				</table>
+                </div>
+
+                <div class="act_as_thead">
+                    <div class="act_as_row labels">
+                        <div class="act_as_cell first_column" style="width: 1205px;background-color:lightgray;margin-top:10px;font-size:14pt;">
+                        	<b>${_('TRATAMIENTO')}</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act_as_tbody">
+                      <div class="act_as_row lines">
+                          <div class="act_as_cell first_column" style="width:1205px;font-size:14pt;">${o.directions or ''}</div>
+                      </div>
+                </div>
+
+            </div>
+        %endfor
+    </body>
+</html>

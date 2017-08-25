@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<record id="oemedical_prescription_header_webkit" model="ir.header_webkit">
+            <field name="name">Prescription Format</field>
+            <field name="css"><![CDATA[
+body {
+    font-family:Arial;
+    font-size:11;
+}
+
+.header1 {
+position:absolute;
+left:0.0cm;
+top:0.0cm;
+width:300px;
+}
+
+.header2 {
+position:absolute;
+left:11cm;
+top:0.0cm;
+font-size:11;
+}
+            ]]>
+              </field>
+            <field name="html"><![CDATA[
+<html>
+    <head>
+
+    </head>
+    <body style="border:0; margin: 0;" onload="subst()">
+	</body>
+</html>]]>
+                </field>
+            <field name="footer_html"><![CDATA[
+<html>
+    <head>
+
+    </head>
+    <body style="border:0; margin: 0; font-size:9;" onload="subst()">
+
+    </body>
+</html>
+]]>
+            </field>
+            <field name="orientation">Landscape</field>
+            <field name="format">A5</field>
+            <field eval="0" name="margin_top"/>
+            <field eval="0" name="margin_bottom"/>
+            <field eval="0" name="margin_right" />
+            <field eval="0" name="margin_left" />
+        </record>
+
+
+        <report auto="False"
+                id="oemedical_prescription_print"
+                model="oemedical.prescription.order"
+                name="oemedical.prescription.print.webkit"
+                file="oemedical/report/oemedical_prescription_print.mako"
+                string="Prescription Order"
+                header="True"
+                report_type="webkit"
+                webkit_header="oemedical_prescription_header_webkit"/>
+
+    </data>
+</openerp>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!-- ======================================================================================
+		POS ORDER
+		Model: pos.order
+		=========================================================================================== -->
+
+        <!-- FORM VIEW -->
+        <record id="view_pos_pos_form_inherit" model="ir.ui.view">
+            <field name="name">pos.order.inherit</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="card_payment" invisible="1"/>
+                    <field name="iva_compensation"/>
+                    <field name="check_payment" invisible="1"/>
+                    <field name="bank_payment" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//notebook[last()]" position="inside">
+                    <page string="Payment Information"
+                          attrs="{'invisible': [('card_payment', '=', False), ('check_payment', '=', False),
+                                                ('bank_payment', '=', False)]}">
+                        <group>
+                            <field name="acquirer"
+                                   attrs="{'invisible': [('card_payment', '=', False), ('check_payment', '=', False),
+                                                         ('bank_payment', '=', False)]}"/>
+
+                            <field name="card_type" domain="[('is_active', '=', True)]"
+                                   attrs="{'invisible': [('card_payment', '=', False)]}"/>
+
+                            <field name="card_number" attrs="{'invisible': [('card_payment', '=', False)]}"/>
+                            <field name="check_number" attrs="{'invisible': [('check_payment', '=', False)]}"/>
+
+                            <field name="approval_number"
+                                   attrs="{'invisible': [('card_payment', '=', False), ('bank_payment', '=', False)]}"/>
+
+                            <field name="lot_number" attrs="{'invisible': [('card_payment', '=', False)]}"/>
+
+                            <field name="reference"
+                                   attrs="{'invisible': [('card_payment', '=', False), ('bank_payment', '=', False)]}"/>
+                        </group>
+                    </page>
+                </xpath>
+
+                <xpath expr="//field[@name='lines']" position="replace">
+                    <field name="lines" colspan="4" nolabel="1">
+                        <tree string="Order lines" editable="bottom">
+                            <field name="product_id" on_change="onchange_product_id(parent.pricelist_id,product_id,qty,parent.partner_id)"/>
+                            <field name="qty" on_change="onchange_qty(product_id, discount, qty, price_unit, context)"/>
+                            <field name="price_unit" on_change="onchange_qty(product_id, discount, qty, price_unit, context)"/>
+                            <field name="discount"  on_change="onchange_qty(product_id, discount, qty, price_unit, context)"/>
+                            <field name='iva_compensation'/>
+                            <field name="price_subtotal"/>
+                            <field name="price_subtotal_incl"/>
+                        </tree>
+                        <form string="Order lines">
+                            <group col="4">
+                                <field name="product_id" on_change="onchange_product_id(parent.pricelist_id,product_id,qty,parent.partner_id)"/>
+                                <field name="qty" on_change="onchange_qty(product_id, discount, qty, price_unit, context)"/>
+                                <field name="discount"  on_change="onchange_qty(product_id, discount, qty, price_unit, context)"/>
+                                <field name="price_unit" on_change="onchange_qty(product_id, discount, qty, price_unit, context)"/>
+                                <field name="price_subtotal" invisible="1"/>
+                                <field name="price_subtotal_incl" invisible="1"/>
+                                <field name="notice"/>
+                            </group>
+                        </form>
+                    </field>
+                </xpath>
+
+                <xpath expr="//field[@name='amount_tax']" position="after">
+                    <field name="amount_iva_compensation"/>
+                </xpath>
+
+                <xpath expr="//div[@class='oe_subtotal_footer_separator oe_inline']" position="replace">
+                    <div class="oe_subtotal_footer_separator oe_inline">
+                        <label for="amount_total_with_compensation" />
+                        <button name="button_dummy" states="draft" string="(update)" class="oe_edit_only oe_link"/>
+                    </div>
+                </xpath>
+
+                <xpath expr="//field[@name='amount_total']" position="replace">
+                    <field name="amount_total_with_compensation" nolabel="1" class="oe_subtotal_footer_separator"/>
+                </xpath>
+
+                <xpath expr="//field[@name='statement_ids']/tree" position="inside">
+                    <field name="bank_id"/>
+                    <field name="check_number"/>
+                    <field name="card_number"/>
+                    <field name="card_type_id"/>
+                    <field name="approval_number"/>
+                    <field name="lot_number"/>
+                    <field name="reference"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

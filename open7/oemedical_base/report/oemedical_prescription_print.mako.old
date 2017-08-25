@@ -1,0 +1,140 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <style type="text/css">
+            ${css}
+            
+            table.header_po1 {
+            	position:absolute;
+                left:0.0cm;
+                top:0.0cm;
+                text-align:left;
+                font-size:10px;
+            }
+
+			table.header_po2 {
+            	position:absolute;
+                left:8.0cm;
+                top:0.0cm;
+                text-align:left;
+                font-size:10px;
+            }
+
+			table.header_po3 {
+            	position:absolute;
+                left:18cm;
+                top:0.0cm;
+                text-align:left;
+                font-size:10px;
+            }
+
+			table.header_po4 {
+            	position:absolute;
+                left:18cm;
+                top:0.0cm;
+                text-align:left;
+                font-size:10px;
+            }
+
+			table.pat_info {
+				position:absolute;
+				left:0.0cm;
+				top:4cm;
+				font-size:18px;
+			}
+			
+            table.med_info {
+            	position:absolute;
+                left:0.0cm;
+                top:6.0cm;
+                text-align:left;
+                font-size:24px;
+            }
+
+			table.ind_info {
+				position:absolute;
+				left:18.0cm;
+				top:6.0cm;
+				font-size:24px;
+			}
+            
+       </style>
+    </head>
+<body bgcolor="white">
+
+
+%for o in objects:
+    <table class="header_po1">
+    	<tbody>
+    		<tr>
+    			<td><img src="data:image/jpeg;base64,${o.patient_id.partner_id.company_id.logo}" width="200px" height="100px"/></td>
+    	    <tr>
+        </tbody>
+    </table>
+
+    <table class="header_po2" style="width: 50%">
+        <tbody>
+            <tr>
+                <td style="text-align:right">${o.patient_id.partner_id.company_id.partner_id.street or ''|entity}</td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Phone: ${o.patient_id.partner_id.company_id.partner_id.phone or ''|entity} </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Mail: ${o.patient_id.partner_id.company_id.partner_id.email or ''|entity}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="header_po3" style="width: 100%">
+    	<tbody>
+    		<tr>
+    			<td><img src="data:image/jpeg;base64,${o.patient_id.partner_id.company_id.logo}" width="200px" height="100px"/></td>
+    	    <tr>
+        </tbody>
+    </table>
+
+    <table class="header_po4"  style="width: 100%">
+        <tbody>
+            <tr>
+                <td style="text-align:right">${o.patient_id.partner_id.company_id.partner_id.street or ''|entity}</td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Phone: ${o.patient_id.partner_id.company_id.partner_id.phone or ''|entity} </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Mail: ${o.patient_id.partner_id.company_id.partner_id.email or ''|entity}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="pat_info" style="width: 100%; font-size:16px;" >
+        <tbody>
+    	    <tr><td><b>PACIENTE </b>${o.patient_id.name}</td></tr>
+    	    <tr><td><b>FECHA </b>${o.prescription_date}</td></tr>
+        </tbody>
+    </table>
+
+    <table class="med_info">
+    	<tbody>
+    		%for line in o.prescription_line:
+    	    	<tr><td width="50%">${line.active_component.name}</td></tr>
+    	    	<tr><td width="50%">${line.form} #${line.quantity} (${line.qty})</td></tr>
+    	    	<tr><td></td></tr>
+    	    %endfor
+        </tbody>
+    </table>
+
+    <table class="ind_info">
+        <tbody>
+    	    <tr><td><b>INDICACIONES</b></td></tr>
+    	    <tr><td></td></tr>
+    	    <tr><td width="50%">${o.indications}</td></tr>
+        </tbody>
+    </table>
+
+    <p style="page-break-after:always"/>
+%endfor
+
+</body>
+</html>

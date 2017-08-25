@@ -1,0 +1,556 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* my_point_of_sale
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-20151130\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-19 16:46+0000\n"
+"PO-Revision-Date: 2017-08-19 16:46+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: my_point_of_sale
+#: view:pos.order:my_point_of_sale.view_pos_pos_form_inherit
+msgid "(update)"
+msgstr "Actualizar"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/js/widgets.js:1073
+#, python-format
+msgid "A Customer Name Is Required"
+msgstr "El nombre del cliente es requerido"
+
+#. module: my_point_of_sale
+#: field:pos.order,acquirer:0
+msgid "Acquirer"
+msgstr "Banco"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:51
+#, python-format
+msgid "Acquirer:"
+msgstr "Banco:"
+
+#. module: my_point_of_sale
+#: field:pos.credit_card,is_active:0
+msgid "Active"
+msgstr "Activo"
+
+#. module: my_point_of_sale
+#: field:account.bank.statement.line,approval_number:0
+#: field:pos.order,approval_number:0
+msgid "Approval Number"
+msgstr "Número de Aprobación"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:120
+#, python-format
+msgid "Approval Number:"
+msgstr "Número de Aprobación:"
+
+#. module: my_point_of_sale
+#: view:pos.config:my_point_of_sale.view_pos_config_form_inherit
+msgid "Available"
+msgstr "Disponible"
+
+#. module: my_point_of_sale
+#: field:pos.config,products_ids:0
+msgid "Available products..."
+msgstr "Productos Disponibles..."
+
+#. module: my_point_of_sale
+#: field:account.bank.statement.line,bank_id:0
+msgid "Bank"
+msgstr "Banco"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:45
+#, python-format
+msgid "Bank Data"
+msgstr "Datos del Banco"
+
+#. module: my_point_of_sale
+#: field:pos.order,bank_payment:0
+msgid "Bank Payment"
+msgstr "Pago bancario"
+
+#. module: my_point_of_sale
+#: model:ir.model,name:my_point_of_sale.model_account_bank_statement
+msgid "Bank Statement"
+msgstr "Extracto bancario"
+
+#. module: my_point_of_sale
+#: model:ir.model,name:my_point_of_sale.model_account_bank_statement_line
+msgid "Bank Statement Line"
+msgstr "Línea extracto bancario"
+
+#. module: my_point_of_sale
+#: field:account.bank.statement.line,card_number:0
+#: field:pos.order,card_number:0
+msgid "Card Number"
+msgstr "Número de Tarjeta"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:86
+#, python-format
+msgid "Card Number:"
+msgstr "Número de Tarjeta:"
+
+#. module: my_point_of_sale
+#: field:account.bank.statement.line,card_type_id:0
+#: field:pos.order,card_type:0
+msgid "Card Type"
+msgstr "Tipo de Tarjeta"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:68
+#, python-format
+msgid "Card Type:"
+msgstr "Tipo:"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:178
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:212
+#: selection:res.partner,type_ced_ruc:0
+#, python-format
+msgid "Cedula"
+msgstr "Cédula"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:39
+#, python-format
+msgid "Check Data"
+msgstr "Número de Cheque"
+
+#. module: my_point_of_sale
+#: field:account.bank.statement.line,check_number:0
+#: field:pos.order,check_number:0
+msgid "Check Number"
+msgstr "Número de Cheque"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:103
+#, python-format
+msgid "Check Number:"
+msgstr "Número de Cheque:"
+
+#. module: my_point_of_sale
+#: field:pos.order,check_payment:0
+msgid "Check Payment"
+msgstr "Forma de pago cheque"
+
+#. module: my_point_of_sale
+#: field:pos.credit_card,code:0
+msgid "Code"
+msgstr "Código"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/js/widgets.js:129
+#, python-format
+msgid "Connecting to the PosBox"
+msgstr "Conectando..."
+
+#. module: my_point_of_sale
+#: field:pos.credit_card,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: my_point_of_sale
+#: field:pos.credit_card,create_date:0
+msgid "Created on"
+msgstr "Creado el "
+
+#. module: my_point_of_sale
+#: model:ir.actions.act_window,name:my_point_of_sale.my_point_of_sale_pos_credit_card_action
+msgid "Credit Card"
+msgstr "Tarjeta de Crédito"
+
+#. module: my_point_of_sale
+#: field:pos.order,card_payment:0
+msgid "Credit Card Payment"
+msgstr "Forma de pago por Tarjeta"
+
+#. module: my_point_of_sale
+#: model:ir.ui.menu,name:my_point_of_sale.my_point_of_sale_pos_credit_card_menu_item
+msgid "Credit Cards"
+msgstr "Tarjetas de Crédito"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:33
+#, python-format
+msgid "Credit/Debit Card Data"
+msgstr "Tarjeta Débito/Crédito"
+
+#. module: my_point_of_sale
+#: code:addons/my_point_of_sale/models/pos_config.py:42
+#: code:addons/my_point_of_sale/models/pos_config.py:45
+#: code:addons/my_point_of_sale/reports/pos_invoice_report_parser.py:30
+#, python-format
+msgid "Error!"
+msgstr "Error!"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/js/widgets.js:1093
+#: code:addons/my_point_of_sale/static/src/js/widgets.js:1099
+#, python-format
+msgid "Error: Could not Save Changes"
+msgstr "Error: No se pudieron salvar los cambios"
+
+#. module: my_point_of_sale
+#: code:addons/my_point_of_sale/models/res_partner.py:111
+#: constraint:res.partner:0
+#, python-format
+msgid "Error: Invalid value for the identification number..."
+msgstr "Error: Número de identificación incorrecto"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/js/widgets.js:274
+#, python-format
+msgid "Error: The Point of Sale User must belong to the same company as the Point of Sale. You are probably trying to load the point of sale as an administrator in a multi-company setup, with the administrator account set to the wrong company."
+msgstr "Error: The Point of Sale User must belong to the same company as the Point of Sale. You are probably trying to load the point of sale as an administrator in a multi-company setup, with the administrator account set to the wrong company."
+
+#. module: my_point_of_sale
+#: field:pos.credit_card,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:21
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:244
+#, python-format
+msgid "IVA 0:"
+msgstr "IVA 0:"
+
+#. module: my_point_of_sale
+#: field:account.invoice,iva_compensation:0
+#: view:pos.config:my_point_of_sale.view_pos_config_form_inherit
+#: field:pos.order,amount_iva_compensation:0
+#: field:pos.order.line,iva_compensation:0
+#: view:website:account.report_invoice_document
+#: view:website:point_of_sale.report_receipt
+#: view:website:point_of_sale.report_saleslines
+msgid "IVA Compensation"
+msgstr "IVA Compensación"
+
+#. module: my_point_of_sale
+#: field:pos.config,iva_compensation:0
+#: field:pos.order,iva_compensation:0
+msgid "IVA Compensation (%)"
+msgstr "IVA Compensación (%)"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:14
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:238
+#, python-format
+msgid "IVA Compensation:"
+msgstr "IVA Compensación:"
+
+#. module: my_point_of_sale
+#: view:website:point_of_sale.report_saleslines
+msgid "IVA compensation"
+msgstr "IVA Compensación"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:184
+#, python-format
+msgid "Id"
+msgstr "Id"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:199
+#, python-format
+msgid "Id."
+msgstr "Id."
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:206
+#, python-format
+msgid "Id. Type"
+msgstr "Tipo Id."
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:201
+#, python-format
+msgid "Identification Number"
+msgstr "Número Identificación"
+
+#. module: my_point_of_sale
+#: help:pos.config,show_all_products:0
+msgid "If not checked, the product list in the point of sale will be limited..."
+msgstr "Si no está seleccionado, la lista de productos en el punto de venta estará limitada a aquellos productos especificados como disponibles..."
+
+#. module: my_point_of_sale
+#: model:ir.model,name:my_point_of_sale.model_account_invoice
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: my_point_of_sale
+#: help:pos.config,iva_compensation:0
+msgid "It's the value of the IVA compensation that will be apply to the products..."
+msgstr "Valor de la compensación a aplicar..."
+
+#. module: my_point_of_sale
+#: model:ir.model,name:my_point_of_sale.model_account_journal
+msgid "Journal"
+msgstr "Diario"
+
+#. module: my_point_of_sale
+#: field:pos.credit_card,write_uid:0
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: my_point_of_sale
+#: field:pos.credit_card,write_date:0
+msgid "Last Updated on"
+msgstr "Última actualización"
+
+#. module: my_point_of_sale
+#: model:ir.model,name:my_point_of_sale.model_pos_order_line
+msgid "Lines of Point of Sale"
+msgstr "Líneas de detalles"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/js/widgets.js:151
+#: code:addons/my_point_of_sale/static/src/js/widgets.js:425
+#, python-format
+msgid "Loading"
+msgstr "Cargando"
+
+#. module: my_point_of_sale
+#: field:account.bank.statement.line,lot_number:0
+#: field:pos.order,lot_number:0
+msgid "Lot Number"
+msgstr "Número de lote"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:137
+#, python-format
+msgid "Lot Number:"
+msgstr "Número de Lote:"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:190
+#, python-format
+msgid "N/A"
+msgstr "N/A"
+
+#. module: my_point_of_sale
+#: field:pos.credit_card,name:0
+msgid "Name"
+msgstr "Nombre"
+
+#. module: my_point_of_sale
+#: code:addons/my_point_of_sale/reports/pos_invoice_report_parser.py:30
+#, python-format
+msgid "No link to an invoice for %s., "
+msgstr "No hay vínculo a una factura para %s., "
+
+#. module: my_point_of_sale
+#: field:res.partner,ced_ruc:0
+msgid "No. Identificacion"
+msgstr "No. Identificación"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:208
+#, python-format
+msgid "None"
+msgstr "Ninguno"
+
+#. module: my_point_of_sale
+#: view:pos.order:my_point_of_sale.view_pos_pos_form_inherit
+msgid "Order lines"
+msgstr "Líneas de detalles de la orden"
+
+#. module: my_point_of_sale
+#: view:pos.credit_card:my_point_of_sale.my_point_of_sale_pos_credit_card_form_view
+#: view:pos.credit_card:my_point_of_sale.my_point_of_sale_pos_credit_card_tree_view
+msgid "POS Credit Card"
+msgstr "POS Tarjeta de Crédito"
+
+#. module: my_point_of_sale
+#: model:ir.model,name:my_point_of_sale.model_res_partner
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:181
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:215
+#: selection:res.partner,type_ced_ruc:0
+#, python-format
+msgid "Pasaporte"
+msgstr "Pasaporte"
+
+#. module: my_point_of_sale
+#: view:pos.order:my_point_of_sale.view_pos_pos_form_inherit
+msgid "Payment Information"
+msgstr "Información de Pago"
+
+#. module: my_point_of_sale
+#: field:account.bank.statement,journal_type:0
+msgid "Payment Type"
+msgstr "Tipo de Pago"
+
+#. module: my_point_of_sale
+#: model:ir.model,name:my_point_of_sale.model_pos_order
+msgid "Point of Sale"
+msgstr "Punto de Venta"
+
+#. module: my_point_of_sale
+#: field:account.invoice,pos_order_ids:0
+msgid "Pos Orders"
+msgstr "Ordenes"
+
+#. module: my_point_of_sale
+#: model:ir.model,name:my_point_of_sale.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: my_point_of_sale
+#: view:pos.config:my_point_of_sale.view_pos_config_form_inherit
+msgid "Products..."
+msgstr "Productos..."
+
+#. module: my_point_of_sale
+#: field:account.bank.statement.line,reference:0
+#: field:pos.order,reference:0
+msgid "Reference"
+msgstr "Referencia"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:154
+#, python-format
+msgid "Reference:"
+msgstr "Referencia:"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:175
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:209
+#: selection:res.partner,type_ced_ruc:0
+#, python-format
+msgid "Ruc"
+msgstr "Ruc"
+
+#. module: my_point_of_sale
+#: view:product.template:my_point_of_sale.product_template_form_view_inherit
+msgid "Select the"
+msgstr "Seleccionar"
+
+#. module: my_point_of_sale
+#: field:pos.config,show_all_products:0
+msgid "Show all products?"
+msgstr "Mostrar todos los productos?"
+
+#. module: my_point_of_sale
+#: view:account.bank.statement:my_point_of_sale.my_point_of_sale_account_bank_statement_form_view
+msgid "Statement lines"
+msgstr "Líneas extracto"
+
+#. module: my_point_of_sale
+#: view:product.template:my_point_of_sale.product_template_form_view_inherit
+msgid "TPVs"
+msgstr "TPVs"
+
+#. module: my_point_of_sale
+#: field:product.template,tpv_list_ids:0
+msgid "TPVs where the product will be available..."
+msgstr "TPVs donde los productos están disponibles..."
+
+#. module: my_point_of_sale
+#: code:addons/my_point_of_sale/models/pos_config.py:45
+#, python-format
+msgid "The type of the journal for your payment method should be bank, cash or card "
+msgstr "El método de pago del diario debe ser Efectivo, Tarjeta, Cheque o Banco"
+
+#. module: my_point_of_sale
+#: field:res.partner,tipo_persona:0
+msgid "Tipo Persona"
+msgstr "Tipo Persona"
+
+#. module: my_point_of_sale
+#: field:res.partner,type_ced_ruc:0
+msgid "Tipo identificacion"
+msgstr "Tipo identificación"
+
+#. module: my_point_of_sale
+#: field:account.invoice,amount_total_with_iva_compensation:0
+#: field:pos.order,amount_total_with_compensation:0
+#: view:website:account.report_invoice_document
+#: view:website:point_of_sale.report_receipt
+#: view:website:point_of_sale.report_saleslines
+msgid "Total"
+msgstr "Total"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:7
+#, python-format
+msgid "Total Without Taxes:"
+msgstr "Total sin impuestos:"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/xml/pos.xml:253
+#, python-format
+msgid "Total:"
+msgstr "Total:"
+
+#. module: my_point_of_sale
+#. openerp-web
+#: code:addons/my_point_of_sale/static/src/js/widgets.js:1100
+#, python-format
+msgid "Your Internet connection is probably down."
+msgstr "No existe conexión a internet."
+
+#. module: my_point_of_sale
+#: code:addons/my_point_of_sale/models/pos_config.py:42
+#, python-format
+msgid "Your ending balance is too different from the theoretical cash closing (%.2f), the maximum allowed is: %.2f. You can contact your manager to force it."
+msgstr "Your ending balance is too different from the theoretical cash closing (%.2f), the maximum allowed is: %.2f. You can contact your manager to force it."
+
+#. module: my_point_of_sale
+#: view:pos.config:my_point_of_sale.view_pos_config_form_inherit
+msgid "in the TPV..."
+msgstr "en el TPV..."
+
+#. module: my_point_of_sale
+#: view:pos.config:my_point_of_sale.view_pos_config_form_inherit
+msgid "products"
+msgstr "Productos"
+
+#. module: my_point_of_sale
+#: view:product.template:my_point_of_sale.product_template_form_view_inherit
+msgid "where the product will be available..."
+msgstr "Donde los productos estarán disponibles..."
+

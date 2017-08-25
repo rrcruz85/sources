@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- FORM VIEW -->
+        <record id="invoice_client_form_inherit" model="ir.ui.view">
+            <field name="name">invoice.client.form.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='invoice_line']/tree/field[@name='product_id']" position="before">
+                        <field name="sequence_box"/>
+                        <field name="box" sum="Total FB"/>
+                        <field name="hb" sum="Total HB"/>
+                        <field name="qb" sum="Total QB"/>
+                        <field name="qty_bxs" invisible="1"/>
+                        <field name="uom" invisible="1"/>
+                        <field name="is_box_qty" invisible="1"/>
+                        <field name="bunch_per_box"/>
+                        <field name="bunch_type"/>
+                        <field name="mark_id"/>
+                    </xpath>
+                    <!-- Quitar estos 2 campos -->
+                    <xpath expr="//field[@name='payment_term']" position="after">
+                        <newline/>
+                        <field name="charge_account_id" colspan="2"/>
+                        <field name="taxpayer_type"  colspan="2"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="invoice_supplier_form_inherit" model="ir.ui.view">
+            <field name="name">invoice.supplier.form.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='invoice_line']/tree/field[@name='product_id']" position="before">
+                        <field name="sequence_box"/>
+                        <field name="box" sum="Total FB"/>
+                        <field name="hb" sum="Total HB"/>
+                        <field name="qb" sum="Total QB"/>
+                        <field name="qty_bxs" invisible="1"/>
+                        <field name="uom" invisible="1"/>
+                        <field name="is_box_qty" invisible="1"/>
+                        <field name="bunch_per_box"/>
+                        <field name="bunch_type"/>
+                        <field name="mark_id"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="view_invoice_line_form_inherit" model="ir.ui.view">
+            <field name="name">account.invoice.line.form.inherit</field>
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="account.view_invoice_line_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='quantity']" position="after">
+                        <field name="sequence_box"/>
+                        <field name="box" sum="Total FB"/>
+                        <field name="hb" sum="Total HB"/>
+                        <field name="qb" sum="Total QB"/>
+                        <field name="qty_bxs" invisible="1"/>
+                        <field name="uom" invisible="1"/>
+                        <field name="is_box_qty" invisible="1"/>
+                        <field name="bunch_per_box" attrs="{'invisible':[('is_box_qty','=',False)]}"/>
+                        <field name="bunch_type"/>
+                        <newline/>
+                        <field name="mark_id"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="view_invoice_line_tree_inherit" model="ir.ui.view">
+            <field name="name">account.invoice.line.tree.inherit</field>
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="account.view_invoice_line_tree"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='quantity']" position="after">
+                        <field name="sequence_box"/>
+                        <field name="box" sum="Total FB"/>
+                        <field name="hb" sum="Total HB"/>
+                        <field name="qb" sum="Total QB"/>
+                        <field name="qty_bxs" invisible="1"/>
+                        <field name="uom" invisible="1"/>
+                        <field name="is_box_qty" invisible="1"/>
+                        <field name="bunch_per_box" attrs="{'invisible':[('is_box_qty','=',False)]}"/>
+                        <field name="bunch_type"/>
+                        <field name="mark_id"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+    </data>
+</openerp>

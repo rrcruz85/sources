@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="my_point_of_sale_report_saleslines_inherit" inherit_id="point_of_sale.report_saleslines">
+            <xpath expr="//table/thead/tr" position="inside">
+                <th class="text-right"><strong>IVA compensation</strong></th>
+            </xpath>
+
+            <xpath expr="//table/tbody/tr" position="replace">
+                <tr t-foreach="o.lines" t-as="l">
+                    <td>
+                        <t t-if="l.product_id and l.product_id.code">
+                            [<span t-field="l.product_id.code"/>]
+                        </t>
+                        <span t-field="l.product_id.name"/>
+                    </td>
+                    <td>
+                        <t t-esc="taxes(l)"/>
+                    </td>
+                    <td class="text-right">
+                        <span t-field="l.qty"/>
+                        <span t-field="l.product_id.uom_id.name" groups="product.group_uom"/>
+                    </td>
+                    <td class="text-right">
+                        <span t-field="l.price_unit"/>
+                    </td>
+                    <td class="text-right" groups="sale.group_discount_per_so_line">
+                        <span t-field="l.discount"/>
+                    </td>
+                    <td class="text-right">
+                        <span t-field="l.price_subtotal" t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}'/>
+                    </td>
+                    <td class="text-right">
+                        <span t-esc="formatLang(l.iva_compensation, currency_obj=res_company.currency_id)"/>
+                    </td>
+               </tr>
+            </xpath>
+
+            <xpath expr="//table[2]/tr[3]" position="replace">
+                <tr class="border-black">
+                    <td><strong>Total</strong></td>
+                    <td class="text-right">
+                        <strong t-esc="formatLang(o.amount_total - o.amount_iva_compensation, currency_obj=res_company.currency_id)"/>
+                    </td>
+                </tr>
+            </xpath>
+
+            <xpath expr="//table[2]/tr[2]" position="after">
+                <tr>
+                    <td>IVA Compensation</td>
+                    <td class="text-right">
+                        <t t-esc="formatLang(o.amount_iva_compensation, currency_obj=res_company.currency_id)"/>
+                    </td>
+                </tr>
+            </xpath>
+        </template>
+    </data>
+</openerp>

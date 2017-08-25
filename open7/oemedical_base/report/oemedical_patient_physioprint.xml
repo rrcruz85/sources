@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report auto="False"
+                id="oemedical_patient_physioprint"
+                model="oemedical.patient.physio"
+                name="oemedical.patient.physioprint.webkit"
+                file="oemedical/report/oemedical_patient_physioprint.mako"
+                string="Fisioterapia del Paciente"
+                header="True"
+				webkit_header="oemedical_header_webkit"
+                report_type="webkit"/>
+
+    </data>
+</openerp>

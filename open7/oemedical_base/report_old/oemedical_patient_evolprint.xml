@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report auto="False"
+                id="oemedical_patient_evolprint"
+                model="oemedical.patient.evaluation"
+                name="oemedical.patient.evolprint.webkit"
+                file="oemedical/report/oemedical_patient_evolprint.mako"
+                string="Patient Evolution"
+                header="True"
+				webkit_header="oemedical_header_webkit"
+                report_type="webkit"/>
+
+    </data>
+</openerp>

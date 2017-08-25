@@ -1,0 +1,103 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* oemedical_appointment_notification
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20131016-232725\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-21 05:27+0000\n"
+"PO-Revision-Date: 2017-07-21 05:27+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: oemedical_appointment_notification
+#: model:ir.model,name:oemedical_appointment_notification.model_oemedical_send_notification_wizard
+msgid "oemedical.send_notification_wizard"
+msgstr "oemedical.send_notification_wizard"
+
+#. module: oemedical_appointment_notification
+#: field:oemedical.send_notification_wizard,attachment_ids:0
+msgid "Attachments"
+msgstr "Adjuntos"
+
+#. module: oemedical_appointment_notification
+#: view:oemedical.send_notification_wizard:0
+msgid "Salvar como plantilla..."
+msgstr "Salvar como plantilla..."
+
+#. module: oemedical_appointment_notification
+#: field:oemedical.send_notification_wizard,subject:0
+msgid "Asunto"
+msgstr "Asunto"
+
+#. module: oemedical_appointment_notification
+#: model:ir.model,name:oemedical_appointment_notification.model_oemedical_appointment
+msgid "oemedical.appointment"
+msgstr "oemedical.appointment"
+
+#. module: oemedical_appointment_notification
+#: view:oemedical.send_notification_wizard:0
+msgid "Usar plantilla:"
+msgstr "Usar plantilla:"
+
+#. module: oemedical_appointment_notification
+#: view:oemedical.send_notification_wizard:0
+msgid "Enviar"
+msgstr "Enviar"
+
+#. module: oemedical_appointment_notification
+#: field:oemedical.send_notification_wizard,email_to:0
+msgid "Patients"
+msgstr "Enviar a"
+
+#. module: oemedical_appointment_notification
+#: view:oemedical.send_notification_wizard:0
+msgid "Paciente"
+msgstr "Paciente"
+
+#. module: oemedical_appointment_notification
+#: field:oemedical.send_notification_wizard,email_template_id:0
+msgid "Template"
+msgstr "Plantilla"
+
+#. module: oemedical_appointment_notification
+#: model:ir.model,name:oemedical_appointment_notification.model_oemedical_patient
+msgid "oemedical.patient"
+msgstr "oemedical.patient"
+
+#. module: oemedical_appointment_notification
+#: model:ir.model,name:oemedical_appointment_notification.model_res_partner
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: oemedical_appointment_notification
+#: field:oemedical.send_notification_wizard,body_html:0
+msgid "Message"
+msgstr "Mensaje"
+
+#. module: oemedical_appointment_notification
+#: code:addons/oemedical_appointment_notification/static/src/js/scripts.js:17
+msgid "Send email to patients..."
+msgstr "Enviar correo a pacientes..."
+
+#. module: oemedical_appointment_notification
+#: view:oemedical.appointment:0
+msgid "Send notification..."
+msgstr "Enviar notificación..."
+
+#. module: oemedical_appointment_notification
+#: view:oemedical.send_notification_wizard:0
+msgid "Mensaje..."
+msgstr "Mensaje..."
+
+#. module: oemedical_appointment_notification
+#: model:ir.actions.act_window,name:oemedical_appointment_notification.oemedical_action_send_mail_wizard
+#: view:oemedical.send_notification_wizard:0
+msgid "Crear correo electrónico..."
+msgstr "Crear correo electrónico..."
+

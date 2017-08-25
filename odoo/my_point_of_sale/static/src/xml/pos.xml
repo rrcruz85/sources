@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template" xml:space="preserve">
+    <t t-extend="PaymentScreenWidget">
+        <t t-jquery=".payment-info .infoline:eq(0)" t-operation="before">
+            <div class="infoline">
+                <span class='left-block'>
+                    Total Without Taxes:
+                </span>
+                <span class="right-block payment-total-without-taxes"></span>
+            </div>
+
+            <div id="taxes-compensation" class="infoline">
+                <span class='left-block'>
+                    IVA Compensation:
+                </span>
+                <span class="right-block payment-taxes-compensation"></span>
+            </div>
+
+            <div id="iva-zero" class="infoline">
+                <span class='left-block'>
+                    IVA 0:
+                </span>
+                <span class="right-block payment-iva-zero"></span>
+            </div>
+        </t>
+    </t>
+
+    <t t-extend="PaymentScreenWidget">
+        <t t-jquery=".pos-payment-container" t-operation="prepend">
+            <div id="div_card_data_title" style="border-bottom: 1px solid rgb(213, 212, 212) ! important; height: 30px;">
+                <center>
+                    <h3>Credit/Debit Card Data</h3>
+                </center>
+            </div>
+
+            <div id="div_check_data_title" style="border-bottom: 1px solid rgb(213, 212, 212) ! important; height: 30px;">
+                <center>
+                    <h3>Check Data</h3>
+                </center>
+            </div>
+
+            <div id="div_bank_data_title" style="border-bottom: 1px solid rgb(213, 212, 212) ! important; height: 30px;">
+                <center>
+                    <h3>Bank Data</h3>
+                </center>
+            </div>
+
+            <div id="div_acquirer" style="margin: 5px 0px; border-radius: 3px; background: gainsboro; width: 100%;">
+                <div style="padding: 4px;">
+                    <span style="display: inline-block; width: 30%; margin: 0; padding-left: 10px; text-align: left;">
+                        Acquirer:
+                    </span>
+                    <span style="display: inline-block; width: 65%; margin: 0; padding: 0; text-align: right;">
+                        <t t-esc="widget.get_banks()"/>
+                        <select id="bank-select" onchange="javascript:void(0)"
+                                style="font-size: 20px; font-family: Lato; display: block; box-sizing: border-box;
+                                       -moz-box-sizing: border-box; outline: none; border: none; padding: 6px 8px;
+                                       background: white; color: #484848; text-align: right; border-radius: 3px;
+                                       box-shadow: 0px 2px rgba(143, 143, 143, 0.3) inset; width: 100%;"
+                        />
+                    </span>
+                </div>
+            </div>
+
+            <div id="div_card_type" style="margin: 5px 0px; border-radius: 3px; background: gainsboro; width: 100%;">
+                <div style="padding: 4px;">
+                    <span style="display: inline-block; width: 30%; margin: 0; padding-left: 10px; text-align: left;">
+                        Card Type:
+                    </span>
+
+                    <span style="display: inline-block; width: 65%; margin: 0; padding: 0; text-align: right;">
+                        <t t-esc="widget.get_cards()"/>
+                        <select id="card-select" onchange="javascript:void(0)"
+                                style="font-size: 20px; font-family: Lato; display: block; box-sizing: border-box;
+                                       -moz-box-sizing: border-box; outline: none; border: none; padding: 6px 8px;
+                                       background: white; color: #484848; text-align: right; border-radius: 3px;
+                                       box-shadow: 0px 2px rgba(143, 143, 143, 0.3) inset; width: 100%;"
+                        />
+                    </span>
+                </div>
+            </div>
+
+            <div id="div_card_number" style="margin: 5px 0px; border-radius: 3px; background: gainsboro; width: 100%;">
+                <div style="padding: 4px;">
+                    <span style="display: inline-block; width: 30%; margin: 0; padding-left: 10px; text-align: left;">
+                        Card Number:
+                    </span>
+
+                    <span style="display: inline-block; width: 65%; margin: 0; padding: 0; text-align: right;">
+                        <input type="text" id="pos_card_number" maxlength="16" size="16"
+                               style="font-size: 20px; font-family: Lato; width: 100%;
+                                      box-sizing: border-box; -moz-box-sizing: border-box; outline: none; border: none;
+                                      padding: 6px 8px; background: white; color: #484848; text-align: right;
+                                      border-radius: 3px; box-shadow: 0px 2px rgba(143, 143, 143, 0.3) inset;"
+                        />
+                    </span>
+                </div>
+            </div>
+
+            <div id="div_check_number" style="margin: 5px 0px; border-radius: 3px; background: gainsboro; width: 100%;">
+                <div style="padding: 4px;">
+                    <span style="display: inline-block; width: 30%; margin: 0; padding-left: 10px; text-align: left;">
+                        Check Number:
+                    </span>
+
+                    <span style="display: inline-block; width: 65%; margin: 0; padding: 0; text-align: right;">
+                        <input type="text" id="pos_check_number" maxlength="16" size="16"
+                               style="font-size: 20px; font-family: Lato; width: 100%;
+                                      box-sizing: border-box; -moz-box-sizing: border-box; outline: none; border: none;
+                                      padding: 6px 8px; background: white; color: #484848; text-align: right;
+                                      border-radius: 3px; box-shadow: 0px 2px rgba(143, 143, 143, 0.3) inset;"
+                        />
+                    </span>
+                </div>
+            </div>
+
+            <div id="div_approval_number" style="margin: 5px 0px; border-radius: 3px; background: gainsboro; width: 100%;">
+                <div style="padding: 4px;">
+                    <span style="width: 30%; margin: 0; padding-left: 10px; text-align: left;">
+                        Approval Number:
+                    </span>
+
+                    <span style="display: inline-block; width: 100%; margin: 0; padding: 0; text-align: right;">
+                        <input type="text" id="pos_approval_number" maxlength="16" size="16"
+                               style="font-size: 20px; font-family: Lato; width: 100%;
+                                      box-sizing: border-box; -moz-box-sizing: border-box; outline: none; border: none;
+                                      padding: 6px 8px; background: white; color: #484848; text-align: right;
+                                      border-radius: 3px; box-shadow: 0px 2px rgba(143, 143, 143, 0.3) inset;"
+                        />
+                    </span>
+                </div>
+            </div>
+
+            <div id="div_lot_number" style="margin: 5px 0px; border-radius: 3px; background: gainsboro; width: 100%;">
+                <div style="padding: 4px;">
+                    <span style="display: inline-block; width: 30%; margin: 0; padding-left: 10px; text-align: left;">
+                        Lot Number:
+                    </span>
+
+                    <span style="display: inline-block; width: 65%; margin: 0; padding: 0; text-align: right;">
+                        <input type="text" id="pos_lot_number" maxlength="16" size="16"
+                               style="font-size: 20px; font-family: Lato; width: 100%;
+                                      box-sizing: border-box; -moz-box-sizing: border-box; outline: none; border: none;
+                                      padding: 6px 8px; background: white; color: #484848; text-align: right;
+                                      border-radius: 3px; box-shadow: 0px 2px rgba(143, 143, 143, 0.3) inset;"
+                        />
+                    </span>
+                </div>
+            </div>
+
+            <div id="div_reference"  style="margin: 5px 0px; border-radius: 3px; background: gainsboro; width: 100%;">
+                <div style="padding: 4px;">
+                    <span style="display: inline-block; width: 30%; margin: 0; padding-left: 10px; text-align: left;">
+                        Reference:
+                    </span>
+
+                    <span style="display: inline-block; width: 65%; margin: 0; padding: 0; text-align: right;">
+                        <input type="text" id="pos_reference" maxlength="16" size="16"
+                               style="font-size: 20px; font-family: Lato; width: 100%;
+                                      box-sizing: border-box; -moz-box-sizing: border-box; outline: none; border: none;
+                                      padding: 6px 8px; background: white; color: #484848; text-align: right;
+                                      border-radius: 3px; box-shadow: 0px 2px rgba(143, 143, 143, 0.3) inset;"
+                        />
+                    </span>
+                </div>
+            </div>
+        </t>
+    </t>
+
+    <t t-extend="ClientDetails">
+        <t t-jquery=".client-details-right .client-detail:eq(0)" t-operation="before">
+            <div class='client-detail'>
+                <span class='label'>
+                    <t t-if="((partner.type_ced_ruc == 'ruc') ? true : false)">
+                        Ruc
+                    </t>
+                    <t t-if="((partner.type_ced_ruc == 'cedula') ? true : false)">
+                        Cedula
+                    </t>
+                    <t t-if="((partner.type_ced_ruc == 'pasaporte') ? true : false)">
+                        Pasaporte
+                    </t>
+                    <t t-if='!partner.type_ced_ruc'>Id</t>
+                </span>
+                <t t-if='partner.ced_ruc'>
+                    <span class='detail client-id'><t t-esc='partner.ced_ruc'/></span>
+                </t>
+                <t t-if='!partner.ced_ruc'>
+                    <span class='detail client-id empty'>N/A</span>
+                </t>
+            </div>
+        </t>
+    </t>
+
+    <t t-extend="ClientDetailsEdit">
+        <t t-jquery=".client-details-left .client-detail:eq(0)" t-operation="before">
+            <div class='client-detail'>
+                <span class='label'>Id.</span>
+                <input class='detail client-id-number' name='ced_ruc' t-att-value='partner.ced_ruc'
+                       placeholder='Identification Number'/>
+            </div>
+        </t>
+        <t t-jquery=".client-details-right .client-detail:eq(0)" t-operation="before">
+            <div class='client-detail'>
+                <span class='label'>Id. Type</span>
+                <select class='detail client-address-country' name='type_ced_ruc'>
+                    <option value=''>None</option>
+                    <option value='ruc' t-att-selected="((partner.type_ced_ruc == 'ruc') ? true : undefined)">
+                        Ruc
+                    </option>
+                    <option value='cedula' t-att-selected="((partner.type_ced_ruc == 'cedula') ? true : undefined)">
+                        Cedula
+                    </option>
+                    <option value='pasaporte' t-att-selected="((partner.type_ced_ruc == 'pasaporte') ? true : undefined)">
+                        Pasaporte
+                    </option>
+                </select>
+            </div>
+        </t>
+    </t>
+
+    <t t-extend="PosTicket">
+        <t t-jquery=".pos-center-align" t-operation="after">
+			<br/>
+			<div class="client_data_x_div">
+             	<div id="div_ticker_customer_name"/>
+             	<div id="div_ticker_customer_ced"/>
+				<div id="div_ticker_customer_address"/>
+				<div id="div_ticker_customer_email"/>
+				<div id="div_ticker_customer_mobile"/>
+				<div id="div_ticker_customer_phone"/>
+            </div>
+		</t>
+
+        <t t-jquery="table tr:eq(1)" t-operation="after">
+            <tr id="taxes-compensation-tr">
+                <td>IVA Compensation:</td>
+                <td class="pos-right-align">
+                    <t t-esc="widget.format_currency(order.getTaxesCompensation())"/>
+                </td>
+            </tr>
+            <tr id="iva-zero-tr">
+                <td>IVA 0:</td>
+                <td class="pos-right-align">
+                    <t t-esc="widget.format_currency(order.getIvaZero())"/>
+                </td>
+            </tr>
+        </t>
+
+        <t t-jquery=".emph" t-operation="replace">
+            <tr class="emph">
+                <td>Total:</td>
+                <td class="pos-right-align">
+                    <t t-esc="widget.format_currency(order.getTotalWithTaxesCompensation())"/>
+                </td>
+            </tr>
+        </t>
+
+        <t t-jquery=".pos-right-align">this.attr('style', 'font-size: 20px;');</t>
+    </t>
+</templates>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Top menu item -->
+        <menuitem name="Test Module" id="menu_test_module" sequence="60"/>
+        <menuitem id="menu_items" name="Items" parent="menu_test_module" sequence="1"/>
+
+    </data>
+</openerp>
+

@@ -1,0 +1,1383 @@
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
+#    $Id$
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+
+import os
+import time
+import string
+import openerp
+
+from openerp import pooler, tools
+from openerp.report import report_sxw
+from openerp.report.interface import report_rml
+
+from openerp.tools import to_xml
+from openerp.tools.translate import _
+
+from random import choice
+from decimal import Decimal
+
+
+class oemedical_patient_evaluation_report(report_rml):
+    def create(self, cr, uid, ids, datas, context):
+        evaluation_obj = pooler.get_pool(cr.dbname).get('oemedical.patient.evaluation')
+        company_obj = pooler.get_pool(cr.dbname).get('res.company')
+        
+        company_ids_list = company_obj.search(cr, uid, [], context=context)
+        company = company_obj.browse(cr, uid, company_ids_list[0], context) if len(company_ids_list) > 0 else False
+        
+        for evaluation in evaluation_obj.browse(cr, uid, ids, context):
+            rml = """
+                    <document filename="test.pdf">
+                        <template pageSize="(595.0,842.0)" title=" """ + _("Official Report MSP") + """ " author="Reynaldo Rodriguez Cruz" allowSplitting="20">
+                            <pageTemplate id="page1">
+                                <frame id="first" x1="57.0" y1="55.0" width="498" height="805"/>
+                                <frame id="third" x1="57.0" y1="5.0" width="498" height="70"/>
+                            </pageTemplate>
+                        </template>"""
+            
+            rml += """
+                        <stylesheet>
+                            <blockTableStyle id="Standard_Outline">
+                              <blockAlignment value="LEFT"/>
+                              <blockValign value="TOP"/>
+                            </blockTableStyle>
+                    
+                            <blockTableStyle id="Table1">
+                              <blockAlignment value="LEFT"/>
+                              <blockValign value="TOP"/>
+                              
+                              <blockSpan start="1,0" stop="1,4"/>
+                              <blockSpan start="0,2" stop="1,2"/>
+                              
+                              <blockBackground colorName="#C0C0C2" start="4,0" stop="4,3"/>
+                              <blockBackground colorName="#D1D3D4" start="2,0" stop="2,4"/>
+                              <blockBackground colorName="#EBECEC" start="0,2" stop="1,2"/>
+                              <blockBackground colorName="#EBECEC" start="3,2" stop="5,2"/>
+                            </blockTableStyle>
+                    
+                            <blockTableStyle id="Table2">
+                              <blockAlignment value="CENTER"/>
+                              <blockValign value="MIDDLE"/>                           
+                              
+                              <blockSpan start="0,0" stop="0,1"/>
+                              <blockSpan start="1,0" stop="1,1"/>
+                              <blockSpan start="2,0" stop="2,1"/>
+                              <blockSpan start="5,0" stop="5,1"/>
+                              <blockSpan start="6,0" stop="6,1"/>
+                              <blockSpan start="3,0" stop="4,0"/>
+                              
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="1,0" stop="1,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="1,0" stop="1,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="1,0" stop="1,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="1,-1" stop="1,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="2,0" stop="2,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="2,0" stop="2,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="2,0" stop="2,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="2,-1" stop="2,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="3,0" stop="3,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="3,0" stop="3,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="3,0" stop="3,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="3,-1" stop="3,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="4,0" stop="4,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="4,0" stop="4,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="4,0" stop="4,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="4,-1" stop="4,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="5,0" stop="5,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="5,0" stop="5,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="5,0" stop="5,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="5,-1" stop="5,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,1" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,1" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,1" stop="0,1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="1,1" stop="1,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="1,1" stop="1,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="1,1" stop="1,1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="1,-1" stop="1,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,2" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,2" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,2" stop="0,2" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="1,2" stop="1,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="1,2" stop="1,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="1,2" stop="1,2" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="1,-1" stop="1,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="2,2" stop="2,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="2,2" stop="2,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="2,2" stop="2,2" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="2,-1" stop="2,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="3,2" stop="3,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="3,2" stop="3,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="3,2" stop="3,2" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="3,-1" stop="3,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="4,2" stop="4,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="4,2" stop="4,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="4,2" stop="4,2" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="4,-1" stop="4,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="5,2" stop="5,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="5,2" stop="5,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="5,2" stop="5,2" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="5,-1" stop="5,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="6,2" stop="6,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="6,2" stop="6,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="6,2" stop="6,2" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="6,-1" stop="6,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="3,0" stop="3,1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="4,0" stop="4,1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="6,0" stop="6,1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="6,0" stop="6,1" thickness="0.1"/>
+                              
+                              <blockBackground colorName="#CAE7D4" start="0,0" stop="6,0"/>
+                              <blockBackground colorName="#CAE7D4" start="0,1" stop="6,1"/>
+                              <blockBackground colorName="#F9F1AD" start="3,2" stop="4,2"/>
+                            </blockTableStyle>
+                    
+                            <blockTableStyle id="Table3">
+                              <blockAlignment value="LEFT"/>
+                              <blockValign value="MIDDLE"/>
+                              
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="0,-1" thickness="0.1"/>
+                              
+                              <blockBackground colorName="#F0A9C4" start="0,0" stop="1,0"/>
+                            </blockTableStyle>
+                    
+                            <blockTableStyle id="Table4">
+                              <blockAlignment value="LEFT"/>
+                              <blockValign value="MIDDLE"/>
+                              
+                              <blockSpan start="0,0" stop="8,0"/>
+                              <blockBackground colorName="#F0A9C4" start="0,0" stop="8,0"/>
+                              <blockBackground colorName="#CAE7D4" start="0,1" stop="0,4"/>
+                              
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="8,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,1" stop="8,1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,2" stop="8,2" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,3" stop="8,3" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,4" stop="8,4" thickness="0.1"/>
+                              
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="8,0" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,1" stop="8,1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,2" stop="8,2" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,3" stop="8,3" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,4" stop="8,4" thickness="0.1"/>
+                              
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="8,0" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,1" stop="8,1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,2" stop="8,2" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,3" stop="8,3" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,4" stop="8,4" thickness="0.1"/>
+                              
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="8,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,1" stop="8,1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,2" stop="8,2" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,3" stop="8,3" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,4" stop="8,4" thickness="0.1"/>
+                            </blockTableStyle>
+                    
+                            <blockTableStyle id="Table5">
+                              <blockAlignment value="CENTER"/>
+                              <blockValign value="TOP"/>
+                              
+                              <blockSpan start="0,0" stop="1,0"/>
+                              <blockBackground colorName="#F0A9C4" start="0,0" stop="9,0"/>
+                              <blockBackground colorName="#CAE7D4" start="0,1" stop="0,2"/>
+                              <blockBackground colorName="#CAE7D4" start="5,1" stop="5,2"/>
+                              <blockBackground colorName="#F9F1AD" start="3,1" stop="4,1"/>
+                              <blockBackground colorName="#F9F1AD" start="3,2" stop="4,2"/>
+                              <blockBackground colorName="#F9F1AD" start="8,1" stop="9,1"/>
+                              <blockBackground colorName="#F9F1AD" start="8,2" stop="9,2"/>
+                              
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="9,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,1" stop="9,1" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,2" stop="9,2" thickness="0.1"/>
+                              
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="9,0" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,1" stop="9,1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,2" stop="9,2" thickness="0.1"/>
+                              
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="9,0" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,1" stop="9,1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,2" stop="9,2" thickness="0.1"/>
+                              
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="9,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,1" stop="9,1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,2" stop="9,2" thickness="0.1"/>
+                            </blockTableStyle>
+                    
+                            <blockTableStyle id="Table6">
+                              <blockAlignment value="CENTER"/>
+                              <blockValign value="MIDDLE"/>
+                              <blockBackground colorName="#F0A9C4" start="0,0" stop="1,0"/>
+                              
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,1" stop="0,1" thickness="0.1"/>
+                              
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="1,0" stop="1,0" thickness="0.1"/>
+                              
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="1,0" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,1" stop="1,1" thickness="0.1"/>
+                              
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="1,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,1" stop="1,1" thickness="0.1"/>
+                              
+                               
+                            </blockTableStyle>
+                            
+                            <blockTableStyle id="Table6_1">
+                              <blockAlignment value="CENTER"/>
+                              <blockValign value="MIDDLE"/>       
+                              
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="0,-1" thickness="0.1"/>
+                              
+                            </blockTableStyle>
+                    
+                    
+                            <blockTableStyle id="Table7">
+                              <blockAlignment value="CENTER"/>
+                              <blockValign value="MIDDLE"/>
+                              
+                              <blockBackground colorName="#CAE7D4" start="0,1" stop="0,1"/>
+                              <blockBackground colorName="#CAE7D4" start="2,1" stop="2,1"/>
+                              <blockBackground colorName="#CAE7D4" start="4,1" stop="4,1"/>
+                              <blockBackground colorName="#CAE7D4" start="7,1" stop="7,1"/>
+                              
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,1" stop="8,1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,1" stop="8,1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,1" stop="8,1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,1" stop="8,1" thickness="0.1"/>
+                            </blockTableStyle>
+                    
+                            <blockTableStyle id="Table8">
+                              <blockValign value="TOP"/>
+                              <blockLeftPadding value="0"/>
+                              <blockRightPadding value="0"/>
+                            </blockTableStyle>
+                            
+                            <blockTableStyle id="Table10">
+                              <blockAlignment value="LEFT"/>
+                              <blockValign value="TOP"/>
+          
+                              <blockSpan start="0,2" stop="2,2"/>
+          
+                              <blockBackground colorName="#EBECEC" start="0,2" stop="2,2"/>
+                              <blockBackground colorName="#EBECEC" start="4,2" stop="6,2"/>
+                              <blockBackground colorName="#C0C0C2" start="1,0" stop="1,1"/>
+                              <blockBackground colorName="#C0C0C2" start="1,3" stop="1,3"/>
+                              <blockBackground colorName="#D1D3D4" start="3,0" stop="3,4"/>
+                            </blockTableStyle>
+                            
+                            <blockTableStyle id="Table22">
+                              <blockValign value="MIDDLE"/>
+                              <blockAlignment value="CENTER"/>
+                                  
+                              <blockSpan start="1,0" stop="1,1"/>
+                              <blockValign value="TOP" start="0,1" stop="1,1"/>
+                              <blockValign value="BOTOM" start="0,1" stop="1,1"/>
+                              
+                              <blockValign value="TOP" start="0,2" stop="0,-1"/>
+                              <blockValign value="TOP" start="1,2" stop="1,-1"/>
+                              <blockValign value="TOP" start="2,2" stop="2,-1"/>
+                              <blockValign value="TOP" start="3,2" stop="3,-1"/>
+                              <blockValign value="TOP" start="4,2" stop="4,-1"/>
+                                  
+                              <blockBackground colorName="#F0A9C4" start="0,0" stop="4,0"/>
+                              <blockBackground colorName="#F0A9C4" start="0,1" stop="1,1"/>
+                              <blockBackground colorName="#CAE7D4" start="2,1" stop="4,1"/>
+                                  
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,0" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="0,0" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,0" thickness="0.1"/>
+                                  
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,1" stop="0,1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,1" stop="0,1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="1,0" stop="1,0" thickness="0.1"/>
+                                  
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="1,0" stop="4,0" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="1,0" stop="4,0" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="1,0" stop="4,0" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="1,0" stop="4,0" thickness="0.1"/>
+                                
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="1,1" stop="4,1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="1,1" stop="4,1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="1,1" stop="4,1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="1,1" stop="4,1" thickness="0.1"/>
+                                
+                              <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,2" stop="4,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEAFTER" colorName="#000000" start="0,2" stop="4,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEABOVE" colorName="#000000" start="0,2" stop="4,-1" thickness="0.1"/>
+                              <lineStyle kind="LINEBELOW" colorName="#000000" start="0,2" stop="4,-1" thickness="0.1"/>
+                            </blockTableStyle>
+                            
+                            <initialize>
+                              <paraStyle name="all" alignment="justify"/>
+                            </initialize>
+                    
+                            <paraStyle name="P1" fontName="Helvetica" fontSize="12.0" leading="15" spaceBefore="0.0" spaceAfter="0.0"/>
+                            <paraStyle name="P2" fontName="Helvetica" fontSize="10.0" leading="13" spaceBefore="0.0" spaceAfter="0.0"/>
+                            <paraStyle name="P3" fontName="Helvetica" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
+                            <paraStyle name="P4" fontName="Helvetica" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
+                            <paraStyle name="P5" fontName="Helvetica" fontSize="1.0" leading="2" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
+                            <paraStyle name="P6" fontName="Helvetica" fontSize="1.0" leading="2" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
+                            <paraStyle name="P7" fontName="Helvetica" spaceBefore="0.0" spaceAfter="0.0" textColor="#767171"/>
+                            <paraStyle name="P8" fontName="Helvetica" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0" textColor="#767171"/>
+                            <paraStyle name="P9" fontName="Helvetica" fontSize="1.0" leading="2" spaceBefore="0.0" spaceAfter="0.0" textColor="#767171"/>
+                            <paraStyle name="P10" fontName="Helvetica" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0" textColor="#58595b"/>
+                            <paraStyle name="P11" fontName="Helvetica" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0" textColor="#ffffff"/>
+                            <paraStyle name="P12" fontName="Helvetica-Bold" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0" textColor="#58595b"/>
+                            <paraStyle name="P13" fontName="Helvetica-Bold" fontSize="9.0" leading="11" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0" textColor="#a0a2a5"/>
+                            <paraStyle name="Standard" fontName="Helvetica"/>
+                            <paraStyle name="Normal" fontName="Helvetica"/>
+                            <paraStyle name="Table Contents" fontName="Helvetica"/>
+                    
+                            <paraStyle name="P15" fontName="Helvetica" fontSize="7.0" leading="2" alignment="CENTER"/>
+                            <paraStyle name="P151" fontName="Helvetica" fontSize="6.0" leading="5" alignment="LEFT"/>
+                            <paraStyle name="P15" fontName="Helvetica" fontSize="6.0" leading="5" alignment="CENTER"/>
+                            <paraStyle name="P15_LEFT" fontName="Helvetica" fontSize="6.0" leading="5" alignment="LEFT"/>
+                            <paraStyle name="P116" fontName="Helvetica-Bold" fontSize="6.0" leading="5" alignment="CENTER"/>
+                            <paraStyle name="P16" fontName="Helvetica-Bold" fontSize="7.0" leading="10" alignment="CENTER"/>
+                            
+							<paraStyle name="P166" fontName="Helvetica-Bold" fontSize="7.0" leading="15" alignment="CENTER"/>
+                            <paraStyle name="P166M" fontName="Helvetica-Bold" fontSize="6.0" leading="0" alignment="CENTER" spaceBefore="0.0cm"/>
+                            <paraStyle name="P166F" fontName="Helvetica-Bold" fontSize="6.0" leading="0" alignment="CENTER"/>
+                           
+							
+							<paraStyle name="P18" fontName="Helvetica" fontSize="8.0" leading="10" alignment="CENTER"/>
+                            <paraStyle name="P19" fontName="Helvetica" fontSize="7.0" leading="7" alignment="CENTER"/>
+                            
+                            <paraStyle name="P20" fontName="Helvetica" fontSize="7.0" leading="8" alignment="LEFT"/>
+                            <paraStyle name="P201" fontName="Helvetica" fontSize="7.0" leading="8" alignment="LEFT"/>
+                            
+                            <paraStyle name="P2000" fontName="Helvetica" fontSize="7.0" leading="16" alignment="LEFT"/>
+                            <paraStyle name="P2001" fontName="Helvetica" fontSize="7.0" leading="16" alignment="CENTER"/>
+                            <paraStyle name="P21" fontName="Helvetica" fontSize="7.0" leading="8" spaceBefore="0.0" spaceAfter="0.0" alignment="CENTER"/>
+                            <paraStyle name="P22" fontName="Helvetica" fontSize="5.0" leading="5" alignment="CENTER"/>
+                            
+                            <paraStyle name="P25" fontName="Helvetica" fontSize="8.0" leading="10" alignment="RIGHT"/>
+                            <paraStyle name="P23" fontName="Helvetica-Bold" fontSize="4.0" leading="5" alignment="CENTER"/>
+                            
+                            <paraStyle name="P26" fontName="Helvetica-Bold" fontSize="9.0" leading="5" alignment="LEFT"/>
+                            <paraStyle name="P27" fontName="Helvetica-Bold" fontSize="10.0" leading="5" alignment="RIGHT"/>
+                            <paraStyle name="P100" fontName="Helvetica" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#58595b"/>
+                            <paraStyle name="P188" fontName="Helvetica-Bold" fontSize="5.0" leading="7" alignment="CENTER"/>
+                            <paraStyle name="P199" fontName="Helvetica" fontSize="5.0" leading="7" alignment="CENTER"/>
+                            <paraStyle name="P200" fontName="Helvetica-Bold" fontSize="7.0" leading="10" alignment="CENTER"/>
+                            <paraStyle name="P26" fontName="Helvetica-Bold" fontSize="9.0" leading="5" alignment="LEFT"/>
+                            <paraStyle name="P277" fontName="Helvetica-Bold" fontSize="11.0" leading="5" alignment="RIGHT"/>
+                            <images/>
+                        </stylesheet>
+                        
+                        <story>"""
+            tRows = 36
+            rRows = 0
+            
+            rml += """
+                            <section>
+                            <blockTable colWidths="415.0,8.0,5.0,4.0,18.0,9.0" rowHeights="30.0,20.0,2.0,15.0,10.0" style="Table1">
+                              <tr>
+                                <td>
+                                  <para style="P1">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P3"> </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P3">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                              </tr>
+                              
+                              <tr>
+                                <td vAlign="bottom" bottomPadding="5">
+                                  <para style="P10">
+                                    <font face="Helvetica-Bold">""" + tools.ustr("") + """</font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P12">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P4"> </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P4">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P11">
+                                    <font face="Helvetica"></font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P8">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                              </tr>
+                              
+                              <tr>
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                              </tr>
+                              
+                              <tr>
+                                <td>
+                                  <para style="P13">Sistema Nacional de Salud</para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P13">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P3"> </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P3">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P3"> </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P3">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                              </tr>
+                              
+                              <tr>
+                                <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P3"> </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P3">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                              </tr>
+                            </blockTable>
+                            </section>"""
+                
+            rml += """      
+                            <section>
+                            <blockTable colWidths="296.0,110.0,163.0" style="">
+                                <tr><td></td><td></td><td></td></tr>
+                            </blockTable>
+                            
+                            <blockTable colWidths="105.0,73.0,97.0,19.0,19.0,62.0,95.0" rowHeights="8.0,8.0,12.0" style="Table2">
+                              <tr>
+                                <td><para style="P18">ESTABLECIMIENTO</para></td>
+                                <td><para style="P18">NOMBRE</para></td>
+                                <td><para style="P18">APELLIDO</para></td>
+                                <td><para style="P16">SEXO</para></td>
+                                <td><para style="P16"></para></td>
+                                <td><para style="P19">NUMERO DE HOJA</para></td>
+                                <td><para style="P18">HISTORIA CLINICA</para></td>
+                              </tr>
+                              
+                              <tr>
+                                <td>zxc</td>
+                                <td>zxc</td>
+                                <td>zxc</td>
+                                <td><para style="P16">M</para></td>
+                                <td><para style="P16">F</para></td>
+                                <td>zxc</td>
+                                <td>zxc</td>
+                              </tr>
+                              
+                              <tr>
+                                <td>
+                                  <para style="P15">
+                                    <font color="black">"""
+            rml += (tools.ustr(company.name) if company else "")
+            rml +=  """</font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P15">
+                                    <font color="black">"""
+            rml += (tools.ustr(evaluation.patient_id.first_name) if evaluation.patient_id.first_name else "" )
+            rml += """</font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P15">
+                                    <font color="black">"""
+            rml += tools.ustr((evaluation.patient_id.last_name if evaluation.patient_id.last_name else "") + " " + (evaluation.patient_id.slastname if evaluation.patient_id.slastname else ""))
+            rml += """</font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P15">
+                                    <font color="black">"""
+            rml += ("X" if evaluation.patient_id.sex == "m" else "")
+            rml += """</font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P15">
+                                    <font color="black">"""
+            rml += ("X" if evaluation.patient_id.sex == "f" else "")
+            rml += """</font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P15">
+                                    <font color="black">1</font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P15">
+                                    <font color="black">"""
+            rml += (tools.ustr(evaluation.patient_id.identification_code) if evaluation.patient_id.identification_code else "")
+            rml += """</font>
+                                  </para>
+                                </td>
+                              </tr>
+                            </blockTable>"""
+            
+#            rowHeights = '12.0'
+#            if evaluation.mdc_info:
+#                strMDC = evaluation.mdc_info.replace('\n',' ')
+#                if len(strMDC) > 103:
+#                    filaAlto = 1 
+#                    tmp = len(strMDC)/103            
+#                    filaAlto = tmp + 1 if len(strMDC) % 103 != 0 else tmp
+#                    rowHeights += ',' + str(12.0 * filaAlto)
+#                    rRows = rRows + (filaAlto -1)
+#                    tRows -= (filaAlto -1)
+#                else:
+#                    rowHeights += ',12.0'
+
+            rowHeights = '12.0'
+            if evaluation.mdc_info:
+                for app in evaluation.mdc_info.split('\n'):
+                    if len(app) > 103:
+                        filaAlto = 1 
+                        tmp = len(app)/103            
+                        filaAlto = tmp + 1 if len(app) % 103 != 0 else tmp
+                        rowHeights += ',' + str(12.0 * filaAlto)
+                        rRows = rRows + (filaAlto -1)
+                        tRows -= (filaAlto -1)
+                    else:
+                        rowHeights += ',12.0'
+                        rRows = rRows + 1                   
+           
+            rml += """
+                            <spacer length="0.1cm"/>
+                            <blockTable colWidths="470" rowHeights=" """ + rowHeights + """ " style="Table3">
+                                <tr><td><para style="P20">1.  MOTIVO DE CONSULTA</para></td></tr>"""
+#                                <tr><td><para style="P20">""" + (tools.ustr(evaluation.mdc_info) if evaluation.mdc_info else '') + """</para></td></tr>
+#                            </blockTable>"""
+            if evaluation.mdc_info:
+                for app in evaluation.mdc_info.split('\n'):
+                    rml += """  <tr><td><para style="P20">""" + app + """</para></td></tr>"""
+            
+            rml += """      </blockTable>"""
+
+            rowHeights = '12.0'
+            if evaluation.patient_id.app_info:
+                for app in evaluation.patient_id.app_info.split('\n'):
+                    if len(app) > 103:
+                        filaAlto = 1 
+                        tmp = len(app)/103            
+                        filaAlto = tmp + 1 if len(app) % 103 != 0 else tmp
+                        rowHeights += ',' + str(12.0 * filaAlto)
+                        rRows = rRows + (filaAlto -1)
+                        tRows -= (filaAlto -1)
+                    else:
+                        rowHeights += ',12.0'
+                        rRows = rRows + 1                   
+            
+            rml += """
+                            <spacer length="0.1cm"/>
+                            <blockTable colWidths="470" rowHeights=" """ + rowHeights + """ " style="Table3">
+                                <tr><td><para style="P20">2.  ANTECEDENTES PERSONALES</para></td></tr>"""
+            
+            if evaluation.patient_id.app_info:
+                for app in evaluation.patient_id.app_info.split('\n'):
+                    rml += """  <tr><td><para style="P20">""" + app + """</para></td></tr>"""
+            
+            rml += """      </blockTable>"""
+            
+            rowHeights = '12.0'
+            if evaluation.patient_id.apf_info:
+                for apf in evaluation.patient_id.apf_info.split('\n'):
+                    if len(apf) > 103:
+                        filaAlto = 1 
+                        tmp = len(apf)/103            
+                        filaAlto = tmp + 1 if len(apf) % 103 != 0 else tmp
+                        rowHeights += ',' + str(12.0 * filaAlto)
+                        rRows = rRows + (filaAlto -1)
+                        tRows -= (filaAlto -1)
+                    else:
+                        rowHeights += ',12.0'
+                        rRows = rRows + 1                    
+            
+            rml += """
+                            <spacer length="0.1cm"/>
+                            <blockTable colWidths="470" rowHeights=" """ + rowHeights + """ " style="Table3">
+                                <tr><td><para style="P20">3.  ANTECEDENTES FAMILIARES</para></td></tr>"""
+            
+            if evaluation.patient_id.apf_info:
+                for apf in evaluation.patient_id.apf_info.split('\n'):
+                    rml += """  <tr><td><para style="P20">""" + apf + """</para></td></tr>"""
+            
+            rml += """      </blockTable>"""
+            
+            rowHeights = '12.0'
+            if evaluation.eac_info:
+                for eac in evaluation.eac_info.split('\n'):
+                    if len(eac) > 103:
+                        filaAlto = 1 
+                        tmp = len(eac)/103            
+                        filaAlto = tmp + 1 if len(eac) % 103 != 0 else tmp
+                        rowHeights += ',' + str(12.0 * filaAlto)
+                        rRows = rRows + (filaAlto -1)
+                        tRows -= (filaAlto -1)
+                    else:
+                        rowHeights += ',12.0'
+                        rRows = rRows + 1                     
+            
+            rml += """
+                            <spacer length="0.1cm"/>
+                            <blockTable colWidths="470" rowHeights=" """ + rowHeights + """ " style="Table3">
+                                <tr><td><para style="P20">4.  ENFERMEDAD O PROBLEMA ACTUAL</para></td></tr>"""
+            
+            if evaluation.eac_info:
+                for eac in evaluation.eac_info.split('\n'):
+                    rml += """  <tr><td><para style="P20">""" + eac + """</para></td></tr>"""
+            
+            rml += """      </blockTable>"""
+            
+            rowHeights = '12.0'
+            if evaluation.revision_organos:
+                for eac in evaluation.revision_organos.split('\n'):
+                    if len(eac) > 103:
+                        filaAlto = 1 
+                        tmp = len(eac)/103            
+                        filaAlto = tmp + 1 if len(eac) % 103 != 0 else tmp
+                        rowHeights += ',' + str(12.0 * filaAlto)
+                        rRows = rRows + (filaAlto -1)
+                        tRows -= (filaAlto -1)
+                    else:
+                        rowHeights += ',12.0'
+                        rRows = rRows + 1          
+            
+            rml += """
+                            <spacer length="0.1cm"/>
+                            <blockTable colWidths="470" rowHeights=" """ + rowHeights + """ " style="Table3">
+                                <tr><td><para style="P20">5.  REVISION ACTUAL DE ORGANOS Y SISTEMAS</para></td></tr>"""
+            
+            if evaluation.revision_organos:
+                for rev in evaluation.revision_organos.split('\n'):
+                    rml += """  <tr><td><para style="P20">""" + rev + """</para></td></tr>"""
+            
+            rml += """      </blockTable>"""
+            
+            rml += """
+                            <spacer length="0.1cm"/>
+                            <blockTable colWidths="86.0,48.0,48.0,48.0,48.0,48.0,48.0,48.0,48.0" rowHeights="12.0,12.0,12.0,12.0,12.0" style="Table4">
+                                <tr>
+                                    <td><para style="P20">6.  SIGNOS VITALES</para></td>
+                                    <td>2</td>
+                                    <td>2</td>
+                                    <td>2</td>
+                                    <td>2</td>
+                                    <td>2</td>
+                                    <td>2</td>
+                                    <td>2</td>
+                                    <td>2</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td><para style="P116">FECHA</para></td>
+                                    <td><para style="P151">""" + (evaluation.evaluation_date if evaluation.evaluation_date else '') + """</para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                </tr>
+                                <tr>
+                                    <td><para style="P116">PRESION ARTERIAL</para></td>
+                                    <td><para style="P151">""" + (evaluation.pat_info if evaluation.pat_info else '') + """</para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                </tr>
+                                <tr>
+                                    <td><para style="P116">PULSO X min</para></td>
+                                    <td><para style="P151">""" + (str(evaluation.ppm_info) if evaluation.ppm_info else '') + """</para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                </tr>
+                                <tr>
+                                    <td><para style="P116">""" + tools.ustr('TEMPERATURA °C') + """</para></td>
+                                    <td><para style="P151">""" + (str(evaluation.tem_info) if evaluation.tem_info else '') + """</para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                    <td><para style="P15"></para></td>
+                                </tr>
+                            </blockTable>"""
+            
+            rowHeights = '12.0'
+            if evaluation.ena_info:
+                for ena in evaluation.ena_info.split('\n'):
+                    if len(ena) > 103:
+                        filaAlto = 1 
+                        tmp = len(ena)/103            
+                        filaAlto = tmp + 1 if len(ena) % 103 != 0 else tmp
+                        rowHeights += ',' + str(12.0 * filaAlto)
+                        rRows = rRows + (filaAlto -1)
+                        tRows -= (filaAlto -1)
+                    else:
+                        rowHeights += ',12.0'
+                        rRows = rRows + 1                     
+            
+            rml += """
+                            <spacer length="0.1cm"/>
+                            <blockTable colWidths="470" rowHeights=" """ + rowHeights + """ " style="Table3">
+                                <tr><td><para style="P20">7.  EXAMEN FISICO</para></td></tr>"""
+            
+            if evaluation.ena_info:
+                for ena in evaluation.ena_info.split('\n'):
+                    rml += """  <tr><td><para style="P20">""" + ena + """</para></td></tr>"""
+            
+            rml += """      </blockTable>"""
+            
+            
+            diagnosisList = []             
+            for diagnosis in evaluation.diagnosis:
+                diagnosisList.append((tools.ustr(diagnosis.code + '-' + diagnosis.name), 'pre'))
+            
+            for diagnosis in evaluation.definitive_diagnosis:
+                diagnosisList.append((tools.ustr(diagnosis.code + '-' + diagnosis.name), 'def'))
+            
+            if len(diagnosisList) < 4:
+                while len(diagnosisList) < 4:
+                    diagnosisList.append((' ', ' '))
+            
+            filaAlto1 = 1      
+            if len(diagnosisList[0][0]) > 27:
+                tmp1 = len(diagnosisList[0][0])/27            
+                filaAlto1 = tmp1 + 1 if len(diagnosisList[0][0]) % 27 != 0 else tmp1
+            
+            filaAlto2 = 1     
+            if len(diagnosisList[2][0]) > 27:
+                tmp2 = len(diagnosisList[2][0])/27            
+                filaAlto2 = tmp2 + 1 if len(diagnosisList[2][0]) % 27 != 0 else tmp2
+              
+            maxVal1 = max([filaAlto1,filaAlto2])
+            
+            if maxVal1 != 1:
+                rRows = rRows + maxVal1  
+                tRows -= (maxVal1 - 1)          
+            filaAlto1 = 12.0 * maxVal1
+            
+            filaAlto3 = 1      
+            if len(diagnosisList[1][0]) > 27:
+                tmp3 = len(diagnosisList[1][0])/27            
+                filaAlto3 = tmp3 + 1 if len(diagnosisList[1][0]) % 27 != 0 else tmp3
+            
+            filaAlto4 = 1     
+            if len(diagnosisList[3][0]) > 27:
+                tmp4 = len(diagnosisList[3][0])/27            
+                filaAlto4 = tmp4 + 1 if len(diagnosisList[3][0]) % 27 != 0 else tmp4
+              
+            maxVal2 = max([filaAlto3,filaAlto4])
+            
+            if maxVal2 != 1:
+                rRows = rRows + maxVal2 
+                tRows -= (maxVal2 - 1)           
+            filaAlto3 = 12.0 * maxVal2
+             
+            rml += """
+                            <spacer length="0.1cm"/>
+                            <blockTable colWidths="15.0,145.0,25.0,25.0,25.0,15.0,145.0,25.0,25.0,25.0" rowHeights="12.0,""" + str(filaAlto1) + "," + str(filaAlto3) + """" style="Table5">
+                                <tr>
+                                    <td><para style="P20">8.  DIAGNOSTICOS</para></td>
+                                    <td><para style="P20"> </para></td>
+                                    <td><para style="P22">CIE</para></td>
+                                    <td><para style="P22">PRE</para></td>
+                                    <td><para style="P22">DEF</para></td>
+                                    <td><para style="P20"> </para></td>
+                                    <td><para style="P21">PRE= PRESUNTIVO  DEF= DEFINITIVO</para></td>
+                                    <td><para style="P22">CIE</para></td>
+                                    <td><para style="P22">PRE</para></td>
+                                    <td><para style="P22">DEF</para></td>
+                                </tr>"""
+            
+            if diagnosisList[0][0] != ' ' or diagnosisList[2][0] != ' ' or diagnosisList[1][0] != ' ' or diagnosisList[3][0] != ' ':
+            
+                rml += """
+                                    <tr>
+                                        <td><para style="P2000">1</para></td>
+                                        <td><para style="P201">""" + (diagnosisList[0][0] if len(diagnosisList[0][0]) else '')  + """</para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20">""" + ('X' if diagnosisList[0][1] == 'pre' else '') + """</para></td>
+                                        <td><para style="P20">""" + ('X' if diagnosisList[0][1] == 'def' else '') + """</para></td>
+                                        <td><para style="P2000">3</para></td>
+                                        <td><para style="P201">""" + (diagnosisList[2][0] if len(diagnosisList[2][0]) else '') + """</para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20">""" + ('X' if diagnosisList[2][1] == 'pre' else '') + """</para></td>
+                                        <td><para style="P20">""" + ('X' if diagnosisList[2][1] == 'def' else '') + """</para></td>
+                                    </tr>"""
+                rml += """                  
+                                    <tr>
+                                        <td><para style="P2000">2</para></td>
+                                        <td><para style="P201">""" + (diagnosisList[1][0] if len(diagnosisList[1][0]) else '') + """</para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20">""" + ('X' if diagnosisList[1][1] == 'pre' else '') + """</para></td>
+                                        <td><para style="P20">""" + ('X' if diagnosisList[1][1] == 'def' else '') + """</para></td>
+                                        <td><para style="P2000">4</para></td>
+                                        <td><para style="P201">""" + (diagnosisList[3][0] if len(diagnosisList[3][0]) else '' ) + """</para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20">""" + ('X' if diagnosisList[3][1] == 'pre' else '') + """</para></td>
+                                        <td><para style="P20">""" + ('X' if diagnosisList[3][1] == 'def' else '') + """</para></td>
+                                    </tr>
+                                </blockTable>"""
+            else:
+                
+                rml += """
+                                    <tr>
+                                        <td><para style="P2000"></para></td>
+                                        <td><para style="P201"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P2000"></para></td>
+                                        <td><para style="P201"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                    </tr>
+                                    <tr>
+                                        <td><para style="P2000"></para></td>
+                                        <td><para style="P201"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P2000"></para></td>
+                                        <td><para style="P201"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                        <td><para style="P20"> </para></td>
+                                    </tr>                                    
+                                    </blockTable>
+                                    """                
+            for x in range(0, tRows - rRows):
+                if len(rowHeights) == 0:
+                    rowHeights += '12.0'
+                else:
+                    rowHeights += ',12.0'
+ 
+            tRows = 36 - rRows
+            rowHeights = ''
+            if evaluation.directions:                               
+                for ena in evaluation.directions.split('\n'):
+                    if len(ena) > 103:
+                        filaAlto = 1 
+                        tmp = len(ena)/103            
+                        filaAlto = tmp + 1 if len(ena) % 103 != 0 else tmp
+                        rowHeights += ',' + str(12.0 * filaAlto) if len(rowHeights) > 0 else str(12.0 * filaAlto)
+                        rRows = rRows + (filaAlto -1) 
+                        tRows -= (filaAlto -1)                       
+                    else:
+                        rowHeights += ',12.0' if len(rowHeights) > 0 else '12.0'
+                        rRows = rRows + 1 
+                                    
+            
+#            for x in range(0, tRows - rRows):
+#                if len(rowHeights) == 0:
+#                    rowHeights += '12.0'
+#                else:
+#                    rowHeights += ',12.0'
+                
+            rml += """
+                            <spacer length="0.1cm"/>
+                            <blockTable colWidths="235.0,235.0" rowHeights="12.0" style="Table6">
+                                <tr>
+                                    <td><para style="P20">9.  PLANES</para></td>
+                                    <td><para style="P25">DE DIAGNOSTICO, TERAPEUTICOS Y EDUCACIONALES</para></td>
+                                </tr>
+                            </blockTable>"""
+            
+            rml += """
+                            <blockTable colWidths="470.0" rowHeights=" """ +str(rowHeights) +"""" style="Table6_1">
+                             """
+            
+            if evaluation.directions:
+                for direction in evaluation.directions.split('\n'):
+                    rml += """  <tr><td><para style="P20">""" + direction + """</para></td></tr>"""
+            
+            while rRows < tRows:
+                rml += """      <tr><td><para style="P20"> </para></td></tr>"""
+                rRows = rRows + 1
+            
+            rml += """      </blockTable>
+                            </section>"""
+            
+            rml += """      <nextFrame/>"""
+            
+            rml += """
+                            <blockTable colWidths="50.0,50.0,35.0,35.0,35.0,126.0,35.0,35.0,70.0" rowHeights="7.0,12.0" style="Table7">
+                                <tr>
+                                    <td><para style="P23"></para></td>
+                                    <td><para style="P23"></para></td>
+                                    <td><para style="P23"></para></td>
+                                    <td><para style="P23"></para></td>
+                                    <td><para style="P23"></para></td>
+                                    <td><para style="P23"></para></td>
+                                    <td><para style="P23">CODIGO</para></td>
+                                    <td><para style="P23"></para></td>
+                                    <td><para style="P23"></para></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td><para style="P23">FECHA PARA CONTROL</para></td>
+                                    <td><para style="P23">""" + (evaluation.evaluation_date if evaluation.evaluation_date else '') + """</para></td>
+                                    <td><para style="P23">HORA FIN</para></td>
+                                    <td><para style="P23"></para></td>
+                                    <td><para style="P23">MEDICO</para></td>
+                                    <td><para style="P23">""" + (tools.ustr(evaluation.doctor.physician_id.name) if evaluation.doctor.physician_id else '') + """</para></td>
+                                    <td><para style="P23">""" + (evaluation.doctor.code if evaluation.doctor else '') + """</para></td>
+                                    <td><para style="P23">FIRMA</para></td>
+                                    <td><para style="P23"></para></td>
+                                </tr>
+                            </blockTable>"""
+            
+            rml += """
+                            <blockTable colWidths="235.0,235.0" style="Table8">
+                                <tr>
+                                    <td><para style="P26">SNS-MSP / HCU-form.002 / 2007</para></td>
+                                    <td><para style="P27">CONSULTA EXTERNA - ANAMNESIS Y EF</para></td>
+                                </tr>
+                            </blockTable>"""
+            
+            rml += """      <pageBreak/>"""
+                
+            rml += """      
+                            <blockTable colWidths="9.0,18.0,3.0,5.0,8.0,415.0" rowHeights="35.0,20.0,2.0,15.0,10.0" style="Table10">
+                              <tr>
+                                  <td>
+                                  <para style="P3">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P3"> </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                  
+                                <td>
+                                  <para style="P1">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                              </tr>
+                              
+                              <tr>
+                                  <td>
+                                  <para style="P8">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P11">
+                                    <font face="Helvetica"></font>
+                                  </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P4">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P4"> </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P12">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                  
+                                <td vAlign="bottom" bottomPadding="5">
+                                  <para style="P100">
+                                    <font face="Helvetica-Bold">""" + tools.ustr("") + """</font>
+                                  </para>
+                                </td>
+                              </tr>
+                              
+                              <tr>
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P5"></para>
+                                </td>
+                              </tr>
+                              
+                              <tr>
+                                  <td>
+                                  <para style="P3">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P3"> </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P3">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P3"> </para>
+                                </td>
+                                  
+                                  <td>
+                                  <para style="P13">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                  
+                                <td>
+                                  <para style="P13"></para>
+                                </td>
+                              </tr>
+                              
+                              <tr>
+                                <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P2">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P3"> </para>
+                                </td>
+                                
+                                <td>
+                                  <para style="P3">
+                                    <font color="white"> </font>
+                                  </para>
+                                </td>
+                              </tr>
+                            </blockTable>"""
+            
+            rml += """
+                            <blockTable colWidths="296.0,110.0,163.0" style="">
+                                <tr><td></td><td></td><td></td></tr>
+                            </blockTable>"""
+            
+            x = 0
+            tRows = 55
+            rowHeights = '15.0,15.0'
+            
+            if evaluation.evolution_ids:
+                for evolution in evaluation.evolution_ids:                    
+                    filaAlto1 = 1
+                    cont = 0
+                    if evolution.evl_info:
+                        cont = evolution.evl_info.count('\n')  
+                        cont += evolution.evl_info.count('\r')            
+                    if evolution.evl_info and len(evolution.evl_info) > 29:
+                        filaAlto1 = len(evolution.evl_info)/29
+                    filaAlto1 += cont             
+                 
+                    filaAlto2 = 1 
+                    cont = 0
+                    if evolution.directions:
+                        cont = evolution.directions.count('\n')  
+                        cont += evolution.directions.count('\r')                            
+                    if evolution.directions and len(evolution.directions) > 29:
+                        filaAlto2 = len(evolution.directions)/29
+                    filaAlto2 += cont            
+                    
+                    maxVal1 = max([filaAlto1,filaAlto2])
+                    tRows = tRows - (maxVal1 -1 if maxVal1 != 1 else 0) 
+            
+                    filaAlto1 = 12.0 * maxVal1                    
+                    rowHeights += ',' + str(filaAlto1)                    
+                    x = x + 1
+            
+            while x < tRows:
+                rowHeights += ',12.0'
+                x = x + 1
+                
+            rml += """
+                            <blockTable colWidths="50.0,40.0,160.0,160.0,60.0" rowHeights=" """ + rowHeights + """ " style="Table22">
+                                <tr>
+                                    <td><para style="P200">FECHA</para></td>
+                                    <td><para style="P200">HORA</para></td>
+                                    <td><para style="P200">EVOLUCION</para></td>
+                                    <td><para style="P200">PRESCRIPCIONES</para></td>
+                                    <td><para style="P188">MEDICAMENTOS</para></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td><para style="P199">(DIA/MES/ANO)</para></td>
+                                    <td><para></para></td>
+                                    <td><para style="P199">FIRMAR AL PIE DE CADA NOTA DE EVOLUCION</para></td>
+                                    <td><para style="P199">FIRMAR AL PIE DE CADA CONJUNTO DE PRESCRIPCIONES</para></td>
+                                    <td><para style="P199">REGISTRAR ADMINISTRAR</para></td>
+                                </tr>"""
+            x = 0
+            if evaluation.evolution_ids:
+                for evolution in evaluation.evolution_ids:
+                    x = x + 1
+                    if evolution.evolution_date:
+                        temp = evolution.evolution_date.split(' ')[0].split('-')
+                        date = temp[2] + '/' + temp[1] + '/' + temp[0]
+                        time = '00:00'
+                        if len(evolution.evolution_date.split(' ')) > 1:
+                            temp = evolution.evolution_date.split(' ')[1].split(':')
+                            if len(temp) > 1:
+                                time = temp[0] + ':' + temp[1]
+                    else:
+                        date = ''
+                        time = ''
+                        
+                    rml += """
+                                <tr>
+                                    <td><para style="P15">""" + date + """</para></td>
+                                    <td><para style="P15">""" + time + """</para></td>
+                                    <td vAlign="top"><para style="P15_LEFT">""" + (tools.ustr(evolution.evl_info) if evolution.evl_info else '') + """</para></td>
+                                    <td vAlign="top"><para style="P15_LEFT">"""
+                    
+                    rml += tools.ustr(evolution.directions) if evolution.directions else ''
+                    rml += """</para></td>
+                                    <td><para style="P15"></para></td>
+                                </tr>"""
+            
+            while x < tRows:
+                x = x + 1
+                rml += """
+                                <tr>
+                                    <td><para style="P15"> </para></td>
+                                    <td><para style="P15"> </para></td>
+                                    <td><para style="P15_LEFT"> </para></td>
+                                    <td><para style="P15_LEFT"> </para></td>
+                                    <td><para style="P15"> </para></td>
+                                </tr>"""
+            
+            rml += """      </blockTable>"""
+                
+            rml += """      <nextFrame/>"""
+                            
+            rml += """      
+                            <blockTable colWidths="296.0,110.0,163.0" style="">
+                                <tr><td></td><td></td><td></td></tr>
+                            </blockTable>
+                            
+                            <blockTable colWidths="235.0,235.0" style="Table8">
+                                <tr>
+                                    <td><para style="P26">SNS-MSP / HCU-form.002 / 2007</para></td>
+                                    <td><para style="P27">CONSULTA EXTERNA - EVOLUCION</para></td>
+                                </tr>
+                            </blockTable>"""
+            
+            rml += """  </story>
+                    </document>"""
+        
+        report_type = datas.get('report_type', 'pdf')
+        create_doc = self.generators[report_type]
+        pdf = create_doc(rml, title=self.title)
+        
+        return (pdf, report_type)
+oemedical_patient_evaluation_report('report.oemedical_patient_evaluation_report', 
+                                    'oemedical.patient.evaluation', '', '')
