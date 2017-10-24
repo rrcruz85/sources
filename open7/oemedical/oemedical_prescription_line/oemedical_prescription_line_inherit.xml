@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="view_oemedical_prescription_line_inherit" model="ir.ui.view">
+			<field name="name">oemedical.prescription.line.inherit</field>
+			<field name="model">oemedical.prescription.line</field>
+			<field name="inherit_id" ref="view_oemedical_prescription_line_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//div[@class='cantidad']" position="after">
+            		<field name="indication" />
+				</xpath>
+			</field>
+		</record>
+
+	</data>
+</openerp>

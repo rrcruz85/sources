@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template" xml:space="preserve">
+
+    <t t-name="test_template">
+        <div id="Main">
+                <div id="Name">
+                    <span>Name:</span>
+                    <input id="textName" type="text"/>
+                </div>
+                <div id="Desc">
+                    <span style="">Description:</span>
+                    <textarea id="textDesc"></textarea>
+                    <br/>
+                    <input id="btn" type="button" value="Ejecutar"/>
+                </div>
+        </div>
+    </t>
+
+</templates>

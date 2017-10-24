@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+        <!-- ======================================================================================
+        ACCOUNT BANK STATEMENT
+        Model: account.bank.statement
+        =========================================================================================== -->
+
+        <record id="my_point_of_sale_account_bank_statement_form_view" model="ir.ui.view">
+            <field name="name">my_point_of_sale_account_bank_statement_form_view</field>
+            <field name="model">account.bank.statement</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.view_bank_statement_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="currency" position="after">
+                        <field name="journal_type"/>
+                    </field>
+
+                    <field name="line_ids" position="replace">
+                        <field name="line_ids" context="{'date': date}">
+                            <tree editable="bottom" string="Statement lines"
+                                  colors="grey: journal_entry_id != False">
+
+                                <field name="sequence" readonly="1" invisible="1"/>
+                                <field name="journal_entry_id" invisible="1"/>
+
+                                <field name="date" attrs="{'readonly' : [('journal_entry_id', '!=', False)] }"/>
+                                <field name="name" attrs="{'readonly' : [('journal_entry_id', '!=', False)] }"/>
+                                <field name="ref" attrs="{'readonly' : [('journal_entry_id', '!=', False)] }"/>
+
+                                <field name="partner_id"
+                                       domain="['|',('parent_id','=',False),('is_company','=',True)]"
+                                       context="{'default_supplier': 1}"
+                                       attrs="{'readonly' : [('journal_entry_id', '!=', False)] }"/>
+
+                                <field name="amount" attrs="{'readonly' : [('journal_entry_id', '!=', False)] }"/>
+                                <field name="amount_currency" groups="base.group_multi_currency"
+                                       attrs="{'readonly' : [('journal_entry_id', '!=', False)] }"/>
+
+                                <field name="currency_id" groups="base.group_multi_currency"
+                                       attrs="{'readonly' : [('journal_entry_id', '!=', False)] }"/>
+
+                                <field name="bank_account_id" groups="base.group_no_one"
+                                       attrs="{'readonly' : [('journal_entry_id', '!=', False)] }"
+                                       domain="['|', ('partner_id', '=', partner_id), ('partner_id', '=', False)]"/>
+
+                                <field name="bank_id"/>
+                                <field name="check_number"/>
+                                <field name="check_date"/>
+                                <field name="card_number"/>
+                                <field name="card_type_id"/>
+                                <field name="approval_number"/>
+                                <field name="lot_number"/>
+                                <field name="reference"/>
+                            </tree>
+                        </field>
+                    </field>
+                </data>
+            </field>
+        </record>
+    </data>
+</openerp>

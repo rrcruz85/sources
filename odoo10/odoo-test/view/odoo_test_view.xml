@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- views -->
+
+        <record id="view_odoo_test_form" model="ir.ui.view">
+            <field name="name">odoo.test.form</field>
+            <field name="model">odoo.test</field>
+            <field name="arch" type="xml">
+                <form string="Test">
+                    <sheet>
+                        <group>
+                                <field name="firstname"/>
+                                <field name="secondname"/>
+                                <field name="datebirth"/>
+                                <field name="age"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_odoo_test_list" model="ir.ui.view">
+            <field name="name">odoo.test.list</field>
+            <field name="model">odoo.test</field>
+            <field name="arch" type="xml">
+                <tree string="Test" toolbar="1">
+                    <field name="firstname"/>
+                    <field name="secondname"/>
+                    <field name="datebirth"/>
+                    <field name="age"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="action_odoo_test" model="ir.actions.act_window">
+            <field name="name">Test</field>
+            <field name="res_model">odoo.test</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_odoo_test_list"/>
+        </record>
+
+        <menuitem id="menu_parent_odoo_test"  name = "Test Menu" sequence="20"/>
+        <menuitem id="menu_odoo_test" name = "Test"  action="action_odoo_test"  parent="menu_parent_odoo_test" sequence="1"/>
+
+
+     </data>
+</odoo>

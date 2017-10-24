@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.actions.act_url" id="action_show_module">
+            <field name="name">Show Template</field>
+            <field name="url">/test_module</field>
+            <field name="target">self</field>
+        </record>
+
+        <template id="index" name="My Template Index">&lt;!DOCTYPE html&gt;
+            <html>
+                <head>
+                    <title>My Template</title>
+
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+                    <meta http-equiv="content-type" content="text/html, charset=utf-8" />
+
+                    <meta name="viewport" content=" width=1024, user-scalable=no"/>
+                    <meta name="apple-mobile-web-app-capable" content="yes"/>
+                    <meta name="mobile-web-app-capable" content="yes"/>
+
+
+                    <link rel="stylesheet" href="/test_module/static/src/css/styles.css" id="my-template-stylesheet"/>
+
+                    <t t-call-assets="web.assets_common" t-css="false" />
+                    <t t-call-assets="web.assets_backend" t-css="false" />
+
+                    <script type="text/javascript" id="loading-script">
+                        $(function() {
+                        var s = new openerp.init(<t t-raw='modules' />);
+                            <t t-raw='init' />
+                        });
+                    </script>
+
+                </head>
+                <body>
+                    <div class='openerp openerp_webclient_container'>
+                        <table class='oe_webclient'>
+                            <tr>
+                                <td class='oe_application' />
+                            </tr>
+                        </table>
+                    </div>
+                </body>
+            </html>
+        </template>
+
+    </data>
+</openerp>

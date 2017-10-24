@@ -1,0 +1,29 @@
+#Main {
+    height: 150px;
+    width: 190px;
+    background-color: bisque;
+    border: 3px solid black;
+    position: relative;
+    margin-left: 45%;
+    margin-top: 20%;
+}
+
+#Name {
+    height: 50px;
+    width: 180px;
+    display: block;
+    position: relative;
+    padding-left: 10px;
+}
+
+#Desc {
+    height: 100px;
+    width: 180px;
+    display: block;
+    position: relative;
+    padding-left: 10px;
+}
+
+#btn {
+    margin-left: 30%;
+}

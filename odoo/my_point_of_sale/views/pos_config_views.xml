@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!-- ======================================================================================
+		POS CONFIG
+		Model: pos.config
+		=========================================================================================== -->
+
+    	<!-- FORM VIEW -->
+    	<record id="view_pos_config_form_inherit" model="ir.ui.view">
+            <field name="name">view_pos_config_form_inherit</field>
+            <field name="model">pos.config</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_config_form" />
+            <field name="arch" type="xml">
+				<data>
+					<xpath expr="//form/sheet/group[@string='Hardware Proxy']" position="after">
+						<group string="IVA Compensation">
+                            <group>
+                                <field name="iva_compensation"/>
+                            </group>
+                            <group></group>
+                        </group>
+
+                        <notebook>
+							<page string="Products...">
+								<p class="oe_grey">Available <b>products</b> in the TPV...</p>
+								<group><field name="show_all_products"/></group>
+								<field name="products_ids"/>
+							</page>
+						</notebook>
+					</xpath>
+				</data>
+			</field>
+		</record>
+    </data>
+</openerp>

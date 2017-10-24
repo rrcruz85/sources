@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+		<report id="oemedical_patient_evaluation_report"
+                name="oemedical_patient_evaluation_report"
+                string="Print official report" 
+                model="oemedical.patient.evaluation"
+                auto="False"/>
+	</data>
+</openerp>

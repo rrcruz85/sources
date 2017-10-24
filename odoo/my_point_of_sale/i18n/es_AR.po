@@ -1,0 +1,37 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * my_point_of_sale
+
+#. module: my_point_of_sale
+#: selection:account.journal,type:0
+msgid "Credit/Debit Card"
+msgstr "Tarjeta  Crédito/Débito"
+
+#. module: my_point_of_sale
+#: selection:account.journal,type:0
+msgid "Check"
+msgstr "Cheque"
+
+#. module: my_point_of_sale
+#: selection:account.journal,card_payment:0
+msgid "Credit Card Payment"
+msgstr "Pago por Tarjeta Crédito/Débito"
+
+#. module: my_point_of_sale
+#: selection:account.journal,check_payment:0
+msgid "Check Payment"
+msgstr "Pago por Cheque"
+
+#. module: my_point_of_sale
+#: selection:account.journal,type:0
+msgid "Bank"
+msgstr "Banco"
+
+#. module: my_point_of_sale
+#: help:account.journal,type:0
+msgid "Select 'Sale' for customer invoices journals."
+"Select 'Purchase' for supplier invoices journals."
+"Select 'Cash' or 'Credit/Debit Card' or 'Ckeck' or 'Bank' for journals that are used in customer or supplier payments."
+"Select 'General' for miscellaneous operations journals."
+"Select 'Opening/Closing Situation' for entries generated for new fiscal years."
+msgstr "Seleccione 'Ventas' para diarios de facturas de cliente. Seleccione 'Compras' para diarios de facturas de proveedor. Seleccione 'Efectivo' , 'Tarjeta Crédito/Débito', 'Cheque' o 'Banco' para diarios que se usan para pagos de clientes y proveedores. Seleccione 'General' para diarios que contienen operaciones varias. Seleccione 'Balance apertura/cierre' para diarios que contendrán asientos creados en el nuevo ejercicio fiscal."

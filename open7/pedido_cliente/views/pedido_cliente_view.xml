@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--
+        Pedido cliente
+        -->
+
+        <record id="view_freight_agency_tree" model="ir.ui.view">
+            <field name="name">freight.agency.tree</field>
+            <field name="model">freight.agency</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Freight Agencies">
+                    <field name="name"/>
+                    <field name="address"/>
+                    <field name="mobil"/>
+                    <field name="phone1"/>
+                    <field name="phone2"/>
+                    <field name="contact"/>
+                    <field name="cuarto_frio"/>
+                    <field name="email1"/>
+                    <field name="email2"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_freight_agency_form" model="ir.ui.view">
+            <field name="name">freight.agency.form</field>
+            <field name="model">freight.agency</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Freight Agency">
+                    <field name="name" required="1"/>
+                    <field name="mobil"/>
+                    <newline/>
+                    <field name="address" colspan="4"/>
+                    <newline/>
+                    <field name="phone1"/>
+                    <field name="phone2"/>
+                    <newline/>
+                    <field name="contact"/>
+                    <field name="cuarto_frio"/>
+                    <newline/>
+                    <field name="email1" widget="email"/>
+                    <field name="email2" widget="email"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_detalle_line_tree" model="ir.ui.view">
+            <field name="name">detalle.lines.tree</field>
+            <field name="model">detalle.lines</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Detalle Lines">
+                    <field name="pedido_id" invisible="1"/>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="supplier_id"/>
+                    <field name="product_id"/>
+                    <field name="variant_id"/>
+                    <field name="lengths"/>
+                    <field name="subclient_id"/>
+                    <field name="is_box_qty"/>
+                    <field name="qty"/>
+                    <field name="bunch_per_box"/>
+                    <field name="bunch_type"/>
+                    <field name="uom"/>
+                    <field name="purchase_price"/>
+                    <field name="sale_price"/>
+                    <field name="origin"/>
+                    <field name="sucursal_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_detalle_line_form" model="ir.ui.view">
+            <field name="name">detalle.lines.form</field>
+            <field name="model">detalle.lines</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Detalle Lines">
+                    <field name="pedido_id" invisible="1"/>
+                    <field name="type"/>
+                    <newline/>
+                    <field name="supplier_id" required="1"/>
+                    <field name="product_id" required="1"/>
+                    <field name="variant_id"  required="1" domain="[('product_id','=',product_id)]"/>
+                    <field name="lengths"/>
+                    <newline/>
+                    <field name="is_box_qty"/>
+                    <field name="qty"/>
+                    <newline/>
+                    <field name="bunch_per_box"/>
+                    <field name="bunch_type"/>
+                    <field name="uom"/>
+                    <newline/>
+                    <field name="purchase_price"/>
+                    <field name="sale_price"/>
+                    <newline/>
+                    <field name="origin"/>
+                    <field name="subclient_id"/>
+                    <field name="sucursal_id"/>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_pedido_cliente_tree" model="ir.ui.view">
+            <field name="name">pedido.cliente.tree</field>
+            <field name="model">pedido.cliente</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Pedidos de Clientes">
+                    <field name="name"/>
+                    <field name="request_date"/>
+                    <field name="type"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                    <field name="freight_agency_id"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_pedido_cliente_form" model="ir.ui.view">
+            <field name="name">pedido.cliente.form</field>
+            <field name="model">pedido.cliente</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Client Request" version="7.0">
+	                <header>
+                        <button name="action_print_report" string="Print" type="object" class="oe_highlight"/>
+	    	            <field name="state" widget="statusbar" statusbar_visible="draft,progress,verified,cancel" statusbar_colors='{"progress":"blue"}'/>
+    	            </header>
+    	            <group col="8">
+    	            	<group col="8">
+                            <field name="id" invisible="1"/>
+                            <field name="tipo_flete" invisible="1"/>
+                            <field name="name"/>
+    	            		<field name="partner_id" required="1" colspan="2" on_change="on_change_partner(partner_id)" context="{'default_customer': True, 'default_supplier':False}"/>
+	                    	<field name="type" required="1"/>
+                            <newline/>
+                            <field name="request_date"/>
+                            <field name="airline_id"/>
+                            <field name="number"/>
+                            <newline/>
+                            <field name="freight_agency_id" colspan="4"/>
+                            <field name="precio_flete" attrs="{'required': [('tipo_flete', '=', 'fob_f_p')], 'invisible': [('tipo_flete', '!=', 'fob_f_p')]}"/>
+                       	</group>
+    	            	<group col="6"></group>
+                    </group>
+                    <newline/>
+                    <h2>Request Lines</h2>
+                    <newline/>
+                    <field nolabel="1" name="variant_ids" colspan="4" context="{'pedido_id': active_id,'cliente_id': partner_id, 'lines': variant_ids}">
+                        <tree colors="red: missing_qty &gt; 0; green: missing_qty == 0; MediumVioletRed : missing_qty &lt; 0">
+                            <field name="pedido_id" invisible="1"/>
+                            <field name="missing_qty" invisible="1"/>
+                            <field name="line"/>
+                            <field name="type"/>
+                            <field name="product_id"/>
+                            <field name="variant_id"/>
+                            <field name="lengths"/>
+                            <field name="subclient_id"/>
+                            <field name="sale_price"/>
+                            <field name="request_qty"/>
+                            <field name="missing_qty2"/>
+                            <field name="bunch_per_box"/>
+                            <field name="bunch_type"/>
+                            <field name="uom"/>
+                            <field name="qty"/>
+                            <field name="full_boxes"/>
+                            <button invisible="1" name="search_providers" string="Buscar Proveedores" type="object" icon="terp-partner"/>
+                            <button name="purchase" string="Comprar" type="object" icon="terp-dolar"/>
+                        </tree>
+                        <form>
+                            <field name="is_standing_order" invisible="1"/>
+                            <field name="pedido_id" invisible="1"/>
+                            <field name="cliente_id" invisible="1"/>
+                            <field name="line" invisible="1"/>
+                            <field name="type"  attrs="{'readonly': [('is_standing_order', '=', True)]}" />
+                            <newline/>
+                            <field name="product_id" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}"/>
+                            <newline/>
+                            <field name="variant_id"  attrs="{'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_variant(variant_id,context)" required="1" domain="[('product_id', '=', product_id)]"/>
+                            <newline/>
+                            <field name="length_ids" context="{ 'variant_id': variant_id}" attrs="{'readonly': [('is_standing_order', '=', True)]}">
+                                <tree string="Length" editable="bottom">
+                                    <field name="variant_id" invisible="1"/>
+                                    <field name="length" required="1"/>
+                                    <field name="sale_price"/>
+                                </tree>
+                                <form string="Length">
+                                    <field name="variant_id" invisible="1"/>
+                                    <field name="length"/>
+                                    <field name="sale_price"/>
+                                </form>
+                            </field>
+                            <newline/>
+                            <field name="subclient_id" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}" domain="[('customer','=', True)]" context="{'default_customer': True, 'default_supplier':False,'subcliente_de': cliente_id}"/>
+                            <field name="is_box_qty" attrs="{'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                            <newline/>
+                            <field name="box_qty" attrs="{'invisible': [('is_box_qty', '=', False)], 'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                            <field name="tale_qty" attrs="{'invisible': [('is_box_qty', '=', True)], 'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                            <field name="bunch_per_box" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                            <field name="uom" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                            <field name="bunch_type" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                            <newline/>
+                            <field name="stimated_stems" string="Stems" attrs="{'invisible': [('is_box_qty', '=', False)]}"/>
+                            <newline/>
+                            <field name="qty"/>
+                            <field name="full_boxes"/>
+                        </form>
+                    </field>
+                    <newline/>
+                    <h2>Purchased Lines</h2>
+                    <field name="line_ids"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_pedido_cliente" model="ir.actions.act_window">
+            <field name="name">Pedidos de Clientes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pedido.cliente</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Pedido" id="menu_pedido_cliente_root"/>
+        <menuitem name="Pedido" id="menu_pedido_cliente_menu" parent="menu_pedido_cliente_root"/>
+        <menuitem name="Pedidos de Clientes" action="action_pedido_cliente" id="menu_pedido_cliente" parent="menu_pedido_cliente_menu" sequence="1"/>
+
+        <!--Automatic Purchase Order Generation
+        <record model="ir.cron" id="automatic_purchase_order_request_cron">
+            <field name="name">Purchase Order Generation</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="model" eval="'purchase.request.template'"/>
+            <field name="function" eval="'_generate_requests_every'"/>
+            <field name="args" eval="'()'" />
+            <field name="active" eval="False" />
+        </record>
+        -->
+		
+		<!-- AIRLINE FORM VIEW -->
+        <record id="pedido_cliente_airline_form_view" model="ir.ui.view">
+            <field name="name">pedido_cliente_airline_form_view</field>
+            <field name="model">pedido_cliente.airline</field>
+            <field name="arch" type="xml">
+            	<form string="Airline" version="7.0">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="avb_number"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

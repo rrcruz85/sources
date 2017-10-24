@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="view_oemedical_patient_evaluation_tree" model="ir.ui.view">
+			<field name="name">oemedical.patient.evaluation.tree</field>
+			<field name="model">oemedical.patient.evaluation</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Oemedical Patient Evaluation">
+					<field name="patient_id" />
+					<field name="evaluation_date" />
+					<field name="doctor" />
+					<field name="diagnosis" />
+					<field name="definitive_diagnosis" />
+					<field name="info_diagnosis" />
+					<field name="mdc_info" />
+					<!--field name="information_source" /-->
+					<!--field name="pes_info" /-->
+					<!--field name="evaluation_type"/-->
+					<!--field name="est_info" /-->
+					<!--field name="present_illness" /-->
+					<!--field name="psi_info" />
+					<field name="derived_from" />
+					<field name="rpm_info" />
+					<field name="derived_to" />
+					<field name="tem_info" />
+					<field name="pdi_info" />
+					<field name="notes_complaint" /-->
+					<!--field name="specialty" />
+					<field name="user_id" />
+					<field name="est_info" />
+					<field name="evaluation_type"/-->
+					<!--field name="orientation" /-->
+					<!--field name="malnutrition" /-->
+					<!--field name="actions"/ -->
+					<!--field name="dehydration" /-->
+					<!--field name="tag" />
+					<field name="tremor" /-->
+					<!--field name="evaluation_start" /-->
+					<!--field name="loc" /-->
+					<!--field name="mood"/ -->
+					<!--field name="knowledge_current_events" /-->
+					<!--field name="signs_and_symptoms"/ -->
+					<!--field name="loc_motor"/ -->
+					<!--field name="reliable_info" /-->
+					<!--field name="vocabulary" />
+					<field name="praxis" />
+					<field name="hip" />
+					<field name="memory" />
+					<field name="abstraction" />
+					<field name="patient_id" /-->
+					<!--field name="loc_verbal"/>
+					<field name="glycemia" />
+					<field name="head_circumference" />
+					<field name="bmi" /-->
+					<!--field name="hba1c" />
+					<field name="violent" />
+					<field name="directions" /-->
+					<!--field name="evaluation_summary" /-->
+					<!--field name="cholesterol_total" /-->
+					<!--field name="diagnostic_hypothesis"/ -->
+					<!--field name="judgment" /-->
+					<!--field name="osat" /-->
+ 					<!--field name="secondary_conditions"/> -->
+					<!--field name="evaluation_endtime" />
+					<field name="notes" />
+					<field name="calculation_ability" />
+					<field name="bpm" />
+					<field name="chief_complaint" />
+					<field name="loc_eyes"/>
+					<field name="abdominal_circ" />
+					<field name="object_recognition" />
+					<field name="whr" />
+					<field name="ldl" />
+					<field name="hdl" /-->
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_oemedical_patient_evaluation_form" model="ir.ui.view">
+			<field name="name">oemedical.patient.evaluation.form</field>
+			<field name="model">oemedical.patient.evaluation</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<form string="Oemedical Patient Evaluation" version="7.0">
+				<sheet>
+					<group co="8">
+						<group co="6">
+							<field name="patient_id" />
+							<field name="doctor" />
+							<!--field name="specialty"/-->
+							<field name="evaluation_date" readonly="0"/>
+						</group>
+						
+						<group co="2">
+							<div class="oe_button_box oe_right">
+							<button name="button_print_official_report" string="Imprimir Reporte Oficial" type="object" class="oe_highlight oe_readonly"/>
+							</div>
+						</group>
+					</group>
+				   
+				   <notebook>
+				    <page string="Signos Vitales">
+					<group colspan="4" col="4">
+					<field name="pes_info" />
+					<field name="est_info" />
+					<field name="pat_info" />
+					<field name="fqr_info" />
+					<field name="ppm_info" />
+					<field name="tem_info" />
+					<field name="osat"/>
+					</group>
+					</page>
+				    <page string="Evaluación">
+                        <group colspan="4" col="4">
+                        <label for="mdc_info"/>
+                        <field name="mdc_info" nolabel="1" colspan="4"/>
+                        <newline/>
+                        <label for="eac_info"/>
+                        <field name="eac_info" nolabel="1" colspan="4"/> 
+                        <newline/>
+                        <label for="ena_info"/>
+                        <field name="ena_info" nolabel="1" colspan="4"/>
+                        <newline/>
+                       <!--group>
+                        <field name="has_cardiopatia" />
+                        <field name="has_diabetes" />
+                        <field name="has_enf_c_vascular" />
+                        <field name="has_hipertension" />
+                        <newline/>
+                        <field name="has_cancer" />
+                        <field name="has_tuberculosis" />
+                        <field name="has_enf_mental" />
+                        <field name="has_enf_infecciosa" />
+                        <newline/>
+                        <field name="has_mal_formacion" />
+                        <field name="has_otros" />
+                       </group-->
+                         <newline/>
+                        <field name="cab_cp" />
+                        <field name="cab_sp" />
+                        <field name="cue_cp" />
+                        <field name="cue_sp" />
+                        <newline/>
+                        <field name="trx_vcp" />
+                        <field name="trx_vsp" />
+                        <field name="abd_cp" />
+                        <field name="abd_sp" />
+                        <newline/>
+                        <field name="pel_cp" />
+                        <field name="pel_sp" />
+                        <field name="ext_cp" />
+                        <field name="ext_sp" />
+                        <newline/>
+                        <label for="rxl_complaint"/>
+                        <field name="rxl_complaint" nolabel="1" colspan="4"/>
+                        <newline/>
+                        <label for="revision_organos"/>
+                        <field name="revision_organos" nolabel="1" colspan="4"/>
+                        <newline/>
+                         <field name="org_scp" />
+                         <field name="org_ssp" />
+                         <field name="res_cp" />
+                         <field name="res_sp" />
+                        <newline/>
+                         <field name="car_vcp" />
+                         <field name="car_vsp" />
+                         <field name="dig_cp" />
+                         <field name="dig_sp" />
+                        <newline/>
+                         <field name="gen_cp" />
+                         <field name="gen_sp" />
+                         <field name="uri_cp" />
+                         <field name="uri_sp" />
+                        <newline/>
+                         <field name="mus_ecp" />
+                         <field name="mus_esp" />
+                         <field name="end_cp" />
+                         <field name="end_sp" />
+                         <newline/>
+                         <field name="hmo_lcp" />
+                         <field name="hmo_lsp" />
+                         <field name="nrv_cp" />
+                         <field name="nrv_sp" />
+                         <newline/>
+                         <field name="des_eva" colspan="4"/>
+                        <newline/>
+                        <label for="diagnosis"/>
+					    <field name="diagnosis" nolabel="1" colspan="4"/>
+					    <newline/>
+                        <label for="definitive_diagnosis"/>
+                        <field name="definitive_diagnosis" nolabel="1" colspan="4"/>
+                        <newline/>
+                        <!--label for="eac_info"/>
+                        <field name="eac_info" nolabel="1" colspan="4" />
+                        <newline/-->
+                        <label for="derived_to"/>
+                        <field name="derived_to" nolabel="1" colspan="4"/>
+                        <newline/>
+                        <label for="directions"/>
+                        <field name="directions" nolabel="1" colspan="4"/>
+                        </group>
+				      </page>
+				      <page string="Evoluciones">
+				      	<field name="evolution_ids" nolabel="1" context="{'evaluation_id':active_id}" />
+				      </page>					 
+				    </notebook>
+				</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_oemedical_patient_evaluation_search" model="ir.ui.view">
+			<field name="name">oemedical.patient.evaluation.search</field>
+			<field name="model">oemedical.patient.evaluation</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<search string="Oemedical Patient Evaluation">
+					<field name="patient_id" />
+					<!--field name="information_source" /-->
+					<field name="info_diagnosis" />
+					<!--field name="orientation" /-->
+					<field name="pes_info" />
+					<field name="est_info" />
+					<field name="evaluation_date" />
+					<field name="user_id" />
+					<field name="doctor" />
+					<field name="next_evaluation" />
+					<field name="pat_info" />
+					<!--field name="derived_from" /-->
+					<field name="specialty" />
+					<field name="ppm_info" />
+					<field name="derived_to" />
+					<field name="tem_info" />
+					<field name="diagnosis" />
+					<field name="notes_complaint" />
+					<!--field name="pdi_info" /-->
+					<field name="osat" />
+					<field name="directions" />
+					<!--field name="malnutrition" /-->
+					<!--field name="dehydration" />
+					<field name="tag" />
+					<field name="tremor" />
+					<field name="present_illness" /-->
+					<!--field name="evaluation_start" />
+					<field name="loc" /-->
+					<!--field name="knowledge_current_events" /-->
+					<!--field name="reliable_info" /-->
+					<!--field name="vocabulary" />
+					<field name="praxis" />
+					<field name="hip" />
+					<field name="memory" />
+					<field name="abstraction" /-->
+					<!--field name="patient_id" /-->
+					<!--field name="glycemia" />
+					<field name="head_circumference" />
+					<field name="bmi" /-->
+					<!--field name="hba1c" />
+					<field name="violent" />
+					<field name="evaluation_summary" />
+					<field name="cholesterol_total" />
+					<field name="judgment" /-->
+					<!--field name="evaluation_endtime" />
+					<field name="notes" />
+					<field name="calculation_ability" />
+					<field name="bpm" />
+					<field name="chief_complaint" />
+					<field name="abdominal_circ" />
+					<field name="object_recognition" /-->
+					<!--field name="whr" />
+					<field name="ldl" /-->
+					<!--field name="hdl" /-->
+					<newline />
+					<group expand="0" string="Group By...">
+						<filter string="Source" domain="[]"
+							context="{'group_by':'information_source'}" />
+						<filter string="Diagnostico Presuntivo: Informacion Adicional" domain="[]"
+							context="{'group_by':'info_diagnosis'}" />
+						<!--filter string="Orientation" domain="[]"
+							context="{'group_by':'orientation'}" /-->
+						<filter string="Peso" domain="[]" context="{'group_by':'pes_info'}" />
+						<!--filter string="Malnutrition" domain="[]"
+							context="{'group_by':'malnutrition'}" /-->
+						<filter string="Estatura" domain="[]" context="{'group_by':'est_info'}" />
+						<!--filter string="Dehydration" domain="[]"
+							context="{'group_by':'dehydration'}" />
+						<filter string="Last TAGs" domain="[]" context="{'group_by':'tag'}" />
+						<filter string="Tremor" domain="[]" context="{'group_by':'tremor'}" />
+						<filter string="Present Illness" domain="[]"
+							context="{'group_by':'present_illness'}" /-->
+						<filter string="Appointment" domain="[]"
+							context="{'group_by':'evaluation_date'}" />
+						<!--filter string="Start" domain="[]"
+							context="{'group_by':'evaluation_start'}" />
+						<filter string="Level of Consciousness" domain="[]"
+							context="{'group_by':'loc'}" />
+						<filter string="Last Changed by" domain="[]"
+							context="{'group_by':'user_id'}" /-->
+						<filter string="Doctor" domain="[]" context="{'group_by':'doctor'}" />
+						<!--filter string="Knowledge of Current Events" domain="[]"
+							context="{'group_by':'knowledge_current_events'}" /-->
+						<filter string="Next Appointment" domain="[]"
+							context="{'group_by':'next_evaluation'}" />
+						<!--filter string="Reliable" domain="[]"
+							context="{'group_by':'reliable_info'}" /-->
+						<filter string="Presion Arterial" domain="[]"
+							context="{'group_by':'pat_info'}" />
+						<!--filter string="Vocabulary" domain="[]"
+							context="{'group_by':'vocabulary'}" />
+						<filter string="Praxis" domain="[]" context="{'group_by':'praxis'}" />
+						<filter string="Hip" domain="[]" context="{'group_by':'hip'}" />
+						<filter string="Memory" domain="[]" context="{'group_by':'memory'}" />
+						<filter string="Abstraction" domain="[]"
+							context="{'group_by':'abstraction'}" /-->
+						<filter string="Patient" domain="[]" context="{'group_by':'patient_id'}" />
+						<!--filter string="Derived from" domain="[]"
+							context="{'group_by':'derived_from'}" /-->
+						<filter string="Specialty" domain="[]"
+							context="{'group_by':'specialty'}" />
+						<!--filter string="Glycemia" domain="[]" context="{'group_by':'glycemia'}" />
+						<filter string="Head Circumference" domain="[]"
+							context="{'group_by':'head_circumference'}" />
+						<filter string="Body Mass Index" domain="[]"
+							context="{'group_by':'bmi'}" /-->
+						<filter string="Pulsaciones por Minuto" domain="[]"
+							context="{'group_by':'ppm_info'}" />
+						<filter string="Derived to" domain="[]"
+							context="{'group_by':'derived_to'}" />
+						<!--filter string="Glycated Hemoglobin" domain="[]"
+							context="{'group_by':'hba1c'}" />
+						<filter string="Violent Behaviour" domain="[]"
+							context="{'group_by':'violent'}" /-->
+						<filter string="Procedure" domain="[]" context="{'group_by':'directions'}" />
+						<!--filter string="Evaluation Summary" domain="[]"
+							context="{'group_by':'evaluation_summary'}" />
+						<filter string="Last Cholesterol" domain="[]"
+							context="{'group_by':'cholesterol_total'}" />
+						<filter string="Jugdment" domain="[]" context="{'group_by':'judgment'}" /-->
+						<filter string="Temperatura" domain="[]"
+							context="{'group_by':'tem_info'}" />
+						<filter string="Oxygen Saturation" domain="[]"
+							context="{'group_by':'osat'}" />
+						<!--filter string="End" domain="[]"
+							context="{'group_by':'evaluation_endtime'}" />
+						<filter string="Notes" domain="[]" context="{'group_by':'notes'}" />
+						<filter string="Calculation Ability" domain="[]"
+							context="{'group_by':'calculation_ability'}" /-->
+						<!--filter string="Pulsaciones por minuto" domain="[]" context="{'group_by':'ppm_info'}" /-->
+						<!--filter string="Chief Complaint" domain="[]"
+							context="{'group_by':'chief_complaint'}" />
+						<filter string="Waist" domain="[]"
+							context="{'group_by':'abdominal_circ'}" />
+						<filter string="Object Recognition" domain="[]"
+							context="{'group_by':'object_recognition'}" /-->
+						<filter string="Diagnostico Presuntivo" domain="[]"
+							context="{'group_by':'diagnosis'}" />
+						<!--filter string="WHR" domain="[]" context="{'group_by':'whr'}" />
+						<filter string="Last LDL" domain="[]" context="{'group_by':'ldl'}" /-->
+						<!--filter string="Complaint details" domain="[]"
+							context="{'group_by':'notes_complaint'}" /-->
+						<!--filter string="Last HDL" domain="[]" context="{'group_by':'hdl'}" /-->
+						<!--filter string="Presion Diastolica" domain="[]"
+							context="{'group_by':'pdi_info'}" /-->
+					</group>
+				</search>
+			</field>
+		</record>	 
+		
+		
+<!-- Patient details>
+
+		<record model="ir.ui.view" id="oemedical_patient_view_evaluation">
+			<field name="name">Patient Evaluations</field>
+			<field name="model">oemedical.patient</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="oemedical.view_oemedical_patient_form"/>
+			<field name="arch" type="xml">
+				<notebook position="inside">
+                	<page string="Evaluations">
+				        <field name="lab_test_ids" colspan="4" nolabel="1">
+				        	<tree string="Lab Tests">
+				        		<field name="name" required="1"/>
+				        		<field name="doctor_id"/>
+				        		<field name="date"/>
+				        		<field name="state"/>
+			        		</tree>
+			        		<form string="Lab Tests">
+				        		<field name="name"/>
+				        		<field name="doctor_id"/>
+				        		<field name="date"/>
+				        		<field name="state"/>
+			        		</form>
+		        		</field>
+					</page>
+				</notebook>
+            </field>
+		</record-->
+
+
+<act_window domain="[('patient_id', '=', active_id)]" id="act_patient_eval_history" name="Evaluation" res_model="oemedical.patient.evaluation" src_model="oemedical.patient"/>
+
+		<record model="ir.actions.act_window" id="act_open_oemedical_patient_evaluation_view">
+			<field name="name">Patient Evaluation</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">oemedical.patient.evaluation</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form,tree</field>
+			<field name="search_view_id" ref="view_oemedical_patient_evaluation_search" />
+			<field name="domain">[]</field>
+			<field name="context">{}</field>
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_patient_evaluation_view_form">
+			<field name="act_window_id" ref="act_open_oemedical_patient_evaluation_view" />
+			<field name="sequence" eval="05" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_oemedical_patient_evaluation_form" />
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_patient_evaluation_view_tree">
+			<field name="act_window_id" ref="act_open_oemedical_patient_evaluation_view" />
+			<field name="sequence" eval="10" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_oemedical_patient_evaluation_tree" />
+		</record>
+
+	</data>
+</openerp>

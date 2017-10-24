@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<report id="oemedical_test_request_report"
+                name="oemedical_test_request_report"
+                string="Print Laboratory Test Request" 
+                model="oemedical.test.request"
+                auto="False"/>
+		
+        <!-- <report auto="False"
+                id="oemedical_test_request"
+                model="oemedical.test.request"
+                name="oemedical.test.request.webkit"
+                file="oemedical_test_request/report/oemedical_test_request.mako"
+                string="Pedido de Laboratorio"
+                header="True"
+				webkit_header="oemedical.oemedical_header_webkit"
+                report_type="webkit"/> -->
+
+    </data>
+</openerp>
