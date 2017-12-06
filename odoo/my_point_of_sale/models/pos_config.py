@@ -6,8 +6,9 @@ from openerp.osv import fields, osv
 class PosConfig(osv.osv):
     _inherit = 'pos.config'
     _columns = {
-        'show_all_products': fields.boolean(
-            'Show all products?', help='If not checked, the product list in the point of sale will be limited...'
+
+        'pos_ticket_report': fields.boolean(
+            'Print Pos Ticket Report', help='If not checked, the pos ticket will be printed as defaults'
         ),
 
         'iva_compensation': fields.float(
@@ -15,19 +16,10 @@ class PosConfig(osv.osv):
             help="It's the value of the IVA compensation that will be apply to the products..."
         ),
 
-        'products_ids': fields.many2many(
-            'product.template', 'my_pos_product_pos_config_rel', 'tpv_id', 'product_id', string='Available products...'
-        ),
-
         'journal_ids' : fields.many2many('account.journal', 'pos_config_journal_rel',
                      'pos_config_id', 'journal_id', 'Available Payment Methods',
                      domain="[('journal_user', '=', True ), ('type', 'in', ['bank', 'cash','card', 'check'])]",),
     }
-
-    _defaults = {
-        'show_all_products': lambda *a: True,
-    }
-
 
 class pos_session(osv.osv):
     _inherit = 'pos.session'

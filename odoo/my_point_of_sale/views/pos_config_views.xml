@@ -18,17 +18,11 @@
 						<group string="IVA Compensation">
                             <group>
                                 <field name="iva_compensation"/>
+								<newline/>
+								<field name="pos_ticket_report"/>
                             </group>
                             <group></group>
                         </group>
-
-                        <notebook>
-							<page string="Products...">
-								<p class="oe_grey">Available <b>products</b> in the TPV...</p>
-								<group><field name="show_all_products"/></group>
-								<field name="products_ids"/>
-							</page>
-						</notebook>
 					</xpath>
 				</data>
 			</field>

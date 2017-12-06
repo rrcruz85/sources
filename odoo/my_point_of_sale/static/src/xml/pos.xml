@@ -99,7 +99,7 @@
         </t>
 
         <t t-jquery="table tr:eq(1)" t-operation="after">
-            <tr id="taxes-compensation-tr">
+            <tr t-if="order.get_config_iva_compensation() &gt; 0" id="taxes-compensation-tr">
                 <td>IVA Compensation:</td>
                 <td class="pos-right-align">
                     <t t-esc="widget.format_currency(order.getTaxesCompensation())"/>

@@ -35,6 +35,9 @@
         'reports/report_saleslines.xml',
         'reports/report_invoice.xml',
         'reports/report_detailsofsales.xml',
+        'reports/report_pos_ticket.xml',
+        # Template...
+        'views/pos_order_template.xml',
     ],
 
     'qweb': [

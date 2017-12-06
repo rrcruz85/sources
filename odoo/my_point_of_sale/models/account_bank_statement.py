@@ -32,3 +32,4 @@ class AccountBankStatementLine(osv.osv):
         'reference': fields.char('Reference', size=6),
         'iva_compensation': fields.float('IVA Compensation', digits=(16, 2)),
     }
+

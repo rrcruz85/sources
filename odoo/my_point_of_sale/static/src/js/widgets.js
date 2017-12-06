@@ -1,4 +1,3 @@
-isCard = false;
 banks= [];
 cards_type= [];
 
@@ -103,20 +102,10 @@ openerp.my_point_of_sale = function(instance) {
             this.el = el_node;
             var list_container = el_node.querySelector('.product-list');
             var order = self.pos.get('selectedOrder');
-            if (this.pos.config.show_all_products) {
-                for (var i = 0, len = this.product_list.length; i < len; i++) {
-                    this.product_list[i].stock_qty = order.pos.db.product_by_id[this.product_list[i].id].stock_qty;
-                    if(this.product_list[i].stock_qty > 0 ) {
-                        var product_node = this.render_product(this.product_list[i]);
-                        product_node.addEventListener('click', this.click_product_handler);
-                        list_container.appendChild(product_node);
-                    }
-                }
-                $('span.product').css("height", "135px");
-            }
-            else {
-                for (var i = 0, len = this.product_list.length; i < len; i++) {
-                    this.product_list[i].stock_qty = order.pos.db.product_by_id[this.product_list[i].id].stock_qty;
+
+            for (var i = 0, len = this.product_list.length; i < len; i++) {
+                this.product_list[i].stock_qty = order.pos.db.product_by_id[this.product_list[i].id].stock_qty;
+                if(this.product_list[i].tpv_list_ids.length > 0){
                     if (this.product_list[i].tpv_list_ids.indexOf(this.pos.config.id) > -1) {
                         if(this.product_list[i].stock_qty > 0 ) {
                             var product_node = this.render_product(this.product_list[i]);
@@ -125,12 +114,18 @@ openerp.my_point_of_sale = function(instance) {
                         }
                     }
                 }
+                else{
+                    if(this.product_list[i].stock_qty > 0 ) {
+                        var product_node = this.render_product(this.product_list[i]);
+                        product_node.addEventListener('click', this.click_product_handler);
+                        list_container.appendChild(product_node);
+                    }
+                }
             }
+            $('span.product').css("height", "135px");
         },
 
         render_product: function (product) {
-            //var cached = this.product_cache.get_node(product.id);
-            //if (!cached) {
             var image_url = this.get_product_image_url(product);
             var product_html = QWeb.render('Product', {
                 widget: this,
@@ -145,8 +140,6 @@ openerp.my_point_of_sale = function(instance) {
                 this.product_cache.cache_node(product.id, product_node);
             }
             return product_node;
-            //}
-            return cached;
         },
     });
 
@@ -419,7 +412,7 @@ openerp.my_point_of_sale = function(instance) {
             model:  'product.product',
             fields: ['display_name', 'list_price','price','pos_categ_id', 'taxes_id', 'ean13', 'default_code',
                      'to_weight', 'uom_id', 'uos_id', 'uos_coeff', 'mes_type', 'description_sale', 'description',
-                     'product_tmpl_id', 'tpv_list_ids','stock_qty'],
+                     'product_tmpl_id', 'tpv_list_ids','stock_qty','company_id'],
             domain: [['sale_ok','=',true],['available_in_pos','=',true]],
             context: function(self){ return { pricelist: self.pricelist.id, display_default_code: false }; },
             loaded: function(self, products){
@@ -533,7 +526,6 @@ openerp.my_point_of_sale = function(instance) {
                     var ids     = typeof model.ids === 'function'     ? model.ids(self,tmp) : model.ids;
                     progress += progress_step;
 
-
                     if( model.model ){
                         if (model.ids) {
                             var records = new instance.web.Model(model.model).call('read',[ids,fields],context);
@@ -548,9 +540,12 @@ openerp.my_point_of_sale = function(instance) {
                                     {
                                         for(var i = 0; i < result.length; i++)
                                         {
-                                            if(result[i].stock_qty > 0)
+                                            //Filtrando los productos que tengan stock >0, que no tengan una compañia
+                                            //o que tengan una compañia asignada y coincida con la que tiene configurada el
+                                            //punto de venta
+                                            if(result[i].stock_qty > 0  && (result[i].company_id  == false || (result[i].company_id != false &&  result[i].company_id[0] == self.config.company_id[0])))
                                             {
-                                              result_filtered.push(result[i]);
+                                                result_filtered.push(result[i]);
                                             }
                                         }
                                         result = result_filtered;
@@ -568,7 +563,7 @@ openerp.my_point_of_sale = function(instance) {
                     }else if( model.loaded ){
                         try{    // catching exceptions in model.loaded(...)
                             $.when(model.loaded(self,tmp))
-                                .then(  function(){ load_model(index +1); },
+                                .then( function(){ load_model(index +1); },
                                         function(err){ loaded.reject(err); });
                         }catch(err){
                             loaded.reject(err);
@@ -653,6 +648,53 @@ openerp.my_point_of_sale = function(instance) {
             return this.get('selectedOrder');
         },
 
+        showMessageCreateOrder: function(){
+            var self = this;
+            if (self.db.get_orders().length > 0) {
+                $('div.loader').removeClass('oe_hidden');
+                $('div.loader-feedback').removeClass('oe_hidden');
+                $('div.loader-feedback div.skip').addClass('my_class');
+                $('div.loader-feedback div.skip').removeClass('button');
+                $('div.loader-feedback div.skip').removeClass('oe_hidden');
+                $('div.loader-feedback div.skip').removeClass('skip');
+
+                $('div.loader-feedback div.my_class').addClass('fa').addClass('fa-spinner').addClass('fa-spin');
+                $('div.loader-feedback div.my_class').css('font-size','48px');
+                $('div.loader-feedback div.my_class').text('');
+
+                $('div.loader-feedback h1.message').text("Creating Order");
+                $('div.loader').css('opacity', 10);
+                var cont = 0;
+                var interval = setInterval(function () {
+                    $('div.progressbar div.progress').css('width', cont.toString() + '%');
+
+                    cont += 1;
+                    if (cont > 100) {
+                        cont = 0;
+                        clearInterval(interval);
+                        return;
+                    }
+                }, 100);
+            }
+        },
+
+        hideMessageCreateOrder: function () {
+            $('div.loader').addClass('oe_hidden');
+            $('div.loader-feedback').addClass('oe_hidden');
+            $('div.loader-feedback h1.message').text("Loading");
+            $('div.progressbar div.progress').css('width', '0%');
+            $('div.loader').css('opacity', 0);
+
+            $('div.loader-feedback div.my_class').addClass('button');
+            $('div.loader-feedback div.my_class').addClass('oe_hidden');
+            $('div.loader-feedback div.my_class').addClass('skip');
+            $('div.loader-feedback div.my_class').removeClass('fa');
+            $('div.loader-feedback div.my_class').removeClass('fa-spinner');
+            $('div.loader-feedback div.my_class').removeClass('fa-spin');
+            $('div.loader-feedback div.my_class').text('skip');
+            $('div.loader-feedback div.my_class').removeClass('my_class');
+
+        },
         //removes the current order
         delete_current_order: function(){
             this.get('selectedOrder').destroy({'reason':'abandon'});
@@ -670,11 +712,19 @@ openerp.my_point_of_sale = function(instance) {
 
             var pushed = new $.Deferred();
 
+            //Showing Creating Order Message
+            self.showMessageCreateOrder();
+
             this.flush_mutex.exec(function(){
                 var flushed = self._flush_orders(self.db.get_orders());
-
                 flushed.always(function(ids){
+                    if(order != undefined)
+                        order.order_id = ids.length > 0 ? ids[0] : 0;
                     pushed.resolve();
+
+                    //Hidding Creating Message
+                    self.hideMessageCreateOrder();
+
                 });
             });
             return pushed;
@@ -697,6 +747,9 @@ openerp.my_point_of_sale = function(instance) {
                 return invoiced;
             }
 
+            //Showing Creating Order Message
+            self.showMessageCreateOrder();
+
             var order_id = this.db.add_order(order.export_as_JSON());
 
             this.flush_mutex.exec(function(){
@@ -712,6 +765,9 @@ openerp.my_point_of_sale = function(instance) {
                 var transfer = self._flush_orders([self.db.get_order(order_id)], {timeout:30000, to_invoice:true});
 
                 transfer.fail(function(){
+                    //Hidding Creating Message
+                    self.hideMessageCreateOrder();
+
                     invoiced.reject('error-transfer');
                     done.reject();
                 });
@@ -726,6 +782,10 @@ openerp.my_point_of_sale = function(instance) {
 
                     invoiced.resolve();
                     done.resolve();
+
+                    //Hidding Creating Message
+                    self.hideMessageCreateOrder();
+
                 });
 
                 return done;
@@ -768,15 +828,12 @@ openerp.my_point_of_sale = function(instance) {
             options = options || {};
 
             var self = this;
-            var timeout = typeof options.timeout === 'number' ? options.timeout : 7500 * orders.length;
+            var timeout = typeof options.timeout === 'number' ? options.timeout : 15000 * orders.length;
 
             // we try to send the order. shadow prevents a spinner if it takes too long. (unless we are sending an invoice,
             // then we want to notify the user that we are waiting on something )
             var posOrderModel = new instance.web.Model('pos.order');
-            /*
-            for(var i = 0 ; i < orders.length; i++)
-                self.db.remove_order(orders[i].id);
-            */
+
             return posOrderModel.call('create_from_ui',
                 [_.map(orders, function (order) {
                                         order.to_invoice = options.to_invoice || false;
@@ -832,158 +889,6 @@ openerp.my_point_of_sale = function(instance) {
         },
     });
 
-    instance.point_of_sale.PaymentScreenWidget.include({
-
-        actualizarStockLotes : function(order, lines){
-            for (var i = 0; i < lines.length; i++) {
-                for (var id in order.pos.db.product_by_id) {
-                    if (id == lines[i].product.id) {
-                        if (lines[i].selectedLot && order.pos.db.product_by_id[id].lots) {
-                            for (var y = 0; y < order.pos.db.product_by_id[id].lots.length; y++) {
-                                if (order.pos.db.product_by_id[id].lots[y][0] == lines[i].selectedLot.id) {
-                                    if(lines[i].selectedLot.qty == lines[i].selectedLot.qty_tmp)
-                                    {
-                                        lines[i].selectedLot.qty -= 1;
-                                    }
-                                    var diff = lines[i].selectedLot.qty_tmp - lines[i].selectedLot.qty;
-                                    order.pos.db.product_by_id[id].lots[y][2] = lines[i].selectedLot.qty;
-                                    order.pos.db.product_by_id[id].lots[y][3] = lines[i].selectedLot.qty;
-                                    order.pos.db.product_by_id[id].stock_qty -= diff;
-                                    lines[i].selectedLot.qty_tmp = lines[i].selectedLot.qty;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            order.pos.db.product_by_id[id].stock_qty -= lines[i].quantity;
-                        }
-                    }
-                }
-            }
-        },
-
-        validate_order: function (options) {
-
-            var self = this;
-            options = options || {};
-
-            var currentOrder = this.pos.get('selectedOrder');
-            var slines = currentOrder.get('orderLines').models;
-            var plines = currentOrder.get('paymentLines').models;
-            if (slines.length === 0) {
-                this.pos_widget.screen_selector.show_popup('error', {
-                    'message': _t('Empty Order'),
-                    'comment': _t('There must be at least one product in your order before it can be validated'),
-                });
-                return;
-            }
-            else
-            {
-                for(var k = 0; k < slines.length; k++)
-                {
-                    if(slines[k] && slines[k].product  && slines[k].product.lots && !slines[k].selectedLot)
-                    {
-                       currentOrder.selectLine(slines[k]);
-                       currentOrder.removeAllPaymentlines();
-                       alert('You must select one lot for the product: ' + slines[k].product.display_name);
-                       this.pos_widget.screen_selector.back();
-                       return;
-                   }
-                }
-            }
-
-            for (var i = 0; i < plines.length; i++) {
-                if (plines[i].get_type() === 'bank' && plines[i].get_amount() < 0) {
-                    this.pos_widget.screen_selector.show_popup('error', {
-                        'message': _t('Negative Bank Payment'),
-                        'comment': _t('You cannot have a negative amount in a Bank payment. Use a cash payment method to return money to the customer.'),
-                    });
-                    return;
-                }
-            }
-
-            if (!this.is_paid()) {
-                return;
-            }
-
-            // The exact amount must be paid if there is no cash payment method defined.
-            if (Math.abs(currentOrder.getTotalTaxIncluded() - currentOrder.getPaidTotal()) > 0.00001) {
-                var cash = false;
-                for (var i = 0; i < this.pos.cashregisters.length; i++) {
-                    cash = cash || (this.pos.cashregisters[i].journal.type === 'cash');
-                }
-                if (!cash) {
-                    this.pos_widget.screen_selector.show_popup('error', {
-                        message: _t('Cannot return change without a cash payment method'),
-                        comment: _t('There is no cash payment method available in this point of sale to handle the change.\n\n Please pay the exact amount or add a cash payment method in the point of sale configuration'),
-                    });
-                    return;
-                }
-            }
-
-            if (this.pos.config.iface_cashdrawer) {
-                this.pos.proxy.open_cashbox();
-            }
-
-            if (options.invoice) {
-                // deactivate the validation button while we try to send the order
-                this.pos_widget.action_bar.set_button_disabled('validation', true);
-                this.pos_widget.action_bar.set_button_disabled('invoice', true);
-
-                var invoiced = this.pos.push_and_invoice_order(currentOrder);
-
-                invoiced.fail(function (error) {
-                    if (error === 'error-no-client') {
-                        self.pos_widget.screen_selector.show_popup('error', {
-                            message: _t('An anonymous order cannot be invoiced'),
-                            comment: _t('Please select a client for this order. This can be done by clicking the order tab'),
-                        });
-                    } else {
-                        self.pos_widget.screen_selector.show_popup('error', {
-                            message: _t('The order could not be sent'),
-                            comment: _t('Check your internet connection and try again.'),
-                        });
-                    }
-                    self.pos_widget.action_bar.set_button_disabled('validation', false);
-                    self.pos_widget.action_bar.set_button_disabled('invoice', false);
-                });
-
-                invoiced.done(function () {
-                    self.pos_widget.action_bar.set_button_disabled('validation', false);
-                    self.pos_widget.action_bar.set_button_disabled('invoice', false);
-                    //Actualizando Stock de los lotes
-                    self.actualizarStockLotes(currentOrder, currentOrder.get('orderLines').models);
-                    self.pos.get('selectedOrder').destroy();
-                });
-
-            } else {
-                this.pos.push_order(currentOrder);
-                if (this.pos.config.iface_print_via_proxy) {
-                    var receipt = currentOrder.export_for_printing();
-                    this.pos.proxy.print_receipt(QWeb.render('XmlReceipt', {
-                        receipt: receipt, widget: self,
-                    }));
-
-                    //Actualizando Stock de los lotes
-                    this.actualizarStockLotes(currentOrder, currentOrder.get('orderLines').models);
-
-                    this.pos.get('selectedOrder').destroy();    //finish order and go back to scan screen
-                } else {
-
-                    //Actualizando Stock de los lotes
-                    this.actualizarStockLotes(currentOrder, currentOrder.get('orderLines').models);
-                    this.pos_widget.screen_selector.set_current_screen(this.next_screen);
-                }
-            }
-
-            // hide onscreen (iOS) keyboard
-            setTimeout(function () {
-                document.activeElement.blur();
-                $("input").blur();
-            }, 250);
-        },
-    });
-
     instance.point_of_sale.Order = instance.point_of_sale.Order.extend({
 
         initialize: function (attributes) {
@@ -1004,7 +909,12 @@ openerp.my_point_of_sale = function(instance) {
             this.screen_data = {};  // see ScreenSelector
             this.receipt_type = 'receipt';  // 'receipt' || 'invoice'
             this.temporary = attributes.temporary || false;
+            this.order_id = 0;
             return this;
+        },
+
+        get_config_iva_compensation: function(){
+            return this.pos.config.iva_compensation;
         },
 
         addPaymentline: function(cashregister) {
@@ -1012,15 +922,6 @@ openerp.my_point_of_sale = function(instance) {
             var newPaymentline = new module.Paymentline({}, {cashregister: cashregister, pos: this.pos});
             paymentLines.add(newPaymentline);
             this.selectPaymentline(newPaymentline);
-            /*
-            //Dejando solo el metodo de pago seleccionado
-            var modelos = this.get('paymentLines').models;
-            if (modelos !== undefined) {
-                for (var i = 0; i < modelos.length - 1; i++) {
-                    this.get('paymentLines').remove(modelos[i]);
-                }
-            }
-            */
         },
 
         export_for_printing: function () {
@@ -1152,7 +1053,9 @@ openerp.my_point_of_sale = function(instance) {
         getChange: function() {
             var paidTotal = this.getPaidTotal();
             var totalTaxIncluded = this.getTotalTaxIncluded();
-            var val  = paidTotal - totalTaxIncluded;
+            var iva_comp = $('.payment-taxes-compensation').html();
+            iva_comp = parseFloat(iva_comp.substring(0, iva_comp.indexOf(' ')));
+            var val  = (paidTotal - totalTaxIncluded) + iva_comp;
             if(val < 0)
                 val = 0.0;
             return val;
@@ -1218,9 +1121,6 @@ openerp.my_point_of_sale = function(instance) {
         get_all_prices_whit_compensation: function() {
 
             var base = round_pr(this.get_quantity() * this.get_unit_price() * (1.0 - (this.get_discount() / 100.0)), currency_rounding);
-            if(isCard === true){
-                base = round_pr(this.get_quantity() * this.get_unit_price() * (1.0 - (this.get_discount() / 100.0) - (this.pos.config.iva_compensation / 100.0)), this.pos.currency.rounding);
-            }
 
             var totalTax = base;
             var totalNoTax = base;
@@ -1281,58 +1181,13 @@ openerp.my_point_of_sale = function(instance) {
         },
 
         export_as_JSON: function() {
-            //var iva_comp = round_pr(this.get_tax() * this.pos.config.iva_compensation, this.pos.currency.rounding);
             return {
                 qty: this.get_quantity(),
                 price_unit: this.get_unit_price(),
                 discount: this.get_discount(),
                 product_id: this.get_product().id,
-                iva_compensation: 0.0,
                 lot_id: this.get_selected_lot() != null ? this.get_selected_lot().id : null
             };
-        },
-    });
-
-    instance.point_of_sale.ReceiptScreenWidget.include({
-        refresh: function() {
-            this._super();
-            var client = this.pos.get('selectedOrder').get_client();
-
-             /*Seteando Declaracion de Garantia*/
-            if(this.pos.company.warranty != null && this.pos.company.warranty != undefined && this.pos.company.warranty != false && this.pos.company.warranty.length != 0)
-            {
-                $('#div_product_warranty').css('display', '');
-                $('#span_product_warranty').html(this.pos.company.warranty);
-            }
-            else
-            {
-                $('#div_product_warranty').css('display', 'none');
-            }
-
-            if (client != null && client != undefined && client != false) {
-                this.$('#div_ticker_customer_name').html(client.name);
-                this.$('#div_ticker_customer_name').html(client.name);
-            	this.$('#div_ticker_customer_address').html(client.contact_address);
-            	this.$('#div_ticker_customer_email').html(client.email);
-            	this.$('#div_ticker_customer_mobile').html(client.mobile);
-            	this.$('#div_ticker_customer_phone').html(client.phone);
-
-                var type_ced_ruc = false;
-                if (client.type_ced_ruc == 'ruc') {
-                    type_ced_ruc = 'Ruc';
-                }
-                if (client.type_ced_ruc == 'cedula') {
-                    type_ced_ruc = 'Cedula';
-                }
-                if (client.type_ced_ruc == 'pasaporte') {
-                    type_ced_ruc = 'Pasaporte';
-                }
-
-            	if (type_ced_ruc) {
-            		this.$('#div_ticker_customer_ced').html(type_ced_ruc + ': ' + client.ced_ruc);
-            	}
-            }
-            this.$('.pos-sale-ticket table').css('font-size', '16px');
         },
     });
 
@@ -1351,18 +1206,26 @@ openerp.my_point_of_sale = function(instance) {
             }
 
             var subtotalTaxes = 0.0;
+            var totalIvaComp = 0.0;
             var subtotalCard = 0.0;
             var subtotalCash = 0.0;
             var descontar = false;
+            var totalDiscount = totalTaxes * currentOrder.pos.config.iva_compensation;
+
             var unicaLineaSeleccionada = false;
             for (var i = 0; i < paymentLines.models.length; i++) {
                 subtotalTaxes += paymentLines.models[i].amount;
                 if(paymentLines.models[i].get_type() == 'card')
                 {
+                    if(paymentLines.models[i].amount > totalOrder - totalDiscount)
+                        totalIvaComp = totalDiscount;
+                    else
+                        totalIvaComp += (paymentLines.models[i].amount * totalDiscount)/totalOrder;
+
                     subtotalCard += paymentLines.models[i].amount;
                     if(!descontar)
                         descontar = true;
-                    if(paymentLines.models.length == 1 &&  paymentLines.models[i].selected)
+                    if(paymentLines.models.length == 1)
                     {
                         unicaLineaSeleccionada = true;
                     }
@@ -1372,61 +1235,61 @@ openerp.my_point_of_sale = function(instance) {
                     subtotalCash += paymentLines.models[i].amount;
                 }
             }
-            var totalDiscount = totalTaxes * currentOrder.pos.config.iva_compensation;
+
+            var discount = 0.0;
+            var totalTaxExcluded = currentOrder.getTotalTaxExcluded();
+            this.$('.payment-total-without-taxes').html(this.format_currency(totalTaxExcluded));
+            var paidTotal = currentOrder.getPaidTotal();
+            var totalOrderWithOutIvaComp = totalOrder - totalDiscount;
+            var change = 0.0;
+            var remaining = 0.0;
             if(unicaLineaSeleccionada)
             {
-                subtotalTaxes = totalOrder - totalDiscount;
-                subtotalCard = subtotalTaxes;
-            }
-            var discount = 0.0;
-            if(descontar)
-            {
-                if(paymentLines.length == 1)
+                this.$('.paymentline-input').html(subtotalCard);
+                if (subtotalCard < totalOrderWithOutIvaComp) {
+                    discount = (subtotalCard* totalDiscount) / totalOrder;
+                    this.$('.payment-due-total').html(this.format_currency(totalOrder - discount));
+                    this.$('.payment-taxes-compensation').html(this.format_currency(discount));
+                    remaining = totalOrder - discount - subtotalCard;
+                    if (remaining < 0)
+                        remaining = 0;
+                }
+                else
                 {
-                    if((totalOrder - totalDiscount) == subtotalCard) {
-                        discount = totalDiscount;
-                    }
-                    else
-                    {
-                        discount = round_pr((subtotalCard * totalDiscount)/totalOrder, currentOrder.pos.currency.rounding);
-                        subtotalTaxes = totalOrder - discount;
-                    }
+                    this.$('.payment-due-total').html(this.format_currency(totalOrderWithOutIvaComp));
+                    this.$('.payment-taxes-compensation').html(this.format_currency(totalDiscount));
+                    discount = totalDiscount;
                 }
-                else {
-                        discount =  totalOrder - subtotalCard - subtotalCash;
-                }
-            }
-            else
-            {
-                subtotalTaxes = totalOrder;
-            }
+                change = (totalOrder - discount) >= subtotalCard ? 0 : subtotalCard - (totalOrder - discount);
 
-            var totalTaxExcluded = currentOrder.getTotalTaxExcluded();
-            var paidTotal = currentOrder.getPaidTotal();
-            var remaining = subtotalTaxes > paidTotal ? subtotalTaxes - paidTotal : 0;
-            var change = paidTotal > subtotalTaxes ? paidTotal - subtotalTaxes : 0;
-            subtotalTaxes = round_pr(subtotalTaxes, currentOrder.pos.currency.rounding);
-            this.$('.payment-total-without-taxes').html(this.format_currency(totalTaxExcluded));
-            this.$('.payment-taxes-compensation').html(this.format_currency(discount));
-            this.$('.payment-due-total').html(this.format_currency(subtotalTaxes));
-            this.$('.payment-paid-total').html(this.format_currency(paidTotal));
-            this.$('.payment-remaining').html(this.format_currency(remaining));
-            this.$('.payment-change').html(this.format_currency(change));
-            var ivazero = currentOrder.getIvaZero();
-            this.$('.payment-iva-zero').html(this.format_currency(ivazero));
-
-            if(unicaLineaSeleccionada) {
-                paidTotal = subtotalTaxes;
-                remaining = 0;
-                change=0;
                 this.$('.payment-paid-total').html(this.format_currency(paidTotal));
-                this.$('.paymentline-input').val(subtotalTaxes);
                 this.$('.payment-remaining').html(this.format_currency(remaining));
                 this.$('.payment-change').html(this.format_currency(change));
             }
+            else {
+                if (descontar) {
+                    discount = totalIvaComp;
+                    totalOrderWithOutIvaComp  = totalOrder - totalIvaComp;
+                }
+                else
+                {
+                    totalOrderWithOutIvaComp = totalOrder;
+                }
+                totalOrderWithOutIvaComp = round_pr(totalOrderWithOutIvaComp, currentOrder.pos.currency.rounding);
+                remaining = totalOrderWithOutIvaComp > paidTotal ? totalOrderWithOutIvaComp - paidTotal : 0;
+                change = paidTotal > totalOrderWithOutIvaComp ? paidTotal -  totalOrderWithOutIvaComp: 0;
+                this.$('.payment-taxes-compensation').html(this.format_currency(discount));
+                this.$('.payment-due-total').html(this.format_currency(totalOrderWithOutIvaComp));
+                this.$('.payment-paid-total').html(this.format_currency(paidTotal));
+                this.$('.payment-remaining').html(this.format_currency(remaining));
+                this.$('.payment-change').html(this.format_currency(change));
+
+            }
+            var ivazero = currentOrder.getIvaZero();
+            this.$('.payment-iva-zero').html(this.format_currency(ivazero));
 
             if(this.pos_widget.action_bar){
-                var activate = (paidTotal < subtotalTaxes);
+                var activate = (paidTotal < totalOrderWithOutIvaComp);
                 this.pos_widget.action_bar.set_button_disabled('validation', activate);
                 this.pos_widget.action_bar.set_button_disabled('invoice', activate);
             }
@@ -1450,6 +1313,7 @@ openerp.my_point_of_sale = function(instance) {
             }, this);
 
             this.bind_events();
+
             this.decimal_point = instance.web._t.database.parameters.decimal_point;
 
             this.line_delete_handler = function (event) {
@@ -1464,16 +1328,6 @@ openerp.my_point_of_sale = function(instance) {
                     {
                         self.back();
                     }
-                    /*
-                     //var amount = node.line.amount;
-                    var lines = self.pos.get('selectedOrder').get('paymentLines').models;
-                    if(lines.length > 0)
-                    {
-                        self.pos.get('selectedOrder').selectPaymentline(lines[lines.length - 1]);
-                        var cant = lines[lines.length - 1].get_amount();
-                        lines[lines.length - 1].set_amount(cant + amount);
-                    }
-                    */
                 }
                 event.stopPropagation();
             };
@@ -1592,33 +1446,45 @@ openerp.my_point_of_sale = function(instance) {
                     node.line.reference = this.value;
                 }
             };
-
         },
 
         add_paymentline: function (line) {
             var currentOrder = this.pos.get('selectedOrder');
             var total = currentOrder.getTotalTaxIncluded();
             var paymentLines = currentOrder.get('paymentLines');
-
+            var taxes = round_pr(currentOrder.getTotalTaxIncluded() - currentOrder.getTotalTaxExcluded(), currentOrder.pos.currency.rounding);
+            var totalDiscount = taxes * this.pos.config.iva_compensation;
             var sum = 0.0;
+            var sum_iva_comp = 0.0;
             for (var i = 0; i < paymentLines.models.length - 1; i++) {
                 sum += paymentLines.models[i].amount;
+                if(paymentLines.models[i].get_type() == 'card' && taxes > 0 && total > 0)
+                    sum_iva_comp += (paymentLines.models[i].amount * totalDiscount) /total;
             }
+            sum_iva_comp = round_pr(sum_iva_comp, currentOrder.pos.currency.rounding);
             var subtotal = total - sum;
+            if(subtotal < 0)
+                subtotal = 0;
             if(line.get_type() == 'card')
             {
-                var taxes = round_pr(currentOrder.getTotalTaxIncluded() - currentOrder.getTotalTaxExcluded(), currentOrder.pos.currency.rounding);
                 if (taxes  > 0) {
-                     var totalDiscount = taxes * this.pos.config.iva_compensation;
-                     var taxesPart =  (subtotal * totalDiscount)/total;
-                     var val = round_pr( subtotal - taxesPart, currentOrder.pos.currency.rounding);
+                     var taxesPart = round_pr((subtotal * totalDiscount)/total, currentOrder.pos.currency.rounding);
+                     var val = round_pr(subtotal - taxesPart, currentOrder.pos.currency.rounding);
+                     if(val < 0)
+                         val = 0;
                      line.set_amount(val);
-                     line.set_iva_compensation(round_pr(taxesPart, currentOrder.pos.currency.rounding));
+                     line.set_iva_compensation(taxesPart);
+                }
+                else {
+                    line.set_amount(subtotal);
                 }
             }
-            else if (line.get_type() == 'check')
+            else
             {
-                line.set_amount(subtotal);
+                var val = subtotal - sum_iva_comp;
+                if (val < 0)
+                    val = 0;
+                line.set_amount(val);
             }
             var list_container = this.el.querySelector('.payment-lines');
             list_container.appendChild(this.render_paymentline(line));
@@ -1707,6 +1573,156 @@ openerp.my_point_of_sale = function(instance) {
             }
             line.node = el_node;
             return el_node;
+        },
+
+        actualizarStockLotes: function (order, lines) {
+            for (var i = 0; i < lines.length; i++) {
+                for (var id in order.pos.db.product_by_id) {
+                    if (id == lines[i].product.id) {
+                        if (lines[i].selectedLot && order.pos.db.product_by_id[id].lots) {
+                            for (var y = 0; y < order.pos.db.product_by_id[id].lots.length; y++) {
+                                if (order.pos.db.product_by_id[id].lots[y][0] == lines[i].selectedLot.id) {
+                                    if (lines[i].selectedLot.qty == lines[i].selectedLot.qty_tmp) {
+                                        lines[i].selectedLot.qty -= 1;
+                                    }
+                                    var diff = lines[i].selectedLot.qty_tmp - lines[i].selectedLot.qty;
+                                    order.pos.db.product_by_id[id].lots[y][2] = lines[i].selectedLot.qty;
+                                    order.pos.db.product_by_id[id].lots[y][3] = lines[i].selectedLot.qty;
+                                    order.pos.db.product_by_id[id].stock_qty -= diff;
+                                    lines[i].selectedLot.qty_tmp = lines[i].selectedLot.qty;
+                                }
+                            }
+                        }
+                        else {
+                            order.pos.db.product_by_id[id].stock_qty -= lines[i].quantity;
+                        }
+                    }
+                }
+            }
+        },
+
+        validate_order: function (options) {
+
+            var self = this;
+            options = options || {};
+
+            var currentOrder = this.pos.get('selectedOrder');
+            var slines = currentOrder.get('orderLines').models;
+            var plines = currentOrder.get('paymentLines').models;
+            if (slines.length === 0) {
+                this.pos_widget.screen_selector.show_popup('error', {
+                    'message': _t('Empty Order'),
+                    'comment': _t('There must be at least one product in your order before it can be validated'),
+                });
+                return;
+            }
+            else {
+                for (var k = 0; k < slines.length; k++) {
+                    if (slines[k] && slines[k].product && slines[k].product.lots && !slines[k].selectedLot) {
+                        currentOrder.selectLine(slines[k]);
+                        currentOrder.removeAllPaymentlines();
+                        alert('You must select one lot for the product: ' + slines[k].product.display_name);
+                        this.pos_widget.screen_selector.back();
+                        return;
+                    }
+                }
+            }
+
+            for (var i = 0; i < plines.length; i++) {
+                if (plines[i].get_type() === 'bank' && plines[i].get_amount() < 0) {
+                    this.pos_widget.screen_selector.show_popup('error', {
+                        'message': _t('Negative Bank Payment'),
+                        'comment': _t('You cannot have a negative amount in a Bank payment. Use a cash payment method to return money to the customer.'),
+                    });
+                    return;
+                }
+            }
+
+            if (!this.is_paid()) {
+                console.log("Not Paid");
+                return;
+            }
+
+            // The exact amount must be paid if there is no cash payment method defined.
+            if (Math.abs(currentOrder.getTotalTaxIncluded() - currentOrder.getPaidTotal()) > 0.00001) {
+                var cash = false;
+                for (var i = 0; i < this.pos.cashregisters.length; i++) {
+                    cash = cash || (this.pos.cashregisters[i].journal.type === 'cash');
+                }
+                if (!cash) {
+                    this.pos_widget.screen_selector.show_popup('error', {
+                        message: _t('Cannot return change without a cash payment method'),
+                        comment: _t('There is no cash payment method available in this point of sale to handle the change.\n\n Please pay the exact amount or add a cash payment method in the point of sale configuration'),
+                    });
+                    return;
+                }
+            }
+
+            if (this.pos.config.iface_cashdrawer) {
+                this.pos.proxy.open_cashbox();
+            }
+
+            if (options.invoice) {
+
+                // deactivate the validation button while we try to send the order
+                this.pos_widget.action_bar.set_button_disabled('validation', true);
+                this.pos_widget.action_bar.set_button_disabled('invoice', true);
+
+                //Creating Order and Invoice
+                var invoiced = this.pos.push_and_invoice_order(currentOrder);
+
+                invoiced.fail(function (error) {
+                    if (error === 'error-no-client') {
+                        self.pos_widget.screen_selector.show_popup('error', {
+                            message: _t('An anonymous order cannot be invoiced'),
+                            comment: _t('Please select a client for this order. This can be done by clicking the order tab'),
+                        });
+                    } else {
+                        self.pos_widget.screen_selector.show_popup('error', {
+                            message: _t('The order could not be sent'),
+                            comment: _t('Check your internet connection and try again.'),
+                        });
+                    }
+                    self.pos_widget.action_bar.set_button_disabled('validation', false);
+                    self.pos_widget.action_bar.set_button_disabled('invoice', false);
+                });
+
+                invoiced.done(function () {
+                    self.pos_widget.action_bar.set_button_disabled('validation', false);
+                    self.pos_widget.action_bar.set_button_disabled('invoice', false);
+                    //Actualizando Stock de los lotes
+                    self.actualizarStockLotes(currentOrder, currentOrder.get('orderLines').models);
+                    self.pos.get('selectedOrder').destroy();
+                });
+
+            } else {
+
+                //Creating Order
+                this.pos.push_order(currentOrder);
+
+                if (this.pos.config.iface_print_via_proxy) {
+
+                    var receipt = currentOrder.export_for_printing();
+                    this.pos.proxy.print_receipt(QWeb.render('XmlReceipt', {
+                        receipt: receipt, widget: self,
+                    }));
+
+                    //Actualizando Stock de los lotes
+                    this.actualizarStockLotes(currentOrder, currentOrder.get('orderLines').models);
+
+                    this.pos.get('selectedOrder').destroy();    //finish order and go back to scan screen
+                } else {
+                    //Actualizando Stock de los lotes
+                    this.actualizarStockLotes(currentOrder, currentOrder.get('orderLines').models);
+                    this.pos_widget.screen_selector.set_current_screen(this.next_screen);
+                }
+            }
+
+            // hide onscreen (iOS) keyboard
+            setTimeout(function () {
+                document.activeElement.blur();
+                $("input").blur();
+            }, 250);
         },
     });
 
@@ -2189,7 +2205,7 @@ openerp.my_point_of_sale = function(instance) {
             this.approval_number= '';
             this.lot_number= '';
             this.reference= '';
-            this.iva_compensation = 0.0;//options.pos.config.iva_compensation;
+            this.iva_compensation = 0.0;
         },
 
         export_as_JSON: function () {
@@ -2222,4 +2238,171 @@ openerp.my_point_of_sale = function(instance) {
 
     });
 
+    instance.point_of_sale.ScreenWidget = instance.point_of_sale.ScreenWidget.extend({
+        exits_action_button: function (label) {
+            return this.pos_widget.action_bar.exist_action_button(label);
+        },
+
+        get_action_button: function (label) {
+            return this.pos_widget.action_bar.get_action_button(label);
+        },
+    });
+
+    instance.point_of_sale.ActionBarWidget = instance.point_of_sale.ActionBarWidget.extend({
+        exist_action_button: function (label) {
+            for (var i = 0; i < this.button_list.length; i++)
+            {
+                if( this.button_list[i].label == label) {
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        get_action_button: function (label) {
+            for (var i = 0; i < this.button_list.length; i++) {
+                if (this.button_list[i].label == label) {
+                    return this.button_list[i];
+                }
+            }
+            return undefined;
+        },
+    });
+
+    instance.point_of_sale.ReceiptScreenWidget = instance.point_of_sale.ReceiptScreenWidget.extend({
+        show: function () {
+            this._super();
+            var self = this;
+            var print_button = undefined;
+            var finish_button = undefined;
+            if(!this.pos_widget.action_bar.exist_action_button(_t('Print'))) {
+                print_button = this.add_action_button({
+                    label: _t('Print'),
+                    icon: '/point_of_sale/static/src/img/icons/png48/printer.png',
+                    click: function () {
+                        self.print();
+                    },
+                });
+            }
+            else
+            {
+                print_button =  this.pos_widget.action_bar.get_action_button(_t('Print'));
+            }
+
+            if (!this.pos_widget.action_bar.exist_action_button(_t('Next Order'))) {
+                finish_button = this.add_action_button({
+                    label: _t('Next Order'),
+                    icon: '/point_of_sale/static/src/img/icons/png48/go-next.png',
+                    click: function () {
+                        self.finishOrder();
+                    },
+                });
+            }
+            else
+            {
+                finish_button =  this.pos_widget.action_bar.get_action_button(_t('Next Order'));
+            }
+
+            this.refresh();
+
+            finish_button.set_disabled(true);
+            print_button.set_disabled(true);
+
+            setTimeout(function () {
+                finish_button.set_disabled(false);
+                print_button.set_disabled(false);
+            }, 2500);
+        },
+
+        refresh: function () {
+            this._super();
+            var client = this.pos.get('selectedOrder').get_client();
+
+            /*Seteando Declaracion de Garantia*/
+            if (this.pos.company.warranty != null && this.pos.company.warranty != undefined && this.pos.company.warranty != false && this.pos.company.warranty.length != 0) {
+                $('#div_product_warranty').css('display', '');
+                $('#span_product_warranty').html(this.pos.company.warranty);
+            }
+            else {
+                $('#div_product_warranty').css('display', 'none');
+            }
+
+            if (client != null && client != undefined && client != false) {
+                this.$('#div_ticker_customer_name').html(client.name);
+                this.$('#div_ticker_customer_name').html(client.name);
+                this.$('#div_ticker_customer_address').html(client.contact_address);
+                this.$('#div_ticker_customer_email').html(client.email);
+                this.$('#div_ticker_customer_mobile').html(client.mobile);
+                this.$('#div_ticker_customer_phone').html(client.phone);
+
+                var type_ced_ruc = false;
+                if (client.type_ced_ruc == 'ruc') {
+                    type_ced_ruc = 'Ruc';
+                }
+                if (client.type_ced_ruc == 'cedula') {
+                    type_ced_ruc = 'Cedula';
+                }
+                if (client.type_ced_ruc == 'pasaporte') {
+                    type_ced_ruc = 'Pasaporte';
+                }
+
+                if (type_ced_ruc) {
+                    this.$('#div_ticker_customer_ced').html(type_ced_ruc + ': ' + client.ced_ruc);
+                }
+            }
+            this.$('.pos-sale-ticket table').css('font-size', '16px');
+        },
+
+        print: function () {
+            var self = this;
+            var order_id = this.pos.get('selectedOrder').order_id;
+            if(this.pos.config.pos_ticket_report) {
+                if (order_id != 0) {
+                    var ids = [order_id];
+                    // generate the pdf and download it
+                    self.pos_widget.do_action('my_point_of_sale.action_report_pos_ticket', {
+                        additional_context: {
+                            active_ids: ids,
+                        }
+                    });
+                }
+            }
+            else{
+                if(order_id != 0) {
+                    window.print();
+                }
+            }
+        },
+    });
+
+    instance.point_of_sale.PaypadButtonWidget.include({
+
+        renderElement: function () {
+            var self = this;
+            this._super();
+
+            this.$el.click(function () {
+
+                if (self.pos.get('selectedOrder').get('screen') === 'receipt') {  //TODO Why ?
+                    console.warn('TODO should not get there...?');
+                    return;
+                }
+                self.pos.get('selectedOrder').addPaymentline(self.cashregister);
+                self.pos_widget.screen_selector.set_current_screen('payment');
+
+                //Eliminando Linea Repetida
+                var line = self.pos.get('selectedOrder').selected_paymentline;
+                if (line) {
+                    self.pos.get('selectedOrder').removePaymentline(line);
+                    var cantidad = self.pos.get('selectedOrder').attributes.paymentLines.models.length;
+                    self.pos.get('selectedOrder').selectPaymentline(self.pos.get('selectedOrder').attributes.paymentLines.models[cantidad - 1]);
+                }
+
+                //Ocultando campo IVA compensation
+                if (self.pos.config.iva_compensation <= 0) {
+                    $("#taxes-compensation").addClass("oe_hidden");
+                }
+            });
+        },
+    });
 };

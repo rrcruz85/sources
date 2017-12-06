@@ -7,6 +7,7 @@ from openerp import tools
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
+import psycopg2
 
 _logger = logging.getLogger(__name__)
 
@@ -14,42 +15,81 @@ class PosOrder(osv.osv):
     _inherit = 'pos.order'
 
     def _amount_all_new(self, cr, uid, ids, name, args, context=None):
-        cur_obj = self.pool.get('res.currency')
         res = {}
 
         for order in self.browse(cr, uid, ids, context=context):
             res[order.id] = {
                 'amount_paid': 0.0,
-                'amount_return': 0.0,
                 'amount_tax': 0.0,
-                'amount_iva_compensation': 0.0
+                'amount_iva_compensation': 0.0,
+                'paymentLines': []
             }
 
-            val1 = val2 = val3 = 0.0
-            cur = order.pricelist_id.currency_id
+            cur = order.company_id.currency_id
 
+            payment_lines = {}
+            change = 0.0
+            total = 0.0
+            iva_comp_total = 0.0
+            total_taxes = 0.0
             for payment in order.statement_ids:
+                if payment.amount < 0:
+                    change += abs(payment.amount)
+                else:
+                    total += payment.amount
+                    if payment.journal_id.name not in payment_lines:
+                        payment_lines[payment.journal_id.name] = payment.amount
+                    else:
+                        payment_lines[payment.journal_id.name] += payment.amount
+
                 res[order.id]['amount_paid'] += payment.amount
-                res[order.id]['amount_return'] += (payment.amount < 0 and payment.amount or 0)
-                val3 += payment.iva_compensation
+                iva_comp_total += payment.iva_compensation
+
+            payment_ids = [self.pool.get('account.bank.statement.line.tmp').create(cr,uid, {'order_id': order.id,'name': key,'amount' : payment_lines[key]})  for key in payment_lines if payment_lines[key] > 0]
+            cur_obj = self.pool.get('res.currency')
+
+            sql = 'select discount, price_unit, qty from pos_order_line where order_id = %s '
+            cr.execute(sql, (order.id,))
+            result = cr.fetchall()
+            total_discount = 0.0
+            amount_untaxed = 0.0
+
+            for line in result:
+                total_discount = total_discount + (line[2] * (line[0] * line[1] / 100))
+                amount_untaxed = amount_untaxed + (line[2] * line[1])
 
             for line in order.lines:
-                val1 += self._amount_line_tax(cr, uid, line, context=context)
-                val2 += line.price_subtotal
+                total_taxes += self._amount_line_tax(cr, uid, line, context=context)
 
-            amount_untaxed = cur_obj.round(cr, uid, cur, val2)
-            res[order.id]['amount_tax'] = cur_obj.round(cr, uid, cur, val1)
-            res[order.id]['amount_iva_compensation'] = cur_obj.round(cr, uid, cur, val3)
-            res[order.id]['amount_iva_compensation_str'] = '- ' + str(res[order.id]['amount_iva_compensation']) if val3 else '- 0.0'
-            res[order.id]['amount_total'] = res[order.id]['amount_tax'] + amount_untaxed - res[order.id]['amount_iva_compensation']
-            res[order.id]['amount_total_with_compensation'] = res[order.id]['amount_total'] - res[order.id]['amount_iva_compensation']
-            res[order.id]['amount_paid'] = res[order.id]['amount_total_with_compensation']
+            amount_untaxed = cur_obj.round(cr, uid, cur, amount_untaxed)
+            total_discount = cur_obj.round(cr, uid, cur, total_discount)
+            total = cur_obj.round(cr, uid, cur, total)
+            total_taxes = cur_obj.round(cr, uid, cur, total_taxes)
+            iva_comp_total = cur_obj.round(cr, uid, cur, iva_comp_total)
+            res[order.id]['total_discount'] = total_discount
+            res[order.id]['amount_untaxed'] = amount_untaxed
+            res[order.id]['amount_tax'] = total_taxes
+            res[order.id]['amount_iva_compensation'] = iva_comp_total
+            res[order.id]['amount_iva_compensation_str'] = '- ' + str(iva_comp_total)
+            res[order.id]['amount_total'] = amount_untaxed + (total_taxes - iva_comp_total)
+            res[order.id]['amount_total_with_compensation'] = total - iva_comp_total
+            res[order.id]['amount_paid'] = total - iva_comp_total
+            res[order.id]['paymentLines'] = payment_ids
+            res[order.id]['total_change'] = change
         return res
 
     _columns = {
 
         'amount_iva_compensation': fields.function(_amount_all_new, string='IVA Compensation', multi='all'),
         'amount_iva_compensation_str': fields.function(_amount_all_new, type = "char",string='IVA Compensation', multi='all'),
+
+        'amount_untaxed': fields.function(
+            _amount_all_new, string='Subtotal', digits_compute=dp.get_precision('Account'), multi='all'
+        ),
+
+        'total_discount': fields.function(
+            _amount_all_new, string='Subtotal', digits_compute=dp.get_precision('Account'), multi='all'
+        ),
 
         'amount_tax': fields.function(
             _amount_all_new, string='Taxes', digits_compute=dp.get_precision('Account'), multi='all'
@@ -68,7 +108,10 @@ class PosOrder(osv.osv):
             digits_compute=dp.get_precision('Account'), multi='all'
         ),
 
-        'amount_return': fields.function(
+        'paymentLines': fields.function(
+            _amount_all_new, 'Returned', type="one2many", relation="account.bank.statement.line.tmp", multi='all'
+        ),
+        'total_change': fields.function(
             _amount_all_new, 'Returned', digits_compute=dp.get_precision('Account'), multi='all'
         ),
     }
@@ -164,32 +207,117 @@ class PosOrder(osv.osv):
 
         return statement_id
 
+    def create_from_ui(self, cr, uid, orders, context=None):
+        # Keep only new orders
+        submitted_references = [o['data']['name'] for o in orders]
+        existing_order_ids = self.search(cr, uid, [('pos_reference', 'in', submitted_references)], context=context)
+        existing_orders = self.read(cr, uid, existing_order_ids, ['pos_reference'], context=context)
+        existing_references = set([o['pos_reference'] for o in existing_orders])
+        orders_to_save = [o for o in orders if o['data']['name'] not in existing_references]
+
+        order_ids = []
+
+        for tmp_order in orders_to_save:
+            to_invoice = tmp_order['to_invoice']
+            order = tmp_order['data']
+            order_id = self._process_order(cr, uid, order, context=context)
+            order_ids.append(order_id)
+
+            try:
+                self.signal_workflow(cr, uid, [order_id], 'paid')
+                result = self.read(cr, uid, [order_id], ['state'])
+                if result[0]['state'] != 'paid':
+                    self.action_paid(cr, uid, [order_id], context=context)
+
+            except psycopg2.OperationalError:
+                # do not hide transactional errors, the order(s) won't be saved!
+                raise
+            except Exception as e:
+                _logger.error('Could not fully process the POS Order: %s', tools.ustr(e))
+
+            if to_invoice:
+                self.action_invoice(cr, uid, [order_id], context)
+                order_obj = self.browse(cr, uid, order_id, context)
+                self.pool['account.invoice'].signal_workflow(cr, uid, [order_obj.invoice_id.id], 'invoice_open')
+
+        return order_ids
+
+    def action_paid(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'paid'}, context=context)
+        self.create_picking(cr, uid, ids, context=context)
+        return True
+
+    def create_picking(self, cr, uid, ids, context=None):
+        """Create a picking for each order and validate it."""
+        picking_obj = self.pool.get('stock.picking')
+        partner_obj = self.pool.get('res.partner')
+        move_obj = self.pool.get('stock.move')
+
+        for order in self.browse(cr, uid, ids, context=context):
+            if all(t == 'service' for t in order.lines.mapped('product_id.type')):
+                continue
+            addr = order.partner_id and partner_obj.address_get(cr, uid, [order.partner_id.id], ['delivery']) or {}
+            picking_type = order.picking_type_id
+            picking_id = False
+            if picking_type:
+                picking_id = picking_obj.create(cr, uid, {
+                    'origin': order.name,
+                    'partner_id': addr.get('delivery', False),
+                    'date_done': order.date_order,
+                    'picking_type_id': picking_type.id,
+                    'company_id': order.company_id.id,
+                    'move_type': 'direct',
+                    'note': order.note or "",
+                    'invoice_state': 'none',
+                }, context=context)
+                self.write(cr, uid, [order.id], {'picking_id': picking_id}, context=context)
+            location_id = order.location_id.id
+            if order.partner_id:
+                destination_id = order.partner_id.property_stock_customer.id
+            elif picking_type:
+                if not picking_type.default_location_dest_id:
+                    raise osv.except_osv(_('Error!'), _(
+                        'Missing source or destination location for picking type %s. Please configure those fields and try again.' % (
+                        picking_type.name,)))
+                destination_id = picking_type.default_location_dest_id.id
+            else:
+                destination_id = partner_obj.default_get(cr, uid, ['property_stock_customer'], context=context)[
+                    'property_stock_customer']
+
+            move_list = []
+            for line in order.lines:
+                if line.product_id and line.product_id.type == 'service':
+                    continue
+
+                move_list.append(move_obj.create(cr, uid, {
+                    'name': line.name,
+                    'product_uom': line.product_id.uom_id.id,
+                    'product_uos': line.product_id.uom_id.id,
+                    'picking_id': picking_id,
+                    'picking_type_id': picking_type.id,
+                    'product_id': line.product_id.id,
+                    'product_uos_qty': abs(line.qty),
+                    'product_uom_qty': abs(line.qty),
+                    'state': 'draft',
+                    'location_id': location_id if line.qty >= 0 else destination_id,
+                    'location_dest_id': destination_id if line.qty >= 0 else location_id,
+                    'restrict_lot_id' : line.lot_id.id if line.lot_id and line.product_id.track_all else False,
+                }, context=context))
+
+            if picking_id:
+                picking_obj.action_confirm(cr, uid, [picking_id], context=context)
+                picking_obj.force_assign(cr, uid, [picking_id], context=context)
+                picking_obj.action_done(cr, uid, [picking_id], context=context)
+            elif move_list:
+                move_obj.action_confirm(cr, uid, move_list, context=context)
+                move_obj.force_assign(cr, uid, move_list, context=context)
+                move_obj.action_done(cr, uid, move_list, context=context)
+        return True
+
 
 class PosOrderLine(osv.osv):
     _inherit = "pos.order.line"
 
-    def _amount_line_all_new(self, cr, uid, ids, field_names, arg, context=None):
-        res = dict([(i, {}) for i in ids])
-        account_tax_obj = self.pool.get('account.tax')
-
-        for line in self.browse(cr, uid, ids, context=context):
-            taxes_ids = [ tax for tax in line.product_id.taxes_id if tax.company_id.id == line.order_id.company_id.id ]
-            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-            taxes = account_tax_obj.compute_all(cr, uid, taxes_ids, price, line.qty, product=line.product_id, partner=line.order_id.partner_id or False)
-
-            res[line.id]['price_subtotal'] = taxes['total']
-            res[line.id]['price_subtotal_incl'] = taxes['total_included'] #- line.iva_compensation
-
-        return res
-
     _columns = {
-        'price_subtotal': fields.function(
-            _amount_line_all_new, multi='pos_order_line_amount', digits_compute=dp.get_precision('Product Price'),
-            string='Subtotal w/o Tax', store=True
-        ),
-        'price_subtotal_incl': fields.function(
-            _amount_line_all_new, multi='pos_order_line_amount', digits_compute=dp.get_precision('Account'),
-            string='Subtotal', store=True
-        ),
         'lot_id': fields.many2one('stock.production.lot', 'Production lot', ondelete='set null'),
     }

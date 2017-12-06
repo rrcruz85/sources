@@ -300,11 +300,6 @@ msgid "Identification Number"
 msgstr "Número Identificación"
 
 #. module: my_point_of_sale
-#: help:pos.config,show_all_products:0
-msgid "If not checked, the product list in the point of sale will be limited..."
-msgstr "Si no está seleccionado, la lista de productos en el punto de venta estará limitada a aquellos productos especificados como disponibles..."
-
-#. module: my_point_of_sale
 #: model:ir.model,name:my_point_of_sale.model_account_invoice
 msgid "Invoice"
 msgstr "Factura"
