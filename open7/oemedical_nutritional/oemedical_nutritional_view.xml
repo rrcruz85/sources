@@ -7,8 +7,10 @@
 			<field name="model">oemedical.nutritional</field>
 			<field name="priority" eval="8" />
 			<field name="arch" type="xml">
-				<tree string="Oemedical Nutritional">
+				<tree string="Oemedical Nutritional" colors="red:pro_dia">
 					<field name="patient_id" />
+					<field name="pro_dia" />
+					<field name="pre_dia" />
 					<field name="eva_date" />
 					<field name="doctor" />
 					<!--field name="directions" /-->
@@ -41,6 +43,8 @@
 							  <field name="fec_cir"/>
 							  <field name="met_qur"/>
 							  <field name="com_con"/>
+							  <field name="es_diabetico"/>
+                              <field name="diabetico" attrs="{'invisible':[('es_diabetico','=',False)]}"/>
 							 </group>
 							 <newline/>
 							 <group string="Antecedentes alimenticios, enfermedad presente y práctica de ejercicio: " col="4" colspan="2"> 
@@ -95,7 +99,7 @@
 							</group>
 							<newline/>
 							<group string="___________________________________ " col="4" colspan="2">
-							   <field name="vda_dia"/>
+							   <field name="vda_dia1"/>
 							   <field name="prf_ali"/>
 							   <field name="dis_ali"/>
 							</group>
@@ -143,12 +147,13 @@
 								<field name="pro_aci"/>
 								<field name="pro_flt"/>
 								<field name="pro_est"/>
-								<field name="frq_dep"/>
+								<field name="frq_dep1"/>
 							</group>
 							<newline/>
 							<group string="Problemas digestivos" col="4" colspan="2"> 
 								<field name="pro_gas"/>
 								<field name="pro_hel"/>
+								<field name="des_hel"/>
 								<field name="pro_rge"/>
 								<field name="pro_ulc"/>
 								<field name="pro_cir"/>
@@ -157,6 +162,7 @@
 							<group string="Enfermedades actuales asociadas a la obesidad" col="4" colspan="2">
 								<field name="pro_dia"/>
 								<field name="tmp_dia"/>
+								<field name="pre_dia"/>
 								<field name="pro_hta"/>
 								<field name="pro_dsp"/>
 								<field name="pro_hpu"/>
@@ -169,7 +175,7 @@
 								<field name="pro_cir"/>
 								<field name="pro_tir"/>
 								<field name="pro_otr"/>
-								<field name="pro_dot"/>
+								<field name="pro_dot1"/>
 							</group>
 							<newline/>
 							<group string="3.2.- Alguien de su familia cercana sufre de alguna enfermedad como:" col="4" colspan="2">	
@@ -186,6 +192,41 @@
 								<field name="prf_dis"/>
 								<field name="par_dis"/>
 							</group>
+							<group string="3.3.- Patologías del Preoperatorio :" col="4" colspan="2">	
+								<field name="preop_hta"/>
+                                <field name="hip_preop_med"/>
+                                <field name="hip_preop_dos"/>
+                                <field name="hip_preop_val"/>
+                                <field name="hip_preop_hac"/>
+							</group>
+							<group col="4" colspan="2">
+                                <field name="diab_mel_dm"/>
+                                <field name="diab_mel_med"/>
+                                <field name="diab_mel_dos"/>
+                                <field name="diab_mel_val"/>
+                                <field name="diab_mel_hac"/>
+							</group>
+							<group col="4" colspan="2">
+                                <field name="preop_dis"/>
+                                <field name="preop_dis_med"/>
+                                <field name="preop_dis_dos"/>
+                                <field name="preop_dis_val"/>
+                                <field name="preop_dis_hac"/>
+							</group>
+							<group col="4" colspan="2">
+                                <field name="hig_gra"/>
+                                <field name="hig_gra_med"/>
+                                <field name="hig_gra_dos"/>
+                                <field name="hig_gra_val"/>
+                                <field name="hig_gra_hac"/>
+                            </group>
+							<group col="4" colspan="2">    
+                                <field name="otr_pat"/>
+                                <field name="otr_pat_med"/>
+                                <field name="otr_pat_dos"/>
+                                <field name="otr_pat_val"/>
+                                <field name="otr_pat_hac"/>
+							</group>
 							<newline/>
 							<newline/>
 							   <separator string=" 4.- Recordatorio de 24 Horas" colspan="2"/>
@@ -194,7 +235,7 @@
 							   <separator string="________________________________" colspan="2"/>
 							<newline/>
 							<newline/>
-							   <separator string="Desayuno" colspan="2"/>
+							   <separator string="______________" colspan="2"/>
 							<newline/>
 							<group col="4" colspan="2">
 							   <field name="des_hor"/>
@@ -279,6 +320,9 @@
 					        <group string="Plato fuerte" col="4" colspan="2">
 					           <field name="alm_arr"/>
 					           <field name="alm_pco"/>
+					        </group>
+					        <newline/>
+					        <group string=" " col="4" colspan="2">   
 					           <field name="alm_pfr"/>
 					           <field name="alm_fid"/>
 					           <field name="alm_pas"/>
@@ -369,6 +413,8 @@
 					          <field name="pes_pak"/>
 					          <field name="pes_pal"/>
 					          <field name="imc"/>
+					          <field name="por_gde"/>
+					          <field name="por_gbi"/>
 					        </group>
 					        <newline/>
 					        <group string="Exceso de peso" col="4" colspan="2">
@@ -390,7 +436,7 @@
 					        </group>
 					        <newline/>
 					        <group string="____________________________________________" col="4" colspan="2"> 
-					          <field name="pei_pek"/>
+					          <field name="pei_pek1"/>
 					          <field name="pei_pel"/>
 					          <field name="pob_pok"/>
 						      <field name="pob_pol"/>

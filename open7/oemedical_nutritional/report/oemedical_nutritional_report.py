@@ -20,6 +20,7 @@
 #
 ##############################################################################
 
+import io
 import os
 import time
 import string
@@ -36,11 +37,15 @@ import time
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
+from PIL import Image
+from PIL.Image import fromstring
+from random import choice
+
 class oemedical_nutritional_report(report_rml):
 
     def create(self, cr, uid, ids, datas, context):
-
         nutritional_obj = pooler.get_pool(cr.dbname).get('oemedical.nutritional')
+        list_to_delete = []
 
         for nutritional in nutritional_obj.browse(cr, uid, ids, context):
             rml = """
@@ -278,10 +283,10 @@ class oemedical_nutritional_report(report_rml):
                 fec_cir = nutritional.fec_cir.split('-')[2] + '-' + nutritional.fec_cir.split('-')[1] + '-' + nutritional.fec_cir.split('-')[0]
             
             contacto_info = ''
-            if nutritional.patient_id.email: contacto_info += _('Correo: ') + nutritional.patient_id.email + '. '
-            if nutritional.patient_id.phone: contacto_info += _('Teléfono: ') + nutritional.patient_id.phone + '. '
-            if nutritional.patient_id.mobile: contacto_info += _('Celular: ') + nutritional.patient_id.mobile + '. '
-            if nutritional.patient_id.fax: contacto_info += _('Fax: ') + nutritional.patient_id.fax + '.'
+            #if nutritional.patient_id.email: contacto_info += _('Correo: ') + nutritional.patient_id.email + '. '
+            if nutritional.patient_id.contacto: contacto_info += _(' ') + nutritional.patient_id.contacto + '/ '
+            if nutritional.patient_id.telefono: contacto_info += _('Teléfono: ') + nutritional.patient_id.telefono + '/ '
+            if nutritional.patient_id.celular: contacto_info += _('Celular: ') + nutritional.patient_id.celular + ' '
             
             residencia = ''
             if nutritional.patient_id.street: residencia += tools.ustr(nutritional.patient_id.street) + '. '
@@ -290,7 +295,7 @@ class oemedical_nutritional_report(report_rml):
             if nutritional.patient_id.country_id and nutritional.patient_id.country_id.name: residencia += tools.ustr(nutritional.patient_id.country_id.name) + '. '
             
             rml += """
-                        <spacer length="1.cm"/>
+                        <spacer length="0.3cm"/>
                         <blockTable colWidths="100.0,30.0,130.0,170.0,100.0" rowHeights="20.0,15.0,15.0,15.0,15.0,15.0,15.0,15.0,15.0" style="Table1">
                             <tr>
                                 <td><para style="P9_BOLD_LEFT">1. <u>Datos generales del paciente</u>:</para></td>
@@ -301,8 +306,8 @@ class oemedical_nutritional_report(report_rml):
                                 <td>
                                     <blockTable colWidths="40.0,80.0">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">Fecha: </para></td>
-                                            <td><para style="P6_LEFT">""" + (eva_date if eva_date else '') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">Fecha: </para></td>
+                                            <td><para style="P7_LEFT">""" + (eva_date if eva_date else '') + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
@@ -316,42 +321,65 @@ class oemedical_nutritional_report(report_rml):
                                     </blockTable>
                                 </td>
                                 <td>
-                                    <blockTable colWidths="55.0,105.0">
+                                    <blockTable colWidths="60.0,100.0">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">Residencia:</para></td>
-                                            <td><para style="P5_LEFT">""" + residencia + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">Residencia:</para></td>
+                                            <td><para style="P6_LEFT">""" + (tools.ustr(residencia) if residencia else '') +  """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
                                 <td>
-                                    <blockTable colWidths="40.0,60">
+                                    <blockTable colWidths="45.0,60">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">Nacido:</para></td>
-                                            <td><para style="P6_LEFT">""" + (tools.ustr(nutritional.patient_id.city) if nutritional.patient_id.city else '') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">Nacido:</para></td>
+                                            <td><para style="P7_LEFT">""" + (tools.ustr(nutritional.patient_id.city) if nutritional.patient_id.city else '') + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
-                            </tr>
-                            
-                            <tr>
+                            </tr>"""
+            
+            if (nutritional.patient_id.photo):
+                path = openerp.modules.get_module_path('oemedical_nutritional')
+                path += '/static/temp/'
+                path = os.path.normpath(path)
+                
+                name = 'photo' + str(choice(range(1, 100)))
+                img_path = os.path.join(path, name + '.png')
+                list_to_delete.append(img_path)
+                
+                image_stream = io.BytesIO(nutritional.patient_id.photo.decode('base64'))
+                img = Image.open(image_stream)
+                img.save(img_path, "PNG")
+            
+            rml += """      <tr>
                                 <td>
-                                    <blockTable colWidths="90.0,330.0" style="TableI">
+                                    <blockTable colWidths="90.0,250.0,90.0" style="TableI">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">""" + tools.ustr("Método quirúrgico:") + """</para></td>
-                                            <td><para style="P6_LEFT">""" + (tools.ustr(nutritional.met_qur) if nutritional.met_qur else '') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">""" + tools.ustr("Método quirúrgico:") + """</para></td>
+                                            <td><para style="P7_LEFT">""" + (tools.ustr(nutritional.met_qur) if nutritional.met_qur else '') + """</para></td>
+                                            <td><para style="P8_BOLD_LEFT" textColor="red">""" + ('DIABETICO' if nutritional.pro_dia else '') + ('PRE-DIABETICO' if nutritional.pre_dia else '') +"""</para></td>
                                         </tr>
                                     </blockTable>
-                                </td><td></td><td></td><td></td>
-								<td>
-							    </td>
-                            </tr>
+                                </td>
+                                <td></td><td></td><td></td>"""
+			
+            if (nutritional.patient_id.photo):
+                rml += """    	<td>
+								    <illustration width="85" height="85" borderStrokeWidth="1" borderStrokeColor="black">
+                                        <image file="file:""" + img_path + """ " x="0" y="0" width="85" height="85"/>
+                                    </illustration>
+							    </td>"""
+            else:
+                rml += """      <td></td>"""
+            
+            rml += """      </tr>
                             
                             <tr>
                                 <td>
-                                    <blockTable colWidths="90.0,330.0" style="TableI">
+                                    <blockTable colWidths="102.0,330.0" style="TableI">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">Nombres y apellidos: </para></td>
-                                            <td><para style="P6_LEFT">"""
+                                            <td><para style="P7_BOLD_LEFT" >Nombres y apellidos: </para></td>
+                                            <td><para style="P8_LEFT">"""
             names = ''
             if nutritional.patient_id.first_name:
                 names +=  tools.ustr(nutritional.patient_id.first_name)
@@ -360,7 +388,7 @@ class oemedical_nutritional_report(report_rml):
             if nutritional.patient_id.slastname:
                 names += ' ' + tools.ustr(nutritional.patient_id.slastname)  
                                                 
-            rml+= names + """</para></td>
+            rml+= names + """</para></td>                                            
                                         </tr>
                                     </blockTable>
                                 </td><td></td><td></td><td></td><td></td>
@@ -370,16 +398,16 @@ class oemedical_nutritional_report(report_rml):
                                 <td>
                                     <blockTable colWidths="40.0,50.0">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">Edad:</para></td>
-                                            <td><para style="P6_LEFT">""" + str(self._get_year(nutritional.patient_id)) + tools.ustr(' años') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">Edad:</para></td>
+                                            <td><para style="P7_LEFT">""" + str(self._get_year(nutritional.patient_id)) + tools.ustr(' años') + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
                                 <td>
-                                    <blockTable colWidths="38.0,112.0" style="TableI">
+                                    <blockTable colWidths="43.0,116.0" style="TableI">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">Correo:</para></td>
-                                            <td><para style="P6_LEFT_1">""" + (nutritional.patient_id.email[0:35] if nutritional.patient_id.email else '') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">Correo:</para></td>
+                                            <td><para style="P6_LEFT_1">""" + (nutritional.patient_id.email if nutritional.patient_id.email else '') + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
@@ -387,8 +415,8 @@ class oemedical_nutritional_report(report_rml):
                                 <td>
                                     <blockTable colWidths="90.0,70.0" style="TableI">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">Fecha nacimiento:</para></td>
-                                            <td><para style="P6_LEFT">""" + (dob if dob else '') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">Fecha nacimiento:</para></td>
+                                            <td><para style="P7_LEFT">""" + (dob if dob else '') + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
@@ -397,18 +425,18 @@ class oemedical_nutritional_report(report_rml):
                             
                             <tr>
                                 <td>
-                                    <blockTable colWidths="40.0,50.0">
+                                    <blockTable colWidths="45.0,50.0">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">""" + tools.ustr('Género: ')+ """</para></td>
-                                            <td><para style="P6_LEFT">""" + ('M' if nutritional.patient_id.sex == 'm' else 'F') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">""" + tools.ustr('Género: ')+ """</para></td>
+                                            <td><para style="P7_LEFT">""" + ('M' if nutritional.patient_id.sex == 'm' else 'F') + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
                                 <td>
                                     <blockTable colWidths="70.0,80.0" style="TableI">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">""" + tools.ustr("Teléfono casa:") + """</para></td>
-                                            <td><para style="P6_LEFT">""" + (nutritional.patient_id.phone if nutritional.patient_id.phone else '') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">""" + tools.ustr("Teléfono casa:") + """</para></td>
+                                            <td><para style="P7_LEFT">""" + (nutritional.patient_id.phone if nutritional.patient_id.phone else '') + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
@@ -416,8 +444,8 @@ class oemedical_nutritional_report(report_rml):
                                 <td>
                                     <blockTable colWidths="80.0,80.0" style="TableI">
                                         <tr>
-                                            <td><para style="P7_BOLD_LEFT">Celular:</para></td>
-                                            <td><para style="P7_LEFT">""" + (nutritional.patient_id.mobile if nutritional.patient_id.mobile else '') + """</para></td>
+                                            <td><para style="P8_BOLD_LEFT">Celular:</para></td>
+                                            <td><para style="P8_LEFT">""" + (nutritional.patient_id.mobile if nutritional.patient_id.mobile else '') + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
@@ -426,10 +454,10 @@ class oemedical_nutritional_report(report_rml):
                             
                             <tr>
                                 <td>
-                                    <blockTable colWidths="45.0,375.0" style="TableI">
+                                    <blockTable colWidths="55.0,370.0" style="TableI">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">Contacto:</para></td>
-                                            <td><para style="P6_LEFT">""" + (contacto_info) + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">Contacto:</para></td>
+                                            <td><para style="P7_LEFT">""" + (contacto_info) + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
@@ -440,24 +468,24 @@ class oemedical_nutritional_report(report_rml):
                                 <td>
                                     <blockTable colWidths="60.0,60.0">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">Estado civil:</para></td>
-                                            <td><para style="P6_LEFT">""" + (tools.ustr(marital_status) if marital_status else '') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">Estado civil:</para></td>
+                                            <td><para style="P7_LEFT">""" + (tools.ustr(marital_status) if marital_status else '') + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
                                 <td></td>
                                 <td>
-                                    <blockTable colWidths="50.0,70.0">
+                                    <blockTable colWidths="55.0,70.0">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">""" + tools.ustr('Profesión:') + """</para></td>
-                                            <td><para style="P6_LEFT">""" + (tools.ustr(nutritional.patient_id.occupation.name) if nutritional.patient_id.occupation and nutritional.patient_id.occupation.name else '') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">""" + tools.ustr('Profesión:') + """</para></td>
+                                            <td><para style="P7_LEFT">""" + (tools.ustr(nutritional.patient_id.occupation.name) if nutritional.patient_id.occupation and nutritional.patient_id.occupation.name else '') + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
                                 <td>
-                                    <blockTable colWidths="90.0,70.0">
+                                    <blockTable colWidths="102.0,65.0">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">""" + tools.ustr('Como llegó a consulta:') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">""" + tools.ustr('Como llegó a consulta:') + """</para></td>
                                             <td><para style="P6_LEFT">""" + (tools.ustr(nutritional.com_con) if nutritional.com_con else '') + """</para></td>
                                         </tr>
                                     </blockTable>
@@ -469,8 +497,8 @@ class oemedical_nutritional_report(report_rml):
                                 <td>
                                     <blockTable colWidths="90.0,160.0">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">""" + tools.ustr('Dirección domicilio:') + """</para></td>
-                                            <td><para style="P6_LEFT">""" + (tools.ustr(nutritional.patient_id.street) if nutritional.patient_id.street else '' + ' ' + tools.ustr(nutritional.patient_id.city) if nutritional.patient_id.city else '' + ' ' + tools.ustr(nutritional.patient_id.country_id.name) if nutritional.patient_id.country_id else '') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">""" + tools.ustr('Dirección domicilio:') + """</para></td>
+                                            <td><para style="P7_LEFT">""" + (tools.ustr(nutritional.patient_id.street) if nutritional.patient_id.street else '' + ' ' + tools.ustr(nutritional.patient_id.city) if nutritional.patient_id.city else '' + ' ' ) + """</para></td>                                                      
                                         </tr>
                                     </blockTable>
                                 </td>
@@ -479,8 +507,8 @@ class oemedical_nutritional_report(report_rml):
                                 <td>
                                     <blockTable colWidths="70.0,190.0">
                                         <tr>
-                                            <td><para style="P6_BOLD_LEFT">""" + tools.ustr('No. de cedula:') + """</para></td>
-                                            <td><para style="P6_LEFT">""" + (tools.ustr(nutritional.patient_id.ced_ruc) if nutritional.patient_id.ced_ruc else '') + """</para></td>
+                                            <td><para style="P7_BOLD_LEFT">""" + tools.ustr('No. de cedula:') + """</para></td>
+                                            <td><para style="P7_LEFT">""" + (tools.ustr(nutritional.patient_id.ced_ruc) if nutritional.patient_id.ced_ruc else '') + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
@@ -489,7 +517,7 @@ class oemedical_nutritional_report(report_rml):
                         </blockTable>"""
             
             rml += """
-                        <spacer length="1.0cm"/>
+                        <spacer length="0.1cm"/>
                         <blockTable colWidths="530.0" rowHeights="20.0">
                             <tr>
                                 <td><para style="P9_BOLD_LEFT">2. <u>""" + tools.ustr('Antecedentes alimenticios, enfermedad presente y práctica de ejercicio') + """</u>:</para></td>
@@ -742,9 +770,9 @@ class oemedical_nutritional_report(report_rml):
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td></td>
                                 <td><para style="P5_BOLD_LEFT">""" + _('¿Cuántos sobres diarios?') + """</para></td>
                                 <td><para style="P5_LEFT">""" + (str(nutritional.sbe_dia) if nutritional.sbe_dia else '') + """</para></td>
+                                <td></td>
                                 <td></td>
                             </tr>
                         </blockTable>"""
@@ -754,7 +782,7 @@ class oemedical_nutritional_report(report_rml):
                         <blockTable colWidths="140.0,390.0" rowHeights="12.0">
                             <tr>
                                 <td><para style="P5_BOLD_LEFT">""" + tools.ustr('¿Cuántos vasos de agua pura toma al día?') + """</para></td>
-                                <td><para style="P5_LEFT">""" + (str(nutritional.vda_dia) if nutritional.vda_dia else '') + """</para></td>
+                                <td><para style="P5_LEFT">""" + (str(nutritional.vda_dia1) if nutritional.vda_dia1 else '') + """</para></td>
                             </tr>
                         </blockTable>"""
             
@@ -833,7 +861,7 @@ class oemedical_nutritional_report(report_rml):
                         <spacer length="0.0cm"/>
                         <blockTable colWidths="60.0,20.0,10.0,22.0,10.0,50.0,358.0" rowHeights="12.0">
                             <tr>
-                                <td><para style="P5_BOLD_LEFT">""" + tools.ustr('¿Toma aspinina?') + """</para></td>
+                                <td><para style="P5_BOLD_LEFT">""" + tools.ustr('¿Toma aspirina?') + """</para></td>
                                 <td><para style="P5_LEFT">""" + _('Si') + """</para></td>
                                 <td><para style="P5_CENTER_15">""" + ('X' if nutritional.tom_asp and nutritional.tom_asp == 's' else '') + """</para></td>
                                 <td><para style="P5_LEFT">""" + _('No') + """</para></td>
@@ -845,7 +873,7 @@ class oemedical_nutritional_report(report_rml):
             
             rml += """
                         <spacer length="0.0cm"/>
-                        <blockTable colWidths="70.0,20.0,10.0,22.0,10.0,40.0,85.0,90.0,183.0" rowHeights="12.0">
+                        <blockTable colWidths="70.0,20.0,10.0,22.0,10.0,50.0,80.0,90.0,180.0" rowHeights="12.0">
                             <tr>
                                 <td><para style="P5_BOLD_LEFT">""" + tools.ustr('¿Planea tener hijos?') + """</para></td>
                                 <td><para style="P5_LEFT">""" + _('Si') + """</para></td>
@@ -959,15 +987,15 @@ class oemedical_nutritional_report(report_rml):
                         </blockTable>"""
             
             rml += """
-                        <spacer length="1.0cm"/>
+                        <spacer length="0.0cm"/>
                         <blockTable colWidths="530.0" rowHeights="20.0">
                             <tr>
-                                <td><para style="P9_BOLD_LEFT">3. <u>""" + tools.ustr('Enfermedades y antecedentes patológicos familiares') + """</u>:</para></td>
+                                <td><para style="P8_BOLD_LEFT">3. <u>""" + tools.ustr('Enfermedades y antecedentes patológicos familiares') + """</u>:</para></td>
                             </tr>
                         </blockTable>"""
             
             rml += """
-                        <spacer length="0.1cm"/>
+                        <spacer length="0.0cm"/>
                         <blockTable colWidths="530.0" rowHeights="12.0">
                             <tr>
                                 <td><para style="P5_BOLD_LEFT">""" + tools.ustr('3.1 Personales') + """</para></td>
@@ -998,7 +1026,7 @@ class oemedical_nutritional_report(report_rml):
                                 <td><para style="P5_CENTER_15">""" + ('X' if nutritional.pro_est else '') + """</para></td>
                                 
                                 <td><para style="P5_LEFT">""" + _('Frecuencia deposición:') + """</para></td>
-                                <td><para style="P5_LEFT">""" + (str(nutritional.frq_dep) if nutritional.frq_dep else '') + """</para></td>
+                                <td><para style="P5_LEFT">""" + (str(nutritional.frq_dep1) if nutritional.frq_dep1 else '') + """</para></td>
                                 <td></td>
                             </tr>
                         </blockTable>"""
@@ -1024,31 +1052,16 @@ class oemedical_nutritional_report(report_rml):
                                 <td><para style="P5_CENTER_15">""" + ('X' if nutritional.pro_cir else '') + """</para></td>
                                 <td></td>
                             </tr>
+                            
                         </blockTable>"""
-            
-            rml += """
-                        <spacer length="0.0cm"/>
-                        <blockTable colWidths="160.0,35.0,10.0,80.0,20.0,35.0,10.0,50.0,10.0,50.0,10.0,60.0" rowHeights="12.0">
-                            <tr>
-                                <td><para style="P5_BOLD_LEFT">""" + tools.ustr('Enfermedades actualies y asociadas a la obesidad:') + """</para></td>
-                                <td><para style="P5_LEFT">""" + _('Diabetes') + """</para></td>
-                                <td><para style="P5_CENTER_15">""" + ('X' if nutritional.pro_dia else '') + """</para></td>
-                                
-                                <td><para style="P5_LEFT">""" + _('hace que tiempo') + """</para></td>
-                                <td><para style="P5_CENTER_15">""" + (str(nutritional.tmp_dia) if nutritional.pro_dia and nutritional.tmp_dia else '') + """</para></td>
-                                
-                                <td><para style="P5_LEFT">""" + _('HTA') + """</para></td>
-                                <td><para style="P5_CENTER_15">""" + ('X' if nutritional.pro_hta else '') + """</para></td>
-                                
-                                <td><para style="P5_LEFT">""" + _('Dislipidemias') + """</para></td>
-                                <td><para style="P5_CENTER_15">""" + ('X' if nutritional.pro_dsp else '') + """</para></td>
-                                
-                                <td><para style="P5_LEFT">""" + _('Hiperuricemia') + """</para></td>
-                                <td><para style="P5_CENTER_15">""" + ('X' if nutritional.pro_hpu else '') + """</para></td>
-                                <td></td>
-                            </tr>
-                        </blockTable>"""
-            
+            #rml += """
+                        #<spacer length="0.0cm"/>
+                        #<blockTable colWidths="80.0,450.0" rowHeights="12.0">
+                            #<tr>
+                               #<td><para style="P5_LEFT">""" + _('Evaluacion Colonoscopia :') + """</para></td>
+                               #<td><para style="P5_LEFT">""" + (str(nutritional.des_hel) if nutritional.des_hel else '') + """</para></td>
+                            #</tr>
+                        #</blockTable>"""
             rml += """
                         <spacer length="0.0cm"/>
                         <blockTable colWidths="50.0,10.0,55.0,10.0,75.0,10.0,70.0,10.0,35.0,10.0,50.0,10.0,50.0,10.0,65.0,10.0" rowHeights="12.0">
@@ -1183,10 +1196,149 @@ class oemedical_nutritional_report(report_rml):
                                 <td></td>
                             </tr>
                         </blockTable>"""
+                        
+            rml += """          
+                        <spacer length="0.1cm"/>
+                        <blockTable colWidths="530.0" rowHeights="12.0">
+                            <tr>
+                                <td><para style="P5_BOLD_LEFT">""" + tools.ustr('3.3.- Patologías del Preoperatorio :') + """</para></td>
+                            </tr>
+                        </blockTable>"""
             
+            rml += """
+                        <spacer length="0.0cm"/>
+                        <blockTable colWidths="64.0,95.0,10.0,80.0,20.0,77.0,10.0,77.0,10.0,50.0,10.0,60.0" rowHeights="12.0">
+                            <tr>
+                                <td><para style="P5_BOLD_LEFT">""" + tools.ustr(' ') + """</para></td>
+                                <td><para style="P5_BOLD_LEFT">""" + _('Hipertensión arterial (HTA)') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + ('X' if nutritional.preop_hta else '') + """</para></td>
+                                
+                                <td><para style="P5_BOLD_LEFT">""" + _('Diabetes Melitus (DM)') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + ('X' if nutritional.diab_mel_dm else '') + """</para></td>
+                                
+                                <td><para style="P5_BOLD_LEFT">""" + _('Dislipidemias') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + ('X' if nutritional.preop_dis else '') + """</para></td>
+                                
+                                <td><para style="P5_BOLD_LEFT">""" + _('Higado Graso') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + ('X' if nutritional.hig_gra else '') + """</para></td>
+                                
+                                <td><para style="P5_BOLD_LEFT">""" + _('Otras') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + ('X' if nutritional.otr_pat else '') + """</para></td>
+                                <td></td>
+                            </tr>
+                        </blockTable>""" 
+
+            rml += """
+                        <spacer length="0.05cm"/>
+                        <blockTable colWidths="64.0,95.0,10.0,80.0,20.0,77.0,10.0,77.0,10.0,50.0,10.0,60.0" rowHeights="12.0">
+                            <tr>
+                                <td><para style="P5_BOLD_LEFT">""" + tools.ustr('Medicación :') + """</para></td>
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.preop_dis_med) if nutritional.preop_dis_med else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.diab_mel_med) if nutritional.diab_mel_med else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.preop_dis_med) if nutritional.preop_dis_med else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.hig_gra_med) if nutritional.hig_gra_med else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.otr_pat_med) if nutritional.otr_pat_med else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                <td></td>
+                            </tr>
+                        </blockTable>"""
+                        
+            rml += """
+                        <spacer length="0.05cm"/>
+                        <blockTable colWidths="64.0,95.0,10.0,80.0,20.0,77.0,10.0,77.0,10.0,50.0,10.0,60.0" rowHeights="12.0">
+                            <tr>
+                                <td><para style="P5_BOLD_LEFT">""" + tools.ustr('Dosis :') + """</para></td>
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.hip_preop_dos) if nutritional.hip_preop_dos else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.diab_mel_dos) if nutritional.diab_mel_dos else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.preop_dis_dos) if nutritional.preop_dis_dos else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.hig_gra_dos) if nutritional.hig_gra_dos else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.otr_pat_dos) if nutritional.otr_pat_dos else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                <td></td>
+                            </tr>
+                        </blockTable>""" 
+                        
+            rml += """
+                        <spacer length="0.05cm"/>
+                        <blockTable colWidths="64.0,95.0,10.0,80.0,20.0,77.0,10.0,77.0,10.0,50.0,10.0,60.0" rowHeights="12.0">
+                            <tr>
+                                <td><para style="P5_BOLD_LEFT">""" + tools.ustr('Valores de laboratorio:') + """</para></td>
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.hip_preop_val) if nutritional.hip_preop_val else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.diab_mel_val) if nutritional.diab_mel_val else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.preop_dis_val) if nutritional.preop_dis_val else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.hig_gra_val) if nutritional.hig_gra_val else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.otr_pat_val) if nutritional.otr_pat_val else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                <td></td>
+                            </tr>
+                        </blockTable>""" 
+           
+            rml += """
+                        <spacer length="0.05cm"/>
+                        <blockTable colWidths="64.0,95.0,10.0,80.0,20.0,77.0,10.0,77.0,10.0,50.0,10.0,60.0" rowHeights="12.0">
+                            <tr>
+                                <td><para style="P5_BOLD_LEFT">""" + tools.ustr('Hace que tiempo :') + """</para></td>
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.hip_preop_hac) if nutritional.hip_preop_hac else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.diab_mel_hac) if nutritional.diab_mel_hac else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.preop_dis_hac) if nutritional.preop_dis_hac else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.hig_gra_hac) if nutritional.hig_gra_hac else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.otr_pat_hac) if nutritional.otr_pat_hac else '') + """</para></td>
+                                <td><para style="P5_CENTER_15">""" + tools.ustr(' ') + """</para></td>
+                                <td></td>
+                            </tr>
+                        </blockTable>"""                     
+                        
             rml += """      <pageBreak></pageBreak> """
             
             rowHeights = '20.0'
+                        
+            rml += """
+                        <spacer length="0.4cm"/>
+                        <blockTable colWidths="530.0" rowHeights="12.0">
+                            <tr>
+                                <td><para style="P9_BOLD_LEFT">4.<u>""" + tools.ustr(' Complicaciones quirurgicas y Tratamiento') + """</u></para></td>
+                            </tr>
+                        </blockTable>"""
+            rml += """
+                        <spacer length="0.0cm"/>
+                        <blockTable colWidths="530.0" rowHeights="12.0">
+                            <tr>
+                                <td><para style="P5_LEFT">""" + (tools.ustr(nutritional.par_dis) if nutritional.par_dis else '') + """</para></td>
+                            </tr>
+                        </blockTable>"""
+                        
             
             rml += """
                         <spacer length="0.3cm"/>
@@ -1260,7 +1412,7 @@ class oemedical_nutritional_report(report_rml):
                                             <td><para style="P5_CENTER_8">""" + (tools.ustr(nutritional.des_lec) if nutritional.des_lec else '') + """</para></td>
                                             
                                             <td><para style="P5_BOLD_LEFT">""" + tools.ustr('Tipo:') + """</para></td>
-                                            <td><para style="P5_CENTER_8">""" + ('Entera' if nutritional.des_tle == 'e' else 'Semidescremada' if nutritional.des_tle == 's' else 'Descremada' if nutritional.des_tle == 'd' else '') + """</para></td>
+                                            <td><para style="P5_CENTER_8">""" + ('Entera' if nutritional.des_tle == 'e' else 'Semidescremada' if nutritional.des_tle == 's' else 'Descremada' if nutritional.des_tle == 'd' else 'Deslactosada semidescremada' if nutritional.des_tle == 'm' else 'Deslactosada descremada' if nutritional.des_tle == 'n' else '') + """</para></td>
                                             
                                             <td><para style="P5_BOLD_LEFT">""" + tools.ustr('Azucar:') + """</para></td>
                                             <td><para style="P5_CENTER_15">""" + ('X' if nutritional.des_azu else '') + """</para></td>
@@ -1343,7 +1495,7 @@ class oemedical_nutritional_report(report_rml):
                                             <td><para style="P5_CENTER_15">""" + ('X' if nutritional.des_fre else '') + """</para></td>
                                             
                                             <td><para style="P5_BOLD_LEFT">""" + tools.ustr('Fruta picada:') + """</para></td>
-                                            <td><para style="P5_CENTER_8">""" + (tools.ustr(nutritional.des_frp) if nutritional.des_frp else '') + """</para></td>
+                                            <td><para style="P5_CENTER_15">""" + ('X' if nutritional.des_frp else '') + """</para></td>
                                             
                                             <td><para style="P5_BOLD_LEFT">""" + tools.ustr('Jugo puro:') + """</para></td>
                                             <td><para style="P5_CENTER_15">""" + ('X' if nutritional.des_jup else '') + """</para></td>
@@ -1832,7 +1984,7 @@ class oemedical_nutritional_report(report_rml):
             
             rml += """
                         <spacer length="0.0cm"/>
-                        <blockTable colWidths="90.0,30.0,25.0,30.0,25.0,140.0,30.0,25.0,30.0,25.0,25.0,25.0,30.0" rowHeights="12.0">
+                        <blockTable colWidths="90.0,30.0,25.0,30.0,25.0,140.0,30.0,25.0,30.0,25.0,25.0,30.0,25.0" rowHeights="12.0">
                             <tr>
                                 <td><para style="P5_BOLD_LEFT">""" + tools.ustr('¿Máximo peso alcanzado?') + """</para></td>
                                 <td><para style="P5_CENTER_8">""" + (str(nutritional.max_pak) if nutritional.max_pak else '') + """</para></td>
@@ -1842,14 +1994,14 @@ class oemedical_nutritional_report(report_rml):
                                 <td><para style="P5_CENTER_8">""" + _('lbs') + """</para></td>
                                 
                                 <td><para style="P5_BOLD_LEFT">""" + tools.ustr('¿Cúal es el peso mínimo en la vida adulta?') + """</para></td>
-                                <td><para style="P5_CENTER_15">""" + (str(nutritional.min_pak) if nutritional.min_pak else '') + """</para></td>
+                                <td><para style="P5_CENTER_8">""" + (str(nutritional.min_pak) if nutritional.min_pak else '') + """</para></td>
                                 <td><para style="P5_CENTER_8">""" + _('Kg') + """</para></td>
                                 
-                                <td><para style="P5_CENTER_15">""" + (str(nutritional.min_pal) if nutritional.min_pal else '') + """</para></td>
-                                <td><para style="P5_CENTER_8">""" + _('lbs') + """</para></td>
+                                <td><para style="P5_LEFT_8">""" + (str(nutritional.min_pal) if nutritional.min_pal else '') + """</para></td>
+                                <td><para style="P5_LEFT_8">""" + _('lbs') + """</para></td>
                                 
-                                <td><para style="P5_CENTER_8">""" + _('Hace') + """</para></td>
-                                <td><para style="P5_CENTER_15">""" + (str(nutritional.min_hac) if nutritional.min_hac else '') + """</para></td>
+                                <td><para style="P5_LEFT_8">""" + _('Hace') + """</para></td>
+                                <td><para style="P5_LEFT_8">""" + (str(nutritional.min_hac) if nutritional.min_hac else '') + """</para></td>
                                 <td></td>
                             </tr>
                         </blockTable>"""
@@ -1880,14 +2032,27 @@ class oemedical_nutritional_report(report_rml):
                                 <td><para style="P5_CENTER_8">""" + (str(nutritional.pea_pok) if nutritional.pea_pok else '') + """</para></td>
                                 <td><para style="P5_CENTER_8">""" + _('Kg -') + """</para></td>
                                 
-                                <td><para style="P5_CENTER_8">""" + (str(nutritional.pei_pek) if nutritional.pei_pek else '') + """</para></td>
+                                <td><para style="P5_CENTER_8">""" + (str(nutritional.pei_pek1) if nutritional.pei_pek1 else '') + """</para></td>
                                 <td><para style="P5_CENTER_8">""" + _('Kg =') + """</para></td>
                                 
-                                <td><para style="P5_CENTER_8">""" + (str(round(nutritional.pea_pok - nutritional.pei_pek,2)) if nutritional.pea_pok and nutritional.pei_pek else '') + """</para></td>
+                                <td><para style="P5_CENTER_8">""" + (str(round(nutritional.pea_pok - nutritional.pei_pek1,2)) if nutritional.pea_pok and nutritional.pei_pek1 else '') + """</para></td>
                                 <td><para style="P5_BOLD_LEFT">""" + tools.ustr('Kg,') + """</para></td>
                                 
-                                <td><para style="P5_CENTER_8">""" + (str(round((nutritional.pea_pol - nutritional.pei_pel) * 2.2, 2)) if nutritional.pea_pol and nutritional.pei_pel else '') + """</para></td>
+                                <td><para style="P5_CENTER_8">""" + (str(round((nutritional.pea_pok - nutritional.pei_pek1) * 2.2, 2)) if nutritional.pea_pol and nutritional.pei_pel else '') + """</para></td>
                                 <td><para style="P5_BOLD_LEFT">""" + tools.ustr('lbs.') + """</para></td>
+                                <td></td>
+                            </tr>
+                        </blockTable>"""
+                        
+            rml += """
+                        <spacer length="0.0cm"/>
+                        <blockTable colWidths="80.0,60.0,60.0,60.0,135.0,135.0" rowHeights="12.0">
+                            <tr>
+                                <td><para style="P5_BOLD_LEFT">""" + tools.ustr('% de grasa DEXA:') + """</para></td>
+                                <td><para style="P5_CENTER_8">""" + (str(nutritional.por_gde) if nutritional.por_gde else '') + """</para></td>
+                                <td><para style="P5_BOLD_LEFT">""" + tools.ustr('% de grasa BIO:') + """</para></td>                    
+                                <td><para style="P5_CENTER_8">""" + (str(nutritional.por_gbi) if nutritional.por_gbi else '') +  """</para></td>
+                                <td></td>
                                 <td></td>
                             </tr>
                         </blockTable>"""
@@ -1992,7 +2157,7 @@ class oemedical_nutritional_report(report_rml):
                             </tr>
                             
                             <tr>
-                                <td><para style="P5_BOLD_LEFT">""" + _('Cintura') + """</para></td>
+                                <td><para style="P5_BOLD_LEFT">""" + _('Perímetro abdominal') + """</para></td>
                                 <td><para style="P5_LEFT">""" + (str(nutritional.cin_pac) if nutritional.cin_pac else '' ) + (' cm.' if nutritional.cin_pac else '') + """</para></td>
                                 <td></td>
                                 
@@ -2025,18 +2190,21 @@ class oemedical_nutritional_report(report_rml):
             for xxx in range(rrT, trT):
                 rowHeights += ',12.0'
             
-            rml += """
+            rml += u"""
                         <spacer length="0.3cm"/>
-                        <blockTable colWidths="50.0,55.0,40.0,40.0,40.0,30.0,30.0,180.0,50.0" rowHeights=" """ + rowHeights + """ " style="Table6">
+                        <blockTable colWidths="50.0,55.0,38.0,38.0,38.0,38.0,30.0,42.0,42.0,110.0,45.0,50.0" rowHeights=" """ + rowHeights + u""" " style="Table6">
                             <tr>
-                                <td><para style="P6_BOLD_CENTER">Fecha</para></td>
-                                <td><para style="P6_BOLD_CENTER">Peso actual</para></td>
-                                <td><para style="P6_BOLD_CENTER">""" + tools.ustr("Pérdida de peso y % de grasa") + """</para></td>
-                                <td><para style="P6_BOLD_CENTER"></para></td>
-                                <td><para style="P6_BOLD_CENTER"></para></td>
-                                <td><para style="P6_BOLD_CENTER">Cintura (cm)</para></td>
-                                <td><para style="P6_BOLD_CENTER"></para></td>
-                                <td><para style="P6_BOLD_CENTER">Observaciones</para></td>
+                                <td><para style="P5_BOLD_CENTER">Fecha</para></td>
+                                <td><para style="P5_BOLD_CENTER">Peso actual</para></td>
+                                <td><para style="P5_BOLD_CENTER">""" + tools.ustr("Pérdida de peso y % de grasa") + u"""</para></td>
+                                <td><para style="P5_BOLD_CENTER"></para></td>
+                                <td><para style="P5_BOLD_CENTER"></para></td>
+                                <td><para style="P5_BOLD_CENTER">Perímetro Abdominal (cm)</para></td>
+                                <td><para style="P5_BOLD_CENTER"></para></td>
+                                <td><para style="P5_BOLD_CENTER">% Grasa DEXA</para></td>
+                                <td><para style="P5_BOLD_CENTER">% Grasa BIO</para></td>
+                                <td><para style="P5_BOLD_CENTER">Observaciones</para></td>
+                                <td><para style="P5_BOLD_CENTER">Tiempo Cirugía</para></td>
                                 <td><para style="P5_BOLD_LEFT">Exceso de peso perdido</para></td>
                             </tr>"""
             
@@ -2049,12 +2217,15 @@ class oemedical_nutritional_report(report_rml):
                 rml += """  <tr>
                                 <td><para style="P6_CENTER">""" + (fecha if fecha else '') + """</para></td>
                                 <td><para style="P6_CENTER">""" + ((str(data.pso_act) + 'Kg.') if data.pso_act else '') + """</para></td>
-                                <td><para style="P6_CENTER">""" + (str(data.pso_ant) if data.pso_ant else '') + """</para></td>
+                                <td><para style="P6_CENTER">""" + ((str(data.pso_per) + 'Kg.')if data.pso_per else '') + """</para></td>
                                 <td><para style="P6_CENTER">""" + ((str(data.pgr_act) + '%.') if data.pgr_act else '') + """</para></td>
                                 <td><para style="P6_CENTER">""" + ((str(data.pgr_ant) + '%.') if data.pgr_ant else '') + """</para></td>
                                 <td><para style="P6_CENTER">""" + (str(data.cin_act) if data.cin_act else '') + """</para></td>
-                                <td><para style="P6_CENTER">""" + (str(data.cin_ant) if data.cin_ant else '') + """</para></td>
-                                <td><para style="P6_LEFT">""" + (('IMC: ' + str(round(r2[data.id],2)) + tools.ustr('Kg/m².')) if r2[data.id] else '') + """</para></td>
+                                <td><para style="P6_CENTER">""" + (str(data.cin_act1) if data.cin_act1 else '') + """</para></td>
+                                <td><para style="P6_CENTER">""" + (str(data.por_gdec) if data.por_gdec else '') + """</para></td>
+                                <td><para style="P6_CENTER">""" + (str(data.por_gbic) if data.por_gbic else '') + """</para></td>
+                                <td><para style="P6_LEFT">""" + (('IMC: ' + str(round(r2[data.id],2)) + tools.ustr('Kg/m².')) if r2[data.id] else '') + ('   ') + ('Normopeso' if data.tip_obe == 'n' else 'Sobrepeso I' if data.tip_obe == 's' else 'Sobrepeso II' if data.tip_obe == 's2' else '') + """</para></td>
+                                <td><para style="P6_LEFT">""" + (str(data.tmp_cir) if data.tmp_cir else '') + """</para></td>
                                 <td><para style="P6_CENTER">""" + ((str(round(r1[data.id],2)) + '%.') if r1[data.id] else '') + """</para></td>
                             </tr>"""
             
@@ -2084,7 +2255,7 @@ class oemedical_nutritional_report(report_rml):
             cant = 0
             for control in nutritional.evolution_ids:
                 cant = cant + 1
-                fecha = control.date_control
+                fecha = control.date_nut
                 if fecha: fecha = fecha.split('-')[2] + '/' + fecha.split('-')[1] + '/' + fecha.split('-')[0]
             
                 rml += """  <condPageBreak height="100"/>"""
@@ -2121,7 +2292,7 @@ class oemedical_nutritional_report(report_rml):
                                     <td>
                                         <blockTable colWidths="50.0,300.0" rowHeights="" style="TableX">
                                             <tr>
-                                                <td><para style="P6_BOLD_CENTER">Desayuno: </para></td>
+                                                <td><para style="P6_BOLD_CENTER"> </para></td>
                                                 <td><para style="P5_COURIER_JUSTIFY">""" + (tools.ustr(control.car_die) if control.car_die else '') + """</para></td>
                                             </tr>
                                         </blockTable>
@@ -2154,7 +2325,7 @@ class oemedical_nutritional_report(report_rml):
                                         <blockTable colWidths="" rowHeights="">
                                             <tr>
                                                 <td><para style="P5_LEFT">""" + tools.ustr('Ejercicio:') + """</para></td>
-                                                <td><para style="P5_COURIER_JUSTIFY">""" + ('Si' if control.eje_dia and control.eje_dia == 's' else 'No') + """</para></td>
+                                                <td><para style="P5_COURIER_JUSTIFY">""" + (tools.ustr(control.eje_prc) if control.eje_prc else '') + """</para></td>
                                             </tr>
                                             <tr>
                                                 <td><para style="P5_LEFT">""" + tools.ustr('N° veces: ') + (str(control.eje_freq) if control.eje_freq and control.eje_freq != 0 else '') + """</para></td>
@@ -2208,7 +2379,7 @@ class oemedical_nutritional_report(report_rml):
                                     <td>
                                         <blockTable colWidths="50.0,300.0" rowHeights="" style="TableX">
                                             <tr>
-                                                <td><para style="P6_BOLD_CENTER">Desayuno: </para></td>
+                                                <td><para style="P6_BOLD_CENTER"> </para></td>
                                                 <td><para style="P6_LEFT"></para></td>
                                             </tr>
                                         </blockTable>
@@ -2260,6 +2431,9 @@ class oemedical_nutritional_report(report_rml):
         report_type = datas.get('report_type', 'pdf')
         create_doc = self.generators[report_type]
         pdf = create_doc(rml, title=self.title)
+        
+        for path in list_to_delete:
+            os.remove(path)
         
         return (pdf, report_type)
     
