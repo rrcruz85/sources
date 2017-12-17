@@ -649,7 +649,7 @@ class MedicalNutritional(osv.osv):
     
     _columns = {
         'nut_eval': fields.one2many('oemedical.nutritional', 'patient_id', string='Evaluación Nutricional'),
-        }
+    }
 
 MedicalNutritional()
 
