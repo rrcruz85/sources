@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <record id="account.check_journal" model="account.journal">
             <field name="name">Checks</field>
@@ -9,6 +9,7 @@
             <field name="check_payment" eval="True" />
         </record>
 
+         
         <record id="account.sales_journal" model="account.journal">
             <field name="name">Sales Journal</field>
         </record>
@@ -16,16 +17,18 @@
         <record id="account.bank_journal" model="account.journal">
             <field name="name">Bank Journal</field>
         </record>
-
-        <record id="point_of_sale.pos_config_main" model="pos.config">
-            <field name="journal_ids" eval="[(6, 0, [ref('account.cash_journal'), ref('account.bank_journal'), ref('account.check_journal'),ref('pos_credit_card_payment')])]" />
-        </record>
-
+                
         <record id="pos_credit_card_payment" model="account.journal">
             <field name="analytic_journal_id" ref="account.sit"/>
             <field name="default_debit_account_id" ref="account.cash"/>
             <field name="default_credit_account_id" ref="account.cash"/>
         </record>
+
+        <record id="point_of_sale.pos_config_main" model="pos.config">
+            <field name="journal_ids" eval="[(6, 0, [ref('account.cash_journal'), ref('account.bank_journal'), ref('account.check_journal'),ref('pos_credit_card_payment')])]" />
+        </record>
+
+       
 
     </data>
 </openerp>

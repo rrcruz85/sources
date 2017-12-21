@@ -2,6 +2,7 @@
 
 <openerp>
     <data>
+        <!-- 
         <template id="my_point_of_sale_report_invoice_document_inherit"  inherit_id="account.report_invoice_document">
             <xpath expr="//table[2]/tr[3]" position="replace">
                 <tr class="border-black">
@@ -23,5 +24,6 @@
                 </tr>
             </xpath>
         </template>
+        -->
     </data>
 </openerp>

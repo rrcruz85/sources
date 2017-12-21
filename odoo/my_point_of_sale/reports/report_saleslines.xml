@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <template id="my_point_of_sale_report_saleslines_inherit"  inherit_id="point_of_sale.report_saleslines">
+         <!-- 
+                  <template id="my_point_of_sale_report_saleslines_inherit"  inherit_id="point_of_sale.report_saleslines">
+          -->
 
             <!--
             <xpath expr="//table/thead/tr" position="inside">
@@ -39,6 +41,7 @@
             </xpath>
             -->
 
+            <!-- 
             <xpath expr="//table[2]/tr[3]" position="replace">
                 <tr class="border-black">
                     <td><strong>Total</strong></td>
@@ -55,7 +58,8 @@
                         <t t-esc="formatLang(o.amount_iva_compensation, currency_obj=res_company.currency_id)"/>
                     </td>
                 </tr>
-            </xpath>
+            </xpath>            
         </template>
+        -->
     </data>
 </openerp>
