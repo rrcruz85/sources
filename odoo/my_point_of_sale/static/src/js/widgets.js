@@ -910,6 +910,7 @@ openerp.my_point_of_sale = function(instance) {
             this.receipt_type = 'receipt';  // 'receipt' || 'invoice'
             this.temporary = attributes.temporary || false;
             this.order_id = 0;
+            this.apply_taxes = true;
             return this;
         },
 
@@ -944,12 +945,12 @@ openerp.my_point_of_sale = function(instance) {
                 orderlines: orderlines,
                 paymentlines: paymentlines,
                 subtotal: this.getSubtotal(),
-                total_with_tax: this.getTotalTaxIncluded(),
+                total_with_tax: this.apply_taxes ? this.getTotalTaxIncluded(): this.getTotalTaxExcluded(),
                 total_without_tax: this.getTotalTaxExcluded(),
-                total_tax: this.getTax(),
+                total_tax: this.apply_taxes ? this.getTax() : 0,
                 total_paid: this.getPaidTotal(),
                 total_discount: this.getDiscountTotal(),
-                tax_details: this.getTaxDetails(),
+                tax_details: this.apply_taxes ? this.getTaxDetails() : {},
                 change: this.getChange(),
                 name: this.getName(),
                 client: client ? client.name : null,
@@ -1165,6 +1166,8 @@ openerp.my_point_of_sale = function(instance) {
 
         //used to create a json of the ticket, to be sent to the printer
         export_for_printing: function () {
+
+            var order = this.pos.get('selectedOrder');
             return {
                 quantity: this.get_quantity(),
                 unit_name: this.get_unit().name,
@@ -1172,9 +1175,9 @@ openerp.my_point_of_sale = function(instance) {
                 discount: this.get_discount(),
                 product_name: this.get_product().display_name,
                 price_display: this.get_display_price(),
-                price_with_tax: this.get_price_with_tax(),
+                price_with_tax: order.apply_taxes ? this.get_price_with_tax(): this.get_price_without_tax(),
                 price_without_tax: this.get_price_without_tax(),
-                tax: this.get_tax(),
+                tax: order.apply_taxes ? this.get_tax(): 0,
                 product_description: this.get_product().description,
                 product_description_sale: this.get_product().description_sale,
             };
@@ -1189,6 +1192,47 @@ openerp.my_point_of_sale = function(instance) {
                 lot_id: this.get_selected_lot() != null ? this.get_selected_lot().id : null
             };
         },
+
+        get_all_prices: function(){
+            var base = round_pr(this.get_quantity() * this.get_unit_price() * (1.0 - (this.get_discount() / 100.0)), this.pos.currency.rounding);
+            var totalTax = base;
+            var totalNoTax = base;
+            var taxtotal = 0;
+
+            var product =  this.get_product();
+            var taxes_ids = product.taxes_id;
+            var taxes =  this.pos.taxes;
+            var taxdetail = {};
+            var product_taxes = [];
+
+            _(taxes_ids).each(function(el){
+                product_taxes.push(_.detect(taxes, function(t){
+                    return t.id === el;
+                }));
+            });
+
+            var all_taxes = _(this.compute_all(product_taxes, base)).flatten();
+
+            _(all_taxes).each(function(tax) {
+                if (tax.price_include) {
+                    totalNoTax -= tax.amount;
+                } else {
+                    totalTax += tax.amount;
+                }
+                taxtotal += tax.amount;
+                taxdetail[tax.id] = tax.amount;
+            });
+            totalNoTax = round_pr(totalNoTax, this.pos.currency.rounding);
+
+            var order = this.pos.get('selectedOrder');
+
+            return {
+                "priceWithTax": order.apply_taxes ? totalTax : totalNoTax,
+                "priceWithoutTax": totalNoTax,
+                "tax": order.apply_taxes ? taxtotal : 0,
+                "taxDetails": order.apply_taxes ? taxdetail : {},
+            };
+        }
     });
 
     instance.point_of_sale.PaymentScreenWidget.include({
@@ -1200,9 +1244,16 @@ openerp.my_point_of_sale = function(instance) {
 
             var totalOrder = 0.0;
             var totalTaxes = 0.0;
-            for (var i = 0; i < orderLines.models.length; i++) {
-                totalOrder += orderLines.models[i].get_all_prices().priceWithTax;
-                totalTaxes += orderLines.models[i].get_all_prices().tax;
+
+            if(currentOrder.apply_taxes == true) {
+                for (var i = 0; i < orderLines.models.length; i++) {
+                    totalOrder += orderLines.models[i].get_all_prices().priceWithTax;
+                    totalTaxes += orderLines.models[i].get_all_prices().tax;
+                }
+            }
+            else
+            {
+                totalOrder = currentOrder.getTotalTaxExcluded();
             }
 
             var subtotalTaxes = 0.0;
@@ -1267,6 +1318,7 @@ openerp.my_point_of_sale = function(instance) {
                 this.$('.payment-change').html(this.format_currency(change));
             }
             else {
+
                 if (descontar) {
                     discount = totalIvaComp;
                     totalOrderWithOutIvaComp  = totalOrder - totalIvaComp;
@@ -1276,6 +1328,7 @@ openerp.my_point_of_sale = function(instance) {
                     totalOrderWithOutIvaComp = totalOrder;
                 }
                 totalOrderWithOutIvaComp = round_pr(totalOrderWithOutIvaComp, currentOrder.pos.currency.rounding);
+
                 remaining = totalOrderWithOutIvaComp > paidTotal ? totalOrderWithOutIvaComp - paidTotal : 0;
                 change = paidTotal > totalOrderWithOutIvaComp ? paidTotal -  totalOrderWithOutIvaComp: 0;
                 this.$('.payment-taxes-compensation').html(this.format_currency(discount));
@@ -1297,10 +1350,15 @@ openerp.my_point_of_sale = function(instance) {
 
         is_paid: function(){
             var currentOrder = this.pos.get('selectedOrder');
+            var totalWithTaxes =  currentOrder.getTotalTaxIncluded();
+            if(currentOrder.apply_taxes == false)
+            {
+                totalWithTaxes = currentOrder.getTotalTaxExcluded();
+            }
             var discount =currentOrder.getPaidTotal() - currentOrder.getTotalTaxExcluded();
             var val1 = round_pr(currentOrder.getPaidTotal() + 0.000001, currentOrder.pos.currency.rounding);
-            var val2 = round_pr(currentOrder.getTotalTaxIncluded() - discount,  currentOrder.pos.currency.rounding);
-            return (currentOrder.getTotalTaxIncluded() < 0.000001 || (val1 >= val2));
+            var val2 = round_pr(totalWithTaxes - discount,  currentOrder.pos.currency.rounding);
+            return (totalWithTaxes < 0.000001 || (val1 >= val2));
         },
 
         init: function (parent, options) {
@@ -1453,6 +1511,12 @@ openerp.my_point_of_sale = function(instance) {
             var total = currentOrder.getTotalTaxIncluded();
             var paymentLines = currentOrder.get('paymentLines');
             var taxes = round_pr(currentOrder.getTotalTaxIncluded() - currentOrder.getTotalTaxExcluded(), currentOrder.pos.currency.rounding);
+            if(currentOrder.apply_taxes == false)
+            {
+               total =  currentOrder.getTotalTaxExcluded();
+               taxes = round_pr(0, currentOrder.pos.currency.rounding);
+            }
+
             var totalDiscount = taxes * this.pos.config.iva_compensation;
             var sum = 0.0;
             var sum_iva_comp = 0.0;
@@ -1484,6 +1548,7 @@ openerp.my_point_of_sale = function(instance) {
                 var val = subtotal - sum_iva_comp;
                 if (val < 0)
                     val = 0;
+
                 line.set_amount(val);
             }
             var list_container = this.el.querySelector('.payment-lines');
@@ -1899,6 +1964,16 @@ openerp.my_point_of_sale = function(instance) {
               }
 
               this.disable_rubberbanding();
+
+              //Adding Event
+              this.el.querySelector('#apply_taxes').addEventListener('click',function (event) {
+                  //Storing check status
+                  self.pos.get('selectedOrder').apply_taxes = self.el.querySelector('#apply_taxes').checked;
+                  if(self.el.querySelector('#apply_taxes').checked == false)
+                  {
+                      self.el.querySelector('.summary .total .subentry .value').textContent = self.format_currency(0);
+                  }
+              });
           }
     });
 
@@ -2187,6 +2262,82 @@ openerp.my_point_of_sale = function(instance) {
             this.bind_order_events();
         },
 
+        update_payment_summary: function() {
+            var self = this;
+            var screen = self.pos_widget.screen_selector.get_current_screen();
+            self.pos_widget.screen_selector.set_current_screen(screen,null,'refresh')
+        },
+
+        render_orderline: function(orderline){
+            var self = this;
+            var el_str  = openerp.qweb.render('Orderline',{widget:this, line:orderline});
+            var el_node = document.createElement('div');
+                el_node.innerHTML = _.str.trim(el_str);
+                el_node = el_node.childNodes[0];
+                el_node.orderline = orderline;
+                el_node.addEventListener('click',this.line_click_handler);
+
+            orderline.node = el_node;
+
+            self.el.querySelector('#apply_taxes').addEventListener('click',function (event) {
+
+                var order = self.pos.get('selectedOrder');
+                //Storing check status
+                order.apply_taxes = self.el.querySelector('#apply_taxes').checked;
+                self.update_summary();
+                self.update_payment_summary();
+            });
+            return el_node;
+        },
+
+        renderElement: function(scrollbottom){
+            this.pos_widget.numpad.state.reset();
+
+            var order  = this.pos.get('selectedOrder');
+            var orderlines = order.get('orderLines').models;
+
+            var el_str  = openerp.qweb.render('OrderWidget',{widget:this, order:order, orderlines:orderlines});
+
+            var el_node = document.createElement('div');
+                el_node.innerHTML = _.str.trim(el_str);
+                el_node = el_node.childNodes[0];
+
+
+            var list_container = el_node.querySelector('.orderlines');
+            for(var i = 0, len = orderlines.length; i < len; i++){
+                var orderline = this.render_orderline(orderlines[i]);
+                list_container.appendChild(orderline);
+            }
+
+            if(this.el && this.el.parentNode){
+                this.el.parentNode.replaceChild(el_node,this.el);
+            }
+            this.el = el_node;
+
+            //Updating check
+            $('#apply_taxes').attr('checked',this.pos.get('selectedOrder').apply_taxes);
+
+            this.update_summary();
+
+            if(scrollbottom){
+                this.el.querySelector('.order-scroller').scrollTop = 100 * orderlines.length;
+            }
+        },
+
+        update_summary: function(){
+            var order = this.pos.get('selectedOrder');
+            var total     = order ? order.getTotalTaxIncluded() : 0;
+            var taxes     = order ? total - order.getTotalTaxExcluded() : 0;
+
+            if(this.el.querySelector('#apply_taxes').checked == false)
+            {
+                total = order.getTotalTaxExcluded();
+                taxes = 0;
+            }
+            this.el.querySelector('.summary .total > .value').textContent = this.format_currency(total);
+            this.el.querySelector('.summary .total .subentry .value').textContent = this.format_currency(taxes);
+        },
+
     });
 
     instance.point_of_sale.Paymentline = instance.point_of_sale.Paymentline.extend({
@@ -2387,6 +2538,7 @@ openerp.my_point_of_sale = function(instance) {
                     console.warn('TODO should not get there...?');
                     return;
                 }
+
                 self.pos.get('selectedOrder').addPaymentline(self.cashregister);
                 self.pos_widget.screen_selector.set_current_screen('payment');
 

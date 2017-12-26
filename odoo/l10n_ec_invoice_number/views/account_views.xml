@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+    
+        <record id="view_account_invoiceec_number_form2" model="ir.ui.view">
+	      <field name="name">account.invoice.ec.number.form2</field>
+	      <field name="model">account.invoice</field>
+	      <field name="inherit_id" ref="l10n_ec_invoice_sequence.view_account_invoiceec_number_form"/>
+	      <field name="arch" type="xml">	        
+			<field name="number" position="replace"/>			   
+	      </field>
+	    </record>
+
+	    <record id="view_account_invoice_number_form2" model="ir.ui.view">
+	      <field name="name">account.invoice.number.form2</field>
+	      <field name="model">account.invoice</field>
+	      <field name="inherit_id" ref="l10n_ec_invoice_sequence.view_account_invoice_number_form"/>
+	      <field name="arch" type="xml">
+			<field name="number" position="replace"/>			  
+	      </field>
+	    </record>
+
+    </data>
+</openerp>

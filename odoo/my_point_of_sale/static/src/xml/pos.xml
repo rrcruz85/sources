@@ -135,21 +135,27 @@
         </t>
     </t>
 
+    <t t-extend="OrderWidget">
+        <t t-jquery=".subentry" t-operation="prepend">
+            <div>Include Taxes?: <input id="apply_taxes" checked="checked" type="checkbox"/></div>
+        </t>
+    </t>
+
     <t t-extend="Orderline">
-            <t t-jquery=".price:first" t-operation="after">
-                <div id="div_lot">
-                    <span class="label">
-                        <t t-esc="line.get_selected_lot_name()"/>
-                    </span>
-                </div>
-    		</t>
+        <t t-jquery=".price:first" t-operation="after">
+            <div id="div_lot">
+                <span class="label">
+                    <t t-esc="line.get_selected_lot_name()"/>
+                </span>
+            </div>
+        </t>
     </t>
 
     <t t-name="LotLine">
         <tr class='client-line' t-att-data-id='lot.id'>
-                <td><t t-esc='lot.name' /></td>
-                <td><t t-esc='lot.qty' /></td>
-            </tr>
+            <td><t t-esc='lot.name' /></td>
+            <td><t t-esc='lot.qty' /></td>
+        </tr>
     </t>
 
     <t t-name="ProductLotListScreenWidget">
