@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-
 from openerp.osv import fields, osv
-
+from openerp.tools.translate import _
 
 class PosConfig(osv.osv):
     _inherit = 'pos.config'
@@ -13,13 +12,31 @@ class PosConfig(osv.osv):
 
         'iva_compensation': fields.float(
             'IVA Compensation (%)', digits=(16, 2),
-            help="It's the value of the IVA compensation that will be apply to the products..."
+            help="It's the value of the IVA compensation that will be apply to the products"
+        ),
+
+        'card_comition': fields.float(
+            'Card Comition (%)', digits=(16, 2),
+            help="It's the value of the charged comition for the use of card payment"
         ),
 
         'journal_ids' : fields.many2many('account.journal', 'pos_config_journal_rel',
                      'pos_config_id', 'journal_id', 'Available Payment Methods',
                      domain="[('journal_user', '=', True ), ('type', 'in', ['bank', 'cash','card', 'check'])]",),
     }
+
+    def _check_iva_comp_value(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return (obj.iva_compensation >= 0.0 and obj.iva_compensation <= 100)
+
+    def _check_card_comition(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return (obj.card_comition >= 0.0 and obj.card_comition <= 100)
+
+    _constraints = [
+        (_check_iva_comp_value, _('Error: Invalid value for the iva_compensation number. This value must be between 0 and 100.'), ['iva_compensation']),
+        (_check_card_comition, _('Error: Invalid value for the card comition. This value must be between 0 and 100.'),['card_comition']),
+    ]
 
 class pos_session(osv.osv):
     _inherit = 'pos.session'

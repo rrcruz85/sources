@@ -1531,6 +1531,11 @@ openerp.my_point_of_sale = function(instance) {
                 subtotal = 0;
             if(line.get_type() == 'card')
             {
+                console.log("Vals:");
+                console.log(currentOrder.getTotalTaxExcluded());
+                console.log(subtotal);
+                console.log(sum_iva_comp);
+
                 if (taxes  > 0) {
                      var taxesPart = round_pr((subtotal * totalDiscount)/total, currentOrder.pos.currency.rounding);
                      var val = round_pr(subtotal - taxesPart, currentOrder.pos.currency.rounding);

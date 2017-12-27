@@ -19,6 +19,8 @@
                             <group>
                                 <field name="iva_compensation"/>
 								<newline/>
+                                <field name="card_comition"/>
+								<newline/>
 								<field name="pos_ticket_report"/>
                             </group>
                             <group></group>
