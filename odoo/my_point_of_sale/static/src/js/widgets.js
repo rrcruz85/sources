@@ -1275,8 +1275,6 @@ openerp.my_point_of_sale = function(instance) {
 
         update_payment_summary: function(new_val) {
 
-            console.log("new_val:");
-            console.log(new_val);
             var currentOrder = this.pos.get('selectedOrder');
             var paymentLines = currentOrder.get('paymentLines');
 
@@ -1324,11 +1322,6 @@ openerp.my_point_of_sale = function(instance) {
                     }
                 }
             }
-
-            console.log("Vals Calculated:");
-            console.log(totalOrder);
-            console.log(totalTaxes);
-            console.log(currentOrder.getPaidTotal());
 
             var totalDiscount = subtotal_taxes_by_card * currentOrder.pos.config.iva_compensation / 100;
             var paidTotal = currentOrder.getPaidTotal();
