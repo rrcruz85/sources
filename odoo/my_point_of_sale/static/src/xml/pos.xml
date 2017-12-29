@@ -10,6 +10,13 @@
                 <span class="right-block payment-total-without-taxes"></span>
             </div>
 
+            <div id="card_comition" class="infoline">
+                <span class='left-block'>
+                    Card Comition:
+                </span>
+                <span class="right-block payment-card-comition"></span>
+            </div>
+
             <div id="taxes-compensation" class="infoline">
                 <span class='left-block'>
                     IVA Compensation:
@@ -19,9 +26,9 @@
 
             <div id="iva-zero" class="infoline">
                 <span class='left-block'>
-                    IVA 0:
+                    Taxes:
                 </span>
-                <span class="right-block payment-iva-zero"></span>
+                <span class="right-block payment-taxes"></span>
             </div>
         </t>
     </t>
@@ -99,6 +106,12 @@
         </t>
 
         <t t-jquery="table tr:eq(1)" t-operation="after">
+            <tr t-if="order.get_config_card_comition() &gt; 0" id="card-comition-tr">
+                <td>Card Comition:</td>
+                <td class="pos-right-align">
+                    <t t-esc="widget.format_currency(order.getTotalCardComition())"/>
+                </td>
+            </tr>
             <tr t-if="order.get_config_iva_compensation() &gt; 0" id="taxes-compensation-tr">
                 <td>IVA Compensation:</td>
                 <td class="pos-right-align">
@@ -106,9 +119,9 @@
                 </td>
             </tr>
             <tr id="iva-zero-tr">
-                <td>IVA 0:</td>
+                <td>Taxes:</td>
                 <td class="pos-right-align">
-                    <t t-esc="widget.format_currency(order.getIvaZero())"/>
+                    <t t-esc="widget.format_currency(order.getTaxes())"/>
                 </td>
             </tr>
         </t>

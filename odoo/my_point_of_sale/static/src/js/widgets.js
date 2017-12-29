@@ -918,6 +918,10 @@ openerp.my_point_of_sale = function(instance) {
             return this.pos.config.iva_compensation;
         },
 
+        get_config_card_comition: function(){
+            return this.pos.config.card_comition;
+        },
+
         addPaymentline: function(cashregister) {
             var paymentLines = this.get('paymentLines');
             var newPaymentline = new module.Paymentline({}, {cashregister: cashregister, pos: this.pos});
@@ -1028,6 +1032,29 @@ openerp.my_point_of_sale = function(instance) {
                 return sum + paymentLine.get_iva_compensation();
             }), 0), this.pos.currency.rounding);
             return val;
+        },
+
+        getTotalCardComition: function() {
+            var objs = this.get('paymentLines').models;
+            var total = 0;
+            for(var i = 0; i < objs.length; i++)
+            {
+                if(objs[i].get_type() == 'card')
+                {
+                   total += (objs[i].get_amount() - objs[i].get_tax()) * this.pos.config.card_comition / 100;
+                }
+            }
+            return round_pr(total, this.pos.currency.rounding);
+        },
+
+        getTaxes: function() {
+            var objs = this.get('paymentLines').models;
+            var total = 0;
+            for(var i = 0; i < objs.length; i++)
+            {
+                total += objs[i].get_tax();
+            }
+            return round_pr(total, this.pos.currency.rounding);
         },
 
         getDueLeft: function() {
@@ -1294,7 +1321,6 @@ openerp.my_point_of_sale = function(instance) {
                         totalOrder += paymentLines.models[i].get_amount();
                         subtotal_by_card += paymentLines.models[i].get_amount();
                     }
-
                     totalTaxes += paymentLines.models[i].get_tax();
                     subtotal_taxes_by_card += paymentLines.models[i].get_tax();
                 }
@@ -1324,18 +1350,19 @@ openerp.my_point_of_sale = function(instance) {
             }
 
             var totalDiscount = subtotal_taxes_by_card * currentOrder.pos.config.iva_compensation / 100;
+            var card_comition_value = currentOrder.getTotalTaxExcluded() * currentOrder.pos.config.card_comition / 100
             var paidTotal = currentOrder.getPaidTotal();
             var totalOrderWithOutIvaComp = round_pr(totalOrder - totalDiscount,currentOrder.pos.currency.rounding);
             var remaining = totalOrderWithOutIvaComp > paidTotal ? totalOrderWithOutIvaComp - paidTotal : 0;
             var change = paidTotal > totalOrderWithOutIvaComp ? paidTotal -  totalOrderWithOutIvaComp: 0;
-            this.$('.payment-total-without-taxes').html(this.format_currency(totalOrder - totalTaxes));
+            this.$('.payment-total-without-taxes').html(this.format_currency(currentOrder.getTotalTaxExcluded()));
+            this.$('.payment-card-comition').html(this.format_currency(card_comition_value));
             this.$('.payment-taxes-compensation').html(this.format_currency(totalDiscount));
+            this.$('.payment-taxes').html(this.format_currency(totalTaxes - totalDiscount));
             this.$('.payment-due-total').html(this.format_currency(totalOrderWithOutIvaComp));
             this.$('.payment-paid-total').html(this.format_currency(paidTotal));
             this.$('.payment-remaining').html(this.format_currency(remaining));
             this.$('.payment-change').html(this.format_currency(change));
-            var ivazero = currentOrder.getIvaZero();
-            this.$('.payment-iva-zero').html(this.format_currency(ivazero));
 
             if(this.pos_widget.action_bar){
                 var activate = (paidTotal < totalOrderWithOutIvaComp);
@@ -2297,7 +2324,23 @@ openerp.my_point_of_sale = function(instance) {
         update_payment_summary: function() {
             var self = this;
             var screen = self.pos_widget.screen_selector.get_current_screen();
-            self.pos_widget.screen_selector.set_current_screen(screen,null,'refresh')
+            self.pos_widget.screen_selector.set_current_screen(screen,null,'refresh');
+            var order = self.pos.get('selectedOrder');
+            if(order.selected_paymentline != undefined)
+            {
+                if(!order.apply_taxes) {
+                    $('.payment-due-total').html(this.format_currency(order.getTotalTaxExcluded()));
+                }
+                else
+                {
+                    $('.payment-due-total').html(this.format_currency(order.getTotalTaxIncluded()));
+                    if(order.getTotalTaxIncluded() > order.selected_paymentline.amount)
+                    {
+                      this.pos_widget.action_bar.set_button_disabled('validation', true);
+                      this.pos_widget.action_bar.set_button_disabled('invoice', true);
+                    }
+                }
+            }
         },
 
         render_orderline: function(orderline){
@@ -2603,6 +2646,11 @@ openerp.my_point_of_sale = function(instance) {
                 //Ocultando campo IVA compensation
                 if (self.pos.config.iva_compensation <= 0) {
                     $("#taxes-compensation").addClass("oe_hidden");
+                }
+
+                //Ocultando campo card comition
+                if ((line != undefined && line.get_type() != 'card') || self.pos.config.card_comition == 0) {
+                    $("#card_comition").addClass("oe_hidden");
                 }
             });
         },
