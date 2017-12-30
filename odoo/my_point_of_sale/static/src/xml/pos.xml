@@ -106,8 +106,8 @@
         </t>
 
         <t t-jquery="table tr:eq(1)" t-operation="after">
-            <tr t-if="order.get_config_card_comition() &gt; 0" id="card-comition-tr">
-                <td>Card Comition:</td>
+            <tr t-if="order.getTotalCardComition() &gt; 0" id="card-comition-tr">
+                <td>Card Comition: <t t-esc="order.get_config_card_comition()"/>%</td>
                 <td class="pos-right-align">
                     <t t-esc="widget.format_currency(order.getTotalCardComition())"/>
                 </td>
@@ -116,12 +116,6 @@
                 <td>IVA Compensation:</td>
                 <td class="pos-right-align">
                     <t t-esc="widget.format_currency(order.getTaxesCompensation())"/>
-                </td>
-            </tr>
-            <tr id="iva-zero-tr">
-                <td>Taxes:</td>
-                <td class="pos-right-align">
-                    <t t-esc="widget.format_currency(order.getTaxes())"/>
                 </td>
             </tr>
         </t>
@@ -135,6 +129,10 @@
             </tr>
         </t>
 
+        <t t-jquery=".subentry" t-operation="replace">
+            <div class='subentry' t-if="order.get_taxes() &gt; 0">Taxes2: <span class="value">0.00€</span></div>
+        </t>
+
         <t t-jquery=".pos-right-align">this.attr('style', 'font-size: 20px;');</t>
 
         <t t-jquery="table:last" t-operation="after">
@@ -146,6 +144,7 @@
                 </span>
             </div>
         </t>
+
     </t>
 
     <t t-extend="OrderWidget">
