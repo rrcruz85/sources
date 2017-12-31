@@ -31,5 +31,18 @@ class AccountBankStatementLine(osv.osv):
         'lot_number': fields.char('Lot Number', size=6),
         'reference': fields.char('Reference', size=6),
         'iva_compensation': fields.float('IVA Compensation', digits=(16, 2)),
+        'card_comition': fields.float('Card Comition', digits=(16, 2)),
+        'taxes': fields.float('Taxes', digits=(16, 2)),
+        'line_tax_ids': fields.one2many('account.bank.statement.line.tax', 'line_id', 'Tax Lines'),
     }
 
+class AccountBankStatementLineTax(osv.osv):
+    _name = 'account.bank.statement.line.tax'
+
+    _columns = {
+        'line_id': fields.many2one('account.bank.statement.line', 'Payment Line'),
+        'tax_id': fields.many2one('account.tax', 'Tax'),
+        'product_id': fields.many2one('product.product', 'Product'),
+        'tax': fields.float('Tax Amount'),
+        'card_comition': fields.float('Card Comition'),
+    }

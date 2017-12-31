@@ -2,9 +2,10 @@
 
 <openerp>
     <data>
-        <!-- 
+
         <template id="my_point_of_sale_report_receipt_inherit"  inherit_id="point_of_sale.report_receipt">
-            <xpath expr="//table[2]/tr[2]" position="replace">
+
+            <xpath expr="//div/div/div/table/tr[2]" position="replace">
                 <tr>
                     <td><strong>Total</strong></td>
                     <td class="text-right">
@@ -13,16 +14,21 @@
                 </tr>
             </xpath>
 
-            <xpath expr="//table[2]/tr[1]" position="after">
-                <tr class="border-black">
+            <xpath expr="//div/div/div/table/tr[1]" position="after">
+                <tr class="border-black" t-if="o.amount_card_comition &gt; 0">
+                    <td><strong>Card Comition</strong></td>
+                    <td class="text-right">
+                        <strong t-esc="formatLang(o.amount_card_comition, currency_obj=res_company.currency_id)"/>
+                    </td>
+                </tr>
+                <tr class="border-black" t-if="o.amount_iva_compensation &gt; 0">
                     <td><strong>IVA Compensation</strong></td>
                     <td class="text-right">
                         <strong t-esc="formatLang(o.amount_iva_compensation, currency_obj=res_company.currency_id)"/>
                     </td>
                 </tr>
             </xpath>
-        </template>
-        -->
-    </data>
 
+        </template>
+    </data>
 </openerp>

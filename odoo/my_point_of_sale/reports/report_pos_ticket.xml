@@ -63,14 +63,20 @@
                                             <td>Subtotal:</td><td></td>
                                             <td class="text-right"> <span t-field="o.amount_untaxed"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></td>
                                         </tr>
+                                        <tr t-if="o.amount_card_comition &gt; 0">
+                                            <td>Card Comition:</td><td></td>
+                                            <td class="text-right"> <span t-field="o.amount_card_comition"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></td>
+                                        </tr>
                                         <tr t-if="o.session_id.config_id.iva_compensation &gt; 0">
                                             <td>Iva Compensation:</td><td></td>
                                             <td class="text-right"> <span t-field="o.amount_iva_compensation"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></td>
                                         </tr>
+                                        <!--
                                         <tr>
                                             <td>Iva 0:</td><td></td>
                                             <td class="text-right"> 0.00 <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></td>
                                         </tr>
+                                        -->
                                         <tr>
                                             <td>Taxes:</td><td></td>
                                             <td class="text-right"> <span t-field="o.amount_tax"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></td>

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-         <!-- 
-                  <template id="my_point_of_sale_report_saleslines_inherit"  inherit_id="point_of_sale.report_saleslines">
-          -->
 
-            <!--
+        <template id="my_point_of_sale_report_saleslines_inherit"  inherit_id="point_of_sale.report_saleslines">
+
             <xpath expr="//table/thead/tr" position="inside">
                 <th class="text-right"><strong>IVA compensation</strong></th>
             </xpath>
@@ -39,10 +37,8 @@
                     </td>
                </tr>
             </xpath>
-            -->
 
-            <!-- 
-            <xpath expr="//table[2]/tr[3]" position="replace">
+            <xpath expr="//div/div/div/table/tr[3]" position="replace">
                 <tr class="border-black">
                     <td><strong>Total</strong></td>
                     <td class="text-right">
@@ -51,8 +47,14 @@
                 </tr>
             </xpath>
 
-            <xpath expr="//table[2]/tr[2]" position="after">
-                <tr>
+            <xpath expr="//div/div/div/table/tr[2]" position="after">
+                <tr t-if="o.amount_card_comition &gt; 0">
+                    <td>Card Comition</td>
+                    <td class="text-right">
+                        <t t-esc="formatLang(o.amount_card_comition, currency_obj=res_company.currency_id)"/>
+                    </td>
+                </tr>
+                <tr t-if="o.amount_iva_compensation &gt; 0">
                     <td>IVA Compensation</td>
                     <td class="text-right">
                         <t t-esc="formatLang(o.amount_iva_compensation, currency_obj=res_company.currency_id)"/>
@@ -60,6 +62,6 @@
                 </tr>
             </xpath>            
         </template>
-        -->
+
     </data>
 </openerp>

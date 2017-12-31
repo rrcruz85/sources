@@ -1017,7 +1017,8 @@ openerp.my_point_of_sale = function(instance) {
                 partner_id: this.get_client() ? this.get_client().id : false,
                 user_id: this.pos.cashier ? this.pos.cashier.id : this.pos.user.id,
                 uid: this.uid,
-                sequence_number: this.sequence_number
+                sequence_number: this.sequence_number,
+                apply_taxes : this.apply_taxes
             };
             return obj;
         },
@@ -1071,6 +1072,7 @@ openerp.my_point_of_sale = function(instance) {
         },
 
         getTotalTaxIncluded: function() {
+            //var totalPaid = this.getTotalTaxExcluded() + this.getTotalCardComition() + this.getTaxes();
             var totalPaid = this.getTotalTaxExcluded() + this.getTax();
             return totalPaid;
         },
@@ -1659,7 +1661,7 @@ openerp.my_point_of_sale = function(instance) {
                 var tmp_taxes = slines[i].get_applicable_taxes();
                 for(var j = 0; j < tmp_taxes.length; j++)
                 {
-                    line.set_taxes({id: tmp_taxes[j].id, tax: base * tmp_taxes[j].amount});
+                    line.set_taxes({id: tmp_taxes[j].id, tax: base * tmp_taxes[j].amount, product_id:slines[i].get_product().id, card_comition: line.get_card_comition()});
                 }
             }
 
@@ -1669,7 +1671,7 @@ openerp.my_point_of_sale = function(instance) {
             if (this.numpad_state) {
                 this.numpad_state.reset();
             }
-            
+
             if (line.get_type() == 'card' && self.pos.config.card_comition > 0) {
                 $("#card_comition").removeClass("oe_hidden");
             }
@@ -2528,6 +2530,13 @@ openerp.my_point_of_sale = function(instance) {
         },
 
         export_as_JSON: function () {
+            var tax_lines = [];
+            var ltaxes = this.get_taxes();
+            for(var i =0 ; i < ltaxes.length; i++)
+            {
+              tax_lines.push([0,0,{tax_id: ltaxes[i].id, product_id: ltaxes[i].product_id,tax: ltaxes[i].tax, card_comition: ltaxes[i].card_comition}])
+            }
+
             var obj =  {
                 name: instance.web.datetime_to_str(new Date()),
                 statement_id: this.cashregister.id,
@@ -2542,7 +2551,10 @@ openerp.my_point_of_sale = function(instance) {
                 approval_number : this.approval_number,
                 lot_number : this.lot_number,
                 reference : this.reference,
-                iva_compensation : this.get_iva_compensation()
+                iva_compensation : this.get_iva_compensation(),
+                card_comition : this.get_card_comition(),
+                taxes : this.get_tax(),
+                line_tax_ids: tax_lines
             };
             return obj;
         },
