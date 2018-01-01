@@ -2,6 +2,7 @@
 import logging
 from openerp.osv import osv
 from l10n_ec_einvoice import utils
+import datetime
 
 from openerp import (
     models,
@@ -42,7 +43,7 @@ class pos_order(osv.osv):
                 'comment': order.note or '',
                 'currency_id': order.pricelist_id.currency_id.id,  # considering partner's sale pricelist's currency
                 'from_pos':True,
-                'number':''
+                'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d')
             }
             inv.update(inv_ref.onchange_partner_id(cr, uid, [], 'out_invoice', order.partner_id.id)['value'])
 
@@ -53,7 +54,6 @@ class pos_order(osv.osv):
             if order.sale_journal and order.sale_journal.auth_id:
                 inv['auth_inv_id'] = order.sale_journal.auth_id.id
                 inv_number = self.pool.get('ir.sequence').get_id(cr, uid, order.sale_journal.auth_id.sequence_id.id)
-                #inv['supplier_invoice_number'] = inv_number                
                 inv_number = str(inv_number).zfill(order.sale_journal.auth_id.sequence_id.padding)
                 inv['supplier_invoice_number'] = '{0}{1}{2}'.format(order.sale_journal.auth_id.serie_entidad, order.sale_journal.auth_id.serie_emision, inv_number)
                 
@@ -79,7 +79,10 @@ class pos_order(osv.osv):
                 inv_line['price_unit'] = line.price_unit
                 inv_line['discount'] = line.discount
                 inv_line['name'] = inv_name
-                inv_line['invoice_line_tax_id'] = [(6, 0, inv_line['invoice_line_tax_id'])]
+                if order.apply_taxes or order.amount_card_comition:
+                    inv_line['invoice_line_tax_id'] = [(6, 0, inv_line['invoice_line_tax_id'])]
+                else:
+                    inv_line['invoice_line_tax_id'] = []                
                 inv_line_ref.create(cr, uid, inv_line, context=context)
             inv_ref.button_reset_taxes(cr, uid, [inv_id], context=context)
             self.signal_workflow(cr, uid, [order.id], 'invoice')

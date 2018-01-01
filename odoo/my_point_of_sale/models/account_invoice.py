@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models
+from openerp import models,api
 from openerp.osv import fields, osv
 
 
@@ -25,9 +25,26 @@ class AccountInvoice(osv.osv):
                res[i.id] = i.amount_total - i.pos_order_ids[0].amount_iva_compensation
         return res
 
+    @api.one
+    @api.depends('invoice_line.price_subtotal', 'tax_line.amount')
+    def _compute_amount(self):
+        base_untaxed = sum(line.price_subtotal for line in self.invoice_line)
+        self.amount_untaxed = base_untaxed
+        if self.pos_order_ids:
+            for order in self.pos_order_ids:
+                if order.amount_card_comition:
+                    self.amount_tax = order.amount_tax
+                    self.amount_total = order.amount_total
+                else:
+                    self.amount_tax = sum(line.amount for line in self.tax_line)
+                    self.amount_total = base_untaxed + self.amount_tax
+                break
+        else:
+            self.amount_tax = sum(line.amount for line in self.tax_line)
+            self.amount_total = base_untaxed + self.amount_tax
+
     _columns = {
         'pos_order_ids': fields.one2many('pos.order', 'invoice_id', string='Pos Orders'),
         'iva_compensation': fields.function(_get_iva_compensation, type='float', string='IVA Compensation'),
-        'amount_total_with_iva_compensation': fields.function(_get_amount_total_with_iva_compensation, type='float', string='Total'
-        ),
+        'amount_total_with_iva_compensation': fields.function(_get_amount_total_with_iva_compensation, type='float', string='Total'),
     }

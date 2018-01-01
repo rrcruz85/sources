@@ -2,7 +2,7 @@
 
 import logging
 import time
-from datetime import datetime
+import datetime
 from openerp import tools
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
@@ -177,7 +177,7 @@ class PosOrder(osv.osv):
         order = self.browse(cr, uid, order_id, context=context)
         date = data.get('payment_date', time.strftime('%Y-%m-%d'))
         if len(date) > 10:
-            timestamp = datetime.strptime(date, tools.DEFAULT_SERVER_DATETIME_FORMAT)
+            timestamp = datetime.datetime.strptime(date, tools.DEFAULT_SERVER_DATETIME_FORMAT)
             ts = fields.datetime.context_timestamp(cr, uid, timestamp, context)
             date = ts.strftime(tools.DEFAULT_SERVER_DATE_FORMAT)
         args = {
@@ -350,6 +350,88 @@ class PosOrder(osv.osv):
                 move_obj.force_assign(cr, uid, move_list, context=context)
                 move_obj.action_done(cr, uid, move_list, context=context)
         return True
+
+    def action_invoice(self, cr, uid, ids, context=None):
+        inv_ref = self.pool.get('account.invoice')
+        inv_line_ref = self.pool.get('account.invoice.line')
+        product_obj = self.pool.get('product.product')
+        inv_ids = []
+
+        for order in self.pool.get('pos.order').browse(cr, uid, ids, context=context):
+            if order.invoice_id:
+                inv_ids.append(order.invoice_id.id)
+                continue
+
+            if not order.partner_id:
+                raise osv.except_osv(_('Error!'), _('Please provide a partner for the sale.'))
+
+            acc = order.partner_id.property_account_receivable.id
+            inv = {
+                'name': order.name,
+                'origin': order.name,
+                'account_id': acc,
+                'journal_id': order.sale_journal.id or None,
+                'type': 'out_invoice',
+                'reference': order.name,
+                'partner_id': order.partner_id.id,
+                'comment': order.note or '',
+                'currency_id': order.pricelist_id.currency_id.id,
+                'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d')
+            }
+            inv.update(inv_ref.onchange_partner_id(cr, uid, [], 'out_invoice', order.partner_id.id)['value'])
+            # FORWARDPORT TO SAAS-6 ONLY!
+            inv.update({'fiscal_position': False})
+            if not inv.get('account_id', None):
+                inv['account_id'] = acc
+            inv_id = inv_ref.create(cr, uid, inv, context=context)
+
+            self.write(cr, uid, [order.id], {'invoice_id': inv_id, 'state': 'invoiced'}, context=context)
+            inv_ids.append(inv_id)
+            for line in order.lines:
+                inv_line = {
+                    'invoice_id': inv_id,
+                    'product_id': line.product_id.id,
+                    'quantity': line.qty,
+                }
+                inv_name = product_obj.name_get(cr, uid, [line.product_id.id], context=context)[0][1]
+                inv_line.update(inv_line_ref.product_id_change(cr, uid, [],
+                                                               line.product_id.id,
+                                                               line.product_id.uom_id.id,
+                                                               line.qty, partner_id = order.partner_id.id)['value'])
+                if not inv_line.get('account_analytic_id', False):
+                    inv_line['account_analytic_id'] = \
+                        self._prepare_analytic_account(cr, uid, line,
+                                                       context=context)
+                inv_line['price_unit'] = line.price_unit
+                inv_line['discount'] = line.discount
+                inv_line['name'] = inv_name
+                if order.apply_taxes or order.amount_card_comition:
+                    inv_line['invoice_line_tax_id'] = [(6, 0, inv_line['invoice_line_tax_id'])]
+                else:
+                    inv_line['invoice_line_tax_id'] = []
+                inv_line_ref.create(cr, uid, inv_line, context=context)
+
+            inv_ref.button_reset_taxes(cr, uid, [inv_id], context=context)
+            self.signal_workflow(cr, uid, [order.id], 'invoice')
+            inv_ref.signal_workflow(cr, uid, [inv_id], 'validate')
+
+        if not inv_ids: return {}
+
+        mod_obj = self.pool.get('ir.model.data')
+        res = mod_obj.get_object_reference(cr, uid, 'account', 'invoice_form')
+        res_id = res and res[1] or False
+        return {
+            'name': _('Customer Invoice'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [res_id],
+            'res_model': 'account.invoice',
+            'context': "{'type':'out_invoice'}",
+            'type': 'ir.actions.act_window',
+            'nodestroy': True,
+            'target': 'current',
+            'res_id': inv_ids and inv_ids[0] or False,
+        }
 
 
 class PosOrderLine(osv.osv):
