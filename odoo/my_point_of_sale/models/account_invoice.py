@@ -32,12 +32,8 @@ class AccountInvoice(osv.osv):
         self.amount_untaxed = base_untaxed
         if self.pos_order_ids:
             for order in self.pos_order_ids:
-                if order.amount_card_comition:
-                    self.amount_tax = order.amount_tax
-                    self.amount_total = order.amount_total
-                else:
-                    self.amount_tax = sum(line.amount for line in self.tax_line)
-                    self.amount_total = base_untaxed + self.amount_tax
+                self.amount_tax = order.amount_tax
+                self.amount_total = order.amount_total
                 break
         else:
             self.amount_tax = sum(line.amount for line in self.tax_line)

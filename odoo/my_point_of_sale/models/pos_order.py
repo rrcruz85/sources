@@ -50,7 +50,7 @@ class PosOrder(osv.osv):
                 res[order.id]['amount_paid'] += payment.amount
                 iva_comp_total += payment.iva_compensation
 
-            payment_ids = [self.pool.get('account.bank.statement.line.tmp').create(cr,uid, {'order_id': order.id,'name': key,'amount' : payment_lines[key]})  for key in payment_lines if payment_lines[key] > 0]
+            #payment_ids = [self.pool.get('account.bank.statement.line.tmp').create(cr,uid, {'order_id': order.id,'name': key,'amount' : payment_lines[key]})  for key in payment_lines if payment_lines[key] > 0]
             cur_obj = self.pool.get('res.currency')
 
             sql = 'select discount, price_unit, qty from pos_order_line where order_id = %s '
@@ -88,7 +88,7 @@ class PosOrder(osv.osv):
             res[order.id]['amount_total_with_compensation'] = total - iva_comp_total
             res[order.id]['amount_paid'] = total - iva_comp_total
             res[order.id]['amount_card_comition'] = total_card_comition
-            res[order.id]['paymentLines'] = payment_ids
+            #res[order.id]['paymentLines'] = payment_ids
             res[order.id]['total_change'] = change
 
         return res
@@ -126,7 +126,6 @@ class PosOrder(osv.osv):
             _amount_all_new, string='Paid', states={'draft': [('readonly', False)]}, readonly=True,
             digits_compute=dp.get_precision('Account'), multi='all'
         ),
-
         'paymentLines': fields.function(
             _amount_all_new, 'Returned', type="one2many", relation="account.bank.statement.line.tmp", multi='all'
         ),
@@ -406,7 +405,10 @@ class PosOrder(osv.osv):
                 inv_line['discount'] = line.discount
                 inv_line['name'] = inv_name
                 if order.apply_taxes or order.amount_card_comition:
-                    inv_line['invoice_line_tax_id'] = [(6, 0, inv_line['invoice_line_tax_id'])]
+                    taxes_lines = inv_line['invoice_line_tax_id']
+                    if order.amount_card_comition:
+                        inv_line['price_unit'] = inv_line['price_unit'] + order.amount_card_comition
+                    inv_line['invoice_line_tax_id'] = [(6, 0, taxes_lines)]
                 else:
                     inv_line['invoice_line_tax_id'] = []
                 inv_line_ref.create(cr, uid, inv_line, context=context)
