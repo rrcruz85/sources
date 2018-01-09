@@ -21,6 +21,10 @@ class pos_order(osv.osv):
         inv_ref = self.pool.get('account.invoice')
         inv_line_ref = self.pool.get('account.invoice.line')
         product_obj = self.pool.get('product.product')
+        account_period = self.pool.get('account.period')
+        account_period_ids = account_period.search(cr, uid, [('state', '=', 'draft')])
+        account_period_id = account_period_ids and account_period_ids[-1] or False
+
         inv_ids = []
 
         for order in self.pool.get('pos.order').browse(cr, uid, ids, context=context):
@@ -42,8 +46,11 @@ class pos_order(osv.osv):
                 'partner_id': order.partner_id.id,
                 'comment': order.note or '',
                 'currency_id': order.pricelist_id.currency_id.id,  # considering partner's sale pricelist's currency
-                'from_pos':True,
-                'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d')
+                'from_pos': True,
+                'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d'),
+                'date_due': datetime.datetime.now().strftime('%Y-%m-%d'),
+                'period_id': account_period_id,
+                'state': 'open'
             }
             inv.update(inv_ref.onchange_partner_id(cr, uid, [], 'out_invoice', order.partner_id.id)['value'])
 

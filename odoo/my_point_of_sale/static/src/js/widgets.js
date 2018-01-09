@@ -1880,24 +1880,35 @@ openerp.my_point_of_sale = function(instance) {
 
             } else {
 
-                //Creating Order
-                this.pos.push_order(currentOrder);
+                //Validating the client is selected
+                if(currentOrder.get_client() == null || currentOrder.get_client() == undefined) {
+                    self.pos_widget.screen_selector.show_popup('error', {
+                        message: _t('An anonymous order cannot be created'),
+                        comment: _t('Please select a client for this order. This can be done by clicking the order tab'),
+                    });
+                }
+                else{
 
-                if (this.pos.config.iface_print_via_proxy) {
+                    //Creating Order
+                    this.pos.push_order(currentOrder);
 
-                    var receipt = currentOrder.export_for_printing();
-                    this.pos.proxy.print_receipt(QWeb.render('XmlReceipt', {
-                        receipt: receipt, widget: self,
-                    }));
+                    if (this.pos.config.iface_print_via_proxy) {
 
-                    //Actualizando Stock de los lotes
-                    this.actualizarStockLotes(currentOrder, currentOrder.get('orderLines').models);
+                        var receipt = currentOrder.export_for_printing();
+                        this.pos.proxy.print_receipt(QWeb.render('XmlReceipt', {
+                            receipt: receipt, widget: self,
+                        }));
 
-                    this.pos.get('selectedOrder').destroy();    //finish order and go back to scan screen
-                } else {
-                    //Actualizando Stock de los lotes
-                    this.actualizarStockLotes(currentOrder, currentOrder.get('orderLines').models);
-                    this.pos_widget.screen_selector.set_current_screen(this.next_screen);
+                        //Actualizando Stock de los lotes
+                        this.actualizarStockLotes(currentOrder, currentOrder.get('orderLines').models);
+
+                        this.pos.get('selectedOrder').destroy();    //finish order and go back to scan screen
+                    } else {
+                        //Actualizando Stock de los lotes
+                        this.actualizarStockLotes(currentOrder, currentOrder.get('orderLines').models);
+                        this.pos_widget.screen_selector.set_current_screen(this.next_screen);
+                    }
+
                 }
             }
 

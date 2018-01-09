@@ -352,9 +352,16 @@ class PosOrder(osv.osv):
 
     def action_invoice(self, cr, uid, ids, context=None):
         inv_ref = self.pool.get('account.invoice')
+        account_period = self.pool.get('account.period')
         inv_line_ref = self.pool.get('account.invoice.line')
         product_obj = self.pool.get('product.product')
         inv_ids = []
+
+        account_period_ids = account_period.search(cr,uid,[('state','=','draft')])
+        account_period_id = account_period_ids and account_period_ids[-1] or False
+        period = False
+        if account_period_id:
+            period = account_period.browse(cr,uid, account_period_id)
 
         for order in self.pool.get('pos.order').browse(cr, uid, ids, context=context):
             if order.invoice_id:
@@ -365,6 +372,7 @@ class PosOrder(osv.osv):
                 raise osv.except_osv(_('Error!'), _('Please provide a partner for the sale.'))
 
             acc = order.partner_id.property_account_receivable.id
+
             inv = {
                 'name': order.name,
                 'origin': order.name,
@@ -375,11 +383,16 @@ class PosOrder(osv.osv):
                 'partner_id': order.partner_id.id,
                 'comment': order.note or '',
                 'currency_id': order.pricelist_id.currency_id.id,
-                'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d')
+                'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d'),
+                'date_due': datetime.datetime.now().strftime('%Y-%m-%d'),
+                'period_id': account_period_id,
+                'state': 'open'
             }
+
             inv.update(inv_ref.onchange_partner_id(cr, uid, [], 'out_invoice', order.partner_id.id)['value'])
             # FORWARDPORT TO SAAS-6 ONLY!
-            inv.update({'fiscal_position': False})
+            inv.update({'fiscal_position': order.partner_id.property_account_position and order.partner_id.property_account_position.id or False})
+
             if not inv.get('account_id', None):
                 inv['account_id'] = acc
             inv_id = inv_ref.create(cr, uid, inv, context=context)
@@ -417,6 +430,9 @@ class PosOrder(osv.osv):
             self.signal_workflow(cr, uid, [order.id], 'invoice')
             inv_ref.signal_workflow(cr, uid, [inv_id], 'validate')
 
+            #creating payment lines
+            self.create_payment_lines(cr, uid, order, period, context = context)
+
         if not inv_ids: return {}
 
         mod_obj = self.pool.get('ir.model.data')
@@ -435,6 +451,54 @@ class PosOrder(osv.osv):
             'res_id': inv_ids and inv_ids[0] or False,
         }
 
+    def create_payment_lines(self, cr, uid, order, period, context = None):
+        # Create payment lines
+        move_pool = self.pool.get('account.move')
+        move_line_pool = self.pool.get('account.move.line')
+        seq_obj = self.pool.get('ir.sequence')
+
+        if order.sale_journal.sequence_id:
+            if not order.sale_journal.sequence_id.active:
+                raise osv.except_osv(_('Configuration Error !'),
+                                     _('Please activate the sequence of selected journal !'))
+            c = dict(context)
+            c.update({'fiscalyear_id': period and period.fiscalyear_id.id or False})
+            name = seq_obj.next_by_id(cr, uid, order.sale_journal.sequence_id.id, context=c)
+        else:
+            raise osv.except_osv(_('Error!'),
+                                 _('Please define a sequence on the journal.'))
+        if not order.reference:
+            ref = order.name.replace('/', '')
+        else:
+            ref = order.reference
+
+        #Creating Move
+        move = {
+            'name': name,
+            'journal_id': order.sale_journal.id,
+            'narration': '',
+            'date': datetime.datetime.now().strftime('%Y-%m-%d'),
+            'ref': ref,
+            'period_id': period and period.id or False,
+        }
+        move_id = move_pool.create(cr, uid, move, context=context)
+
+        for line in order.statement_ids:
+            move_line = {
+                'name': name or '/',
+                'debit': debit,
+                'credit': credit,
+                'account_id': order.account_id.id,
+                'move_id': move_id,
+                'journal_id': order.sale_journal.id,
+                'period_id': period_id and period_id.id or False,
+                'partner_id': order.partner_id.id,
+                'currency_id': company_currency <> current_currency and current_currency or False,
+                'amount_currency': (sign * abs(voucher.amount) if company_currency != current_currency else 0.0),
+                'date': datetime.datetime.now().strftime('%Y-%m-%d'),
+                'date_maturity': datetime.datetime.now().strftime('%Y-%m-%d')
+            }
+            move_line_id = move_line_pool.create(cr, uid, move_line, context)
 
 class PosOrderLine(osv.osv):
     _inherit = "pos.order.line"
