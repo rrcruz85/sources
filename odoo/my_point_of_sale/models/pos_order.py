@@ -431,7 +431,7 @@ class PosOrder(osv.osv):
             inv_ref.signal_workflow(cr, uid, [inv_id], 'validate')
 
             #creating payment lines
-            self.create_payment_lines(cr, uid, order, period, context = context)
+            self.create_payment_lines(cr, uid, order, period, inv_id, context = context)
 
         if not inv_ids: return {}
 
@@ -451,7 +451,7 @@ class PosOrder(osv.osv):
             'res_id': inv_ids and inv_ids[0] or False,
         }
 
-    def create_payment_lines(self, cr, uid, order, period, context = None):
+    def create_payment_lines(self, cr, uid, order, period, invoice_id,context = None):
         # Create payment lines
         move_pool = self.pool.get('account.move')
         move_line_pool = self.pool.get('account.move.line')
@@ -459,18 +459,18 @@ class PosOrder(osv.osv):
 
         if order.sale_journal.sequence_id:
             if not order.sale_journal.sequence_id.active:
-                raise osv.except_osv(_('Configuration Error !'),
-                                     _('Please activate the sequence of selected journal !'))
+                raise osv.except_osv(_('Configuration Error !'), _('Please activate the sequence of selected journal !'))
             c = dict(context)
             c.update({'fiscalyear_id': period and period.fiscalyear_id.id or False})
             name = seq_obj.next_by_id(cr, uid, order.sale_journal.sequence_id.id, context=c)
+
+            #if invoice_id:
+            #   self.pool.get('account.invoice').write(cr, uid, [invoice_id], {'number': name})
+
         else:
-            raise osv.except_osv(_('Error!'),
-                                 _('Please define a sequence on the journal.'))
-        if not order.reference:
-            ref = order.name.replace('/', '')
-        else:
-            ref = order.reference
+            raise osv.except_osv(_('Error!'),_('Please define a sequence on the journal.'))
+
+        ref = order.name.replace('/', '')
 
         #Creating Move
         move = {
@@ -483,22 +483,44 @@ class PosOrder(osv.osv):
         }
         move_id = move_pool.create(cr, uid, move, context=context)
 
+        move_line_ids = []
+        #Creating Move Lines
         for line in order.statement_ids:
+            debit = credit = 0.0
+            if order.sale_journal.type in ('purchase', 'payment'):
+                credit = line.amount
+            elif order.sale_journal.type in ('sale', 'receipt'):
+                debit = line.amount
+            if debit < 0: credit = -debit; debit = 0.0
+            if credit < 0: debit = -credit; credit = 0.0
+            #sign = debit - credit < 0 and -1 or 1
             move_line = {
                 'name': name or '/',
                 'debit': debit,
                 'credit': credit,
-                'account_id': order.account_id.id,
+                'account_id': order.partner_id.property_account_receivable.id,
                 'move_id': move_id,
                 'journal_id': order.sale_journal.id,
-                'period_id': period_id and period_id.id or False,
+                'period_id': period and period.id or False,
                 'partner_id': order.partner_id.id,
-                'currency_id': company_currency <> current_currency and current_currency or False,
-                'amount_currency': (sign * abs(voucher.amount) if company_currency != current_currency else 0.0),
+                'currency_id':  False,#order.sale_journal.company_id.currency_id.id,
+                'amount_currency': 0.0, #sign * abs(line.amount),
                 'date': datetime.datetime.now().strftime('%Y-%m-%d'),
-                'date_maturity': datetime.datetime.now().strftime('%Y-%m-%d')
+                'date_maturity': datetime.datetime.now().strftime('%Y-%m-%d'),
+                'statement_id': line.statement_id.id
             }
             move_line_id = move_line_pool.create(cr, uid, move_line, context)
+            move_line_ids.append(move_line_id)
+
+        if invoice_id:
+            self.pool.get('account.invoice').write(cr, uid, [invoice_id], {'move_id': move_id})
+
+        if move_line_ids:
+            self.pool.get('account.move.line').reconcile_partial(cr, uid, move_line_ids,
+                                                                             writeoff_acc_id=order.partner_id.property_account_receivable.id,
+                                                                             writeoff_period_id=period.id,
+                                                                             writeoff_journal_id=order.sale_journal.id)
+
 
 class PosOrderLine(osv.osv):
     _inherit = "pos.order.line"
