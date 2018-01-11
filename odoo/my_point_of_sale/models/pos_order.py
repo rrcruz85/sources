@@ -385,8 +385,7 @@ class PosOrder(osv.osv):
                 'currency_id': order.pricelist_id.currency_id.id,
                 'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d'),
                 'date_due': datetime.datetime.now().strftime('%Y-%m-%d'),
-                'period_id': account_period_id,
-                'state': 'open'
+                'period_id': account_period_id
             }
 
             inv.update(inv_ref.onchange_partner_id(cr, uid, [], 'out_invoice', order.partner_id.id)['value'])
@@ -428,7 +427,11 @@ class PosOrder(osv.osv):
 
             inv_ref.button_reset_taxes(cr, uid, [inv_id], context=context)
             self.signal_workflow(cr, uid, [order.id], 'invoice')
-            inv_ref.signal_workflow(cr, uid, [inv_id], 'validate')
+            #inv_ref.signal_workflow(cr, uid, [inv_id], 'validate')
+            inv_ref.action_date_assign(cr, uid, [inv_id], context=context)
+            inv_ref.action_move_create(cr, uid, [inv_id], context=context)
+            inv_ref.action_number(cr, uid, [inv_id], context=context)
+            inv_ref.invoice_validate(cr, uid, [inv_id], context=context)
 
             #creating payment lines
             self.create_payment_lines(cr, uid, order, period, inv_id, context = context)
@@ -463,10 +466,6 @@ class PosOrder(osv.osv):
             c = dict(context)
             c.update({'fiscalyear_id': period and period.fiscalyear_id.id or False})
             name = seq_obj.next_by_id(cr, uid, order.sale_journal.sequence_id.id, context=c)
-
-            #if invoice_id:
-            #   self.pool.get('account.invoice').write(cr, uid, [invoice_id], {'number': name})
-
         else:
             raise osv.except_osv(_('Error!'),_('Please define a sequence on the journal.'))
 
@@ -486,6 +485,7 @@ class PosOrder(osv.osv):
         move_line_ids = []
         #Creating Move Lines
         for line in order.statement_ids:
+            account_id = line.partner_id.property_account_payable.id
             debit = credit = 0.0
             if order.sale_journal.type in ('purchase', 'payment'):
                 credit = line.amount
@@ -493,16 +493,17 @@ class PosOrder(osv.osv):
                 debit = line.amount
             if debit < 0: credit = -debit; debit = 0.0
             if credit < 0: debit = -credit; credit = 0.0
+
             #sign = debit - credit < 0 and -1 or 1
             move_line = {
                 'name': name or '/',
                 'debit': debit,
                 'credit': credit,
-                'account_id': order.partner_id.property_account_receivable.id,
+                'account_id': account_id,
                 'move_id': move_id,
-                'journal_id': order.sale_journal.id,
+                'journal_id': line.journal_id.id,
                 'period_id': period and period.id or False,
-                'partner_id': order.partner_id.id,
+                'partner_id': line.partner_id and line.partner_id.id or False,
                 'currency_id':  False,#order.sale_journal.company_id.currency_id.id,
                 'amount_currency': 0.0, #sign * abs(line.amount),
                 'date': datetime.datetime.now().strftime('%Y-%m-%d'),
@@ -512,15 +513,34 @@ class PosOrder(osv.osv):
             move_line_id = move_line_pool.create(cr, uid, move_line, context)
             move_line_ids.append(move_line_id)
 
-        if invoice_id:
-            self.pool.get('account.invoice').write(cr, uid, [invoice_id], {'move_id': move_id})
+            move_line_brw = move_line_pool.browse(cr, uid, move_line_id, context=context)
+            line_total = move_line_brw.debit - move_line_brw.credit
 
-        if move_line_ids:
-            self.pool.get('account.move.line').reconcile_partial(cr, uid, move_line_ids,
+            move_line2 = {
+                'journal_id': line.journal_id.id,
+                'period_id': period and period.id or False,
+                'name': line.name or '/',
+                'account_id': account_id,
+                'move_id': move_id,
+                'partner_id': line.partner_id and line.partner_id.id or False,
+                'currency_id': False,
+                'analytic_account_id': False,
+                'quantity': 1,
+                'credit': line_total,
+                'debit': 0.0,
+                'date': datetime.datetime.now().strftime('%Y-%m-%d'),
+                'statement_id': line.statement_id.id
+            }
+            move_line_id = move_line_pool.create(cr, uid, move_line2, context)
+            move_line_ids.append(move_line_id)
+
+            if move_line_ids:
+                self.pool.get('account.move.line').reconcile_partial(cr, uid, move_line_ids,
                                                                              writeoff_acc_id=order.partner_id.property_account_receivable.id,
                                                                              writeoff_period_id=period.id,
                                                                              writeoff_journal_id=order.sale_journal.id)
 
+        return self.pool.get('account.invoice').write(cr, uid, [invoice_id], {'move_id': move_id, 'state': 'paid', 'reconcile': True})
 
 class PosOrderLine(osv.osv):
     _inherit = "pos.order.line"

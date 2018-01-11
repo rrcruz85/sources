@@ -23,7 +23,10 @@ class pos_order(osv.osv):
         product_obj = self.pool.get('product.product')
         account_period = self.pool.get('account.period')
         account_period_ids = account_period.search(cr, uid, [('state', '=', 'draft')])
-        account_period_id = account_period_ids and account_period_ids[-1] or False
+        account_period_id = account_period_ids and account_period_ids[-1] or False        
+        period = False
+        if account_period_id:
+            period = account_period.browse(cr,uid, account_period_id)
 
         inv_ids = []
 
@@ -36,6 +39,8 @@ class pos_order(osv.osv):
                 raise osv.except_osv(_('Error!'), _('Please provide a partner for the sale.'))
 
             acc = order.partner_id.property_account_receivable.id
+            
+            
             inv = {
                 'name': order.name,
                 'origin': order.name,
@@ -50,7 +55,6 @@ class pos_order(osv.osv):
                 'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d'),
                 'date_due': datetime.datetime.now().strftime('%Y-%m-%d'),
                 'period_id': account_period_id,
-                'state': 'open'
             }
             inv.update(inv_ref.onchange_partner_id(cr, uid, [], 'out_invoice', order.partner_id.id)['value'])
 
@@ -97,7 +101,14 @@ class pos_order(osv.osv):
 
             inv_ref.button_reset_taxes(cr, uid, [inv_id], context=context)
             self.signal_workflow(cr, uid, [order.id], 'invoice')
-            inv_ref.signal_workflow(cr, uid, [inv_id], 'validate')
+            #inv_ref.signal_workflow(cr, uid, [inv_id], 'validate')
+            inv_ref.action_date_assign(cr, uid, [inv_id], context=context)
+            inv_ref.action_move_create(cr, uid, [inv_id], context=context)
+            inv_ref.action_number(cr, uid, [inv_id], context=context)
+            inv_ref.invoice_validate(cr, uid, [inv_id], context=context)
+            
+            #creating payment lines
+            self.create_payment_lines(cr, uid, order, period, inv_id, context = context)
 
         if not inv_ids:
             return {}
