@@ -40,7 +40,6 @@ class pos_order(osv.osv):
 
             acc = order.partner_id.property_account_receivable.id
             
-            
             inv = {
                 'name': order.name,
                 'origin': order.name,
@@ -54,7 +53,7 @@ class pos_order(osv.osv):
                 'from_pos': True,
                 'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d'),
                 'date_due': datetime.datetime.now().strftime('%Y-%m-%d'),
-                'period_id': account_period_id,
+                'period_id': account_period_id
             }
             inv.update(inv_ref.onchange_partner_id(cr, uid, [], 'out_invoice', order.partner_id.id)['value'])
 
@@ -101,7 +100,6 @@ class pos_order(osv.osv):
 
             inv_ref.button_reset_taxes(cr, uid, [inv_id], context=context)
             self.signal_workflow(cr, uid, [order.id], 'invoice')
-            #inv_ref.signal_workflow(cr, uid, [inv_id], 'validate')
             inv_ref.action_date_assign(cr, uid, [inv_id], context=context)
             inv_ref.action_move_create(cr, uid, [inv_id], context=context)
             inv_ref.action_number(cr, uid, [inv_id], context=context)

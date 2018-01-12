@@ -457,6 +457,7 @@ class PosOrder(osv.osv):
     def create_payment_lines(self, cr, uid, order, period, invoice_id,context = None):
         # Create payment lines
         move_pool = self.pool.get('account.move')
+        account_pool = self.pool.get('account.invoice')
         move_line_pool = self.pool.get('account.move.line')
         seq_obj = self.pool.get('ir.sequence')
 
@@ -481,56 +482,58 @@ class PosOrder(osv.osv):
             'period_id': period and period.id or False,
         }
         move_id = move_pool.create(cr, uid, move, context=context)
-
+        order_account_id = order.partner_id.property_account_receivable.id
         move_line_ids = []
+
+        if invoice_id:
+            account_invoice_obj = account_pool.browse(cr,uid,invoice_id)
+            if account_invoice_obj.move_id and account_invoice_obj.move_id.line_id:
+                move_line_ids.append(account_invoice_obj.move_id.line_id[0].id)
+
+        cr.execute('SELECT sum(amount) as amount, min(journal_id) as journal_id, min(partner_id) as partner_id FROM account_bank_statement_line where pos_statement_id = %s group by journal_id', ( order.id,))
+        lines = cr.fetchall()
+
         #Creating Move Lines
-        for line in order.statement_ids:
-            account_id = line.partner_id.property_account_payable.id
+        for line in lines:
             debit = credit = 0.0
             if order.sale_journal.type in ('purchase', 'payment'):
-                credit = line.amount
+                credit = line[0]
             elif order.sale_journal.type in ('sale', 'receipt'):
-                debit = line.amount
+                debit = line[0]
             if debit < 0: credit = -debit; debit = 0.0
             if credit < 0: debit = -credit; credit = 0.0
-
-            #sign = debit - credit < 0 and -1 or 1
+            sign = debit - credit < 0 and -1 or 1
             move_line = {
-                'name': name or '/',
+                'name':  '/',
                 'debit': debit,
                 'credit': credit,
-                'account_id': account_id,
+                'account_id': order_account_id,
                 'move_id': move_id,
-                'journal_id': line.journal_id.id,
+                'journal_id': line[1],
                 'period_id': period and period.id or False,
-                'partner_id': line.partner_id and line.partner_id.id or False,
-                'currency_id':  False,#order.sale_journal.company_id.currency_id.id,
-                'amount_currency': 0.0, #sign * abs(line.amount),
+                'partner_id': line[2],
+                'currency_id':  False,
+                'amount_currency': 0.0,
                 'date': datetime.datetime.now().strftime('%Y-%m-%d'),
-                'date_maturity': datetime.datetime.now().strftime('%Y-%m-%d'),
-                'statement_id': line.statement_id.id
+                'date_maturity': datetime.datetime.now().strftime('%Y-%m-%d')
             }
-            move_line_id = move_line_pool.create(cr, uid, move_line, context)
-            move_line_ids.append(move_line_id)
-
-            move_line_brw = move_line_pool.browse(cr, uid, move_line_id, context=context)
-            line_total = move_line_brw.debit - move_line_brw.credit
+            move_line_pool.create(cr, uid, move_line, context)
 
             move_line2 = {
-                'journal_id': line.journal_id.id,
+                'journal_id': line[1],
                 'period_id': period and period.id or False,
-                'name': line.name or '/',
-                'account_id': account_id,
+                'name':  name or '/',
+                'account_id': order_account_id,
                 'move_id': move_id,
-                'partner_id': line.partner_id and line.partner_id.id or False,
+                'partner_id': line[2],
                 'currency_id': False,
                 'analytic_account_id': False,
                 'quantity': 1,
-                'credit': line_total,
-                'debit': 0.0,
-                'date': datetime.datetime.now().strftime('%Y-%m-%d'),
-                'statement_id': line.statement_id.id
+                'credit':   debit if sign else 0.0,
+                'debit': credit if not sign else 0.0,
+                'date': datetime.datetime.now().strftime('%Y-%m-%d')
             }
+
             move_line_id = move_line_pool.create(cr, uid, move_line2, context)
             move_line_ids.append(move_line_id)
 
@@ -539,6 +542,8 @@ class PosOrder(osv.osv):
                                                                              writeoff_acc_id=order.partner_id.property_account_receivable.id,
                                                                              writeoff_period_id=period.id,
                                                                              writeoff_journal_id=order.sale_journal.id)
+            if len(lines) > 1:
+                move_line_ids = []
 
         return self.pool.get('account.invoice').write(cr, uid, [invoice_id], {'move_id': move_id, 'state': 'paid', 'reconcile': True})
 
