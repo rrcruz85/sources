@@ -1669,7 +1669,7 @@ openerp.my_point_of_sale = function(instance) {
             if(line.get_type() != 'card')
             {
                 if(currentOrder.apply_taxes == false) {
-                    total = currentOrder.getTotalTaxExcluded();
+                    //total = currentOrder.getTotalTaxExcluded();
                     taxes = 0;
                 }
                 var card_comition =  totalByCard * this.pos.config.card_comition / 100;
@@ -2604,6 +2604,9 @@ openerp.my_point_of_sale = function(instance) {
             {
               tax_lines.push([0,0,{tax_id: ltaxes[i].id, product_id: ltaxes[i].product_id,tax: ltaxes[i].tax, card_comition: ltaxes[i].card_comition}])
             }
+
+            console.log("Exporting Taxes 2:");
+            console.log(tax_lines);
 
             var obj =  {
                 name: instance.web.datetime_to_str(new Date()),

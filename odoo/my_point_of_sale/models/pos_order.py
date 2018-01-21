@@ -34,10 +34,10 @@ class PosOrder(osv.osv):
             iva_comp_total = 0.0
             total_taxes = 0.0
             total_card_comition = 0.0
-            total_taxes_payment = 0.0
+            #total_taxes_payment = 0.0
             for payment in order.statement_ids:
                 total_card_comition += payment.card_comition
-                total_taxes_payment += payment.taxes
+                #total_taxes_payment += payment.taxes
                 if payment.amount < 0:
                     change += abs(payment.amount)
                 else:
@@ -50,7 +50,6 @@ class PosOrder(osv.osv):
                 res[order.id]['amount_paid'] += payment.amount
                 iva_comp_total += payment.iva_compensation
 
-            #payment_ids = [self.pool.get('account.bank.statement.line.tmp').create(cr,uid, {'order_id': order.id,'name': key,'amount' : payment_lines[key]})  for key in payment_lines if payment_lines[key] > 0]
             cur_obj = self.pool.get('res.currency')
 
             sql = 'select discount, price_unit, qty from pos_order_line where order_id = %s '
@@ -70,9 +69,9 @@ class PosOrder(osv.osv):
             total_discount = cur_obj.round(cr, uid, cur, total_discount)
             total = cur_obj.round(cr, uid, cur, total)
             total_taxes = cur_obj.round(cr, uid, cur, total_taxes)
-            total_taxes_payment = cur_obj.round(cr, uid, cur, total_taxes_payment)
-            if total_taxes_payment > total_taxes:
-                total_taxes = total_taxes_payment
+            #total_taxes_payment = cur_obj.round(cr, uid, cur, total_taxes_payment)
+            #if total_taxes_payment > total_taxes:
+            #    total_taxes = total_taxes_payment
 
             if total_card_comition == 0 and not order.apply_taxes:
                 total_taxes = 0
@@ -88,7 +87,6 @@ class PosOrder(osv.osv):
             res[order.id]['amount_total_with_compensation'] = total - iva_comp_total
             res[order.id]['amount_paid'] = total - iva_comp_total
             res[order.id]['amount_card_comition'] = total_card_comition
-            #res[order.id]['paymentLines'] = payment_ids
             res[order.id]['total_change'] = change
 
         return res
