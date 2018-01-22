@@ -43,4 +43,16 @@ class AccountInvoice(osv.osv):
         'pos_order_ids': fields.one2many('pos.order', 'invoice_id', string='Pos Orders'),
         'iva_compensation': fields.function(_get_iva_compensation, type='float', string='IVA Compensation'),
         'amount_total_with_iva_compensation': fields.function(_get_amount_total_with_iva_compensation, type='float', string='Total'),
+        'card_comition': fields.float(string='Card Comition'),
     }
+
+class account_invoice_line(osv.osv):
+    _inherit = "account.invoice.line"
+
+    _columns = {
+        'lot_id': fields.many2one('stock.production.lot', 'Product Lot', ondelete='set null'),
+    }
+
+
+
+

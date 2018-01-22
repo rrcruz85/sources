@@ -28,24 +28,22 @@ class PosOrder(osv.osv):
 
             cur = order.company_id.currency_id
 
-            payment_lines = {}
             change = 0.0
             total = 0.0
             iva_comp_total = 0.0
             total_taxes = 0.0
             total_card_comition = 0.0
-            #total_taxes_payment = 0.0
+
+            tienePagoTarjeta = False
             for payment in order.statement_ids:
-                total_card_comition += payment.card_comition
-                #total_taxes_payment += payment.taxes
+                if payment.statement_id.journal_id.type == 'card':
+                    total_card_comition += payment.amount
+                    tienePagoTarjeta = True
+
                 if payment.amount < 0:
                     change += abs(payment.amount)
                 else:
                     total += payment.amount
-                    if payment.journal_id.name not in payment_lines:
-                        payment_lines[payment.journal_id.name] = payment.amount
-                    else:
-                        payment_lines[payment.journal_id.name] += payment.amount
 
                 res[order.id]['amount_paid'] += payment.amount
                 iva_comp_total += payment.iva_compensation
@@ -69,13 +67,15 @@ class PosOrder(osv.osv):
             total_discount = cur_obj.round(cr, uid, cur, total_discount)
             total = cur_obj.round(cr, uid, cur, total)
             total_taxes = cur_obj.round(cr, uid, cur, total_taxes)
-            #total_taxes_payment = cur_obj.round(cr, uid, cur, total_taxes_payment)
-            #if total_taxes_payment > total_taxes:
-            #    total_taxes = total_taxes_payment
 
             if total_card_comition == 0 and not order.apply_taxes:
                 total_taxes = 0
                 iva_comp_total = 0
+
+            if not tienePagoTarjeta and not order.apply_taxes:
+                total_taxes = 0
+
+            card_comition = total_card_comition * order.session_id.config_id.card_comition / 100;
 
             iva_comp_total = cur_obj.round(cr, uid, cur, iva_comp_total)
             res[order.id]['total_discount'] = total_discount
@@ -83,10 +83,10 @@ class PosOrder(osv.osv):
             res[order.id]['amount_tax'] = total_taxes
             res[order.id]['amount_iva_compensation'] = iva_comp_total
             res[order.id]['amount_iva_compensation_str'] = '- ' + str(iva_comp_total)
-            res[order.id]['amount_total'] = amount_untaxed + total_card_comition + (total_taxes - iva_comp_total)
+            res[order.id]['amount_total'] = amount_untaxed + card_comition + (total_taxes - iva_comp_total)
             res[order.id]['amount_total_with_compensation'] = total - iva_comp_total
             res[order.id]['amount_paid'] = total - iva_comp_total
-            res[order.id]['amount_card_comition'] = total_card_comition
+            res[order.id]['amount_card_comition'] = card_comition
             res[order.id]['total_change'] = change
 
         return res
@@ -371,6 +371,13 @@ class PosOrder(osv.osv):
 
             acc = order.partner_id.property_account_receivable.id
 
+            total_card_comition = 0.0
+            hayPagoConTarjeta = False
+            for payment in order.statement_ids:
+                if payment.statement_id.journal_id.type == 'card':
+                    total_card_comition += payment.amount
+                    hayPagoConTarjeta = True
+
             inv = {
                 'name': order.name,
                 'origin': order.name,
@@ -383,7 +390,8 @@ class PosOrder(osv.osv):
                 'currency_id': order.pricelist_id.currency_id.id,
                 'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d'),
                 'date_due': datetime.datetime.now().strftime('%Y-%m-%d'),
-                'period_id': account_period_id
+                'period_id': account_period_id,
+                'card_comition': total_card_comition * order.session_id.config_id.card_comition/100
             }
 
             inv.update(inv_ref.onchange_partner_id(cr, uid, [], 'out_invoice', order.partner_id.id)['value'])
@@ -401,6 +409,7 @@ class PosOrder(osv.osv):
                     'invoice_id': inv_id,
                     'product_id': line.product_id.id,
                     'quantity': line.qty,
+                    'lot_id': line.lot_id and line.lot_id.id or False
                 }
                 inv_name = product_obj.name_get(cr, uid, [line.product_id.id], context=context)[0][1]
                 inv_line.update(inv_line_ref.product_id_change(cr, uid, [],
@@ -414,10 +423,8 @@ class PosOrder(osv.osv):
                 inv_line['price_unit'] = line.price_unit
                 inv_line['discount'] = line.discount
                 inv_line['name'] = inv_name
-                if order.apply_taxes or order.amount_card_comition:
+                if order.apply_taxes or hayPagoConTarjeta:
                     taxes_lines = inv_line['invoice_line_tax_id']
-                    if order.amount_card_comition:
-                        inv_line['price_unit'] = inv_line['price_unit'] + order.amount_card_comition
                     inv_line['invoice_line_tax_id'] = [(6, 0, taxes_lines)]
                 else:
                     inv_line['invoice_line_tax_id'] = []
@@ -425,7 +432,6 @@ class PosOrder(osv.osv):
 
             inv_ref.button_reset_taxes(cr, uid, [inv_id], context=context)
             self.signal_workflow(cr, uid, [order.id], 'invoice')
-            #inv_ref.signal_workflow(cr, uid, [inv_id], 'validate')
             inv_ref.action_date_assign(cr, uid, [inv_id], context=context)
             inv_ref.action_move_create(cr, uid, [inv_id], context=context)
             inv_ref.action_number(cr, uid, [inv_id], context=context)
@@ -452,7 +458,7 @@ class PosOrder(osv.osv):
             'res_id': inv_ids and inv_ids[0] or False,
         }
 
-    def create_payment_lines(self, cr, uid, order, period, invoice_id,context = None):
+    def create_payment_lines(self, cr, uid, order, period, invoice_id, context = None):
         # Create payment lines
         move_pool = self.pool.get('account.move')
         account_pool = self.pool.get('account.invoice')
@@ -483,8 +489,10 @@ class PosOrder(osv.osv):
         order_account_id = order.partner_id.property_account_receivable.id
         move_line_ids = []
 
+        total_invoice = 0
         if invoice_id:
             account_invoice_obj = account_pool.browse(cr,uid,invoice_id)
+            total_invoice = account_invoice_obj.amount_total
             if account_invoice_obj.move_id and account_invoice_obj.move_id.line_id:
                 move_line_ids.append(account_invoice_obj.move_id.line_id[0].id)
 
@@ -495,9 +503,9 @@ class PosOrder(osv.osv):
         for line in lines:
             debit = credit = 0.0
             if order.sale_journal.type in ('purchase', 'payment'):
-                credit = line[0]
+                credit = total_invoice
             elif order.sale_journal.type in ('sale', 'receipt'):
-                debit = line[0]
+                debit = total_invoice
             if debit < 0: credit = -debit; debit = 0.0
             if credit < 0: debit = -credit; credit = 0.0
             sign = debit - credit < 0 and -1 or 1
@@ -578,7 +586,7 @@ class PosOrderLine(osv.osv):
         return res
 
     _columns = {
-        'lot_id': fields.many2one('stock.production.lot', 'Production lot', ondelete='set null'),
+        'lot_id': fields.many2one('stock.production.lot', 'Product Lot', ondelete='set null'),
         'price_subtotal': fields.function(_amount_line_all, multi='pos_order_line_amount',
                                           digits_compute=dp.get_precision('Product Price'), string='Subtotal w/o Tax',
                                           store=True),

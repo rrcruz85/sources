@@ -1046,9 +1046,11 @@ openerp.my_point_of_sale = function(instance) {
             var total = 0;
             for(var i = 0; i < objs.length; i++)
             {
-                total += objs[i].get_card_comition();
+                if(objs[i].get_type() == 'card') {
+                    total += objs[i].get_amount();
+                }
             }
-            return round_pr(total, this.pos.currency.rounding);
+            return round_pr(total * this.pos.config.card_comition / 100 , this.pos.currency.rounding);
         },
 
         getTaxes: function() {
@@ -1399,7 +1401,7 @@ openerp.my_point_of_sale = function(instance) {
             var paymentLines = currentOrder.get('paymentLines');
             var totalOrderWithoutTaxes = currentOrder.getTotalTaxExcluded() ;
             var totalOrderWithTaxes = currentOrder.getTotalTaxIncluded();
-            var  currentPaymentLine = currentOrder.getSelectedPaymentline();
+            var currentPaymentLine = currentOrder.getSelectedPaymentline();
             var totalTaxes = totalOrderWithTaxes - totalOrderWithoutTaxes;
 
             var subtotal_by_card = 0.0;
@@ -1420,9 +1422,11 @@ openerp.my_point_of_sale = function(instance) {
                 else {
 
                     //Buscando el acumulado por tarjeta
+                    var tienePagoTarjeta = false;
                     for (var i = 0; i < paymentLines.models.length - 1; i++) {
                         if (paymentLines.models[i].get_type() == 'card') {
                             subtotal_by_card = paymentLines.models[i].get_amount();
+                            tienePagoTarjeta = true;
                             break;
                         }
                     }

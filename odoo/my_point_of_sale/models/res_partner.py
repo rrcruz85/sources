@@ -6,23 +6,7 @@ from openerp.tools.translate import _
 
 class Partner(osv.osv):
     _inherit = 'res.partner'
-    
-    # def write_partner_from_pos(self, cr, uid, cid, cname, czip, cphone, cmobile, cemail, cid_type, cid_number, context=None):
-    #     if context is None: context = {}
-    #     client_id = int(cid)
-    #
-    #     try:
-    #         if client_id != 0 and client_id != -1:
-    #             self.write(cr, uid, client_id, {'name': cname, 'street': czip, 'phone': cphone, 'mobile': cmobile, 'email': cemail, 'ced_ruc': cid_number, 'type_ced_ruc': cid_type}, context=context)
-    #             idClient = client_id
-    #         else:
-    #             company_id =  self.pool.get('res.company')._company_default_get(cr, uid, 'res.partner', context=context),
-    #             idClient = self.create(cr, uid, {'name': cname, 'street': czip, 'phone': cphone, 'mobile': cmobile, 'email': cemail, 'ced_ruc': cid_number, 'type_ced_ruc': cid_type, 'company_id': company_id}, context=context)
-    #     except Exception, e:
-    #         cr.rollback()
-    #         return _('Error! %s') % (str(e))
-    #
-    #     return idClient
+
     
     def _check_ced_ruc(self, cr, uid, ids):
         partners = self.browse(cr, uid, ids)
