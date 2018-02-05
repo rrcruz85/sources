@@ -34,17 +34,13 @@ class PosOrder(osv.osv):
             total_taxes = 0.0
             total_card_comition = 0.0
 
-            tienePagoTarjeta = False
             for payment in order.statement_ids:
                 if payment.statement_id.journal_id.type == 'card':
-                    total_card_comition += payment.amount
-                    tienePagoTarjeta = True
-
+                    total_card_comition += payment.card_comition
                 if payment.amount < 0:
                     change += abs(payment.amount)
                 else:
                     total += payment.amount
-
                 res[order.id]['amount_paid'] += payment.amount
                 iva_comp_total += payment.iva_compensation
 
@@ -68,14 +64,9 @@ class PosOrder(osv.osv):
             total = cur_obj.round(cr, uid, cur, total)
             total_taxes = cur_obj.round(cr, uid, cur, total_taxes)
 
-            if total_card_comition == 0 and not order.apply_taxes:
+            if not order.apply_taxes:
                 total_taxes = 0
                 iva_comp_total = 0
-
-            if not tienePagoTarjeta and not order.apply_taxes:
-                total_taxes = 0
-
-            card_comition = total_card_comition * order.session_id.config_id.card_comition / 100;
 
             iva_comp_total = cur_obj.round(cr, uid, cur, iva_comp_total)
             res[order.id]['total_discount'] = total_discount
@@ -83,10 +74,10 @@ class PosOrder(osv.osv):
             res[order.id]['amount_tax'] = total_taxes
             res[order.id]['amount_iva_compensation'] = iva_comp_total
             res[order.id]['amount_iva_compensation_str'] = '- ' + str(iva_comp_total)
-            res[order.id]['amount_total'] = amount_untaxed + card_comition + (total_taxes - iva_comp_total)
+            res[order.id]['amount_total'] = amount_untaxed + total_card_comition + (total_taxes - iva_comp_total)
             res[order.id]['amount_total_with_compensation'] = total - iva_comp_total
             res[order.id]['amount_paid'] = total - iva_comp_total
-            res[order.id]['amount_card_comition'] = card_comition
+            res[order.id]['amount_card_comition'] = total_card_comition
             res[order.id]['total_change'] = change
 
         return res
@@ -372,11 +363,9 @@ class PosOrder(osv.osv):
             acc = order.partner_id.property_account_receivable.id
 
             total_card_comition = 0.0
-            hayPagoConTarjeta = False
             for payment in order.statement_ids:
                 if payment.statement_id.journal_id.type == 'card':
-                    total_card_comition += payment.amount
-                    hayPagoConTarjeta = True
+                    total_card_comition += payment.card_comition
 
             inv = {
                 'name': order.name,
@@ -391,7 +380,7 @@ class PosOrder(osv.osv):
                 'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d'),
                 'date_due': datetime.datetime.now().strftime('%Y-%m-%d'),
                 'period_id': account_period_id,
-                'card_comition': total_card_comition * order.session_id.config_id.card_comition/100
+                'card_comition': total_card_comition
             }
 
             inv.update(inv_ref.onchange_partner_id(cr, uid, [], 'out_invoice', order.partner_id.id)['value'])
@@ -423,7 +412,7 @@ class PosOrder(osv.osv):
                 inv_line['price_unit'] = line.price_unit
                 inv_line['discount'] = line.discount
                 inv_line['name'] = inv_name
-                if order.apply_taxes or hayPagoConTarjeta:
+                if order.apply_taxes:
                     taxes_lines = inv_line['invoice_line_tax_id']
                     inv_line['invoice_line_tax_id'] = [(6, 0, taxes_lines)]
                 else:
@@ -503,9 +492,9 @@ class PosOrder(osv.osv):
         for line in lines:
             debit = credit = 0.0
             if order.sale_journal.type in ('purchase', 'payment'):
-                credit = total_invoice
+                credit = line[0]#total_invoice
             elif order.sale_journal.type in ('sale', 'receipt'):
-                debit = total_invoice
+                debit = line[0]#total_invoice
             if debit < 0: credit = -debit; debit = 0.0
             if credit < 0: debit = -credit; credit = 0.0
             sign = debit - credit < 0 and -1 or 1
