@@ -1160,6 +1160,32 @@ openerp.my_point_of_sale = function(instance) {
                 return sum + orderLine.get_tax_2();
             }), 0), this.pos.currency.rounding);
         },
+
+        get_applicable_taxes: function () {
+            var lines = this.get('orderLines');
+            var taxes = [];
+            lines.each(function(line){
+                var product_taxes = line.get_applicable_taxes();
+                for(var i = 0 ; i < product_taxes.length; i++)
+                {
+                    var exist_tax = false;
+                    for(var j = 0; j < taxes.length; j++)
+                    {
+                        if(taxes[j].id == product_taxes[i].id)
+                        {
+                            exist_tax = true;
+                            break;
+                        }
+                    }
+
+                    if(!exist_tax)
+                    {
+                        taxes.push({id: product_taxes[i].id, amount: product_taxes[i].amount});
+                    }
+                }
+            });
+            return taxes;
+        }
     });
 
     var orderline_id = 1;
@@ -1646,7 +1672,6 @@ openerp.my_point_of_sale = function(instance) {
 
         add_paymentline: function (line) {
 
-            var self = this;
             var currentOrder = this.pos.get('selectedOrder');
             var total = currentOrder.getTotalTaxIncluded();
             var taxes = round_pr(currentOrder.getTotalTaxIncluded() - currentOrder.getTotalTaxExcluded(), currentOrder.pos.currency.rounding);
@@ -1672,25 +1697,53 @@ openerp.my_point_of_sale = function(instance) {
                 total -= totalAccumulated;
             }
 
+            var applicables_taxes = currentOrder.get_applicable_taxes();
+
             //Not card method payment
             if(line.get_type() != 'card')
             {
-                if(currentOrder.apply_taxes == false) {
-                    taxes = 0;
+                var subTotalNotCard = currentOrder.getTotalTaxIncluded() - totalByCard;
+                if (subTotalNotCard < 0) {
+                    subTotalNotCard = 0;
                 }
-                var card_comition =  totalByCard * this.pos.config.card_comition / 100;
-                if(!totalOverpassed) {
-                    line.set_amount(total + card_comition);
+
+                //Calculando taxes en base al monto por tarjeta
+                taxes = 0.0;
+                if (currentOrder.apply_taxes) {
+                    for (var i = 0; i < applicables_taxes.length; i++) {
+                        taxes += subTotalNotCard * applicables_taxes[i].amount;
+                    }
+                }
+
+                //Si tiene Iva compensacion
+                var total_discount_iva = 0;
+                if (this.pos.config.iva_compensation > 0) {
+                    total_discount_iva = taxes * this.pos.config.iva_compensation / 100;
+                    taxes -= total_discount_iva;
+                    line.set_iva_compensation(total_discount_iva);
                 }
                 line.set_tax(taxes);
+                var total_order = subTotalNotCard + taxes;
+                line.set_amount(total_order);
+
             }
             else {
 
-                var total_discount_iva = 0;
-                if(currentOrder.apply_taxes == false) {
-                    taxes = currentOrder.getTax_2();
+                var subTotalNotCard = currentOrder.getTotalTaxIncluded() - total;
+                if (subTotalNotCard < 0) {
+                    subTotalNotCard = 0;
                 }
 
+                //Calculando taxes en base al monto por tarjeta
+                taxes = 0.0;
+                for (var i = 0; i < applicables_taxes.length; i++) {
+                    taxes += total * applicables_taxes[i].amount;
+                    if (currentOrder.apply_taxes) {
+                        taxes += subTotalNotCard * applicables_taxes[i].amount;
+                    }
+                }
+
+                var total_discount_iva = 0;
                 //Si tiene Iva compensacion
                 if (this.pos.config.iva_compensation > 0) {
                     total_discount_iva = taxes * this.pos.config.iva_compensation / 100;
@@ -1699,18 +1752,11 @@ openerp.my_point_of_sale = function(instance) {
                 }
                 line.set_tax(taxes);
 
-                var total_order = 0.0;
-                if(currentOrder.apply_taxes == false) {
-                    total_order = total;
-                }
-                else
-                {
-                    total_order = total  - total_discount_iva;
-                }
+                var total_order = total + taxes;
 
                 //Si tiene comision
                 if (this.pos.config.card_comition > 0) {
-                    var card_comition =  total_order * this.pos.config.card_comition / 100;
+                    var card_comition = total_order * this.pos.config.card_comition / 100;
                     line.set_card_comition(round_pr(card_comition, currentOrder.pos.currency.rounding));
                     total_order += card_comition;
                 }
