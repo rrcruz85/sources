@@ -43,6 +43,10 @@ class PosOrder(osv.osv):
                     total += payment.amount
                 res[order.id]['amount_paid'] += payment.amount
                 iva_comp_total += payment.iva_compensation
+                total_taxes += payment.taxes
+
+            if order.apply_taxes:
+                total_taxes = total_taxes/2
 
             cur_obj = self.pool.get('res.currency')
 
@@ -56,27 +60,20 @@ class PosOrder(osv.osv):
                 total_discount = total_discount + (line[2] * (line[0] * line[1] / 100))
                 amount_untaxed = amount_untaxed + (line[2] * line[1])
 
-            for line in order.lines:
-                total_taxes += self._amount_line_tax(cr, uid, line, context=context)
-
             amount_untaxed = cur_obj.round(cr, uid, cur, amount_untaxed)
             total_discount = cur_obj.round(cr, uid, cur, total_discount)
             total = cur_obj.round(cr, uid, cur, total)
             total_taxes = cur_obj.round(cr, uid, cur, total_taxes)
-
-            if not order.apply_taxes:
-                total_taxes = 0
-                iva_comp_total = 0
-
             iva_comp_total = cur_obj.round(cr, uid, cur, iva_comp_total)
+
             res[order.id]['total_discount'] = total_discount
             res[order.id]['amount_untaxed'] = amount_untaxed
             res[order.id]['amount_tax'] = total_taxes
             res[order.id]['amount_iva_compensation'] = iva_comp_total
             res[order.id]['amount_iva_compensation_str'] = '- ' + str(iva_comp_total)
-            res[order.id]['amount_total'] = amount_untaxed + total_card_comition + (total_taxes - iva_comp_total)
-            res[order.id]['amount_total_with_compensation'] = total - iva_comp_total
-            res[order.id]['amount_paid'] = total - iva_comp_total
+            res[order.id]['amount_total'] = total
+            res[order.id]['amount_total_with_compensation'] = total
+            res[order.id]['amount_paid'] = total
             res[order.id]['amount_card_comition'] = total_card_comition
             res[order.id]['total_change'] = change
 
@@ -550,28 +547,12 @@ class PosOrderLine(osv.osv):
         account_tax_obj = self.pool.get('account.tax')
         for line in self.browse(cr, uid, ids, context=context):
             taxes_ids = [tax for tax in line.product_id.taxes_id if tax.company_id.id == line.order_id.company_id.id ]
-            tax_ids = [tax.id for tax in line.product_id.taxes_id if tax.company_id.id == line.order_id.company_id.id]
 
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             taxes = account_tax_obj.compute_all(cr, uid, taxes_ids, price, line.qty, product=line.product_id, partner=line.order_id.partner_id or False)
 
-            new_taxes = 0.0
-            card_comition = 0.0
-            for pay in line.order_id.statement_ids:
-                for ltaxes in pay.line_tax_ids:
-                    if line.product_id.id == ltaxes.product_id.id and ltaxes.tax_id.id in tax_ids:
-                        new_taxes = ltaxes.tax
-                        card_comition = ltaxes.card_comition
-                        break
-
-            subtotal = taxes['total_included']
-            if not line.order_id.apply_taxes:
-                subtotal = taxes['total']
-            if card_comition != 0:
-                subtotal = taxes['total'] + card_comition + new_taxes
-
             res[line.id]['price_subtotal'] = taxes['total']
-            res[line.id]['price_subtotal_incl'] = subtotal
+            res[line.id]['price_subtotal_incl'] = taxes['total']
         return res
 
     _columns = {
@@ -580,7 +561,7 @@ class PosOrderLine(osv.osv):
                                           digits_compute=dp.get_precision('Product Price'), string='Subtotal w/o Tax',
                                           store=True),
         'price_subtotal_incl': fields.function(_amount_line_all, multi='pos_order_line_amount',
-                                               digits_compute=dp.get_precision('Account'), string='Subtotal'),
+                                               digits_compute=dp.get_precision('Account'), string='Subtotal', help="Subtotal without taxes"),
 
     }
 

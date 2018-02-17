@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from openerp.osv import osv
-from openerp.report import report_sxw
 
 class PosInvoiceReport(osv.AbstractModel):
     _name = 'report.point_of_sale.report_invoice'
@@ -10,6 +9,7 @@ class PosInvoiceReport(osv.AbstractModel):
         report_obj = self.pool['report']
         posorder_obj = self.pool['pos.order']
         report = report_obj._get_report_from_name(cr, uid, 'account.report_invoice')
+
         selected_orders = posorder_obj.browse(cr, uid, ids, context=context)
 
         ids_to_print = []

@@ -33,7 +33,6 @@ class AccountBankStatementLine(osv.osv):
         'iva_compensation': fields.float('IVA Compensation', digits=(16, 2)),
         'card_comition': fields.float('Card Comition', digits=(16, 2)),
         'taxes': fields.float('Taxes', digits=(16, 2)),
-        'line_tax_ids': fields.one2many('account.bank.statement.line.tax', 'line_id', 'Tax Lines'),
     }
 
 class AccountBankStatementLineTax(osv.osv):
