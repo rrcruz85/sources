@@ -454,7 +454,7 @@ class PosOrder(osv.osv):
         if order.sale_journal.sequence_id:
             if not order.sale_journal.sequence_id.active:
                 raise osv.except_osv(_('Configuration Error !'), _('Please activate the sequence of selected journal !'))
-            c = dict(context)
+            c = dict(context) if context else {}
             c.update({'fiscalyear_id': period and period.fiscalyear_id.id or False})
             name = seq_obj.next_by_id(cr, uid, order.sale_journal.sequence_id.id, context=c)
         else:
