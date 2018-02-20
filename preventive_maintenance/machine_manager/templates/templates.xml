@@ -4,7 +4,7 @@
     <data>
         <template id="machine_manager_assets_backend" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
-                <!--<script type="text/javascript" src="/machine_manager/static/src/js/functions.js"/>-->
+                <script type="text/javascript" src="/machine_manager/static/src/js/form_view.js"></script>
                 <link href="/machine_manager/static/src/css/styles.css" rel="stylesheet" type="text/css"/>
             </xpath>
         </template>

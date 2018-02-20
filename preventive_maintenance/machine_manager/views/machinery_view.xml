@@ -181,11 +181,11 @@
                                 <field name="coordinates" class="coordinates" nolabel="1" invisible="1"/>
                             </group>
 
-                            <input type="button" value="Update..." class="oe_link" onClick="UpdateAction();"/>
+                            <input id="button_update_image" type="button" value="Update..." class="oe_link button_update_image" onClick="UpdateAction();"/>
                             <button name="action_clear" string="Borrar marcas..." type="object" class="oe_link oe_edit_only"/>
 
                             <div style="height: 300px;">
-                                <img id="car_image2" class="img-responsive" src="/machine_manager/static/img/car.png" onClick="ImageOnClick(event);" style="width: 500px; height: 300px;">
+                                <img id="car_image2" class="img-responsive" src="/machine_manager/static/img/car.png" onClick="ImageOnClick(event);" style="width: 500px; height: 300px; border: 1px black solid;">
                                     <canvas id="car_canvas" style="position: relative; top: -300px;" onClick="ImageOnClick(event);"/>
                                 </img>
                             </div>

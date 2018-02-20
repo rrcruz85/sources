@@ -4,7 +4,7 @@
     <data>
         <report id="machine_manager_machinery_breaking_report"
                 name="machine_manager_machinery_breaking_report"
-				string="Machinery Report"
+				string="Machinery Breaking Report"
  				model="machinery"
                 auto="False"/>
     </data>
