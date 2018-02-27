@@ -13,6 +13,7 @@
                         <field name="date_start" required="1"/>
                         <field name="date_end" required="1"/>
                     </group>
+                    <h3>Customers:</h3>
                     <field name="partner_ids" domain="[('customer','=',True)]"/>
                     <footer>
                         <button name="print_report" type="object" string="Print Report" class="oe_highlight"/>
@@ -22,7 +23,6 @@
                 </form>
             </field>
         </record>
-
 
         <record id="action_pos_most_sold_product_wzd" model="ir.actions.act_window">
             <field name="name">Most Sold Products</field>
@@ -34,6 +34,62 @@
         </record>
 
         <menuitem action="action_pos_most_sold_product_wzd" id="menu_pos_most_sold_product_wzd" parent="point_of_sale.menu_point_rep" sequence="5"/>
+
+        <template id="report_pos_most_sold_product">
+            <t t-call="report.html_container">
+                <t t-call="report.internal_layout">
+                    <div class="page">
+                        <div>
+                            <div class="text-left">
+                                <!--h2 t-if="data['nbr_product'] == '1'">Most Sold Product by Customers</h2 -->
+                                <h2>Most Sold Products by Customers</h2>
+                                <br/>
+                                <h5>From:</h5>
+                                <h5>Until:</h5>
+                                <br/>
+                            </div>
+                            <br/>
+                            <div>
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th class="text-right">Quantity</th>
+                                            <th class="text-right">Price</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <!--
+                                        <tr t-foreach="docs" t-as="line">
+                                            <td>
+                                                <span t-field="line.product_id"/>
+                                            </td>
+
+                                            <td class="text-right">
+
+                                            </td>
+                                        </tr>
+                                         -->
+                                    </tbody>
+
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <report
+                id="action_report_pos_most_sold_product"
+                string="Pos Most Sold Product"
+                model="pos.most.sold.product.rpt"
+                report_type="qweb-pdf"
+                name="my_point_of_sale.report_pos_most_sold_product"
+                file="my_point_of_sale.report_pos_most_sold_product"
+        />
 
     </data>
 </openerp>

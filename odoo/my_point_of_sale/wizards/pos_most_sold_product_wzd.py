@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import time
+import  time
 from openerp.osv import osv, fields
-
+from openerp.report import report_sxw
 
 class pos_most_sold_product_wzd(osv.osv_memory):
     _name = 'pos.most.sold.product.wzd'
@@ -30,10 +30,9 @@ class pos_most_sold_product_wzd(osv.osv_memory):
                 'select '\
                 's.partner_id as partner_id,'\
                 'l.product_id as product_id,'\
-                'pt.name as product_name,'\
                 'sum(l.qty * u.factor) as product_qty,'\
                 'min(l.price_unit) as product_unit_price,'\
-                'sum(l.qty * l.price_unit) as total,'\
+                'sum(l.qty * l.price_unit) as price_total,'\
                 'ROW_NUMBER() OVER (PARTITION BY s.partner_id ORDER BY sum(l.qty * u.factor) DESC) row_num '\
                 'from pos_order_line as l '\
                 'left join pos_order s on (s.id=l.order_id) '\
@@ -51,7 +50,7 @@ class pos_most_sold_product_wzd(osv.osv_memory):
                     partner_ids.append(p.id)
             query += ' and s.partner_id in %s '
         query += 'group by '\
-                 's.partner_id, pt.name, l.product_id '\
+                 's.partner_id, l.product_id '\
                  'ORDER BY '\
                  's.partner_id,l.product_id, sum(l.qty * u.factor) desc) A '\
                  'where row_num <= %s '
@@ -63,17 +62,62 @@ class pos_most_sold_product_wzd(osv.osv_memory):
         cr.execute(query, filter_values)
         lines = cr.fetchall()
         context['show_email'] = True
+
+        rpt_lines = []
         for line in lines:
             if line[0]:
-                name = self.pool.get('res.partner').name_get(cr,uid,line[0],context)[0][1]
-                print name
+                rpt_lines.append((0,0,{
+                    'partner_id': line[0],
+                    'product_id': line[1],
+                    'product_qty': line[2],
+                    'product_unit_price': line[3],
+                    'price_total': line[4]
+                }))
+        if rpt_lines:
+            vals ={
+                'nbr_product': obj.nbr_product,
+                'date_start': obj.date_start,
+                'date_end': obj.date_end,
+                'line_ids': rpt_lines
+            }
+            id = self.pool.get('pos.most.sold.product.rpt').create(cr,uid,vals)
+            #cr.execute("delete from pos_most_sold_product_rpt")
 
-        #datas = {'ids': context.get('active_ids', [])}
-        #res = self.read(cr, uid, ids, ['date_start', 'date_end', 'user_ids'], context=context)
-        #res = res and res[0] or {}
-        #datas['form'] = res
-        #if res.get('id',False):
-        #    datas['ids']=[res['id']]
-        #return self.pool['report'].get_action(cr, uid, [], 'point_of_sale.report_detailsofsales', data=datas, context=context)
+            datas = {
+                'ids': [id],
+                'model': 'pos.most.sold.product.rpt',
+            }
+
+            #res = self.read(cr, uid, ids, ['date_start', 'date_end', 'user_ids'], context=context)
+            #res = res and res[0] or {}
+            #datas['form'] = res
+            #if res.get('id',False):
+            #    datas['ids']=[res['id']]
+            rpt = self.pool['report'].get_action(cr, uid, [], 'my_point_of_sale.report_pos_most_sold_product', data=datas, context=context)
+            return rpt
+
+
+class pos_most_sold_product_rpt(osv.osv):
+    _name = 'pos.most.sold.product.rpt'
+    _description = 'Most Sold Products'
+
+    _columns = {
+        'nbr_product': fields.integer('Nr. Products', help="Number of most sold products"),
+        'date_start': fields.date('Date Start', required=True),
+        'date_end': fields.date('Date End', required=True),
+        'line_ids': fields.one2many('pos.most.sold.product.line', 'rpt_id', string='Lines'),
+    }
+
+
+class pos_most_sold_product_line(osv.osv):
+    _name = "pos.most.sold.product.line"
+    _columns = {
+        'rpt_id': fields.many2one('pos.most.sold.product.rpt', string = 'Report', ondelete="cascade"),
+        'partner_id': fields.many2one('res.partner', 'Customer', readonly=True),
+        'product_id': fields.many2one('product.product', 'Cash Journals', readonly=True),
+        'product_qty': fields.float('Product Qty', readonly=True),
+        'product_unit_price': fields.float('Product Unit Price', readonly=True),
+        'price_total': fields.float('Price Total', readonly=True),
+    }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
