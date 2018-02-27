@@ -27,6 +27,7 @@
         'views/account_views.xml',
         'views/res_company_views.xml',
         'views/account_invoice_view.xml',
+        'wizards/pos_most_sold_product_wzd.xml',
 
         # Templates...
         'static/src/xml/assets_backend.xml',
