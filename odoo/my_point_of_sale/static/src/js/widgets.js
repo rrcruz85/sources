@@ -1436,9 +1436,8 @@ openerp.my_point_of_sale = function(instance) {
                         amount = 0;
                     }
 
-                    if (node.line.get_old_amount() == 0) {
-                        node.line.set_old_amount(node.line.get_amount());
-                    }
+                    node.line.set_old_amount(node.line.get_amount());
+                    node.line.set_sub_total_without_taxes(amount);
                     node.line.set_amount(amount);
                 }
             };
@@ -1541,7 +1540,6 @@ openerp.my_point_of_sale = function(instance) {
                 }
             };
 
-
         },
 
         bind_events: function() {
@@ -1614,7 +1612,7 @@ openerp.my_point_of_sale = function(instance) {
             if (total < 0) {
                 total = 0;
             }
-
+            line.set_sub_total_without_taxes(total);
             if (totalByCard == 0 && line.get_type() == 'card') {
                 totalByCard = total;
             }
@@ -1673,7 +1671,6 @@ openerp.my_point_of_sale = function(instance) {
                 if (total > 0) {
                     total_order += card_comition;
                 }
-                line.set_card_comition(round_pr(card_comition, currentOrder.pos.currency.rounding));
             }
 
             line.set_amount(total_order);
@@ -1730,90 +1727,107 @@ openerp.my_point_of_sale = function(instance) {
             var paymentLines = currentOrder.get('paymentLines');
 
             var totalOrderWithoutTaxes = currentOrder.getTotalTaxExcluded();
-            var taxes = round_pr(currentOrder.getTotalTaxIncluded() - currentOrder.getTotalTaxExcluded(), currentOrder.pos.currency.rounding);
-            if(!currentOrder.apply_taxes){
-                taxes = currentOrder.getTax_2();
-            }
+            var taxes = currentOrder.getTax_2();
+            var applicables_taxes = currentOrder.get_applicable_taxes();
+            var total_max_card_comition = ((totalOrderWithoutTaxes + taxes) * this.pos.config.card_comition)/100;
+            var totalOrderWithTaxes = totalOrderWithoutTaxes + taxes;
 
-            var totalByCard = 0.0;
-            var total_card_comition = 0.0;
             var total_discount_taxes = 0.0;
             var total_taxes = 0.0;
             var totalOrder = currentOrder.get_total();
-            var total_lines = 0.0;
 
-            //Buscando los totales
-            var count = 0;
-            var applicables_taxes = currentOrder.get_applicable_taxes();
+            var subtotal_by_card = 0;
             for (var i = 0; i < paymentLines.models.length; i++) {
 
-                var tmp_val = paymentLines.models[i].get_amount();
-                var type = paymentLines.models[i].get_type();
+                var line = paymentLines.models[i];
+                var type = line.get_type();
+                var tax_line = 0;
+                var iva_comp=0;
 
-                var tax_line = 0.0;
-                var iva_comp = 0.0;
+                if(type == 'card'){
+                    var card_value = line.get_sub_total_without_taxes();
+                    subtotal_by_card += card_value;
+                    //Calculando la comision de tarjeta por linea
+                    var card_comition = 0;
+                    if(currentOrder.apply_taxes){
+                        card_comition = card_value * this.pos.config.card_comition/100;
+                        tax_line =  card_value * taxes / totalOrderWithTaxes;
+                    }
+                    else{
+                        var subtotal = 0;
+                        for (var j = 0; j < applicables_taxes.length; j++) {
+                            subtotal += card_value * applicables_taxes[j].amount;
+                        }
+                        tax_line = subtotal;
+                        subtotal -= (subtotal * this.pos.config.iva_compensation) / 100;
+                        card_comition = ((card_value + subtotal) * this.pos.config.card_comition)/100;
+                    }
 
-                if (i > 0 && type == 'card' && param =='add' && (!paymentLines.models[i].tax_discount || !currentOrder.apply_taxes)) {
-                    tmp_val -= (paymentLines.models[i].get_tax() + paymentLines.models[i].get_card_comition());
-                    paymentLines.models[i].tax_discount = true;
+                    if (card_comition > total_max_card_comition) {
+                        card_comition = total_max_card_comition;
+                    }
+
+                    if (tax_line > taxes) {
+                        tax_line = taxes;
+                    }
+
+                    iva_comp = (tax_line * this.pos.config.iva_compensation) / 100;
+                    tax_line -= iva_comp;
+                    line.set_iva_compensation(iva_comp);
+                    line.set_tax(tax_line);
+                    line.set_card_comition(card_comition);
                 }
-
-                var tax_line = 0.0;
-                var iva_comp = 0.0;
-
-                if (currentOrder.apply_taxes || type == 'card') {
-                    for (var j = 0; j < applicables_taxes.length; j++) {
-                        tax_line += tmp_val * applicables_taxes[j].amount;
-                        iva_comp += (tax_line * this.pos.config.iva_compensation) / 100;
+                else{
+                    if(currentOrder.apply_taxes) {
+                        tax_line = line.get_sub_total_without_taxes() * taxes / totalOrderWithTaxes;
+                        if (tax_line > taxes) {
+                            tax_line = taxes;
+                        }
+                        iva_comp = (tax_line * this.pos.config.iva_compensation) / 100;
                     }
-                }
-
-                total_taxes += tax_line - iva_comp;
-                total_discount_taxes += iva_comp;
-                total_lines += tmp_val;
-
-                paymentLines.models[i].set_tax(tax_line - iva_comp);
-                paymentLines.models[i].set_iva_compensation(iva_comp);
-
-                if (type == 'card' && this.pos.config.card_comition > 0) {
-                    count++;
-                    totalByCard += tmp_val;
-                    var line_comition = 0.0;
-                    if (currentOrder.apply_taxes) {
-                        line_comition = (tmp_val * this.pos.config.card_comition) / 100;
-                    }
-                    else {
-                        line_comition = ((tmp_val + tax_line) * this.pos.config.card_comition) / 100;
-                    }
-                    paymentLines.models[i].set_card_comition(line_comition);
-                    total_card_comition += line_comition;
+                    line.set_iva_compensation(iva_comp);
+                    line.set_tax(tax_line);
+                    line.set_card_comition(0.0);
                 }
             }
+
+            if(currentOrder.apply_taxes){
+                total_taxes = taxes;
+            }
+            else{
+                //Taxes by Card Use
+                for (var j = 0; j < applicables_taxes.length; j++) {
+                    total_taxes += subtotal_by_card * applicables_taxes[j].amount;
+                }
+            }
+
+            total_taxes -= (total_taxes * this.pos.config.iva_compensation) / 100;
 
             if(total_taxes > taxes){
                 total_taxes = taxes;
             }
 
-            var total_comition = ((totalOrderWithoutTaxes + taxes) * this.pos.config.card_comition)/100;
-            if (total_card_comition > total_comition) {
-                total_card_comition = total_comition;
+            var total_max = 0;
+            if(currentOrder.apply_taxes){
+                total_max = totalOrderWithTaxes;
             }
-
-            var allCards = (count == paymentLines.models.length);
-
-            if (allCards && count > 1) {
-                var total_order_with_taxes = currentOrder.getTotalTaxIncluded();
-                if(!currentOrder.apply_taxes){
-                    if (totalByCard >= totalOrderWithoutTaxes) {
-                        total_taxes = currentOrder.getTax_2();
-                    }
-                    total_order_with_taxes += total_taxes;
+            else{
+                total_max = totalOrderWithoutTaxes;
+                if(subtotal_by_card > 0) {
+                    subtotal_by_card += total_taxes
+                    total_max += total_taxes
                 }
-                total_card_comition = (total_order_with_taxes * this.pos.config.card_comition)/100  ;
             }
 
-            console.log("totalOrder:");
-            console.log(totalOrder);
+            if(subtotal_by_card > total_max){
+                subtotal_by_card = total_max;
+            }
+
+            var total_card_comition = subtotal_by_card * this.pos.config.card_comition/100;
+
+            if (total_card_comition > total_max_card_comition) {
+                total_card_comition = total_max_card_comition;
+            }
 
             var paidTotal = currentOrder.getPaidTotal();
             totalOrder = round_pr(totalOrder, currentOrder.pos.currency.rounding);
@@ -1824,10 +1838,7 @@ openerp.my_point_of_sale = function(instance) {
                 change = 0;
             }
 
-            //if(!currentOrder.apply_taxes)
-            //{
-                totalOrder = totalOrderWithoutTaxes + total_card_comition + total_taxes;
-            //}
+            totalOrder = totalOrderWithoutTaxes + total_card_comition + total_taxes;
 
             this.$('.payment-total-without-taxes').html(this.format_currency(totalOrderWithoutTaxes));
             this.$('.payment-card-comition').html(this.format_currency(total_card_comition));
@@ -2708,6 +2719,14 @@ openerp.my_point_of_sale = function(instance) {
             this.card_comition = 0.0;
             this.sub_total_without_taxes = 0.0;
             this.tax_discount = false;
+        },
+
+        get_sub_total_without_taxes: function(){
+            return this.sub_total_without_taxes;
+        },
+
+        set_sub_total_without_taxes: function(sub_total_without_taxes){
+                    this.sub_total_without_taxes = sub_total_without_taxes;
         },
 
         get_old_amount: function(){
