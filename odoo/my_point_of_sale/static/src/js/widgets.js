@@ -827,7 +827,7 @@ openerp.my_point_of_sale = function(instance) {
             options = options || {};
 
             var self = this;
-            var timeout = typeof options.timeout === 'number' ? options.timeout : 15000 * orders.length;
+            var timeout = typeof options.timeout === 'number' ? options.timeout : 30000 * orders.length;
 
             // we try to send the order. shadow prevents a spinner if it takes too long. (unless we are sending an invoice,
             // then we want to notify the user that we are waiting on something )
@@ -849,6 +849,7 @@ openerp.my_point_of_sale = function(instance) {
                 });
                 return server_ids;
             }).fail(function (error, event){
+
                 if(error.code === 200 ){    // Business Logic Error, not a connection problem
                     self.pos_widget.screen_selector.show_popup('error-traceback',{
                         message: error.data.message,
@@ -1779,7 +1780,11 @@ openerp.my_point_of_sale = function(instance) {
                 }
                 else{
                     if(currentOrder.apply_taxes) {
-                        tax_line = line.get_sub_total_without_taxes() * taxes / totalOrderWithTaxes;
+                        var amount = line.get_amount();
+                        if (amount > totalOrderWithTaxes) {
+                            amount = totalOrderWithoutTaxes;
+                        }
+                        tax_line = amount * taxes / totalOrderWithTaxes;
                         if (tax_line > taxes) {
                             tax_line = taxes;
                         }

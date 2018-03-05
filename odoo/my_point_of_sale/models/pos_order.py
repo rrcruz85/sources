@@ -45,8 +45,6 @@ class PosOrder(osv.osv):
                 iva_comp_total += payment.iva_compensation
                 total_taxes += payment.taxes
 
-            if order.apply_taxes:
-                total_taxes = total_taxes/2
 
             cur_obj = self.pool.get('res.currency')
 
@@ -151,7 +149,6 @@ class PosOrder(osv.osv):
             'iva_compensation': ui_paymentline.get('iva_compensation', False),
             'card_comition': ui_paymentline.get('card_comition', False),
             'taxes': ui_paymentline.get('taxes', False),
-            'line_tax_ids': ui_paymentline.get('line_tax_ids', False),
         }
 
     def add_payment(self, cr, uid, order_id, data, context=None):
@@ -222,7 +219,6 @@ class PosOrder(osv.osv):
             'iva_compensation': data.get('iva_compensation', False),
             'card_comition': data.get('card_comition', False),
             'taxes': data.get('taxes', False),
-            'line_tax_ids': data.get('line_tax_ids', False)
         })
 
         statement_line_obj.create(cr, uid, args, context=context)
@@ -409,11 +405,12 @@ class PosOrder(osv.osv):
                 inv_line['price_unit'] = line.price_unit
                 inv_line['discount'] = line.discount
                 inv_line['name'] = inv_name
-                if order.apply_taxes:
+                if order.apply_taxes:#or order.amount_card_comition:
                     taxes_lines = inv_line['invoice_line_tax_id']
                     inv_line['invoice_line_tax_id'] = [(6, 0, taxes_lines)]
                 else:
                     inv_line['invoice_line_tax_id'] = []
+
                 inv_line_ref.create(cr, uid, inv_line, context=context)
 
             inv_ref.button_reset_taxes(cr, uid, [inv_id], context=context)
@@ -477,7 +474,7 @@ class PosOrder(osv.osv):
 
         total_invoice = 0
         if invoice_id:
-            account_invoice_obj = account_pool.browse(cr,uid,invoice_id)
+            account_invoice_obj = account_pool.browse(cr, uid, invoice_id)
             total_invoice = account_invoice_obj.amount_total
             if account_invoice_obj.move_id and account_invoice_obj.move_id.line_id:
                 move_line_ids.append(account_invoice_obj.move_id.line_id[0].id)

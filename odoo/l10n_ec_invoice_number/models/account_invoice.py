@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 from openerp.osv import osv
-from l10n_ec_einvoice import utils
 import datetime
 
 from openerp import (
@@ -39,6 +38,10 @@ class pos_order(osv.osv):
                 raise osv.except_osv(_('Error!'), _('Please provide a partner for the sale.'))
 
             acc = order.partner_id.property_account_receivable.id
+            total_card_comition = 0.0
+            for payment in order.statement_ids:
+                if payment.statement_id.journal_id.type == 'card':
+                    total_card_comition += payment.card_comition
             
             inv = {
                 'name': order.name,
@@ -53,7 +56,8 @@ class pos_order(osv.osv):
                 'from_pos': True,
                 'date_invoice': datetime.datetime.now().strftime('%Y-%m-%d'),
                 'date_due': datetime.datetime.now().strftime('%Y-%m-%d'),
-                'period_id': account_period_id
+                'period_id': account_period_id,
+                'card_comition': total_card_comition
             }
             inv.update(inv_ref.onchange_partner_id(cr, uid, [], 'out_invoice', order.partner_id.id)['value'])
 
@@ -90,10 +94,8 @@ class pos_order(osv.osv):
                 inv_line['price_unit'] = line.price_unit
                 inv_line['discount'] = line.discount
                 inv_line['name'] = inv_name
-                if order.apply_taxes or order.amount_card_comition:
+                if order.apply_taxes:
                     taxes_lines = inv_line['invoice_line_tax_id']
-                    if order.amount_card_comition:
-                        inv_line['price_unit'] = inv_line['price_unit'] + order.amount_card_comition
                     inv_line['invoice_line_tax_id'] = [(6, 0, taxes_lines)]
                 else:
                     inv_line['invoice_line_tax_id'] = []

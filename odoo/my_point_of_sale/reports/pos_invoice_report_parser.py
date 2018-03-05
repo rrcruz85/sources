@@ -8,6 +8,7 @@ class PosInvoiceReport(osv.AbstractModel):
     def render_html(self, cr, uid, ids, data=None, context=None):
         report_obj = self.pool['report']
         posorder_obj = self.pool['pos.order']
+
         report = report_obj._get_report_from_name(cr, uid, 'account.report_invoice')
 
         selected_orders = posorder_obj.browse(cr, uid, ids, context=context)

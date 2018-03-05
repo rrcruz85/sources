@@ -14,7 +14,7 @@
                 name="account.retention" rml="l10n_ec_withdrawing/report/account_retention.mako"
                 usage="default" string="Retención" header="False" report_type="webkit"/>
 
-        <report auto="False" id="account.account_invoices" model="account.invoice"
+        <report auto="False" id="account.account_invoice" model="account.invoice"
                 name="account.invoice2" rml="l10n_ec_withdrawing/report/account_invoice.mako" menu="False"
                 usage="default" string="Factura" header="False" report_type="webkit"/>
 
