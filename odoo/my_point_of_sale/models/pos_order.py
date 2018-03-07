@@ -45,7 +45,6 @@ class PosOrder(osv.osv):
                 iva_comp_total += payment.iva_compensation
                 total_taxes += payment.taxes
 
-
             cur_obj = self.pool.get('res.currency')
 
             sql = 'select discount, price_unit, qty from pos_order_line where order_id = %s '
@@ -405,7 +404,7 @@ class PosOrder(osv.osv):
                 inv_line['price_unit'] = line.price_unit
                 inv_line['discount'] = line.discount
                 inv_line['name'] = inv_name
-                if order.apply_taxes:#or order.amount_card_comition:
+                if order.apply_taxes:
                     taxes_lines = inv_line['invoice_line_tax_id']
                     inv_line['invoice_line_tax_id'] = [(6, 0, taxes_lines)]
                 else:

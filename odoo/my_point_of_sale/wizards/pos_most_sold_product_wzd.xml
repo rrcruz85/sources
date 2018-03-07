@@ -16,7 +16,7 @@
                     <h3>Customers:</h3>
                     <field name="partner_ids" domain="[('customer','=',True)]"/>
                     <footer>
-                        <button name="print_report" type="object" string="Print Report" class="oe_highlight"/>
+                        <button name="print_report" type="object" string="Show Product Sales Analysis" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
@@ -56,32 +56,25 @@
                 <search string="Most Sold Products Analysis">
                     <field name="date_order"/>
                     <filter string="Year" name="year"
-                            domain="[('date_order','&lt;=', time.strftime('%%Y-%%m-%%d')),('date_order','&gt;=',time.strftime('%%Y-01-01'))]"
-                            help="Sold products during current year"/>
+                                                        domain="[('date_order','&lt;=', time.strftime('%%Y-%%m-%%d')),('date_order','&gt;=',time.strftime('%%Y-01-01'))]"
+                                                        help="Sold products during current year"/>
+                    <filter string="Month" name="month"
+                                                                            domain="[('date_order','&lt;=', time.strftime('%%Y-%%m-%%d')),('date_order','&gt;=',time.strftime('%%Y-%%m-01'))]"
+                                                                            help="Sold products during current month"/>
                     <separator/>
+                    <!--
                     <field name="partner_id"/>
                     <field name="product_id"/>
+                    -->
                     <group expand="1" string="Group By">
                         <filter string="Product" context="{'group_by':'product_id'}"/>
                         <separator/>
-                        <filter string="Order Month" context="{'group_by':'date_order:month'}" help="Month of the sale"/>
+                        <filter string="Year" context="{'group_by':'date_order:year'}" help="Year of the sale"/>
+                        <filter string="Month" context="{'group_by':'date_order:month'}" help="Month of the sale"/>
                     </group>
                 </search>
             </field>
         </record>
-
-        <!--
-        <record id="action_report_pos_most_sold_product" model="ir.actions.act_window">
-            <field name="name">Products Sale Analysis</field>
-            <field name="res_model">pos.most.sold.product.line</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">graph</field>
-            <field name="search_view_id" ref="view_report_pos_most_sold_product_search"/>
-            <field name="context">{'group_by_no_leaf':1,'group_by':[]}</field>
-        </record>
-
-        <menuitem action="action_report_pos_order_all" id="menu_report_pos_order_all" parent="menu_point_rep" sequence="3"/>
-        -->
 
     </data>
 </openerp>

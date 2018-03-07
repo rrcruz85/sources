@@ -2,8 +2,6 @@
 
 import  time
 from openerp.osv import osv, fields
-from openerp.report import report_sxw
-from openerp import tools
 
 class pos_most_sold_product_wzd(osv.osv_memory):
     _name = 'pos.most.sold.product.wzd'
@@ -18,7 +16,7 @@ class pos_most_sold_product_wzd(osv.osv_memory):
 
     _defaults = {
         'nbr_product': 1,
-        'date_start': fields.date.context_today,
+        'date_start': lambda *a: time.strftime('%Y-%m-01'),
         'date_end': fields.date.context_today,
     }
 
@@ -83,7 +81,6 @@ class pos_most_sold_product_wzd(osv.osv_memory):
         lines = cr.fetchall()
         line_ids = self.pool.get('pos.most.sold.product.line').search(cr, uid, [])
         self.pool.get('pos.most.sold.product.line').unlink(cr, uid, line_ids)
-        line_ids = self.pool.get('pos.most.sold.product.line').search(cr, uid, [])
 
         rpt_lines = []
         for line in lines:
@@ -107,23 +104,9 @@ class pos_most_sold_product_wzd(osv.osv_memory):
                 'view_mode': 'graph',
                 'view_id': [res_id],
                 'res_model': 'pos.most.sold.product.line',
-                #'context': "{'group_by_no_leaf':1,'group_by':[]}",
                 'type': 'ir.actions.act_window',
-                #'nodestroy': True,
                 'target': 'current',
             }
-
-class pos_most_sold_product_rpt(osv.osv):
-    _name = 'pos.most.sold.product.rpt'
-    _description = 'Most Sold Products'
-
-    _columns = {
-        'nbr_product': fields.integer('Nr. Products', help="Number of most sold products"),
-        'date_start': fields.date('Date Start', required=True),
-        'date_end': fields.date('Date End', required=True),
-        #'line_ids': fields.one2many('pos.most.sold.product.line', 'rpt_id', string='Lines'),
-    }
-
 
 class pos_most_sold_product_line(osv.osv):
     _name = "pos.most.sold.product.line"
