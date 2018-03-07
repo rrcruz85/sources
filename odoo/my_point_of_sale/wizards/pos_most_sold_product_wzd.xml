@@ -35,61 +35,53 @@
 
         <menuitem action="action_pos_most_sold_product_wzd" id="menu_pos_most_sold_product_wzd" parent="point_of_sale.menu_point_rep" sequence="5"/>
 
-        <template id="report_pos_most_sold_product">
-            <t t-call="report.html_container">
-                <t t-call="report.internal_layout">
-                    <div class="page">
-                        <div>
-                            <div class="text-left">
-                                <!--h2 t-if="data['nbr_product'] == '1'">Most Sold Product by Customers</h2 -->
-                                <h2>Most Sold Products by Customers</h2>
-                                <br/>
-                                <h5>From:</h5>
-                                <h5>Until:</h5>
-                                <br/>
-                            </div>
-                            <br/>
-                            <div>
-                                <table class="table table-condensed">
-                                    <thead>
-                                        <tr>
-                                            <th>Product</th>
-                                            <th class="text-right">Quantity</th>
-                                            <th class="text-right">Price</th>
-                                        </tr>
-                                    </thead>
+        <record id="view_report_pos_most_sold_product_graph" model="ir.ui.view">
+            <field name="name">pos.most.sold.product.line.graph</field>
+            <field name="model">pos.most.sold.product.line</field>
+            <field name="arch" type="xml">
+                <graph string="Most Sold Products Analysis" type="pivot">
+                    <field name="partner_id" type="row"/>
+                    <field name="product_id" type="row"/>
+                    <field name="date_order" interval="month" type="col"/>
+                    <field name="product_qty" type="measure"/>
+                    <field name="price_total" type="measure"/>
+                </graph>
+            </field>
+        </record>
 
-                                    <tbody>
-                                        <!--
-                                        <tr t-foreach="docs" t-as="line">
-                                            <td>
-                                                <span t-field="line.product_id"/>
-                                            </td>
+        <record id="view_report_pos_most_sold_product_search" model="ir.ui.view">
+            <field name="name">pos.most.sold.product.line.search</field>
+            <field name="model">pos.most.sold.product.line</field>
+            <field name="arch" type="xml">
+                <search string="Most Sold Products Analysis">
+                    <field name="date_order"/>
+                    <filter string="Year" name="year"
+                            domain="[('date_order','&lt;=', time.strftime('%%Y-%%m-%%d')),('date_order','&gt;=',time.strftime('%%Y-01-01'))]"
+                            help="Sold products during current year"/>
+                    <separator/>
+                    <field name="partner_id"/>
+                    <field name="product_id"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Product" context="{'group_by':'product_id'}"/>
+                        <separator/>
+                        <filter string="Order Month" context="{'group_by':'date_order:month'}" help="Month of the sale"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
-                                            <td class="text-right">
+        <!--
+        <record id="action_report_pos_most_sold_product" model="ir.actions.act_window">
+            <field name="name">Products Sale Analysis</field>
+            <field name="res_model">pos.most.sold.product.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">graph</field>
+            <field name="search_view_id" ref="view_report_pos_most_sold_product_search"/>
+            <field name="context">{'group_by_no_leaf':1,'group_by':[]}</field>
+        </record>
 
-                                            </td>
-                                        </tr>
-                                         -->
-                                    </tbody>
-
-
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </t>
-            </t>
-        </template>
-
-        <report
-                id="action_report_pos_most_sold_product"
-                string="Pos Most Sold Product"
-                model="pos.most.sold.product.rpt"
-                report_type="qweb-pdf"
-                name="my_point_of_sale.report_pos_most_sold_product"
-                file="my_point_of_sale.report_pos_most_sold_product"
-        />
+        <menuitem action="action_report_pos_order_all" id="menu_report_pos_order_all" parent="menu_point_rep" sequence="3"/>
+        -->
 
     </data>
 </openerp>

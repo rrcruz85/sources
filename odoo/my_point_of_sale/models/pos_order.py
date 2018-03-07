@@ -484,11 +484,13 @@ class PosOrder(osv.osv):
 
         #Creating Move Lines
         for line in lines:
+            journal = self.pool.get('account.journal').browse(cr,uid, line[1])
             debit = credit = 0.0
-            if order.sale_journal.type in ('purchase', 'payment'):
-                credit = line[0]#total_invoice
-            elif order.sale_journal.type in ('sale', 'receipt'):
-                debit = line[0]#total_invoice
+
+            if journal.type in ('payment', 'card', 'cash', 'check'):
+                debit = line[0]
+            elif journal.type in ('sale', 'receipt',):
+                credit = line[0]
             if debit < 0: credit = -debit; debit = 0.0
             if credit < 0: debit = -credit; credit = 0.0
             sign = debit - credit < 0 and -1 or 1
