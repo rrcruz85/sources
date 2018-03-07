@@ -92,7 +92,7 @@ class Machinery(models.Model):
 
     customer_id = fields.Many2one('res.partner', string='Customer')
     broker_id = fields.Many2one('res.partner', string='Agente')
-    consultant_id = fields.Many2one('hr.employee', string='Asesor')
+    consultant_id = fields.Many2one('res.partner', string='Asesor')
 
     work_order = fields.Char(string='Orden de Trabajo')
     cia = fields.Char()
@@ -119,9 +119,20 @@ class Machinery(models.Model):
     otros = fields.Boolean()
     otros_description = fields.Char()
 
-    work_to_realize_ids = fields.Many2many('fleet.vehicle.log.services', string='Trabajos a realizar')
+    work_to_realize_ids = fields.Many2many('machinery.reparation_work', string='Trabajos a realizar')
     observation_ids = fields.Many2many('machinery.observation', string='Observaciones')
     coordinates = fields.Char()
+
+    # Fuel level...
+    fuel_level_0 = fields.Boolean(string='0')
+    fuel_level_1_8 = fields.Boolean(string='1/8')
+    fuel_level_1_4 = fields.Boolean(string='1/4')
+    fuel_level_3_8 = fields.Boolean(string='3/8')
+    fuel_level_1_2 = fields.Boolean(string='1/2')
+    fuel_level_5_8 = fields.Boolean(string='5/8')
+    fuel_level_3_4 = fields.Boolean(string='3/4')
+    fuel_level_7_8 = fields.Boolean(string='7/8')
+    fuel_level_1 = fields.Boolean(string='1')
 
     @api.one
     def action_clear(self):
@@ -131,6 +142,12 @@ class Machinery(models.Model):
 class Observation(models.Model):
     _name = 'machinery.observation'
     _description = 'machinery.observation'
+    name = fields.Char(required=True)
+
+
+class ReparationWork(models.Model):
+    _name = 'machinery.reparation_work'
+    _description = 'machinery.reparation_work'
     name = fields.Char(required=True)
 
 

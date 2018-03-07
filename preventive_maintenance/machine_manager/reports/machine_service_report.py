@@ -206,18 +206,6 @@ class MachineReparationReport(report_rml):
             logo = user.company_id.logo_web
             list_to_delete = []
 
-            # path = modules.get_module_path('machine_manager')
-            # path += '/static/temp/'
-            # path = os.path.normpath(path)
-            #
-            # name = 'photo' + str(choice(range(1, 10000)))
-            # img_path = os.path.join(path, name + '.png')
-            # list_to_delete.append(img_path)
-
-            # image_stream = io.BytesIO(logo.decode('base64'))
-            # img = Image.open(image_stream)
-            # img.save(img_path, "PNG")
-
             img_logo_path = modules.get_module_path('machine_manager')
             img_logo_path += '/static/img/'
             img_logo_path = os.path.normpath(img_logo_path)
@@ -620,9 +608,40 @@ class MachineReparationReport(report_rml):
                                                     <illustration width="120" height="50">
                                                         <image file="file:""" + img_oil_path + """ " x="23" y="5" width="120" height="40"/>
                                                         <fill color="#244d70"/>
-                                                        <setFont name="Helvetica-Bold" size="6"/>
-                                                        <drawString x="38" y="10">COMBUSTIBLE</drawString>
-                                                    </illustration>
+                                                        <setFont name="Helvetica-Bold" size="5"/>
+                                                        <drawString x="42" y="8">COMBUSTIBLE</drawString>
+
+                                                        <fill color="red"/>
+                                                        <setFont name="Helvetica-Bold" size="8"/>"""
+
+            if service.fuel_level_0:
+                rml += """                              <drawString x="23" y="12">X</drawString>"""
+
+            elif service.fuel_level_1_8:
+                rml += """                              <drawString x="25" y="21">X</drawString>"""
+
+            elif service.fuel_level_1_4:
+                rml += """                              <drawString x="32" y="31">X</drawString>"""
+
+            elif service.fuel_level_3_8:
+                rml += """                              <drawString x="42" y="37">X</drawString>"""
+
+            elif service.fuel_level_1_2:
+                rml += """                              <drawString x="57" y="40">X</drawString>"""
+
+            elif service.fuel_level_5_8:
+                rml += """                              <drawString x="73" y="37">X</drawString>"""
+
+            elif service.fuel_level_3_4:
+                rml += """                              <drawString x="82" y="31">X</drawString>"""
+
+            elif service.fuel_level_7_8:
+                rml += """                              <drawString x="89" y="21">X</drawString>"""
+
+            elif service.fuel_level_1:
+                rml += """                              <drawString x="92" y="12">X</drawString>"""
+
+            rml += """                              </illustration>
                                                 </td>
                                                 <td>
                                                     <blockTable colWidths="58.0,17.0" rowHeights="20" style="NoneBorders">
@@ -826,7 +845,7 @@ class MachineReparationReport(report_rml):
             for work in service.work_to_realize_ids:
                 rml += """                  <tr>
                                                 <td>
-                                                    <para style="text_information3_left">""" + (tools.ustr(work.cost_subtype_id.name)) + """</para>
+                                                    <para style="text_information3_left">""" + (tools.ustr(work.name)) + """</para>
                                                 </td>
                                             </tr>"""
 

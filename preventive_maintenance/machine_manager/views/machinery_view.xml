@@ -106,7 +106,7 @@
                         </page>
 
                         <!-- ========================== INFO REFERENTE AL REPORTE ========================== -->
-                        <page string="Referente al Reporte">
+                        <page string="Machine Gathering Information ">
                             <group>
                                 <group>
                                     <field name="vehicle_id"/>
@@ -119,6 +119,26 @@
                                     <field name="reception_date"/>
                                     <field name="work_order"/>
                                     <field name="cia"/>
+                                </group>
+                            </group>
+
+                            <group string="Nivel de combustible" col="12">
+                                <group colspan="4">
+                                    <field name="fuel_level_0"/>
+                                    <field name="fuel_level_1_8"/>
+                                    <field name="fuel_level_1_4"/>
+                                </group>
+
+                                <group colspan="4">
+                                    <field name="fuel_level_3_8"/>
+                                    <field name="fuel_level_1_2"/>
+                                    <field name="fuel_level_5_8"/>
+                                </group>
+
+                                <group colspan="4">
+                                    <field name="fuel_level_3_4"/>
+                                    <field name="fuel_level_7_8"/>
+                                    <field name="fuel_level_1"/>
                                 </group>
                             </group>
 
@@ -161,10 +181,9 @@
                             </group>
 
                             <group string="Trabajos a realizar">
-                                <field name="work_to_realize_ids" nolabel="1" context="{'default_vehicle_id': vehicle_id}" domain="[('vehicle_id', '=', vehicle_id)]">
+                                <field name="work_to_realize_ids" nolabel="1">
                                     <tree>
-                                        <field name="cost_subtype_id"/>
-                                        <field name="date"/>
+                                        <field name="name"/>
                                     </tree>
                                 </field>
                             </group>
