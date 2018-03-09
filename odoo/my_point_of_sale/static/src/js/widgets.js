@@ -1733,11 +1733,20 @@ openerp.my_point_of_sale = function(instance) {
             var total_max_card_comition = ((totalOrderWithoutTaxes + taxes) * this.pos.config.card_comition)/100;
             var totalOrderWithTaxes = totalOrderWithoutTaxes + taxes;
 
+            var total = 0;
+            if (currentOrder.apply_taxes) {
+                total = totalOrderWithTaxes;
+            }
+            else {
+                total = totalOrderWithoutTaxes;
+            }
+
             var total_discount_taxes = 0.0;
             var total_taxes = 0.0;
             var totalOrder = currentOrder.get_total();
 
             var subtotal_by_card = 0;
+            var total_accumulated = 0;
             for (var i = 0; i < paymentLines.models.length; i++) {
 
                 var line = paymentLines.models[i];
@@ -1747,6 +1756,17 @@ openerp.my_point_of_sale = function(instance) {
 
                 if(type == 'card'){
                     var card_value = line.get_sub_total_without_taxes();
+
+                    if(card_value + total_accumulated >  total)
+                    {
+                        card_value = total - total_accumulated;
+                        if(card_value < 0)
+                        {
+                            card_value = 0;
+                        }
+                    }
+                    total_accumulated += card_value;
+
                     subtotal_by_card += card_value;
                     //Calculando la comision de tarjeta por linea
                     var card_comition = 0;
@@ -1779,12 +1799,23 @@ openerp.my_point_of_sale = function(instance) {
                     line.set_card_comition(card_comition);
                 }
                 else{
-                    if(currentOrder.apply_taxes) {
-                        var amount = line.get_amount();
-                        if (amount > totalOrderWithTaxes) {
-                            amount = totalOrderWithoutTaxes;
+                    var amount = line.get_amount();
+                    if (amount + total_accumulated > total) {
+                        amount = total - total_accumulated;
+                        if (amount < 0) {
+                            amount = 0;
                         }
-                        tax_line = amount * taxes / totalOrderWithTaxes;
+                    }
+                    total_accumulated += amount;
+
+                    if(currentOrder.apply_taxes) {
+                        if (amount > totalOrderWithTaxes) {
+                            amount = totalOrderWithTaxes;
+                            tax_line = taxes;
+                        }
+                        else {
+                            tax_line = amount * taxes / totalOrderWithTaxes;
+                        }
                         if (tax_line > taxes) {
                             tax_line = taxes;
                         }
@@ -2731,7 +2762,7 @@ openerp.my_point_of_sale = function(instance) {
         },
 
         set_sub_total_without_taxes: function(sub_total_without_taxes){
-                    this.sub_total_without_taxes = sub_total_without_taxes;
+            this.sub_total_without_taxes = sub_total_without_taxes;
         },
 
         get_old_amount: function(){
