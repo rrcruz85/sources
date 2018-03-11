@@ -1829,16 +1829,6 @@ openerp.my_point_of_sale = function(instance) {
                     line.set_tax(tax_line);
                     line.set_card_comition(0.0);
                 }
-
-                //Last line
-                if(i == paymentLines.models.length - 1)
-                {
-                    if(currentOrder.apply_taxes && taxes_accumulated < taxes)
-                    {
-                        tax_line += taxes - taxes_accumulated;
-                        line.set_tax(tax_line);
-                    }
-                }
             }
 
             if(currentOrder.apply_taxes){

@@ -33,10 +33,12 @@ class PosOrder(osv.osv):
             iva_comp_total = 0.0
             total_taxes = 0.0
             total_card_comition = 0.0
+            total_by_card = 0.0
 
             for payment in order.statement_ids:
                 if payment.statement_id.journal_id.type == 'card':
                     total_card_comition += payment.card_comition
+                    total_by_card += payment.amount
                 if payment.amount < 0:
                     change += abs(payment.amount)
                 else:
@@ -56,6 +58,12 @@ class PosOrder(osv.osv):
             for line in result:
                 total_discount = total_discount + (line[2] * (line[0] * line[1] / 100))
                 amount_untaxed = amount_untaxed + (line[2] * line[1])
+
+            subtotal_card_comition = total_by_card * order.session_id.config_id.card_comition / 100
+
+            if subtotal_card_comition != total_card_comition:
+                total_card_comition = subtotal_card_comition
+                total_taxes = total - (amount_untaxed + total_card_comition + change)
 
             amount_untaxed = cur_obj.round(cr, uid, cur, amount_untaxed)
             total_discount = cur_obj.round(cr, uid, cur, total_discount)

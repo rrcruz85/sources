@@ -13,16 +13,15 @@
             <field name="model">pos.order</field>
             <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
             <field name="arch" type="xml">
-                 <xpath expr="//field[@name='amount_tax']" position="before">
-                     <field name="amount_card_comition"/>
-                     <newline/>
-                </xpath>
-                <!--
-                <xpath expr="//field[@name='amount_tax']" position="after">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="apply_taxes" readonly="1"/>
                     <newline/>
-                    <field name="amount_iva_compensation_str"/>
+                 </xpath>
+
+                <xpath expr="//field[@name='amount_tax']" position="before">
+                    <field name="amount_card_comition"/>
+                    <newline/>
                 </xpath>
-                -->
 
                 <xpath expr="//field[@name='lines']" position="replace">
                     <field name="lines" colspan="4" nolabel="1">
