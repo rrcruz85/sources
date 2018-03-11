@@ -112,11 +112,17 @@
                     <t t-esc="widget.format_currency(order.getTotalCardComition())"/>
                 </td>
             </tr>
+            <tr id="total-taxes-tr">
+                <td>Taxes:</td>
+                <td class="pos-right-align">
+                    <t t-esc="widget.format_currency(order.get_total_taxes())"/>
+                </td>
+            </tr>
             <tr t-if="order.get_config_iva_compensation() &gt; 0" id="taxes-compensation-tr">
                 <td>IVA Compensation:</td>
                 <td class="pos-right-align">
-                    <t t-esc="widget.format_currency(order.getTaxesCompensation())"/>
-                </td>
+                               <t t-esc="widget.format_currency(order.getTaxesCompensation())"/>
+                           </td>
             </tr>
         </t>
 
@@ -127,10 +133,6 @@
                     <t t-esc="widget.format_currency(order.getTotalWithTaxesCompensation())"/>
                 </td>
             </tr>
-        </t>
-
-        <t t-jquery=".subentry" t-operation="replace">
-            <div class='subentry' t-if="order.get_taxes() &gt; 0">Taxes2: <span class="value">0.00€</span></div>
         </t>
 
         <t t-jquery=".pos-right-align">this.attr('style', 'font-size: 20px;');</t>

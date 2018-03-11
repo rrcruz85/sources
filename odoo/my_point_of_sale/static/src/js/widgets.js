@@ -912,6 +912,7 @@ openerp.my_point_of_sale = function(instance) {
             this.order_id = 0;
             this.apply_taxes = true;
             this.total = 0.0;
+            this.total_taxes = 0.0;
             return this;
         },
 
@@ -1141,13 +1142,16 @@ openerp.my_point_of_sale = function(instance) {
         set_selected_lot: function (lot) {
             this.set('selectedLot', lot);
         },
+
         get_selected_lot: function () {
             return this.get('selectedLot');
         },
+
         get_selected_qty: function () {
             var lot = this.get('selectedLot');
             return lot ? lot.qty : 0;
         },
+
         removeAllPaymentlines: function () {
             var self = this;
             for(var i =0; i<  this.get('paymentLines').models.length; i++)
@@ -1194,6 +1198,14 @@ openerp.my_point_of_sale = function(instance) {
 
         set_total: function (total) {
             this.total = total;
+        },
+
+        get_total_taxes: function () {
+            return this.total_taxes;
+        },
+
+        set_total_taxes: function (taxes) {
+            this.total_taxes = taxes;
         }
     });
 
@@ -1877,6 +1889,9 @@ openerp.my_point_of_sale = function(instance) {
             if(totalOrder == 0){
                 change = 0;
             }
+
+            //Setting the total taxes of the order
+            currentOrder.set_total_taxes(total_taxes);
 
             totalOrder = totalOrderWithoutTaxes + total_card_comition + total_taxes;
 
