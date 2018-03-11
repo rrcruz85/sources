@@ -617,26 +617,26 @@ class MachineReparationReport(report_rml):
             if service.fuel_level_0:
                 rml += """                              <drawString x="23" y="12">X</drawString>"""
 
-            elif service.fuel_level_1_8:
-                rml += """                              <drawString x="25" y="21">X</drawString>"""
+            #elif service.fuel_level_1_8:
+            #    rml += """                              <drawString x="25" y="21">X</drawString>"""
 
-            elif service.fuel_level_1_4:
-                rml += """                              <drawString x="32" y="31">X</drawString>"""
+            #elif service.fuel_level_1_4:
+            #   rml += """                              <drawString x="32" y="31">X</drawString>"""
 
-            elif service.fuel_level_3_8:
-                rml += """                              <drawString x="42" y="37">X</drawString>"""
+            #elif service.fuel_level_3_8:
+            #    rml += """                              <drawString x="42" y="37">X</drawString>"""
 
             elif service.fuel_level_1_2:
                 rml += """                              <drawString x="57" y="40">X</drawString>"""
 
-            elif service.fuel_level_5_8:
-                rml += """                              <drawString x="73" y="37">X</drawString>"""
+            #elif service.fuel_level_5_8:
+            #    rml += """                              <drawString x="73" y="37">X</drawString>"""
 
-            elif service.fuel_level_3_4:
-                rml += """                              <drawString x="82" y="31">X</drawString>"""
+            #elif service.fuel_level_3_4:
+            #    rml += """                              <drawString x="82" y="31">X</drawString>"""
 
-            elif service.fuel_level_7_8:
-                rml += """                              <drawString x="89" y="21">X</drawString>"""
+            #elif service.fuel_level_7_8:
+            #    rml += """                              <drawString x="89" y="21">X</drawString>"""
 
             elif service.fuel_level_1:
                 rml += """                              <drawString x="92" y="12">X</drawString>"""

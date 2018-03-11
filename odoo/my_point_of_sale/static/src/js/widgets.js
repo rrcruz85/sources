@@ -1729,6 +1729,7 @@ openerp.my_point_of_sale = function(instance) {
 
             var totalOrderWithoutTaxes = currentOrder.getTotalTaxExcluded();
             var taxes = currentOrder.getTax_2();
+            var taxes_accumulated = 0;
             var applicables_taxes = currentOrder.get_applicable_taxes();
             var total_max_card_comition = ((totalOrderWithoutTaxes + taxes) * this.pos.config.card_comition)/100;
             var totalOrderWithTaxes = totalOrderWithoutTaxes + taxes;
@@ -1794,6 +1795,8 @@ openerp.my_point_of_sale = function(instance) {
 
                     iva_comp = (tax_line * this.pos.config.iva_compensation) / 100;
                     tax_line -= iva_comp;
+
+                    taxes_accumulated += tax_line;
                     line.set_iva_compensation(iva_comp);
                     line.set_tax(tax_line);
                     line.set_card_comition(card_comition);
@@ -1822,8 +1825,19 @@ openerp.my_point_of_sale = function(instance) {
                         iva_comp = (tax_line * this.pos.config.iva_compensation) / 100;
                     }
                     line.set_iva_compensation(iva_comp);
+                    taxes_accumulated += tax_line;
                     line.set_tax(tax_line);
                     line.set_card_comition(0.0);
+                }
+
+                //Last line
+                if(i == paymentLines.models.length - 1)
+                {
+                    if(currentOrder.apply_taxes && taxes_accumulated < taxes)
+                    {
+                        tax_line += taxes - taxes_accumulated;
+                        line.set_tax(tax_line);
+                    }
                 }
             }
 

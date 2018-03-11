@@ -125,19 +125,27 @@
                             <group string="Nivel de combustible" col="12">
                                 <group colspan="4">
                                     <field name="fuel_level_0"/>
+                                    <!--
                                     <field name="fuel_level_1_8"/>
                                     <field name="fuel_level_1_4"/>
+                                    -->
                                 </group>
 
                                 <group colspan="4">
+                                    <!--
                                     <field name="fuel_level_3_8"/>
+                                    -->
                                     <field name="fuel_level_1_2"/>
+                                    <!--
                                     <field name="fuel_level_5_8"/>
+                                    -->
                                 </group>
 
                                 <group colspan="4">
+                                    <!--
                                     <field name="fuel_level_3_4"/>
                                     <field name="fuel_level_7_8"/>
+                                    -->
                                     <field name="fuel_level_1"/>
                                 </group>
                             </group>
