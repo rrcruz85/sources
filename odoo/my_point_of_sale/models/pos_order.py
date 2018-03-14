@@ -61,7 +61,7 @@ class PosOrder(osv.osv):
 
             subtotal_card_comition = total_by_card * order.session_id.config_id.card_comition / 100
 
-            if subtotal_card_comition != total_card_comition:
+            if subtotal_card_comition < total_card_comition:
                 total_card_comition = subtotal_card_comition
                 total_taxes = total - (amount_untaxed + total_card_comition + change)
 
@@ -422,15 +422,19 @@ class PosOrder(osv.osv):
 
             inv_ref.button_reset_taxes(cr, uid, [inv_id], context=context)
             self.signal_workflow(cr, uid, [order.id], 'invoice')
-            inv_ref.action_date_assign(cr, uid, [inv_id], context=context)
-            inv_ref.action_move_create(cr, uid, [inv_id], context=context)
-            inv_ref.action_number(cr, uid, [inv_id], context=context)
-            inv_ref.invoice_validate(cr, uid, [inv_id], context=context)
+            inv_ref.signal_workflow(cr, uid, [inv_id], 'validate')
+
+            #inv_ref.action_date_assign(cr, uid, [inv_id], context=context)
+            #inv_ref.action_move_create(cr, uid, [inv_id], context=context)
+            #inv_ref.action_number(cr, uid, [inv_id], context=context)
+            #inv_ref.invoice_validate(cr, uid, [inv_id], context=context)
+
 
             #creating payment lines
-            self.create_payment_lines(cr, uid, order, period, inv_id, context = context)
+            #self.create_payment_lines(cr, uid, order, period, inv_id, context = context)
 
-        if not inv_ids: return {}
+        if not inv_ids:
+            return {}
 
         mod_obj = self.pool.get('ir.model.data')
         res = mod_obj.get_object_reference(cr, uid, 'account', 'invoice_form')

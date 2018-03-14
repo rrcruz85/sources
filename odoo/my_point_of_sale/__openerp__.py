@@ -39,6 +39,7 @@
         'reports/report_detailsofsales.xml',
         'reports/report_pos_ticket.xml',
         # Template...
+        'reports/report_pos_most_sold_product.xml',
         'views/pos_order_template.xml',
     ],
 

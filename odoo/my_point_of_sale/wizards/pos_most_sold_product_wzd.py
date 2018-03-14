@@ -20,10 +20,8 @@ class pos_most_sold_product_wzd(osv.osv_memory):
         'date_end': fields.date.context_today,
     }
 
-    def print_report(self, cr, uid, ids, context=None):
+    def execute_query(self, cr, uid, ids, create_parent = False, context = None):
 
-        if context is None:
-            context = {}
         obj = self.browse(cr, uid, ids[0])
         query = """
             SELECT
@@ -93,7 +91,28 @@ class pos_most_sold_product_wzd(osv.osv_memory):
                     'price_total': line[4],
                     'date_order': line[5]
                 }
-                rpt_lines.append(self.pool.get('pos.most.sold.product.line').create(cr,uid,vals))
+                if not create_parent:
+                    rpt_lines.append(self.pool.get('pos.most.sold.product.line').create(cr, uid, vals))
+                else:
+                    rpt_lines.append((0,0,vals))
+        if create_parent:
+            line_ids = self.pool.get('pos.most.sold.product').search(cr, uid, [])
+            self.pool.get('pos.most.sold.product').unlink(cr, uid, line_ids)
+
+            dict_parent = {
+                'nbr_product': obj.nbr_product,
+                'date_start' : obj.date_start,
+                'date_end': obj.date_end,
+                'user_id': uid,
+                'line_ids': rpt_lines
+            }
+            return [self.pool.get('pos.most.sold.product').create(cr, uid, dict_parent)]
+        else:
+            return rpt_lines
+
+    def show_sale_analysis_view(self, cr, uid, ids, context=None):
+
+        rpt_lines = self.execute_query(cr,uid, ids, False, context)
         if rpt_lines:
             mod_obj = self.pool.get('ir.model.data')
             res = mod_obj.get_object_reference(cr, uid, 'my_point_of_sale', 'view_report_pos_most_sold_product_graph')
@@ -108,9 +127,39 @@ class pos_most_sold_product_wzd(osv.osv_memory):
                 'target': 'current',
             }
 
+    def print_report_pdf(self, cr, uid, ids, context=None):
+
+        if context is None:
+            context = {}
+        rpt_lines = self.execute_query(cr, uid, ids, True, context)
+        #obj = self.pool.get('pos.most.sold.product').browse(cr, uid, rpt_lines[0])
+        datas = {'ids': context.get('active_ids', [])}
+        res = self.read(cr, uid, ids, ['date_start', 'date_end', 'nbr_product'], context=context)
+        res = res and res[0] or {}
+        datas['form'] = res
+        if res.get('id', False):
+            datas['ids'] = rpt_lines
+
+        return self.pool['report'].get_action(cr, uid, [], 'my_point_of_sale.report_pos_most_sold_product', data=datas, context=context)
+
+
+class pos_most_sold_product(osv.osv):
+    _name = 'pos.most.sold.product'
+    _description = 'Most Sold Products'
+
+    _columns = {
+        'nbr_product': fields.integer('Nr. Products'),
+        'date_start': fields.date('Date Start'),
+        'date_end': fields.date('Date End'),
+        'user_id': fields.many2one('User'),
+        'line_ids': fields.one2many('pos.most.sold.product.line', 'parent_id','Lines'),
+    }
+
+
 class pos_most_sold_product_line(osv.osv):
     _name = "pos.most.sold.product.line"
     _columns = {
+        'parent_id': fields.many2one('pos.most.sold.product', 'Parent'),
         'partner_id': fields.many2one('res.partner', 'Customer', readonly=True),
         'product_id': fields.many2one('product.product', 'Product', readonly=True),
         'product_qty': fields.integer('Product Qty', readonly=True),
