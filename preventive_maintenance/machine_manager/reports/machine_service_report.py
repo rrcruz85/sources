@@ -221,6 +221,20 @@ class MachineReparationReport(report_rml):
             img_car_path = os.path.normpath(img_car_path)
             img_car_path = os.path.join(img_car_path, 'car.png')
 
+            if user.company_id.logo_web:
+                path = modules.get_module_path('machine_manager')
+                path += '/static/temp/'
+                path = os.path.normpath(path)
+
+                name = 'photo' + str(choice(range(1, 100)))
+                img_path = os.path.join(path, name + '.png')
+                img_logo_path = img_path
+                list_to_delete.append(img_path)
+
+                image_stream = io.BytesIO(user.company_id.logo_web.decode('base64'))
+                img = Image.open(image_stream)
+                img.save(img_path, "PNG")
+
             rml += """  <section>
                             <blockTable colWidths="340.0,200.0" rowHeights="" style="">
                                 <tr>
@@ -231,7 +245,7 @@ class MachineReparationReport(report_rml):
                                     </td>
 
                                     <td>
-                                        <para style="title_top_center">R.U.C.: 1792169801001</para>
+                                        <para style="title_top_center">R.U.C.: """ + (tools.ustr(user.company_id.ruc or '')) +"""</para>
                                         <para style="title_top_center">
                                             """ + (tools.ustr(user.company_id.street or '')) + ' ' + (tools.ustr(user.company_id.street2 or '')) + """
                                         </para>

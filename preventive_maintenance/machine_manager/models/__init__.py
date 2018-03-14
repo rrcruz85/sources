@@ -7,3 +7,4 @@ from . import machine_model
 from . import machinery
 from . import res_users
 from . import fleet
+from . import res_company

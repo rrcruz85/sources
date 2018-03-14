@@ -125,13 +125,13 @@ class Machinery(models.Model):
 
     # Fuel level...
     fuel_level_0 = fields.Boolean(string='0')
-    #fuel_level_1_8 = fields.Boolean(string='1/8')
-    #fuel_level_1_4 = fields.Boolean(string='1/4')
-    #fuel_level_3_8 = fields.Boolean(string='3/8')
+    fuel_level_1_8 = fields.Boolean(string='1/8')
+    fuel_level_1_4 = fields.Boolean(string='1/4')
+    fuel_level_3_8 = fields.Boolean(string='3/8')
     fuel_level_1_2 = fields.Boolean(string='1/2')
-    #fuel_level_5_8 = fields.Boolean(string='5/8')
-    #fuel_level_3_4 = fields.Boolean(string='3/4')
-    #fuel_level_7_8 = fields.Boolean(string='7/8')
+    fuel_level_5_8 = fields.Boolean(string='5/8')
+    fuel_level_3_4 = fields.Boolean(string='3/4')
+    fuel_level_7_8 = fields.Boolean(string='7/8')
     fuel_level_1 = fields.Boolean(string='1')
 
     @api.one

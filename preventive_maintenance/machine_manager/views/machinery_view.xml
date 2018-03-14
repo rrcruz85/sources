@@ -123,31 +123,25 @@
                             </group>
 
                             <group string="Nivel de combustible" col="12">
-                                <group colspan="4">
-                                    <field name="fuel_level_0"/>
-                                    <!--
-                                    <field name="fuel_level_1_8"/>
-                                    <field name="fuel_level_1_4"/>
-                                    -->
-                                </group>
-
-                                <group colspan="4">
-                                    <!--
-                                    <field name="fuel_level_3_8"/>
-                                    -->
-                                    <field name="fuel_level_1_2"/>
-                                    <!--
-                                    <field name="fuel_level_5_8"/>
-                                    -->
-                                </group>
-
-                                <group colspan="4">
-                                    <!--
-                                    <field name="fuel_level_3_4"/>
-                                    <field name="fuel_level_7_8"/>
-                                    -->
-                                    <field name="fuel_level_1"/>
-                                </group>
+                                <div style="float:left !important; display:inline-block !important;">
+                                    <span><strong>0</strong></span>
+                                    <span><strong>___</strong></span>
+                                    <span><strong>____</strong></span>
+                                    <span><strong>1/2</strong></span>
+                                    <span><strong>___</strong></span>
+                                    <span><strong>____</strong></span>
+                                    <span><strong>1</strong></span>
+                                    <br/>
+                                    <field name="fuel_level_0" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_1_8" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_1_4" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_3_8" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_1_2" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_5_8" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_3_4" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_7_8" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_1"  style="display: inline-block !important;"/>
+                                </div>
                             </group>
 
                             <group string="Accesorios" col="12">
