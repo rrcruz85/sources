@@ -22,6 +22,7 @@
         "account",
         "product_manufacturer",
         "product",
+        "fleet",
     ],
     "demo": [
         "demo/machine_model_demo.xml",
