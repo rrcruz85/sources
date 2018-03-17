@@ -9,6 +9,7 @@ class pos_most_sold_product_wzd(osv.osv_memory):
 
     _columns = {
         'nbr_product': fields.integer('Nr. Products', help="Number of most sold products"),
+        'nbr_records': fields.integer('Nr. Records', help="Number of records"),
         'date_start': fields.date('Date Start', required=True),
         'date_end': fields.date('Date End', required=True),
         'partner_ids': fields.many2many('res.partner', 'pos_most_sold_product_partner_rel', 'partner_id', 'wizard_id', 'Customers'),
@@ -16,6 +17,7 @@ class pos_most_sold_product_wzd(osv.osv_memory):
 
     _defaults = {
         'nbr_product': 1,
+        'nbr_records': 10,
         'date_start': lambda *a: time.strftime('%Y-%m-01'),
         'date_end': fields.date.context_today,
     }
@@ -24,8 +26,8 @@ class pos_most_sold_product_wzd(osv.osv_memory):
 
         obj = self.browse(cr, uid, ids[0])
         query = """
-            SELECT
-                *
+            select * from (
+            SELECT *, ROW_NUMBER() OVER () as fila
             FROM
                 (
                     SELECT      
@@ -35,26 +37,29 @@ class pos_most_sold_product_wzd(osv.osv_memory):
                         MIN (l.price_unit) AS product_unit_price,
                         SUM (l.qty * l.price_unit) AS price_total,
                         to_char(date_trunc('day',s.date_order),'YYYY-MM-DD')::text as date_order,                  
-                        ROW_NUMBER() OVER (PARTITION BY s.partner_id ORDER BY SUM (l.qty * u.factor) DESC ) row_num
+                        ROW_NUMBER() OVER (PARTITION BY s.partner_id ORDER BY SUM (l.qty * u.factor) DESC ) row_num,
+                        cl.name as client_name
                     FROM
                         pos_order_line AS l
-                        LEFT JOIN pos_order s ON (s. ID = l.order_id)                            
+                        LEFT JOIN pos_order s ON (s. ID = l.order_id) 
+                        LEFT JOIN res_partner cl ON (s.partner_id = cl.ID)                           
                         LEFT JOIN product_product P ON (P . ID = l.product_id)
                         LEFT JOIN product_template pt ON (pt. ID = P .product_tmpl_id)
                         LEFT JOIN product_uom u ON (u. ID = pt.uom_id) 
                     %s 
                     GROUP BY
                         s.partner_id,
+                        cl.name,
                         l.product_id,
                         to_char(date_trunc('day',s.date_order),'YYYY-MM-DD')::text
                     ORDER BY
-                        s.partner_id,
+                        cl.name, 
                         l.product_id,
-                        to_char(date_trunc('day',s.date_order),'YYYY-MM-DD')::text,
+                        to_char(date_trunc('day',s.date_order),'YYYY-MM-DD')::text DESC,
                         SUM (l.qty * u.factor) DESC
                 ) A
-            WHERE
-                row_num <= %s
+                WHERE A.row_num <= %s
+            ) B WHERE B.fila <= %s
         """
 
         partner_ids = []
@@ -68,12 +73,12 @@ class pos_most_sold_product_wzd(osv.osv_memory):
         whereCondition = ' '
         if with_customers:
             filter_values = (obj.date_start, obj.date_end, tuple(partner_ids))
-            whereCondition = " where s.date_order BETWEEN '%s' and '%s' and s.partner_id in %s " % filter_values
+            whereCondition = " where cast(s.date_order as date) BETWEEN '%s' and '%s' and s.partner_id in %s " % filter_values
         else:
             filter_values = (obj.date_start, obj.date_end)
-            whereCondition = " where s.date_order BETWEEN '%s' and '%s'" % filter_values
+            whereCondition = " where cast(s.date_order as date) BETWEEN '%s' and '%s'" % filter_values
 
-        str_query = query % (whereCondition, obj.nbr_product)
+        str_query = query % (whereCondition, obj.nbr_product, obj.nbr_records)
         cr.execute(str_query)
 
         lines = cr.fetchall()
@@ -132,16 +137,14 @@ class pos_most_sold_product_wzd(osv.osv_memory):
         if context is None:
             context = {}
         rpt_lines = self.execute_query(cr, uid, ids, True, context)
-        #obj = self.pool.get('pos.most.sold.product').browse(cr, uid, rpt_lines[0])
-        datas = {'ids': context.get('active_ids', [])}
-        res = self.read(cr, uid, ids, ['date_start', 'date_end', 'nbr_product'], context=context)
-        res = res and res[0] or {}
-        datas['form'] = res
-        if res.get('id', False):
-            datas['ids'] = rpt_lines
-
-        return self.pool['report'].get_action(cr, uid, [], 'my_point_of_sale.report_pos_most_sold_product', data=datas, context=context)
-
+        datas = {
+            'ids': rpt_lines
+        }
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'pos_most_sold_product_report',
+            'datas': datas,
+        }
 
 class pos_most_sold_product(osv.osv):
     _name = 'pos.most.sold.product'
@@ -154,7 +157,6 @@ class pos_most_sold_product(osv.osv):
         'user_id': fields.many2one('User'),
         'line_ids': fields.one2many('pos.most.sold.product.line', 'parent_id','Lines'),
     }
-
 
 class pos_most_sold_product_line(osv.osv):
     _name = "pos.most.sold.product.line"

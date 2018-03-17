@@ -22,7 +22,6 @@
         "account",
         "product_manufacturer",
         "product",
-        "fleet",
     ],
     "demo": [
         "demo/machine_model_demo.xml",
@@ -36,8 +35,7 @@
         "views/machine_model_view.xml",
         "views/machinery_users_view.xml",
         "views/product_view.xml",
-        'views/fleet_views.xml',
-        'views/res_company.xml',
+        "views/res_company.xml",
 
         # Security...
         "security/machinery_security.xml",

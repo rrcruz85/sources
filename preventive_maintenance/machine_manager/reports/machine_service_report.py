@@ -13,7 +13,6 @@ from openerp.tools.translate import _
 class MachineReparationReport(report_rml):
     def create(self, cr, uid, ids, datas, context):
         report_obj_model = pooler.get_pool(cr.dbname).get('machinery')
-        odometer_obj = pooler.get_pool(cr.dbname).get('fleet.vehicle.odometer')
         user = pooler.get_pool(cr.dbname).get('res.users').browse(cr, uid, uid, context=context)
 
         for service in report_obj_model.browse(cr, uid, ids, context):
@@ -259,8 +258,6 @@ class MachineReparationReport(report_rml):
 
             _date = service.reception_date.split('-')
             year, month, day = _date[0], _date[1], _date[2]
-            odometer_ids = odometer_obj.search(cr, uid, [('vehicle_id', '=', service.vehicle_id.id)], limit=1, order='date desc')
-            odometer = odometer_obj.browse(cr, uid, odometer_ids, context=context)
 
             rml += """      <blockTable colWidths="330.0,10.0,200" rowHeights="" style="MainTable">
                                 <tr>
@@ -365,7 +362,7 @@ class MachineReparationReport(report_rml):
                                             <tr>
                                                 <td>
                                                     <para style="title_top_left">PLACA</para>
-                                                    <para style="text_information_12">""" + (service.vehicle_id.license_plate or '') + """</para>
+                                                    <para style="text_information_12">""" + (service.license_plate or '') + """</para>
                                                 </td>
                                                 <td></td>
                                                 <td>
@@ -379,14 +376,14 @@ class MachineReparationReport(report_rml):
                                                 <td>
                                                     <para style="title_top_left">MARCA</para>
                                                     <para style="text_information">
-                                                        """ + (tools.ustr(service.vehicle_id.model_id.modelname or '')) + """
+                                                        """ + (tools.ustr(service.marca or '')) + """
                                                     </para>
                                                 </td>
                                                 <td></td>
                                                 <td>
                                                     <para style="title_top_left">MODELO</para>
                                                     <para style="text_information">
-                                                        """ + (tools.ustr(service.vehicle_id.model_id.brand_id.name or '')) + """
+                                                        """ + (tools.ustr(service.model or '')) + """
                                                     </para>
                                                 </td>
                                                 <td></td>
@@ -395,23 +392,23 @@ class MachineReparationReport(report_rml):
                                             <tr>
                                                 <td>
                                                     <para style="title_top_left">""" + tools.ustr('AÑO') + """</para>
-                                                    <para style="text_information">""" + (service.vehicle_id.model_id.year or '') + """</para>
+                                                    <para style="text_information">""" + (service.year or '') + """</para>
                                                 </td>
                                                 <td>
                                                     <para style="title_top_left">COLOR</para>
-                                                    <para style="text_information">""" + (tools.ustr(_(service.vehicle_id.color) if service.vehicle_id.color else '')) + """</para>
+                                                    <para style="text_information">""" + (tools.ustr(_(service.color or ''))) + """</para>
                                                 </td>
                                                 <td></td>
                                                 <td>
                                                     <para style="title_top_left">KMS</para>
-                                                    <para style="text_information">""" + (str(odometer.value or '')) + """</para>
+                                                    <para style="text_information">""" + (str(service.odometer_value or '')) + """</para>
                                                 </td>
                                             </tr>
 
                                             <tr>
                                                 <td>
                                                     <para style="title_top_left">No MOTOR</para>
-                                                    <para style="text_information">""" + (service.vehicle_id.motor_nro or '') + """</para>
+                                                    <para style="text_information">""" + (service.motor_nro or '') + """</para>
                                                 </td>
                                                 <td></td>
                                                 <td></td>
@@ -421,7 +418,7 @@ class MachineReparationReport(report_rml):
                                             <tr>
                                                 <td>
                                                     <para style="title_top_left">CHASIS No</para>
-                                                    <para style="text_information">""" + (service.vehicle_id.body_nro or '') + """</para>
+                                                    <para style="text_information">""" + (service.body_nro or '') + """</para>
                                                 </td>
                                                 <td></td>
                                                 <td></td>

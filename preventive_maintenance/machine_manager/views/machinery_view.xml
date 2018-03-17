@@ -109,7 +109,9 @@
                         <page string="Machine Gathering Information ">
                             <group>
                                 <group>
-                                    <field name="vehicle_id"/>
+                                    <field name="marca"/>
+                                    <field name="motor_nro"/>
+                                    <field name="color"/>
                                     <field name="customer_id"/>
                                     <field name="broker_id"/>
                                     <field name="consultant_id"/>
@@ -117,6 +119,9 @@
 
                                 <group>
                                     <field name="reception_date"/>
+                                    <field name="license_plate"/>
+                                    <field name="body_nro"/>
+                                    <field name="odometer_value"/>
                                     <field name="work_order"/>
                                     <field name="cia"/>
                                 </group>

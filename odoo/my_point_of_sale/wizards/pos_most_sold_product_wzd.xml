@@ -12,6 +12,8 @@
                         <newline/>
                         <field name="date_start" required="1"/>
                         <field name="date_end" required="1"/>
+                        <newline/>
+                        <field name="nbr_records" required="1"/>
                     </group>
                     <h3>Customers:</h3>
                     <field name="partner_ids" domain="[('customer','=',True)]"/>
@@ -33,8 +35,6 @@
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
-
-        <menuitem action="action_pos_most_sold_product_wzd" id="menu_pos_most_sold_product_wzd" parent="point_of_sale.menu_point_rep" sequence="5"/>
 
         <record id="view_report_pos_most_sold_product_graph" model="ir.ui.view">
             <field name="name">pos.most.sold.product.line.graph</field>
@@ -77,15 +77,8 @@
             </field>
         </record>
 
-        <report
-                  id="pos_most_sold_product"
-                  string="Most sold products"
-                  model="pos.most.sold.product"
-                  report_type="qweb-pdf"
-                  name="my_point_of_sale.report_pos_most_sold_product"
-                  file="my_point_of_sale.report_pos_most_sold_product"
-                  menu="False"
-               />
+        <menuitem action="action_pos_most_sold_product_wzd" id="menu_pos_most_sold_product_wzd" parent="point_of_sale.menu_point_rep" sequence="5"/>
+
 
     </data>
 </openerp>

@@ -88,7 +88,14 @@ class Machinery(models.Model):
 
     # Informacion referente al reporte...
     reception_date = fields.Date(default=fields.Date.today)
-    vehicle_id = fields.Many2one('fleet.vehicle', string='Vehículo')
+
+    marca = fields.Char('Marca')
+    license_plate = fields.Char('Placa')
+    motor_nro = fields.Char('Motor Nro')
+    body_nro = fields.Char('Chasis Nro')
+
+    color = fields.Char('Color')
+    odometer_value = fields.Char('Valor del odometro')
 
     customer_id = fields.Many2one('res.partner', string='Customer')
     broker_id = fields.Many2one('res.partner', string='Agente')
