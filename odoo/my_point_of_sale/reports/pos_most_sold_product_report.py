@@ -21,7 +21,7 @@ class MostSoldProductReport(report_rml):
         for obj in report_obj_model.browse(cr, uid, ids, context):
             rml = """
                 <document filename="test.pdf">
-                    <template pageSize="(595.0,842.0)" title="Most Sold Products" author="Reynaldo Rodriguez" allowSplitting="20">
+                    <template pageSize="(595.0,842.0)" title=" """+ _("Most Sold Products") +""" " author="Reynaldo Rodriguez" allowSplitting="20">
                         <pageTemplate id="page1">
                             <frame id="first" x1="50.0" y1="20.0" width="498" height="800"/>
                         </pageTemplate>
@@ -207,7 +207,7 @@ class MostSoldProductReport(report_rml):
                 rowspan = []
                 pos = 0
                 for line in lines:
-                    client_name = line[0] + ' &lt;' + line[1] + '&gt;'
+                    client_name = line[0] + (' &lt;' + line[1] + '&gt;' if line[1] else '')
                     cant_prod_repet = count(line[0], pos, lines)
                     if cant_prod_repet > 1:
                         rowspan.append((row, row + cant_prod_repet - 1))
