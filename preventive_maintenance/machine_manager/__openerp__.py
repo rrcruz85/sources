@@ -22,6 +22,7 @@
         "account",
         "product_manufacturer",
         "product",
+        "l10n_ec_partner"
     ],
     "demo": [
         "demo/machine_model_demo.xml",
@@ -35,7 +36,6 @@
         "views/machine_model_view.xml",
         "views/machinery_users_view.xml",
         "views/product_view.xml",
-        "views/res_company.xml",
 
         # Security...
         "security/machinery_security.xml",

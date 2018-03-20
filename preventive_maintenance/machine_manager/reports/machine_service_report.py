@@ -244,7 +244,7 @@ class MachineReparationReport(report_rml):
                                     </td>
 
                                     <td>
-                                        <para style="title_top_center">R.U.C.: """ + (tools.ustr(user.company_id.ruc or '')) +"""</para>
+                                        <para style="title_top_center">R.U.C.: """ + (tools.ustr(user.company_id.partner_id.ced_ruc if user.company_id.partner_id and user.company_id.partner_id.ced_ruc else '')) +"""</para>
                                         <para style="title_top_center">
                                             """ + (tools.ustr(user.company_id.street or '')) + ' ' + (tools.ustr(user.company_id.street2 or '')) + """
                                         </para>
