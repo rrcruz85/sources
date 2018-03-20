@@ -483,7 +483,7 @@ class request_product_variant(osv.osv):
             'default_origin': False,
             'default_subclient_id': obj.subclient_id.id if obj.subclient_id else False,
             'default_sucursal_id': False,
-            'default_supplier_ids': ','.join(farm_ids)
+            #'default_supplier_ids': ','.join(farm_ids)
         }
         return {
             'name': _("Purchase Line"),
