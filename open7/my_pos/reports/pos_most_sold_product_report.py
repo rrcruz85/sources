@@ -178,8 +178,9 @@ class MostSoldProductReport(report_rml):
                                         <para style="title_top_center">CANTIDAD</para>
                                     </td>
                                 </tr>"""
-            if obj.line_ids:
 
+            rowspan = []
+            if obj.line_ids:
                 cr.execute("""
                     SELECT p."name",p.email,pd.name_template,
                     sum(l.product_qty) as product_qty
@@ -201,29 +202,32 @@ class MostSoldProductReport(report_rml):
                     return cont
 
                 row = 2
-                rowspan = []
-                pos = 0
+                repetitions = 0
+                line_number = 0
                 for line in lines:
                     client_name = line[0] + (' &lt;' + line[1] + '&gt;' if line[1] else '') 
-                    cant_prod_repet = count(line[0], pos, lines)
-                    if cant_prod_repet > 1:
-                        rowspan.append((row, row + cant_prod_repet - 1))
-                        row = row + cant_prod_repet
-                    else:
-                        row += 1
+                    cant_prod_repeat = count(line[0], line_number, lines)
+                    if cant_prod_repeat > 1 and repetitions == 0:
+                        repetitions = cant_prod_repeat - 1
+                        rowspan.append((row, row + cant_prod_repeat - 1))
+                    row += 1
+                    repetitions -= 1
+                    if repetitions < 0:
+                        repetitions = 0
 
+                    line_number += 1
                     product_name = line[2]
                     product_qty = line[3]
-                    rml += """<tr>
+                    rml += """
+                                    <tr>
                                         <td><para style="title_top_left">""" + tools.ustr(client_name) + """</para></td>
                                         <td><para style="title_top_left">""" + tools.ustr(product_name) + """</para></td>
                                         <td><para style="title_top_center">""" + tools.ustr(product_qty) + """</para></td>
                                     </tr>"""
-                    pos += 1
 
-                if rowspan:
-                    rowspan = map(lambda a:  '<blockSpan start="0,' + tools.ustr(a[0]) + '" stop="0,' + tools.ustr(a[1]) + '"/>\n', rowspan)
-                rml = rml.replace('blockSpanReplace', ''.join(rowspan))
+            if rowspan:
+                rowspan = map(lambda a:  '<blockSpan start="0,' + tools.ustr(a[0]) + '" stop="0,' + tools.ustr(a[1]) + '"/>\n', rowspan)
+            rml = rml.replace('blockSpanReplace', ''.join(rowspan))
 
             rml +="""                    
                     </blockTable>"""

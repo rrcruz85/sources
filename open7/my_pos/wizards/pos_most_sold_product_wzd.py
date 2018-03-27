@@ -17,7 +17,7 @@ class pos_most_sold_product_wzd(osv.osv_memory):
 
     _defaults = {
         'nbr_product': 1,
-        'nbr_records': 10,
+        'nbr_records': 40,
         'date_start': lambda *a: time.strftime('%Y-%m-01'),
         'date_end': fields.date.context_today,
     }
