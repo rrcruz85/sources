@@ -10,7 +10,7 @@
                 <data>
                     <xpath expr="//form/header/button[@name='button_confirm']" position="after">
                         <button name="button_send_notification" states="draft,confirm" string="Send notification..."
-                                class="oe_highlight"  type="object" groups="base.group_user"/>
+                                class="oe_highlight"  type="object" groups="base.group_user" context="{'appointment_id':active_id}"/>
                     </xpath>
 
                 </data>

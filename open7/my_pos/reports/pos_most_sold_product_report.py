@@ -13,9 +13,6 @@ from openerp.tools.translate import _
 class MostSoldProductReport(report_rml):
     def create(self, cr, uid, ids, datas, context):
         report_obj_model = pooler.get_pool(cr.dbname).get('pos.most.sold.product')
-        report_obj_line_model = pooler.get_pool(cr.dbname).get('pos.most.sold.product.line')
-        res_partnet_model = pooler.get_pool(cr.dbname).get('res.partner')
-        product_model = pooler.get_pool(cr.dbname).get('product.product')
         user = pooler.get_pool(cr.dbname).get('res.users').browse(cr, uid, uid, context=context)
 
         for obj in report_obj_model.browse(cr, uid, ids, context):
@@ -225,11 +222,10 @@ class MostSoldProductReport(report_rml):
                     pos += 1
 
                 if rowspan:
-                    rowspan = map(lambda a:  '<blockSpan start="0,' + tools.ustr(a[0]) + '" stop="0,' + tools.ustr(a[1]) +'"/>\n', rowspan)
+                    rowspan = map(lambda a:  '<blockSpan start="0,' + tools.ustr(a[0]) + '" stop="0,' + tools.ustr(a[1]) + '"/>\n', rowspan)
                 rml = rml.replace('blockSpanReplace', ''.join(rowspan))
 
-            rml +="""
-                    
+            rml +="""                    
                     </blockTable>"""
             rml += """
                      </section>"""

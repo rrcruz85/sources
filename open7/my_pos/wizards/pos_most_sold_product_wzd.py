@@ -26,7 +26,7 @@ class pos_most_sold_product_wzd(osv.osv_memory):
 
         obj = self.browse(cr, uid, ids[0])
         query = """
-            select * from (
+            SELECT * from (
             SELECT *, ROW_NUMBER() OVER () as fila
             FROM
                 (
@@ -99,7 +99,7 @@ class pos_most_sold_product_wzd(osv.osv_memory):
                 if not create_parent:
                     rpt_lines.append(self.pool.get('pos.most.sold.product.line').create(cr, uid, vals))
                 else:
-                    rpt_lines.append((0,0,vals))
+                    rpt_lines.append((0, 0, vals))
         if create_parent:
             line_ids = self.pool.get('pos.most.sold.product').search(cr, uid, [])
             self.pool.get('pos.most.sold.product').unlink(cr, uid, line_ids)

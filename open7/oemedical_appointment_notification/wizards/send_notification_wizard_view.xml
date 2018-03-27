@@ -30,6 +30,7 @@
 
                     <group col="8">
                         <group>
+                            <field name="appointment_id" invisible="1"/>
                             <field name="subject"/>
 
                             <!--widget="many2many_tags_email"-->

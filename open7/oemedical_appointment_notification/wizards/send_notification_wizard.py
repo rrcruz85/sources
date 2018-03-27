@@ -20,9 +20,10 @@ class SendNotificationWizard(osv.TransientModel):
                         ).patient_id.partner_id.id
                     ]
                 elif field == 'body_html':
-                    values[field] = 'Estimado paciente: [nombre_paciente]...<br><br>' \
-                                    'Usted tiene una cita médica el día: [fecha], a las: [hora], con el ' \
-                                    'doctor: [doctor]. <br><br>' \
+                    values[field] = 'Estimado paciente: <b>[nombre_paciente]</b><br><br>' \
+                                    'Usted tiene una cita médica el día: [fecha], a las: [hora] <br><br>' \
+                                    'Doctor: [doctor]. <br><br>' \
+                                    'Especialidad: [esp]. <br><br>' \
                                     'PD: No debe responder esta notificación automática del sistema.'
                 elif field == 'subject':
                     values[field] = 'Notificación de cita médica.'
@@ -34,9 +35,9 @@ class SendNotificationWizard(osv.TransientModel):
         user = self.pool.get('res.users').browse(cr, uid, uid, context)
 
         _ids = []
-        appointment = self.pool.get('oemedical.appointment').browse(
-            cr, uid, context.get('appointment_id', False), context
-        )
+        appointment = None
+        if context and context.get('appointment_id', False):
+            appointment = self.pool.get('oemedical.appointment').browse(cr, uid, context.get('appointment_id'), context)
 
         for patient in obj.email_to:
             if not patient.email:
@@ -45,10 +46,11 @@ class SendNotificationWizard(osv.TransientModel):
                 )
 
             body_html = obj.body_html.replace('[nombre_paciente]', tools.ustr(patient.name))
-            if context.get('appointment_id', False):
+            if appointment:
                 body_html = body_html.replace('[fecha]', appointment.appointment_day)
                 body_html = body_html.replace('[hora]', appointment.appointment_hour + ':' + appointment.appointment_minute)
                 body_html = body_html.replace('[doctor]', appointment.doctor.name)
+                body_html = body_html.replace('[esp]', appointment.doctor.specialty.name if appointment.doctor and appointment.doctor.specialty else '')
 
             vals = {
                 'state': 'outgoing',
@@ -61,7 +63,7 @@ class SendNotificationWizard(osv.TransientModel):
             }
 
             _ids.append(self.pool.get('mail.mail').create(cr, uid, vals, context=context))
-            if context.get('appointment_id', False) and appointment.doctor and appointment.doctor.physician_id.email:
+            if appointment and appointment.doctor and appointment.doctor.physician_id and appointment.doctor.physician_id.email:
                 vals['email_to'] = appointment.doctor.physician_id.email
                 _ids.append(self.pool.get('mail.mail').create(cr, uid, vals, context=context))
 
@@ -127,4 +129,11 @@ class SendNotificationWizard(osv.TransientModel):
         'attachment_ids': fields.many2many(
             'ir.attachment', 'notification_attachment_rel', 'notification_id', 'attachment_id', 'Attachments'
         ),
+
+        'appointment_id': fields.many2one('oemedical.appointment', string ="Medical Appointment"),
     }
+
+    _defaults = {
+        'appointment_id': lambda self, cr, uid, context: context['appointment_id'] if context and 'appointment_id' in context else None,
+    }
+

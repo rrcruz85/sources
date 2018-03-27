@@ -10,7 +10,7 @@ class OeMedicalAppointment(osv.Model):
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'oemedical.send_notification_wizard',
-            'context': {'appointment_id': ids[0]},
+            'context': {'default_appointment_id': ids[0]},
             'view_mode': 'form',
             'view_type': 'form',
             'target': 'new',
