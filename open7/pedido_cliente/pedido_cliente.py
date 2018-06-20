@@ -34,6 +34,9 @@ class pedido_cliente(osv.osv):
 
     def _get_purchase_lines(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
+        
+        cr.execute("delete from detalle_lines where active = False")
+        
         for id in ids:
             lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[('pedido_id','=',id)])
             if lines:
@@ -65,6 +68,7 @@ class pedido_cliente(osv.osv):
                         "public.request_product_variant,"+
                         "public.pedido_cliente "+
                         "WHERE "+
+                        "detalle_lines.active = True AND "+
                         "detalle_lines.pedido_id = pedido_cliente.id "+
                         "AND detalle_lines.line_id = request_product_variant.id "+
                         "AND pedido_cliente.id = %s " +
@@ -142,16 +146,16 @@ class pedido_cliente(osv.osv):
                                                     ('cancel', 'Cancelado')], 'State', readonly=True),
         'variant_ids'           : fields.one2many('request.product.variant', 'pedido_id', 'Request Lines', ondelete='cascade'),
         'purchase_line_ids'     : fields.one2many('detalle.lines', 'pedido_id', 'Purchased Lines',ondelete='cascade'),
-        'boxes'         : fields.function(_get_info, type='integer', string='Full Boxes', multi = '_val'),
-        'stems'        : fields.function(_get_info, type='integer', string='Stems', multi = '_val'),
-        'tipo_flete'        : fields.function(_get_info, type='char', string='Tipo Flete', multi = '_val'),
+        'boxes'                 : fields.function(_get_info, type='integer', string='Full Boxes', multi = '_val'),
+        'stems'                 : fields.function(_get_info, type='integer', string='Stems', multi = '_val'),
+        'tipo_flete'            : fields.function(_get_info, type='char', string='Tipo Flete', multi = '_val'),
         'line_ids'              : fields.function(_get_purchase_lines, type='one2many', relation="purchase.lines.wzd", string='Purchase Lines'),
 
-        'account_invoice_ids': fields.one2many('account.invoice', 'pedido_cliente_id', 'Invoices'),
-        'airline_id': fields.many2one('pedido_cliente.airline', string='Airline'),
-        'number': fields.char('Flight Number'),
-        'precio_flete'  : fields.float('Precio Flete', digits = (0,2)),
-        'sale_request_id' : fields.many2one('sale.request', 'Sale Request'),
+        'account_invoice_ids'   : fields.one2many('account.invoice', 'pedido_cliente_id', 'Invoices'),
+        'airline_id'            : fields.many2one('pedido_cliente.airline', string='Airline'),
+        'number'                : fields.char('Flight Number'),
+        'precio_flete'          : fields.float('Precio Flete', digits = (0,2)),
+        'sale_request_id'       : fields.many2one('sale.request', 'Sale Request'),       
     }
 
     def name_search(self, cr, user, name='', args=None, operator='ilike', context=None, limit=100):
@@ -184,7 +188,7 @@ class pedido_cliente(osv.osv):
         'state'        : 'draft',
         'name'         : 1,
         'request_date' : time.strftime('%Y-%m-%d'),
-        'type'         : 'open_market',
+        'type'         : 'open_market'        
     }
 
     def _check_tipo_flete(self, cr, uid, ids, context=None):
@@ -561,6 +565,7 @@ class detalle_line(osv.osv):
                     if detalle_id and detalle_id['detalle_id'] and detalle_id['detalle_id'][0]:
                         ids.append(detalle_id['detalle_id'][0])
             return ids
+        args.append(['active','=',True])
         return super(detalle_line, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def _get_info(self, cr, uid, ids, field_name, arg, context = None):
@@ -612,6 +617,7 @@ class detalle_line(osv.osv):
                                             'detalle.lines.length': (_get_ids, ['length'], 10),
                                         }),
         'confirmada'            : fields.boolean('Confirmada'),
+        'active'                : fields.boolean('Active'),
     }
 
     _defaults = {
@@ -620,6 +626,7 @@ class detalle_line(osv.osv):
         'type': 'open_market',
         'bunch_per_box' : 12,
         'pedido_id'    :lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else None,
+        'active'       : True
     }
 
     def _check_bunch_type(self, cr, uid, ids, context=None):

@@ -444,17 +444,18 @@ class split_purchase_line_wzd(osv.osv_memory):
         if total != detalle.bunch_per_box:
             raise osv.except_osv('Error', "La cantidad de bunches especificados por lineas debe ser igual a " + str(detalle.bunch_per_box))
         
-        pedido_id = detalle.pedido_id.id
-        self.pool.get('detalle.lines').unlink(cr, uid, [detalle.id])
-        self.pool.get('pedido.cliente').write(cr, uid, [pedido_id], {'purchase_line_ids': lines})
+        pedido_id = detalle.pedido_id.id  
+        detalle_id = detalle.id     
+        self.pool.get('pedido.cliente').write(cr, uid, [pedido_id], {'purchase_line_ids': lines})        
+        self.pool.get('detalle.lines').write(cr, uid, [detalle_id], {'active': False})
         
         return {
             'name'      : 'Pedidos de Clientes',
             'view_type' : 'form',
-            'view_mode' : 'tree',
+            'view_mode' : 'form',
             'res_model' : 'pedido.cliente',
             'type'      : 'ir.actions.act_window',
-            #'res_id'    : pedido_id,
+            'res_id'    : pedido_id,
         }  
 
 split_purchase_line_wzd()

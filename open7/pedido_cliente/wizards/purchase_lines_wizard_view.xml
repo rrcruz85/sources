@@ -157,7 +157,7 @@
                                     <field name="supplier_id" readonly="1"/>
                                     <field name="product_id" readonly="1"/>
                                     <field name="variant_id" domain="[('product_id','=',product_id)]" required="1" on_change="onchange_variant_id(detalle_id,supplier_id,product_id,variant_id)"/>
-                                    <field name="length_id" required="1" on_change="onchange_length_id(length_id)" options="{'no_open': True,'create_edit':False}"/>
+                                    <field name="length_id" required="1" on_change="onchange_length_id(length_id)" options="{'no_open': True}"/>
                                     <field name="purchase_price"/>  
                                     <field name="bunches" required="1"/>                                                                         
                                 </tree>                                                                  
