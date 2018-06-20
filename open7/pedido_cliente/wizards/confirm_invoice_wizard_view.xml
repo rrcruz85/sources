@@ -14,10 +14,10 @@
                     <field name="line_number"/>
                     <field name="type" required="1"/>
                     <field name="supplier_id" required="1" domain="[('supplier','=', True)]" context="{'default_supplier': True, 'default_customer': False}"/>
-                    <field name="product_id" required="1" on_change="on_change_variety(pedido_id,supplier_id,product_id,variant_id)"/>
-                    <field name="variant_id"  required="1" domain="[('product_id','=', product_id)]" on_change="on_change_variety(pedido_id,supplier_id,product_id,variant_id)"/>
+                    <field name="product_id" required="1" on_change="on_change_variety(pedido_id,supplier_id,product_id,variant_id,length)"/>
+                    <field name="variant_id"  required="1" domain="[('product_id','=', product_id)]" on_change="on_change_variety(pedido_id,supplier_id,product_id,variant_id,length)"/>
                     <field name="subclient_id"  required="1"/>
-                    <field name="length"  required="1"/>
+                    <field name="length"  required="1" on_change="on_change_variety(pedido_id,supplier_id,product_id,variant_id,length)"/>
                     <field name="uom"  required="1" on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"/>
                     <field name="is_box_qty"   on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"/>
                     <field name="qty" on_change="on_change_vals(qty,purchase_price,sale_price,uom,is_box_qty,bunch_per_box,bunch_type)"

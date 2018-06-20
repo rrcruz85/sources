@@ -534,6 +534,18 @@ request_product_variant_length()
 class detalle_line(osv.osv):
     _name = 'detalle.lines'
     _description = 'Detalle de compras'
+    
+    def name_get(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if not ids:
+            return []
+        res = []
+        types = {'standing_order' : 'Standing Order','open_market': 'Open Market'}
+        
+        for obj in self.browse(cr, uid, ids, context=context):
+            res.append((obj.id, types[obj.type] + '/' + obj.product_id.name_template + '/' + obj.variant_id.name + '/' + obj.lengths))
+        return res
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         if context and 'lines' in context:
@@ -569,18 +581,18 @@ class detalle_line(osv.osv):
         return res
 
     _columns = {
-        'pedido_id'            : fields.many2one('pedido.cliente', 'Request',ondelete='cascade'),
-        'line_id'                 : fields.many2one('request.product.variant', 'Lines'),
+        'pedido_id'             : fields.many2one('pedido.cliente', 'Request',ondelete='cascade'),
+        'line_id'               : fields.many2one('request.product.variant', 'Lines'),
         'name'                  : fields.char(size = 128, string= 'Line Number'),
-        'type'                    : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Order'),
+        'type'                  : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Order'),
         'supplier_id'           : fields.many2one('res.partner', 'Farm', required=True, domain=[('supplier', '=', True)]),
         'product_id'            : fields.many2one('product.product', string='Product',required=True),
         'variant_id'            : fields.many2one('product.variant', 'Variety', required=True),
         'length_ids'            : fields.one2many('detalle.lines.length','detalle_id','Lengths'),
-        'qty'                      : fields.float('Qty'),
+        'qty'                   : fields.float('Qty'),
         'is_box_qty'            : fields.boolean('Box Packing?'),
 		'bunch_per_box'         : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.integer( 'Stems x Bunch'),
+        'bunch_type'            : fields.integer('Stems x Bunch'),
         'uom'                   : fields.selection([('FB', 'FB'),
                                                     ('HB', 'HB'),
                                                     ('QB', 'QB'),
@@ -589,24 +601,24 @@ class detalle_line(osv.osv):
         'origin'                : fields.many2one('detalle.lines.origin', string='Origin'),
         'subclient_id'          : fields.many2one('res.partner', 'SubCliente'),
         'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
-        'purchase_price'      : fields.function(_get_info, type='float', string='Purchase Price', multi = '_data',
+        'purchase_price'        : fields.function(_get_info, type='float', string='Purchase Price', multi = '_data',
                                         store={
                                             'detalle.lines': (lambda self, cr, uid, ids, c=None: ids, ['length_ids'], 10),
                                             'detalle.lines.length': (_get_ids, ['purchase_price'], 10),
                                         }),
-        'lengths'                  : fields.function(_get_info, type='char', string='Lengths', multi = '_data',
+        'lengths'               : fields.function(_get_info, type='char', string='Lengths', multi = '_data',
                                         store={
                                             'detalle.lines': (lambda self, cr, uid, ids, c=None: ids, ['length_ids'], 10),
                                             'detalle.lines.length': (_get_ids, ['length'], 10),
                                         }),
-        'confirmada'    : fields.boolean('Confirmada'),
+        'confirmada'            : fields.boolean('Confirmada'),
     }
 
     _defaults = {
         'bunch_type': 25,
         'uom': 'HB',
         'type': 'open_market',
-        'bunch_per_box' : 10,
+        'bunch_per_box' : 12,
         'pedido_id'    :lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else None,
     }
 
@@ -623,12 +635,20 @@ detalle_line()
 class detalle_line_length(osv.osv):
     _name = 'detalle.lines.length'
     _description = 'Variety Length'
+    _rec_name = 'length'
 
     _columns = {
         'detalle_id'            : fields.many2one('detalle.lines','Detalle', ondelete='cascade'),
-        'length'           : fields.char(string='Length', size = 128),
-        'purchase_price'            : fields.float(string='Purchase Price'),
+        'length'                : fields.char(string='Length', size = 128),
+        'purchase_price'        : fields.float(string='Purchase Price'),
 	}
+    
+    def get_default_detalle_id(self, cr, uid, context = None):         
+        return context['detalle_id'] if context and 'detalle_id' in context else None
+    
+    _defaults = {
+        'detalle_id'     :  get_default_detalle_id,
+    }  
 
 detalle_line_length()
 
