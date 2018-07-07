@@ -121,8 +121,10 @@ class invoice_wizard(osv.osv_memory):
             if p_ids:
                 list_vals = []
                 obj = self.pool.get('confirm.invoice').browse(cr, uid, p_ids[0])
+                total = sum([v.bunch_per_box for v in obj.line_ids])
+                
                 for v in obj.line_ids:
-                    qty_bxs = float(v.qty) if v.is_box_qty else  float(v.qty) / (int(v.bunch_type) * v.bunch_per_box)
+                    qty_bxs = float(v.qty) if v.is_box_qty else round(float(v.bunch_per_box)/total, 2) #float(v.qty) / (int(v.bunch_type) * v.bunch_per_box)
                     vals = {
                         'confirmed_line_id' : v.id,
                         'pedido_id': pedido_id,
@@ -191,12 +193,14 @@ class invoice_wizard(osv.osv_memory):
         context['default_next'] = True
         uom = {'FB':1,'HB':2,'QB':4,'OB':8}
         for o in self.browse(cr, uid, ids):
-            i = 1
-            for v in o.line_ids:
-                qty_bxs =v.qty if v.is_box_qty else float(v.qty) / (int(v.bunch_type) * v.bunch_per_box)
-                if qty_bxs == 0:
-                    qty_bxs = 1
+            i = 1            
+            total = sum([l.bunch_per_box for l in o.line_ids])            
+            for v in o.line_ids:                
+                qty_bxs = v.qty if v.is_box_qty else round(float(v.bunch_per_box)/total, 2) #float(v.qty) / (int(v.bunch_type) * v.bunch_per_box)
+                #if qty_bxs == 0:
+                #    qty_bxs = 1
                 boxes = qty_bxs / uom[v.uom]
+                
                 dict_vals = {
                     'line_number': str(i),
                     'boxes': boxes,
@@ -245,6 +249,8 @@ class invoice_wizard(osv.osv_memory):
             sequence = 1
             line_ids = []
             if not o.box_line_ids:
+                total = sum([l.bunch_per_box for l in o.line_ids])
+            
                 for l in o.line_ids:
                     if l.confirmed_line_id:
                         line_ids.append(l.confirmed_line_id.id)
@@ -259,9 +265,10 @@ class invoice_wizard(osv.osv_memory):
                         name += ' - ' + l.length
 
                     taxes = [(4, t.id) for t in l.product_id.supplier_taxes_id]
-                    qty_bxs = l.qty if l.is_box_qty else float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
+                    
+                    qty_bxs = l.qty if l.is_box_qty else round(float(l.bunch_per_box)/total, 2) #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
                     boxes = float(qty_bxs) / uom[l.uom]
-                    qty_bxs = str(qty_bxs) + l.uom
+                    
                     stems = l.qty if not l.is_box_qty else l.qty * int(l.bunch_type) * l.bunch_per_box
                     hb_qty = 0
                     qb_qty = 0
@@ -270,10 +277,12 @@ class invoice_wizard(osv.osv_memory):
                     if l.uom == 'OB':
                         hb_qty = boxes * 8
                     if l.uom == 'HB':
-                        hb_qty = l.qty if l.is_box_qty else float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
+                        hb_qty = l.qty if l.is_box_qty else qty_bxs #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
                     if l.uom == 'QB':
-                        qb_qty = l.qty if l.is_box_qty else float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
+                        qb_qty = l.qty if l.is_box_qty else qty_bxs #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
 
+                    qty_bxs = str(qty_bxs) + l.uom
+                    
                     vals = {
                         'sequence_box': sequence,
                         'stems': stems,
@@ -418,11 +427,12 @@ class invoice_line_wizard(osv.osv_memory):
 
     def _get_info(self, cr, uid, ids, field_name, arg, context):
         res = {}
+        uom_dict = {'FB':1,'HB':2,'QB':4,'OB':8}
         for obj in self.browse(cr, uid, ids, context=context):
             if obj.is_box_qty:
                res[obj.id] = str(obj.qty) + ' ' + obj.uom
             else:
-               qty =  float(obj.qty)/ (int(obj.bunch_type) * obj.bunch_per_box)
+               qty = obj.boxes * uom_dict[obj.uom] if obj.boxes else float(obj.qty)/ (int(obj.bunch_type) * obj.bunch_per_box)
                res[obj.id] = str(qty) + ' ' + obj.uom
         return res
 

@@ -47,21 +47,21 @@ class account_invoice_line(osv.osv):
         return result
 
     _columns = {
-        'sequence_box'  : fields.integer(string = "# Box", help='Numero de Caja'),
-        'stems'  : fields.integer(string = "Stems"),
-        'box'               : fields.float(string='FB', help="Full Boxes"),
-        'hb'               : fields.float(string='HB', help="Half Boxes"),
-        'qb'               : fields.float(string='QB', help="Quarter Boxes"),
-        'qty_bxs'              : fields.char(string='BXS', size = 10),
-        'uom'                   : fields.selection([('FB', 'FB'),
+        'sequence_box'    : fields.integer(string = "# Box", help='Numero de Caja'),
+        'stems'           : fields.integer(string = "Stems"),
+        'box'             : fields.float(string='FB', help="Full Boxes"),
+        'hb'              : fields.float(string='HB', help="Half Boxes"),
+        'qb'              : fields.float(string='QB', help="Quarter Boxes"),
+        'qty_bxs'         : fields.char(string='BXS', size = 10),
+        'uom'             : fields.selection([('FB', 'FB'),
                                                             ('HB', 'HB'),
                                                             ('QB', 'QB'),
                                                             ('OB', 'OB')], string = "UOM", help='Unit of Measure'),
-        'bunch_type'            : fields.integer( 'Stems x Bunch'),
-        'bunches'            : fields.function(_get_bunches, type='integer', string='Total Bunches'),
-        'is_box_qty'            : fields.boolean('Box Packing?'),
+        'bunch_type'      : fields.integer( 'Stems x Bunch'),
+        'bunches'         : fields.function(_get_bunches, type='integer', string='Total Bunches'),
+        'is_box_qty'      : fields.boolean('Box Packing?'),
         'bunch_per_box'   : fields.integer('Bunch per Box'),
-        'mark_id' : fields.many2one('res.partner', string ="Marcacion"),
+        'mark_id'         : fields.many2one('res.partner', string ="Marcacion"),
    }
 
     _defaults = {

@@ -19,12 +19,12 @@
                     <field name="variant_id"/>
                     <field name="lenght"/>
                     <field name="subclient_id"/>
-                    <field name="total_qty_purchased"/>
                     <field name="bunch_type"/>
                     <field name="bunch_per_box"/>
+                    <field name="total_qty_purchased"/>
                     <field name="uom" invisible="1"/>
                     <field name="qty"/>
-                    <field name="stimated_qty"/>
+                    <field name="stimated_qty" sum="Total Boxes"/>
                     <field name="purchase_price"/>
                     <field name="farm_total" sum="Total Farm"/>
                     <field name="sale_price"/>

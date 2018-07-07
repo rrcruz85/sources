@@ -10,9 +10,9 @@
                 <data>
                     <xpath expr="//field[@name='invoice_line']/tree/field[@name='product_id']" position="before">
                         <field name="sequence_box"/>
-                        <field name="stems" sum="Total Stems"/>
                         <field name="bunch_per_box"/>
                         <field name="bunch_type"/>
+                        <field name="stems" sum="Total Stems"/>
                         <field name="uom"/>
                         <field name="is_box_qty"/>
                         <field name="box" sum="Total FB"/>
@@ -39,9 +39,9 @@
                 <data>
                     <xpath expr="//field[@name='invoice_line']/tree/field[@name='product_id']" position="before">
                         <field name="sequence_box"/>
-                        <field name="stems" sum="Total Stems"/>
                         <field name="bunch_per_box"/>
                         <field name="bunch_type"/>
+                        <field name="stems" sum="Total Stems"/>
                         <field name="uom"/>
                         <field name="is_box_qty"/>
                         <field name="box" sum="Total FB"/>
@@ -62,9 +62,9 @@
                 <data>
                     <xpath expr="//field[@name='quantity']" position="after">
                         <field name="sequence_box"/>
-                        <field name="stems"/>
                         <field name="bunch_per_box" attrs="{'invisible':[('is_box_qty','=',False)]}"/>
                         <field name="bunch_type"/>
+                        <field name="stems"/>
                         <field name="uom"/>
                         <field name="is_box_qty"/>
                         <field name="box"/>
@@ -86,9 +86,9 @@
                 <data>
                     <xpath expr="//field[@name='quantity']" position="after">
                         <field name="sequence_box"/>
-                        <field name="stems" sum="Total Stems"/>
                         <field name="bunch_per_box" attrs="{'invisible':[('is_box_qty','=',False)]}"/>
                         <field name="bunch_type"/>
+                        <field name="stems" sum="Total Stems"/>
                         <field name="uom"/>
                         <field name="is_box_qty"/>
                         <field name="box" sum="Total FB"/>

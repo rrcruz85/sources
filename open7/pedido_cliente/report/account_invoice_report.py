@@ -310,13 +310,16 @@ class AccountInvoiceReport(report_rml):
             summary = {}
             first = True
             supplier_tmp = lines[0][0] if lines else ''
+            
+            total_hb_inv = sum([line[4] for line in lines])
+            
             for line in lines:
                 supplier = line[0]
                 variety = line[1]
                 length = line[2]
                 stems_cant = line[3]
                 bunch_cant =  line[4]
-                hb_cont =  line[5]
+                hb_cont =  round(bunch_cant/total_hb_inv, 2) #line[5]
                 qb_cont =  line[6]
                 description =  line[7]
                 sale_price =  line[8]

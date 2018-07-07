@@ -310,7 +310,7 @@ class AccountInvoiceVarietyReport(report_rml):
                                 when cl.uom = 'FB' then (case when cl.is_box_qty = TRUE then cl.qty * 4 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box)) * 4 end)
                                 when cl.uom = 'OB' then (case when cl.is_box_qty = TRUE then cl.qty / 2 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box * 2)) end)
                                 else 0 end) as qb,
-                                avg(cl.bunch_per_box * cl.bunch_type::int) as units_per_hb,
+                                (select sum(dl.bunch_per_box * dl.bunch_type::int) from detalle_lines dl where pedido_id = %s) as units_per_hb,
                                 sum(case when cl.is_box_qty = TRUE then cl.qty * cl.bunch_per_box * cl.bunch_type::int else cl.qty end) as stems,
                                 sum(case when cl.is_box_qty = TRUE then cl.qty * cl.bunch_per_box  else cl.qty/cl.bunch_type::FLOAT end) as bunch,
                                 min(case when p."type" = 'standing_order' then 'Standing Order' else 'Open Market' end) as Descripcion,
@@ -326,7 +326,7 @@ class AccountInvoiceVarietyReport(report_rml):
                                 LEFT JOIN res_partner pp on cl.subclient_id = pp."id"
                                 where cl.pedido_id = %s
                                 GROUP BY v."name", cl."length",pp."name"
-                                order by pp."name",v."name") lines""", (pedido.id,))
+                                order by pp."name",v."name") lines""", (pedido.id, pedido.id,))
 
             lines = cr.fetchall()
 
@@ -336,10 +336,12 @@ class AccountInvoiceVarietyReport(report_rml):
             total_bunch = 0
             total_price = 0
             total_taxes = 0
+            total_hb_inv = sum([line[6] for line in lines])
+            
             for line in lines:
                 variety = line[0]
                 length = line[1]
-                hb_cont = line[2]
+                #hb_cont = line[2]
                 qb_cont = line[3]
                 unit_per_hb = line[4]
                 stems = line[5]
@@ -347,20 +349,21 @@ class AccountInvoiceVarietyReport(report_rml):
                 description = line[7]
                 subclient = line[8]
                 sale_price = line[9]
-                total = line[10]
-                total_hb += line[2]
+                total = line[10]                
                 total_qb += line[3]
                 total_stems += line[5]
-                total_bunch += line[6]
                 total_price += line[10]
                 total_taxes += line[12]
-
+                line_hb = round(float(bunch)/total_hb_inv,2)
+                total_hb += line_hb
+                total_bunch += bunch
+                
                 rml += """
                         <blockTable colWidths="85.0,55.0,20.0,20.0,40.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
                             <tr>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(variety[0:25] if variety else '')) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + (ustr(length[0:15])) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(round(hb_cont,2)) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(line_hb) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(round(qb_cont,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(int(unit_per_hb)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(round(stems,2)) + """</para></td>
@@ -488,11 +491,11 @@ class AccountInvoiceVarietyReport(report_rml):
                                 when cl.uom = 'HB' then (case when cl.is_box_qty = TRUE then cl.qty else cl.qty/(cl.bunch_type::INT * cl.bunch_per_box) end)
                                 when cl.uom = 'FB' then (case when cl.is_box_qty = TRUE then cl.qty * 2 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box)) * 2 end)
                                 when cl.uom = 'OB' then (case when cl.is_box_qty = TRUE then cl.qty / 4 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box * 4)) end)
-                                else 0 end) as hb,
+                                else 0 end)/2 as hb,
                                 sum(case when cl.uom = 'QB' then (case when cl.is_box_qty = TRUE then cl.qty else cl.qty/(cl.bunch_type::INT * cl.bunch_per_box) end)
                                 when cl.uom = 'FB' then (case when cl.is_box_qty = TRUE then cl.qty * 4 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box)) * 4 end)
                                 when cl.uom = 'OB' then (case when cl.is_box_qty = TRUE then cl.qty / 2 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box * 2)) end)
-                                else 0 end) as qb,
+                                else 0 end)/4 as qb,
                                 (sum(case
                                 when cl.uom = 'HB' then (case when cl.is_box_qty = TRUE then cl.qty else cl.qty/(cl.bunch_type::INT * cl.bunch_per_box) end)
                                 when cl.uom = 'FB' then (case when cl.is_box_qty = TRUE then cl.qty * 2 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box)) * 2 end)
@@ -501,7 +504,7 @@ class AccountInvoiceVarietyReport(report_rml):
                                 sum(case when cl.uom = 'QB' then (case when cl.is_box_qty = TRUE then cl.qty else cl.qty/(cl.bunch_type::INT * cl.bunch_per_box) end)
                                 when cl.uom = 'FB' then (case when cl.is_box_qty = TRUE then cl.qty * 4 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box)) * 4 end)
                                 when cl.uom = 'OB' then (case when cl.is_box_qty = TRUE then cl.qty / 2 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box * 2)) end)
-                                else 0 end)/4) as total
+                                else 0 end)/4)/2 as total
                                 from
                                 confirm_invoice_line cl
                                 inner join pedido_cliente p on p.id = cl.pedido_id

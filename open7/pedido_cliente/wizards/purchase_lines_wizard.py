@@ -32,15 +32,22 @@ class puchase_lines_wzd(osv.osv_memory):
         res = {}
         uom = {'FB':1,'HB':2,'QB':4,'OB':8}
         for obj in self.browse(cr, uid, ids, context=context):
+            
+            cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.pedido_id = " + str(obj.pedido_id.id) + 
+                       " and dl.supplier_id = " + str(obj.supplier_id.id) + " and dl.product_id = " + str(obj.product_id.id) +
+                       " group by dl.pedido_id, dl.supplier_id, dl.product_id")
+            
+            totals = cr.fetchone()[0]
+            
             res[obj.id] = {'total_qty_purchased': 'BXS', 'stimated_qty': 'BXS','qty':''}
             if obj.detalle_id.is_box_qty:
                 res[obj.id]['total_qty_purchased'] = str(obj.purchased_qty) + ' BXS'
             else:
                 res[obj.id]['total_qty_purchased'] = str(obj.purchased_qty) + ' Stems'
 
-            bxs_qty = obj.purchased_qty if obj.detalle_id.is_box_qty else (1 if not (obj.purchased_qty / (int(obj.bunch_type) * obj.bunch_per_box)) else (obj.purchased_qty / (int(obj.bunch_type) * obj.bunch_per_box)))
-            res[obj.id]['qty'] = str(bxs_qty) + ' ' + obj.uom
-            full_boxes = float(bxs_qty)/uom[obj.uom]
+            #bxs_qty = obj.purchased_qty if obj.detalle_id.is_box_qty else (1 if not (obj.purchased_qty / (int(obj.bunch_type) * obj.bunch_per_box)) else (obj.purchased_qty / (int(obj.bunch_type) * obj.bunch_per_box)))
+            res[obj.id]['qty'] = str(round(float(obj.bunch_per_box)/totals, 2) if totals else 0) + ' ' + obj.uom
+            full_boxes = (round(float(obj.bunch_per_box)/totals, 2) if totals else 0)/uom[obj.uom]
             res[obj.id]['stimated_qty'] = full_boxes
         return res
 

@@ -49,53 +49,15 @@ class OeMedicalBariatricEvaluation(osv.osv):
         res[eval.id] = 0
         res[eval.id] = eval.epa_pex / 2.0
 
-        return res    
-    
+        return res
+
     def _compute_exi(self, cr, uid, ids, name, args, context=None):
         res = {}
         eval = self.pool.get('oemedical.bariatric.evaluation').browse(cr, uid, ids, context=context)[0]
-        #res[eval.id] = 0
-        res[eval.id] = eval.epa_pid + eval.epa_pep
+        res[eval.id] = 0
+	res[eval.id] = eval.epa_pid + eval.epa_pep
         #res[eval.id] = eval.epa_tal * eval.epa_tal * 25.0 + eval.epa_pep
 
-        return res
-    
-    def _compute_vals(self, cr, uid, ids, name, args, context=None):
-        res = {}
-        obj = self.pool.get('oemedical.bariatric.evaluation').browse(cr, uid, ids, context=context)[0]
-        
-        cr.execute("select id from oemedical_nutritional where patient_id = %s and " + 
-                   "eva_date = (select max(eva_date) from oemedical_nutritional where patient_id = %s)",(obj.patient_id.id, obj.patient_id.id,))  
-           
-        record = cr.fetchall()[0]      
-        
-        nut = self.pool.get('oemedical.nutritional').browse(cr, uid, record[0])
-        res[obj.id] = {}
-        res[obj.id]['preop_hta'] = nut.preop_hta
-        res[obj.id]['hip_preop_med'] = nut.hip_preop_med
-        res[obj.id]['hip_preop_dos'] = nut.hip_preop_dos
-        res[obj.id]['hip_preop_val'] = nut.hip_preop_val
-        res[obj.id]['hip_preop_hac'] = nut.hip_preop_hac
-        res[obj.id]['diab_mel_dm'] = nut.diab_mel_dm
-        res[obj.id]['diab_mel_med'] = nut.diab_mel_med
-        res[obj.id]['diab_mel_dos'] = nut.diab_mel_dos
-        res[obj.id]['diab_mel_val'] = nut.diab_mel_val
-        res[obj.id]['diab_mel_hac'] = nut.diab_mel_hac
-        res[obj.id]['preop_dis'] = nut.preop_dis
-        res[obj.id]['preop_dis_med'] = nut.preop_dis_med
-        res[obj.id]['preop_dis_dos'] = nut.preop_dis_dos
-        res[obj.id]['preop_dis_val'] = nut.preop_dis_val
-        res[obj.id]['preop_dis_hac'] = nut.preop_dis_hac
-        res[obj.id]['hig_gra'] = nut.hig_gra
-        res[obj.id]['hig_gra_med'] = nut.hig_gra_med
-        res[obj.id]['hig_gra_dos'] = nut.hig_gra_dos
-        res[obj.id]['hig_gra_val'] = nut.hig_gra_val
-        res[obj.id]['hig_gra_hac'] = nut.hig_gra_hac
-            
-        res[obj.id]['pes_pak'] = nut.pes_pak
-        res[obj.id]['est_pac'] = nut.est_pac
-            
-              
         return res
         
     _columns={
@@ -290,77 +252,13 @@ class OeMedicalBariatricEvaluation(osv.osv):
               'fianc': fields.text(string='Financiamiento : '),
               'fecha_control': fields.date(string='Fecha para control : ' ),
               'hora_fin': fields.char(size=10, string='Hora fin : '),
-              'evolution_ids': fields.one2many('oemedical.bariatric.evolution', 'evaluation_id', 'Evoluciones'),             
-               
-              # Patologías Preoperatorio
-              'preop_hta': fields.function(_compute_vals,type='boolean', string='Hipertension Arterial (HTA)', multi="_vals"),
-              'hip_preop_med': fields.function(_compute_vals,type='char',string='Medicacion', multi="_vals"),
-              'hip_preop_dos': fields.function(_compute_vals,type='char',string='Dosis', multi="_vals"),
-              'hip_preop_val': fields.function(_compute_vals,type='char',string='Valores de Laboratorio', multi="_vals"),
-              'hip_preop_hac': fields.function(_compute_vals,type='char',string='Hace que tiempo', multi="_vals"),
-
-              'diab_mel_dm': fields.function(_compute_vals,type='boolean',string='Diabetes Melitus (DM)', multi="_vals"),
-              'diab_mel_med': fields.function(_compute_vals,type='char',string='Medicacion', multi="_vals"),
-              'diab_mel_dos': fields.function(_compute_vals,type='char',string='Dosis', multi="_vals"),
-              'diab_mel_val': fields.function(_compute_vals,type='char',string='Valores de Laboratorio', multi="_vals"),
-              'diab_mel_hac': fields.function(_compute_vals,type='char',string='Hace que tiempo', multi="_vals"),
-
-              'preop_dis': fields.function(_compute_vals,type='boolean',string='Dislipidemias', multi="_vals"),
-              'preop_dis_med': fields.function(_compute_vals,type='char',string='Medicacion', multi="_vals"),
-              'preop_dis_dos': fields.function(_compute_vals,type='char',string='Dosis', multi="_vals"),
-              'preop_dis_val': fields.function(_compute_vals,type='char',string='Valores de Laboratorio', multi="_vals"),
-              'preop_dis_hac': fields.function(_compute_vals,type='char',string='Hace que tiempo', multi="_vals"),
-
-              'hig_gra': fields.function(_compute_vals,type='boolean',string='Higado Graso', multi="_vals"),
-              'hig_gra_med': fields.function(_compute_vals,type='char',string='Medicacion', multi="_vals"),
-              'hig_gra_dos': fields.function(_compute_vals,type='char',string='Dosis', multi="_vals"),
-              'hig_gra_val': fields.function(_compute_vals,type='char',string='Valores de Laboratorio', multi="_vals"),
-              'hig_gra_hac': fields.function(_compute_vals,type='char',string='Hace que tiempo', multi="_vals"), 
-              
-              'pes_pak': fields.function(_compute_vals,type='char',string='Peso antes de la cirugía en Kg :', multi="_vals"),
-              'est_pac': fields.function(_compute_vals,type='char',string='Talla (mts):', multi="_vals"),               
-                   
+              'evolution_ids': fields.one2many('oemedical.bariatric.evolution', 'evaluation_id', 'Evoluciones')
             }
     
     _defaults = {
             'patient_id': lambda self, cr, uid, context: context.get('patient_id', False),
             'eva_date': time.strftime('%Y-%m-%d'),
-    }
-    
-    def onchange_patient(self, cr, uid, ids, patient_id, context = None):
-        res = {'value': {}}
-        if patient_id:
-            cr.execute("select id from oemedical_nutritional where patient_id = %s and " + 
-                   "eva_date = (select max(eva_date) from oemedical_nutritional where patient_id = %s)",(patient_id, patient_id,))  
-           
-            record = cr.fetchall()[0]      
-        
-            nut = self.pool.get('oemedical.nutritional').browse(cr, uid, record[0])
-        
-            res['value']['preop_hta'] = nut.preop_hta
-            res['value']['hip_preop_med'] = nut.hip_preop_med
-            res['value']['hip_preop_dos'] = nut.hip_preop_dos
-            res['value']['hip_preop_val'] = nut.hip_preop_val
-            res['value']['hip_preop_hac'] = nut.hip_preop_hac
-            res['value']['diab_mel_dm'] = nut.diab_mel_dm
-            res['value']['diab_mel_med'] = nut.diab_mel_med
-            res['value']['diab_mel_dos'] = nut.diab_mel_dos
-            res['value']['diab_mel_val'] = nut.diab_mel_val
-            res['value']['diab_mel_hac'] = nut.diab_mel_hac
-            res['value']['preop_dis'] = nut.preop_dis
-            res['value']['preop_dis_med'] = nut.preop_dis_med
-            res['value']['preop_dis_dos'] = nut.preop_dis_dos
-            res['value']['preop_dis_val'] = nut.preop_dis_val
-            res['value']['preop_dis_hac'] = nut.preop_dis_hac
-            res['value']['hig_gra'] = nut.hig_gra
-            res['value']['hig_gra_med'] = nut.hig_gra_med
-            res['value']['hig_gra_dos'] = nut.hig_gra_dos
-            res['value']['hig_gra_val'] = nut.hig_gra_val
-            res['value']['hig_gra_hac'] = nut.hig_gra_hac
-                
-            res['value']['pes_pak'] = nut.pes_pak
-            res['value']['est_pac'] = nut.est_pac
-        return res
+              }
             
 OeMedicalBariatricEvaluation()
 

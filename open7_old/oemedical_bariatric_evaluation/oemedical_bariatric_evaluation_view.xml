@@ -32,7 +32,7 @@
                     </div-->
                         <page string="Evaluacion Bariatrica">
 	                      <group>
-						    <field name="patient_id" string="Paciente" required="1" on_change="onchange_patient(patient_id)"/>
+						    <field name="patient_id" string="Paciente" required="1"/>
 						    <field name="pac_age" />
 						  </group>
                           <newline/>
@@ -54,44 +54,7 @@
 				                <field name="ang_ant" />
 				                </group>
 							</group>
-							<group string="2.1 EVALUACION NUTRICIONAL">
-								<group col="2">
-								<field name="preop_hta" />
-				              	<field name="hip_preop_med" />
-					            <field name="hip_preop_dos" />
-					            <field name="hip_preop_val" />
-					            <field name="hip_preop_hac" />
-					            </group>
-					            <group col="2">
-					            <field name="diab_mel_dm" />
-					            <field name="diab_mel_med" />
-					            <field name="diab_mel_dos" />
-					            <field name="diab_mel_val" />
-					            <field name="diab_mel_hac" />
-					            </group>
-					            <newline/>
-					            <group col="2">
-					            <field name="preop_dis" />
-					            <field name="preop_dis_med" />
-					            <field name="preop_dis_dos" />
-					            <field name="preop_dis_val" />
-					            <field name="preop_dis_hac" />
-					            </group>
-					            <group col="2">
-					            <field name="hig_gra" />
-					            <field name="hig_gra_med" />
-					            <field name="hig_gra_dos" />
-					            <field name="hig_gra_val" />
-					            <field name="hig_gra_hac" />
-					            </group>
-					            <newline/>
-					            <group col="2">
-					            <field name="pes_pak"/>
-					            <field name="est_pac"/>					            
-					            </group>					            
-					            <newline/>
-							</group>
-							<group string="2.2 CLINICOS">
+							<group string="CLINICOS">
 								<group col="2">
 								<field name="anc_hta" />
 				              	<field name="anc_hdr" />
