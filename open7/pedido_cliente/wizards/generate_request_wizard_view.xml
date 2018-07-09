@@ -13,7 +13,7 @@
                         <group  colspan="4">
                             <label string="Sino selecciona ningun cliente se generaran los pedidos para todos los clientes registrados en el sistema" colspan="4"/>
                             <newline/><newline/>
-                            <field name="client_id" domain="[('customer','=',True)]"/>
+                            <field name="client_id" domain="[('customer','=',True)]" context="{'no_subcliente' : True}"/>
                             <newline/>
                             <label string="¿Desea continuar?" colspan="4"/>
                         </group>
@@ -35,7 +35,7 @@
             <field name="view_id" ref="generate_request_wizard_wizard_view_form"/>
         </record>
 
-        <menuitem name="Generar Pedidos" action="action_generate_request_wizard" id="menu_generate_request_wizard" parent="menu_pedido_cliente_menu" sequence="2"/>
+        <menuitem name="Generar Pedidos" action="action_generate_request_wizard" id="menu_generate_request_wizard" parent="menu_pedido_cliente_menu" sequence="1"/>
 
     </data>
 </openerp>

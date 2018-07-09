@@ -120,7 +120,7 @@ class confirm_invoice_wizard(osv.osv_memory):
             list_vals = []
             pedido = self.pool.get('pedido.cliente').browse(cr, uid, pedido_id)
             supplier = self.pool.get('res.partner').browse(cr, uid, supplier_id)
-            uom = {'FB': 1, 'HB': 2, 'QB': 4, 'OB': 8}
+           
             line = 1
             p_ids = self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', pedido_id),('supplier_id', '=', supplier_id)])
             generated = False
@@ -143,36 +143,32 @@ class confirm_invoice_wizard(osv.osv_memory):
                 confirmed_lines += detalle_ids
                 confirmed_lines = list(set(confirmed_lines))
                 self.pool.get('detalle.lines').write(cr, uid, confirmed_lines,{'confimada': False})
-
-            total = sum([l.bunch_per_box for l in pedido.purchase_line_ids])            
             
             for v in pedido.purchase_line_ids:
                 if v.supplier_id.id == supplier_id:
-                    qty_bxs = float(v.qty) if v.is_box_qty else round(float(v.bunch_per_box)/total, 2)
-                    boxes = float(qty_bxs) / 2 #uom[v.uom]
                     vals = {
-                        'pedido_id': pedido_id,
-                        'supplier_id': supplier_id,
-                        'detalle_id': v.id,
-                        'line_number': str(line),
-                        'product_id': v.product_id.id,
-                        'variant_id': v.variant_id.id,
-                        'length': v.lengths,
-                        'purchase_price': v.purchase_price,
-                        'sale_price': v.sale_price,
-                        'qty': v.qty,
-                        'boxes': boxes,
-                        'total_purchase': v.qty * v.purchase_price if not v.is_box_qty else ((v.qty * v.bunch_per_box * int(v.bunch_type))) * v.purchase_price,
-                        'total_sale': v.qty * v.sale_price if not v.is_box_qty else ((v.qty * v.bunch_per_box * int(v.bunch_type))) * v.sale_price,
-                        'bunch_per_box': v.bunch_per_box,
-                        'bunch_type': v.bunch_type,
-                        'uom': v.uom,
-                        'origin': v.origin.id if v.origin else False,
-                        'subclient_id': v.subclient_id.id if v.subclient_id else False,
-                        'sucursal_id': v.sucursal_id.id if v.sucursal_id else False,
-                        'type': v.type if v.type else False,
-                        'is_box_qty': v.is_box_qty,
-                        'qty_bxs': str(qty_bxs) + ' ' + v.uom
+                        'pedido_id'       : pedido_id,
+                        'supplier_id'     : supplier_id,
+                        'detalle_id'      : v.id,
+                        'line_number'     : v.name,
+                        'product_id'      : v.product_id.id,
+                        'variant_id'      : v.variant_id.id,
+                        'length'          : v.length,
+                        'purchase_price'  : v.purchase_price,
+                        'sale_price'      : v.sale_price,
+                        'qty'             : v.qty,                        
+                        'total_purchase'  : v.total_purchase,
+                        'total_sale'      : v.total_sale,
+                        'bunch_per_box'   : v.bunch_per_box,
+                        'bunch_type'      : v.bunch_type,
+                        'uom'             : v.uom,
+                        'origin_id'       : v.origin_id.id if v.origin_id else False,
+                        'subclient_id'    : v.subclient_id.id if v.subclient_id else False,
+                        'sucursal_id'     : v.sucursal_id.id if v.sucursal_id else False,
+                        'type'            : v.type if v.type else False,
+                        'is_box_qty'      : v.is_box_qty,
+                        'boxes'           : v.full_boxes,
+                        'qty_bxs'         : v.bxs_qty
                     }
                     list_vals.append((0, 0, vals))
                     line += 1
@@ -200,8 +196,7 @@ class confirm_invoice_wizard(osv.osv_memory):
             p_ids = self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', o.pedido_id.id),
                                                                       ('supplier_id', '=', o.supplier_id.id)])
             line = 1
-            lines_confirmed = []
-            total = sum([l.bunch_per_box for l in o.line_ids])
+            lines_confirmed = []            
             
             for l in o.line_ids:
                 account_id = l.product_id.property_account_expense.id if l.product_id.property_account_expense else False
@@ -209,44 +204,42 @@ class confirm_invoice_wizard(osv.osv_memory):
                     account_id = l.product_id.categ_id.property_account_expense_categ.id if l.product_id.categ_id and l.product_id.categ_id.property_account_expense_categ else False
                 if not account_id:
                     raise osv.except_osv('Error',"El producto " + l.product_id.name_template + " no tiene una cuenta de gastos configurada.")
-                boxes = l.qty if l.is_box_qty  else round(float(l.bunch_per_box)/total, 2)  #l.qty / (int(l.bunch_type) * l.bunch_per_box)
+                                
+                boxes = l.qty if l.is_box_qty  else l.qty / (int(l.bunch_type) * l.bunch_per_box)
                 boxes = boxes / uom[l.uom]
                 vals = {
-                    'pedido_id': l.invoice_id.pedido_id.id if l.invoice_id and l.invoice_id.pedido_id else False,
-                    'detalle_id': l.detalle_id.id if l.detalle_id else False,
-                    'supplier_id': l.supplier_id.id if l.supplier_id else False,
-                    'line_number': l.line_number if l.line_number else str(line),
-                    'product_id': l.product_id.id if l.product_id else False,
-                    'variant_id': l.variant_id.id if l.variant_id else False,
-                    'length': l.length,
-                    'purchase_price': l.purchase_price,
-                    'sale_price': l.sale_price,
-                    'qty': l.qty,
-                    'boxes': boxes,
-                    'total_purchase': l.qty * l.purchase_price if not l.is_box_qty else (l.qty * l.bunch_per_box * int(
-                        l.bunch_type)) * l.purchase_price,
-                    'total_sale': l.qty * l.sale_price if not l.is_box_qty else (l.qty * l.bunch_per_box * int(
-                        l.bunch_type)) * l.sale_price,
-                    'bunch_per_box': l.bunch_per_box,
-                    'bunch_type': l.bunch_type,
-                    'uom': l.uom,
-                    'origin': l.origin.id if l.origin else False,
-                    'subclient_id': l.subclient_id.id if l.subclient_id else False,
-                    'sucursal_id': l.sucursal_id.id if l.sucursal_id else False,
-                    'type': l.type if l.type else False,
-                    'is_box_qty': l.is_box_qty,
-                    'confirmada': True
+                    'pedido_id'       : l.invoice_id.pedido_id.id if l.invoice_id and l.invoice_id.pedido_id else False,
+                    'detalle_id'      : l.detalle_id.id if l.detalle_id else False,
+                    'supplier_id'     : l.supplier_id.id if l.supplier_id else False,
+                    'line_number'     : l.line_number if l.line_number else str(line),
+                    'product_id'      : l.product_id.id if l.product_id else False,
+                    'variant_id'      : l.variant_id.id if l.variant_id else False,
+                    'length'          : l.length,
+                    'purchase_price'  : l.purchase_price,
+                    'sale_price'      : l.sale_price,
+                    'qty'             : l.qty,
+                    'boxes'           : boxes,
+                    'total_purchase'  : l.qty * l.purchase_price if not l.is_box_qty else (l.qty * l.bunch_per_box * int(l.bunch_type)) * l.purchase_price,
+                    'total_sale'      : l.qty * l.sale_price if not l.is_box_qty else (l.qty * l.bunch_per_box * int(l.bunch_type)) * l.sale_price,
+                    'bunch_per_box'   : l.bunch_per_box,
+                    'bunch_type'      : l.bunch_type,
+                    'uom'             : l.uom,
+                    'origin'          : l.origin.id if l.origin else False,
+                    'subclient_id'    : l.subclient_id.id if l.subclient_id else False,
+                    'sucursal_id'     : l.sucursal_id.id if l.sucursal_id else False,
+                    'type'            : l.type if l.type else False,
+                    'is_box_qty'      : l.is_box_qty,
+                    'confirmada'      : True
                 }
                 lines.append((0, 0, vals))
 
-                full_boxes = l.qty if l.is_box_qty else round(float(l.bunch_per_box)/total, 2) #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
+                full_boxes = l.qty if l.is_box_qty else float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
                 full_boxes = full_boxes / uom[l.uom]
+                
                 dict_vals = {
-                    'boxes': full_boxes,
-                    'total_purchase': l.qty * l.purchase_price if not l.is_box_qty else l.qty * l.bunch_per_box * int(
-                        l.bunch_type) * l.purchase_price,
-                    'total_sale': l.qty * l.sale_price if not l.is_box_qty else l.qty * l.bunch_per_box * int(
-                        l.bunch_type) * l.sale_price
+                    'boxes'          : full_boxes,
+                    'total_purchase' : l.qty * l.purchase_price if not l.is_box_qty else l.qty * l.bunch_per_box * int(l.bunch_type) * l.purchase_price,
+                    'total_sale'     : l.qty * l.sale_price if not l.is_box_qty else l.qty * l.bunch_per_box * int(l.bunch_type) * l.sale_price
                 }
                 self.pool.get('confirm.invoice.line.wizard').write(cr, uid, [l.id], dict_vals)
 
@@ -334,8 +327,7 @@ class confirm_invoice_wizard(osv.osv_memory):
 
             lines = []
             sequence = 1
-            line_ids = []
-            total = sum([l.bunch_per_box for l in o.line_ids])
+            line_ids = []          
             
             for l in o.line_ids:
                 if l.confirmed_line_id:
@@ -352,11 +344,11 @@ class confirm_invoice_wizard(osv.osv_memory):
 
                 taxes = [(4, t.id) for t in l.product_id.supplier_taxes_id]
 
-                qty_bxs = l.qty if l.is_box_qty else round(float(l.bunch_per_box)/total, 2)
+                qty_bxs = l.qty if l.is_box_qty else float(l.qty)/(int(l.bunch_type) * l.bunch_per_box)
                 stems = l.qty if not l.is_box_qty else l.qty * int(l.bunch_type) * l.bunch_per_box
-                
                 boxes = float(qty_bxs)/uom[l.uom]
-                
+                qty_bxs = str(qty_bxs) + l.uom
+
                 hb_qty = 0
                 qb_qty = 0
                 if l.uom == 'FB':
@@ -364,11 +356,9 @@ class confirm_invoice_wizard(osv.osv_memory):
                 if l.uom == 'OB':
                     hb_qty = boxes * 8
                 if l.uom == 'HB':
-                    hb_qty = l.qty if l.is_box_qty else qty_bxs # float(l.qty)/ (int(l.bunch_type) * l.bunch_per_box)
+                    hb_qty = l.qty if l.is_box_qty else float(l.qty)/ (int(l.bunch_type) * l.bunch_per_box)
                 if l.uom == 'QB':
-                    qb_qty = l.qty if l.is_box_qty else qty_bxs #float(l.qty)/ (int(l.bunch_type) * l.bunch_per_box)
-
-                qty_bxs = str(qty_bxs) + l.uom
+                    qb_qty = l.qty if l.is_box_qty else float(l.qty)/ (int(l.bunch_type) * l.bunch_per_box)
   
                 vals = {
                     'sequence_box': sequence,
@@ -444,15 +434,13 @@ class confirm_invoice_line_wizard(osv.osv_memory):
     _rec_name = 'line_number'
 
     def _get_info(self, cr, uid, ids, field_name, arg, context):
-        res = {}
-        total = sum([r['bunch_per_box'] for r in self.read(cr, uid, ids, ['bunch_per_box'])])
-        
+        res = {}       
         for obj in self.browse(cr, uid, ids, context=context):
             if obj.is_box_qty:
-               res[obj.id] = str(obj.qty) + ' ' + obj.uom
+                res[obj.id] = str(obj.qty) + ' ' + obj.uom
             else:
-               qty = float(obj.qty) / (int(obj.bunch_type) * obj.bunch_per_box)
-            res[obj.id] = str(round(float(obj.bunch_per_box)/total, 2)) + ' ' + obj.uom
+                qty = float(obj.qty) / (int(obj.bunch_type) * obj.bunch_per_box)
+                res[obj.id] = str(qty) + ' ' + obj.uom
         return res
 
     _columns = {
@@ -469,7 +457,6 @@ class confirm_invoice_line_wizard(osv.osv_memory):
         'purchase_price'     : fields.float('Purchase Price'),
         'sale_price'         : fields.float('Sale Price'),
         'qty'                : fields.float('Qty', help = "Quantity"),
-        'boxes'              : fields.float('Full Boxes'),
         'total_purchase'     : fields.float(string='Total'),
         'total_sale'         : fields.float(string='Total'),
         'bunch_per_box'      : fields.integer('Bunch per Box'),
@@ -483,6 +470,8 @@ class confirm_invoice_line_wizard(osv.osv_memory):
         'sucursal_id'        : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
         'type'               : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
         'is_box_qty'         : fields.boolean('Box Packing?'),
+        
+        'boxes'              : fields.float('Full Boxes'),
         'qty_bxs'            : fields.function(_get_info, type='char', string='BXS'),
         'selected'           : fields.boolean('Selected'),
     }
@@ -570,31 +559,29 @@ class confirm_windows_wizard(osv.osv_memory):
         list_vals = []
         obj =self.pool.get('confirm.windows.wizard').browse(cr,uid,ids[0]).confirm_id
         
-        total = sum([l.bunch_per_box for l in obj.line_ids])
-        
         for v in obj.line_ids:
             vals = {
-                'pedido_id': obj.pedido_id.id if obj.pedido_id else False,
-                'supplier_id': obj.supplier_id.id if obj.supplier_id else False,
-                'detalle_id': v.detalle_id.id if v.detalle_id else False,
-                'line_number': v.line_number,
-                'product_id': v.product_id.id if v.product_id else False,
-                'variant_id': v.variant_id.id if v.detalle_id else False,
-                'length': v.length,
-                'purchase_price': v.purchase_price,
-                'sale_price': v.sale_price,
-                'qty': v.qty,
-                'boxes': v.boxes,
-                'total_purchase': v.total_purchase,
-                'total_sale': v.total_sale,
-                'bunch_per_box': v.bunch_per_box,
-                'bunch_type': v.bunch_type,
-                'uom': v.uom,
-                'origin': v.origin.id if v.origin else False,
-                'subclient_id': v.subclient_id.id if v.subclient_id else False,
-                'sucursal_id': v.sucursal_id.id if v.sucursal_id else False,
-                'type': v.type if v.type else False,
-                'is_box_qty': v.is_box_qty
+                'pedido_id'      : obj.pedido_id.id if obj.pedido_id else False,
+                'supplier_id'    : obj.supplier_id.id if obj.supplier_id else False,
+                'detalle_id'     : v.detalle_id.id if v.detalle_id else False,
+                'line_number'    : v.line_number,
+                'product_id'     : v.product_id.id if v.product_id else False,
+                'variant_id'     : v.variant_id.id if v.detalle_id else False,
+                'length'         : v.length,
+                'purchase_price' : v.purchase_price,
+                'sale_price'     : v.sale_price,
+                'qty'            : v.qty,
+                'boxes'          : v.boxes,
+                'total_purchase' : v.total_purchase,
+                'total_sale'     : v.total_sale,
+                'bunch_per_box'  : v.bunch_per_box,
+                'bunch_type'     : v.bunch_type,
+                'uom'            : v.uom,
+                'origin'         : v.origin.id if v.origin else False,
+                'subclient_id'   : v.subclient_id.id if v.subclient_id else False,
+                'sucursal_id'    : v.sucursal_id.id if v.sucursal_id else False,
+                'type'           : v.type if v.type else False,
+                'is_box_qty'     : v.is_box_qty
             }
             list_vals.append((0, 0, vals))
         context['default_pedido_id'] = obj.pedido_id.id

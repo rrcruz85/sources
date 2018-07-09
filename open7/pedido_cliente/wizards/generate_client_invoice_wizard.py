@@ -118,10 +118,9 @@ class invoice_client_wizard(osv.osv_memory):
                     uom = {'FB': 1, 'HB': 2, 'QB': 4, 'OB': 8}
                     line = 1
                     for obj in self.pool.get('confirm.invoice').browse(cr, uid, p_ids):
-                        
-                        total = sum([l.bunch_per_box for l in obj.line_ids])            
                         for v in obj.line_ids:
-                            qty_bxs = float(v.qty) if v.is_box_qty else round(float(v.bunch_per_box)/total, 2) #float(v.qty) / (int(v.bunch_type) * v.bunch_per_box)
+                            qty_bxs = float(v.qty) if v.is_box_qty else  float(v.qty) / (
+                                int(v.bunch_type) * v.bunch_per_box)
                             boxes = qty_bxs / uom[v.uom]
                             vals = {
                                 'pedido_id': pedido_id,
@@ -184,7 +183,8 @@ class invoice_client_wizard(osv.osv_memory):
             not_confirmed_ids = list(set(line_ids) - set(confirmed_supplier_ids))
             if not_confirmed_ids:
                 names = [r['name'] for r in self.pool.get('res.partner').read(cr, uid, not_confirmed_ids, ['name'])]
-                raise osv.except_osv('Error',"Para el pedido seleccionado no se han confirmado las lineas de factura de todos los proveedor. \nLos siguientes proveedores no han sido confirmados: " + ','.join(
+                raise osv.except_osv('Error',
+                                     "Para el pedido seleccionado no se han confirmado las lineas de factura de todos los proveedor. \nLos siguientes proveedores no han sido confirmados: " + ','.join(
                                          names))
 
         if not context:
@@ -193,16 +193,16 @@ class invoice_client_wizard(osv.osv_memory):
         uom = {'FB': 1, 'HB': 2, 'QB': 4, 'OB': 8}
         for o in self.browse(cr, uid, ids):
             i = 1
-            total = sum([l.bunch_per_box for l in o.line_ids])
             for v in o.line_ids:
-                qty_bxs = float(v.qty) if v.is_box_qty else round(float(v.bunch_per_box)/total, 2) #float(v.qty) / (int(v.bunch_type) * v.bunch_per_box)
+                qty_bxs = float(v.qty) if v.is_box_qty else float(v.qty) / (int(v.bunch_type) * v.bunch_per_box)
                 boxes = qty_bxs / uom[v.uom]
                 dict_vals = {
                     'line_number': str(i),
                     'boxes': boxes,
                     'total_purchase': v.qty * v.purchase_price if not v.is_box_qty else ((v.qty * v.bunch_per_box * int(
                         v.bunch_type)) / uom[v.uom]) * v.purchase_price,
-                    'total_sale': v.qty * v.sale_price if not v.is_box_qty else ((v.qty * v.bunch_per_box * int(v.bunch_type)) / uom[v.uom]) * v.sale_price,
+                    'total_sale': v.qty * v.sale_price if not v.is_box_qty else ((v.qty * v.bunch_per_box * int(
+                        v.bunch_type)) / uom[v.uom]) * v.sale_price,
                     'qty_bxs': str(qty_bxs) + ' ' + v.uom
                 }
                 self.pool.get('invoice.client.line.wizard').write(cr, uid, [v.id], dict_vals)
@@ -254,8 +254,6 @@ class invoice_client_wizard(osv.osv_memory):
             lines = []
             sequence = 1
             if not o.box_line_ids:
-                
-                total = sum([l.bunch_per_box for l in o.line_ids])
                 for l in o.line_ids:
                     account_id = l.product_id.property_account_expense.id if l.product_id.property_account_expense else False
                     if not account_id:
@@ -272,8 +270,9 @@ class invoice_client_wizard(osv.osv_memory):
                         name = 'Open Market ' + name
 
                     taxes = [(4, t.id) for t in l.product_id.supplier_taxes_id]
-                    qty_bxs = l.qty if l.is_box_qty else round(float(l.bunch_per_box)/total, 2) #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
+                    qty_bxs = l.qty if l.is_box_qty else float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
                     boxes = float(qty_bxs) / uom[l.uom]
+                    qty_bxs = str(qty_bxs) + l.uom
                     stems = l.qty if not l.is_box_qty else l.qty * int(l.bunch_type) * l.bunch_per_box
 
                     hb_qty = 0
@@ -283,12 +282,10 @@ class invoice_client_wizard(osv.osv_memory):
                     if l.uom == 'OB':
                         hb_qty = boxes * 8
                     if l.uom == 'HB':
-                        hb_qty = l.qty if l.is_box_qty else qty_bxs #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
+                        hb_qty = l.qty if l.is_box_qty else float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
                     if l.uom == 'QB':
-                        qb_qty = l.qty if l.is_box_qty else qty_bxs #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
+                        qb_qty = l.qty if l.is_box_qty else float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
 
-                    qty_bxs = str(qty_bxs) + l.uom
-                    
                     vals = {
                         'sequence_box': sequence,
                         'stems':stems,
@@ -528,10 +525,14 @@ class invoice_client_line_wizard(osv.osv_memory):
         'bunch_type': 25,
         'uom': 'HB',
         'type': 'open_market',
-        'pedido_id': lambda self, cr, uid, context: context['pedido_id'] if context and 'pedido_id' in context else False,
-        'product_id': lambda self, cr, uid, context: context['product_id'] if context and 'product_id' in context else False,
-        'invoice_id': lambda self, cr, uid, context: context['invoice_id'] if context and 'invoice_id' in context else False,
-        'supplier_id': lambda self, cr, uid, context: context['supplier_id'] if context and 'supplier_id' in context else False,
+        'pedido_id': lambda self, cr, uid, context: context[
+            'pedido_id'] if context and 'pedido_id' in context else False,
+        'product_id': lambda self, cr, uid, context: context[
+            'product_id'] if context and 'product_id' in context else False,
+        'invoice_id': lambda self, cr, uid, context: context[
+            'invoice_id'] if context and 'invoice_id' in context else False,
+        'supplier_id': lambda self, cr, uid, context: context[
+            'supplier_id'] if context and 'supplier_id' in context else False,
         'line_number': get_default_line_number,
     }
 

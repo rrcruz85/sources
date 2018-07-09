@@ -25,7 +25,7 @@ import math
 
 class purchase_line_wzd(osv.osv_memory):
     _name = 'purchase.line.wzd'
-    _description = 'Detalle de compras'
+    _description = 'Missing Quantities per Lines'
 
     def _get_info(self, cr, uid, ids, field_name, arg, context):
         res = {}
@@ -47,36 +47,18 @@ class purchase_line_wzd(osv.osv_memory):
         return result
 
     _columns = {
-        'pedido_id'            : fields.many2one('pedido.cliente', 'Pedido'),
-        'cliente_id'           : fields.related('pedido_id','partner_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
-        'product_variant_id'            : fields.many2one('request.product.variant', 'Variant'),
+        'line'                  : fields.char(string='Line', size = 128),
+        'pedido_id'             : fields.many2one('pedido.cliente', 'Pedido'),
+        'cliente_id'            : fields.related('pedido_id','partner_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
+        'product_variant_id'    : fields.many2one('request.product.variant', 'Variant'),
         'type'                  : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Order'),
-        'supplier_id'           : fields.many2one('res.partner', 'Farm', required=True, domain=[('supplier', '=', True)]),
+        
         'product_id'            : fields.many2one('product.product', 'Product', required=True),
         'variant_id'            : fields.many2one('product.variant', 'Variety', required=True),
-        'length_ids'            : fields.one2many('purchase.line.length.wzd','wzd_id','Lengths'),
-       	'is_box_qty'            : fields.boolean('Box Packing?'),
-        'box_qty'               : fields.integer('Boxes'),
-		'tale_qty'              : fields.integer('Stems'),
-		'bunch_per_box'         : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.integer('Stems x Bunch'),
-        'uom'                   : fields.selection([('FB', 'FB'),
-                                                    ('HB', 'HB'),
-                                                    ('QB', 'QB'),
-                                                    ('OB', 'OB')], 'Unit of Measure'),
-        'sale_price'            : fields.float(string='Sale Price'),
-        'origin'                : fields.many2one('detalle.lines.origin', string='Origin'),
-        'subclient_id'          : fields.many2one('res.partner', 'SubClient'),
-        'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
-
-        #'total_purchase'        : fields.function(_get_quantity, type='float', string='Farm Total', multi='compute_data'),
-        #'total_sale'            : fields.function(_get_quantity, type='float', string='Total', multi='compute_data'),
-        #'profit'                : fields.function(_get_quantity, type='float', string='Profit', multi='compute_data'),
-        'full_boxes'            : fields.function(_get_quantity, type='float', string='Full Boxes'),
-        'stimated_stems'     : fields.function(_get_info, type='integer', string='Stems'),
-        'qty_bxs'                 : fields.char(string='BXS', size = 10),
-        'supplier_ids'                 : fields.char(string='Suppliers', size = 250),
-        'confirmada'            : fields.boolean(help='Confirmada'),
+        
+        'missing_qty_ids'       : fields.one2many('missing.qty.wzd','wzd_id','Missing quantities per line'),
+         
+        'subclient_id'          : fields.many2one('res.partner', 'SubClient')       
     }
 
     def get_client(self, cr, uid, context):
@@ -85,95 +67,184 @@ class purchase_line_wzd(osv.osv_memory):
         return False
 
     _defaults = {
-        'type': 'open_market',
         'cliente_id'   :  get_client,
     }
-
-    def on_chance_vals(self, cr, uid, ids, is_box_qty,box_qty,tale_qty, bunch_type,bunch_per_box, uom, sale_price, context=None):
-        result = {}
-        if uom and bunch_type and bunch_per_box:
-            uom_dict = {'FB':1,'HB':2,'QB':4,'OB':8}
-            qty_bxs = box_qty if is_box_qty else  (1 if not (tale_qty / (int(bunch_type) * bunch_per_box)) else (tale_qty / (int(bunch_type) * bunch_per_box)))
-            boxes = float(qty_bxs) / uom_dict[uom]
-            result['value'] = {
-                'full_boxes' : boxes,
-                'qty_bxs' : str(qty_bxs) + ' ' + uom,
-                'stimated_stems' :  box_qty * int(bunch_type) * bunch_per_box if is_box_qty else tale_qty
-            }
-        return result
-
-    def on_chance_supplier(self, cr, uid, ids, supplier_id, product_id, variant_id, context=None):
-        result = {}
-        if supplier_id and product_id and variant_id:
-            suppliers = self.pool.get('purchase.request.template').search(cr,uid,[('partner_id','=',supplier_id)])
-            if suppliers:
-                val_ids = self.pool.get('purchase.request.product.variant').search(cr, uid, [('template_id', '=', suppliers[0]),('product_id', '=', product_id),('variant_id', '=', variant_id)])
-                if val_ids:
-                    product_variant = self.pool.get('purchase.request.product.variant').browse(cr, uid, val_ids[0])
-                    vals =[(0,0,{'length': p.length,'purchase_price':p.purchase_price}) for p in product_variant.length_ids]
-                    result['value'] = {'length_ids':vals}
-        return result
-
-    def save(self, cr, uid, ids, arg, context=None):
-        obj = self.browse(cr, uid, ids[0])
-        if not obj.length_ids:
-            name = obj.product_id.name_template + ' ' + obj.variant_id.name
-            raise osv.except_osv('Error', "Debe especificar las longitudes y los precios de compra para el producto " + name)
-
-        lengths = [(0,0,{'length': l.length, 'purchase_price': l.purchase_price})for l in obj.length_ids]
-        detalle_dict = {
-            'pedido_id': obj.pedido_id.id if obj.pedido_id else None,
-            'line_id': obj.product_variant_id.id if obj.product_variant_id else None,
-            'type': obj.type if obj.type else None,
-            'supplier_id': obj.supplier_id.id if obj.supplier_id else None,
-            'product_id': obj.product_id.id,
-            'variant_id': obj.variant_id.id,
-            'qty': obj.box_qty if obj.is_box_qty else obj.tale_qty,
-            'is_box_qty': obj.is_box_qty,
-            'bunch_type': obj.bunch_type,
-            'bunch_per_box': obj.bunch_per_box,
-            'uom': obj.uom,
-            'sale_price': obj.sale_price,
-            'origin': obj.origin.id if obj.origin else None,
-            'subclient_id': obj.subclient_id.id if obj.subclient_id else None,
-            'sucursal_id': obj.sucursal_id.id if obj.sucursal_id else None,
-            'length_ids': lengths
-        }
-        self.pool.get('detalle.lines').create(cr, uid, detalle_dict)
-
-        return {
-            'name': 'Pedidos de Clientes',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'pedido.cliente',
-            'type': 'ir.actions.act_window',
-            'context': context,
-            'res_id': obj.pedido_id.id,
-        }
-
-    def _check_bunch_type(self, cr, uid, ids, context=None):
-        obj = self.browse(cr, uid, ids[0], context=context)
-        return obj.bunch_type > 0 and obj.bunch_type <= 25
-
-    _constraints = [
-        (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
-    ]
-
+        
 purchase_line_wzd()
 
 
-class purchase_line_length_wzd(osv.osv_memory):
-    _name = 'purchase.line.length.wzd'
-    _description = 'Variety Length'
+class missing_qty_wzd(osv.osv_memory):
+    _name = 'missing.qty.wzd'
+    _description = 'Missing Qty'
+    
+    def _get_info(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        uom = {'FB':1,'HB':2,'QB':4,'OB':8}
+        for obj in self.browse(cr, uid, ids, context=context):
+            res[obj.id] = {'qty':'Qty','bxs_qty':'BXS','full_boxes':0}
+            bxs_qty = obj.box_qty if obj.is_box_qty else (round(float(obj.tale_qty)/(obj.bunch_type * obj.bunch_per_box), 2) if obj.bunch_type and obj.bunch_per_box else 0)
+            res[obj.id]['bxs_qty'] =  str(bxs_qty) + ' ' + obj.uom
+            res[obj.id]['qty'] =  (str(obj.box_qty) + ' Boxes' if obj.is_box_qty else str(obj.tale_qty) + ' Stems') 
+            full_boxes = float(bxs_qty)/uom[obj.uom]
+            res[obj.id]['full_boxes'] = full_boxes
+        return res
 
     _columns = {
-        'wzd_id'            : fields.many2one('purchase.line.wzd','Wizard'),
-        'length'           : fields.char(string='Length', size = 128, required=True),
-        'purchase_price'            : fields.float(string='Purchase Price'),
-	}
+        'wzd_id'                : fields.many2one('purchase.line.wzd','Wizard'),
+        'length'                : fields.char(string='Length', size = 128),
+        'sale_price'            : fields.float(string='Sale Price'),
+        
+        'is_box_qty'            : fields.boolean('Box Packing?'),
+        'box_qty'               : fields.integer('Bxs', help = 'Boxes'),        
+        'tale_qty'              : fields.integer('Stems'),
+        'bunch_per_box'         : fields.integer(string= 'Bunches', help= 'Bunches per Box'),
+        'bunch_type'            : fields.integer(string = 'UxB', help= 'Stems per Bunch'),
+        'uom'                   : fields.selection([('FB', 'FB'),
+                                                    ('HB', 'HB'),
+                                                    ('QB', 'QB'),
+                                                    ('OB', 'OB')], string = 'UOM', help='Unit of Measure'),
+        
+        'full_boxes'            : fields.function(_get_info, type='float', string='FB', help="Full Boxes", multi = '_data'),
+        'bxs_qty'               : fields.function(_get_info, type='char', string='BXS', multi = '_data'),
+        'qty'                   : fields.function(_get_info, type='char', string='Qty', help="Quantity", multi = '_data'),
+
+    }
+    
+    def on_change_vals(self, cr, uid, ids, is_box_qty, box_qty, tale_qty, bunch_per_box, bunch_type, uom, context=None):
+        res = {'value':{'bxs_qty': 'BXS', 'full_boxes':0}}
+        uom_dict = {'FB':1,'HB':2,'QB':4,'OB':8}
+        bxs_qty = box_qty if is_box_qty else (round(float(tale_qty)/(bunch_type * bunch_per_box), 2) if bunch_type and bunch_per_box else 0)
+        res['value']['bxs_qty'] =  str(bxs_qty) + ' ' + uom
+        full_boxes = float(bxs_qty)/uom_dict[uom]
+        res['value']['full_boxes'] = full_boxes
+        return res
 
     _defaults = {
         'wzd_id'     :  lambda self, cr, uid, context : context['wzd_id'] if context and 'wzd_id' in context else None,
     }
+    
+    def purchase_line(self, cr, uid, ids, arg, context=None):
+        obj = self.browse(cr, uid, ids[0])
+
+missing_qty_wzd()
+
+class purchase_line_length_wzd(osv.osv_memory):
+    _name = 'purchase.line.length.wzd'
+    _description = 'Purchase Line'
+
+    _columns = {       
+        'pedido_id'             : fields.many2one('pedido.cliente', 'Pedido'),
+        'product_variant_id'    : fields.many2one('request.product.variant', 'Variant'),  
+        'get_supplier_ids'      : fields.char(string='Suppliers', size = 256),
+              
+        'supplier_id'           : fields.many2one('res.partner', 'Farm',required=True),
+        'product_id'            : fields.many2one('product.product', 'Product', required=True),
+        'variant_id'            : fields.many2one('product.variant', 'Variety', required=True),
+        'length'                : fields.char(string='Length', size = 128, required=True),
+        
+        
+        'purchase_price'        : fields.float(string='Purchase Price'),
+        'sale_price'            : fields.float(string='Sale Price'),        
+         
+        'is_box_qty'            : fields.boolean('Box Packing?'),
+        'qty'                   : fields.integer('Quantity'),        
+        'bunch_per_box'         : fields.integer(string= 'Bunches', help= 'Bunch per Box'),
+        'bunch_type'            : fields.integer(string= 'Stems per Bunch'),
+        'uom'                   : fields.selection([('FB', 'FB'),
+                                                    ('HB', 'HB'),
+                                                    ('QB', 'QB'),
+                                                    ('OB', 'OB')], string = 'UOM', help='Unit of Measure'),
+        'subclient_id'          : fields.many2one('res.partner', 'SubCliente'),
+	}
+    
+    _defaults = {
+        'bunch_per_box' :  12,
+        'bunch_type'    :  25,
+        'uom'           :  'HB'
+    }
+    
+    def _check_bunch_type(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.bunch_type > 0 and obj.bunch_type <= 25
+    
+    def _check_sale_price(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.sale_price > 0 
+    
+    def _check_purchase_price(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.purchase_price > 0
+    
+    def _check_stems_qty(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.bunch_type * obj.bunch_per_box == obj.qty if not obj.is_box_qty else True
+    
+    def _check_length(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        exist = False
+        for v in obj.product_id.variants_ids:
+            if v.id == obj.variant_id.id and v.description == obj.length:
+                exist = True
+                break                
+        return exist 
+
+    _constraints = [
+        (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
+        (_check_sale_price, 'El valor del precio de venta debe ser mayor que 0', []),
+        (_check_purchase_price, 'El valor del precio de compra debe ser mayor que 0', []),
+        (_check_stems_qty, 'La cantidad de tallos debe coincidir con la cantidad de bunches por el numero de unidades por bunch', []),
+        (_check_length, 'La longitud del producto esta incorrecta, el producto no tiene ninguna variedad con la longitud especificada', []),
+    ]
+    
+    def on_change_supplier(self, cr, uid, ids, supplier_id, product_id, variant_id, length, context=None):
+        res = {'value':{}}
+        if supplier_id and product_id and variant_id and length:
+            cr.execute("select prvl.purchase_price " +
+                   "from purchase_request_template pr inner join purchase_request_product_variant prv on pr.id = prv.template_id " +
+                   "inner join purchase_request_product_variant_length prvl on prv.id = prvl.variant_id " +
+                   "where pr.partner_id = %s and prv.product_id = %s and prv.variant_id = %s " +
+                   "and prvl.length = %s", (supplier_id, product_id, variant_id, length,))
+            records = cr.fetchall()
+            if records and records[0]:
+                res['value']['purchase_price'] = records[0][0]
+        return res
+
+    def on_change_qty(self, cr, uid, ids, qty, bunch_type, context=None):
+        res = {'value':{}}
+        if qty and bunch_type:
+            res['value']['bunch_per_box'] = qty/bunch_type
+        return res
+    
+    def save(self, cr, uid, ids, arg, context=None):
+        obj = self.browse(cr, uid, ids[0])
+        
+        detalle_dict = {
+            'name'           : str(obj.product_variant_id.line),
+            'pedido_id'      : obj.pedido_id.id if obj.pedido_id else None,
+            'line_id'        : obj.product_variant_id.id if obj.product_variant_id else None,
+            'type'           : 'open_market',
+            'supplier_id'    : obj.supplier_id.id if obj.supplier_id else None,
+            'product_id'     : obj.product_id.id,
+            'variant_id'     : obj.variant_id.id,
+            'length'         : obj.length,
+            'qty'            : obj.qty,
+            'is_box_qty'     : obj.is_box_qty,
+            'bunch_type'     : obj.bunch_type,
+            'bunch_per_box'  : obj.bunch_per_box,
+            'uom'            : obj.uom,
+            'purchase_price' : obj.purchase_price,
+            'sale_price'     : obj.sale_price,
+            'subclient_id'   : obj.subclient_id.id if obj.subclient_id else None,            
+        }
+        self.pool.get('detalle.lines').create(cr, uid, detalle_dict)
+
+        return {
+            'name'       : 'Pedidos de Clientes',
+            'view_type'  : 'form',
+            'view_mode'  : 'form',
+            'res_model'  : 'pedido.cliente',
+            'type'       : 'ir.actions.act_window',           
+            'res_id'     : obj.pedido_id.id,
+        }
 
 purchase_line_length_wzd()

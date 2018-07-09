@@ -6,67 +6,94 @@
             <field name="model">purchase.line.wzd</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Detalle de Compra" version="7.0">
+                <form string="Missing Quantities per Lines" version="7.0">
                     <sheet>
                         <group col="8" colspan="8">
                             <field name="pedido_id" invisible="1"/>
                             <field name="cliente_id" invisible="1"/>
-                            <field name="product_variant_id" invisible="1"/>
-                            <field name="supplier_ids" invisible="1"/>
+                            <field name="product_variant_id" invisible="1"/>                            
                             <newline/>
-                            <field name="type" required="1"/>
+                            <field name="line" readonly="1"/>
                             <newline/>
-                            <field name="supplier_id" on_change="on_chance_supplier(supplier_id,product_id,variant_id)" context="{'default_supplier': True, 'default_customer': False, 'get_supplier_ids' : supplier_ids}"
-                                   colspan="4" required="1" domain="[('supplier','=',True)]"/>
+                            <field name="type" readonly="1"/>
                             <newline/>
-                            <field name="product_id" required="1" on_change="on_chance_supplier(supplier_id,product_id,variant_id)"/>
+                            <field name="product_id" readonly="1"/>
                             <newline/>
-                            <field name="variant_id" colspan="4" required="1" on_change="on_chance_supplier(supplier_id,product_id,variant_id)" domain="[('product_id', '=', product_id)]"/>
-                            <newline/>
-                            <field name="sale_price" readonly = "1" colspan="4" required="1"/> <!--on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,purchase_price,sale_price)"-->
-                            <newline/>
-                            <field name="length_ids" context="{ 'wzd_id': active_id}">
-                                <tree string="Length" editable="bottom">
+                            <field name="variant_id" readonly="1" domain="[('product_id', '=', product_id)]"/>
+                            <newline/>                            
+                            <field name="missing_qty_ids" readonly="1" context="{'wzd_id': active_id}">
+                                <tree string="Missing Quantities" editable="bottom" colors="red: True;">
                                     <field name="wzd_id" invisible="1"/>
-                                    <field name="length" required="1"/>
-                                    <field name="purchase_price"/>
-                                </tree>
-                                <form string="Length">
-                                    <field name="wzd_id" invisible="1"/>
+                                    <field name="qty"/>
                                     <field name="length"/>
-                                    <field name="purchase_price"/>
-                                </form>
+                                    <field name="bunch_per_box"/>
+                                    <field name="bunch_type"/>
+		                            <field name="uom"/>	 
+		                            <button name="purchase_line" readonly="0" string="Purchase" type="object" icon="terp-stock_format-default"/>                            
+		                        </tree>
+                                <form string="Missing Quantity">
+                                    <field name="wzd_id" invisible="1"/>
+                                    <field name="qty"/>
+                                    <field name="length"/>
+                                    <newline/>
+                                    <field name="bunch_per_box"/>
+                                    <field name="bunch_type"/>
+		                            <field name="uom"/>	
+		                            <newline/>
+		                            <button name="purchase_line" string="Purchase" type="object" icon="terp-stock_format-default"/>	                             
+		                        </form>
                             </field>
                             <newline/>
-                            <field name="is_box_qty" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)"/>
-                            <newline/>
-                            <field name="box_qty" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)" attrs="{'invisible': [('is_box_qty', '=', False)]}"/>
-                            <field name="tale_qty" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)" attrs="{'invisible': [('is_box_qty', '=', True)]}"/>
-                            <field name="bunch_per_box" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)"/>
-                            <newline/>
-                            <field name="uom" required="1" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)"/>
-                            <field name="bunch_type" on_change="on_chance_vals(is_box_qty,box_qty,tale_qty,bunch_type,bunch_per_box,uom,sale_price)"/>
-                            <newline/>
-                            <field name="stimated_stems" attrs="{'invisible': [('is_box_qty', '=', False)]}" />
-                            <newline/>
-                            <field name="qty_bxs" readonly="1"/>
-                            <newline/>
-                            <field name="full_boxes" colspan="4"/>
-                            <newline/>
-                            <field name="origin" colspan="4"/>
-                            <newline/>
-                            <field name="subclient_id" required="1" colspan="4" domain="[('customer','=',True)]" context="{'default_customer': True, 'default_supplier':False,'subcliente_de': cliente_id}"/>
-                            <newline/>
-                            <field name="sucursal_id" colspan="4"/>
+                            <field name="subclient_id" readonly="1" colspan="4" domain="[('customer','=',True)]" context="{'default_customer': True, 'default_supplier':False,'subcliente_de': cliente_id}"/>
                         </group>
-                        <footer>
-                            <button name="save" string="Salvar" type="object" class="oe_highlight"/>
-                            or
+                        <footer>                            
                             <button string="Cancelar" class="oe_link" special="cancel"/>
                         </footer>
                     </sheet>
                 </form>
             </field>
         </record>
+        
+        
+        <record id="purchase_line_length_wzd_form" model="ir.ui.view">
+            <field name="name">purchase.line.length.wzd.form</field>
+            <field name="model">purchase.line.length.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Purchase Line" version="7.0">
+                    <sheet>
+                        <group col="8" colspan="8">
+                            <field name="pedido_id" invisible="1"/>
+                            <field name="product_variant_id" invisible="1"/>                            
+                            <field name="get_supplier_ids" invisible="1"/>                            
+                            <field name="supplier_id" domain="[('supplier','=',True),('customer','=',False)]" on_change="on_change_supplier(supplier_id,product_id, variant_id,length)" required="1" context="{'get_supplier_ids': get_supplier_ids}"/>
+                            <newline/>
+                            <field name="product_id" readonly="1"/>
+                            <field name="variant_id" readonly="1" domain="[('product_id', '=', product_id)]"/>
+                            <newline/>
+                            <field name="length" readonly="1"/>
+                            <newline/> 
+                            <field name="purchase_price" required="1"/>
+                            <field name="sale_price" required="1"/>
+                            <newline/>                            
+                            <field name="qty" required="1" on_change="on_change_qty(qty,bunch_type)"/>
+                            <field name="is_box_qty"/>
+                            <newline/>
+                            <field name="bunch_per_box" required="1"/>
+                            <field name="bunch_type" required="1"/>
+                            <newline/>
+		                    <field name="uom" required="1"/>	 
+		                    <newline/>
+                            <field name="subclient_id" readonly="1" domain="[('customer','=',True)]" context="{'default_customer': True, 'default_supplier':False}"/>
+                        </group>
+                        <footer>   
+                            <button name="save" string="Save" type="object" class="oe_highlight"/>                        
+                            <button string="Cancelar" class="oe_link" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
     </data>
 </openerp>
