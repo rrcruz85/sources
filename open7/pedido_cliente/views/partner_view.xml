@@ -41,20 +41,14 @@
                                     <group colspan="8" col="6">
                                         <field name="client_id" required="1" domain="[('customer','=',True)]"/>
                                          <newline/>
-                                        <field name="variant_ids"  context="{'template_id': active_id,'cliente_id': client_id}">
+                                        <field name="variant_ids" context="{'template_id': active_id,'cliente_id': client_id}">
                                             <tree>
                                                 <field name="product_id"/>
-                                                <field name="variant_id"/>
-                                                <field name="lenghts"/>
-                                                <field name="str_purchase_price"/>
-                                                <field name="request_qty"/>
-                                                <field name="is_box_qty"/>
-                                                <field name="bunch_per_box"/>
-                                                <field name="bunch_type"/>
-                                                <field name="uom"/>
-                                                <field name="bxs_qty"/>
+                                                <field name="variant_id"/>                                                
+                                                <field name="lengths" />
+                                                <field name="purchase_prices"/>  
+                                                <field name="bxs_qty"/>  
                                                 <field name="full_boxes"/>
-                                                <field name="subclient_id"/>
                                             </tree>
                                             <form>
                                                 <field name="cliente_id" invisible="1"/>
@@ -63,37 +57,36 @@
                                                 <field name="variant_id" required="1"  domain="[('product_id', '=', product_id)]"/>
                                                 <newline/>
                                                 <field name="length_ids" context="{ 'variant_id': variant_id}">
-                                                    <tree string="Length" editable="bottom">
+                                                    <tree string="Length">
                                                         <field name="variant_id" invisible="1"/>
-                                                        <field name="length" required="1"/>
-                                                        <field name="purchase_price"/>
+                                                        <field name="qty"/>	
+                                                        <field name="length"/>
+                                                        <field name="purchase_price"/>                   						                            
+							                            <field name="bunch_per_box" />
+							                            <field name="bunch_type" />							                          					                            
+							                            <field name="bxs_qty"/>
+                                                        <field name="full_boxes"/>
                                                     </tree>
                                                     <form string="Length">
-                                                        <field name="variant_id" invisible="1"/>
-                                                        <field name="length"/>
-                                                        <field name="purchase_price"/>
+                                                        <group> 
+	                                                        <field name="variant_id" invisible="1"/>
+	                                                        <field name="length" required="1"/>
+	                                                        <field name="purchase_price" required="1"/>
+                                                            <newline/>
+	                                                 		<field name="is_box_qty" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+	                                                        <field name="box_qty" attrs="{'invisible': [('is_box_qty', '=', False)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+								                            <field name="tale_qty" attrs="{'invisible': [('is_box_qty', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+							                                <newline/>
+								                            <field name="bunch_per_box" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+								                            <field name="bunch_type" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+								                            <field name="uom" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+							                                <newline/>
+								                            <field name="bxs_qty"/>
+	                                                        <field name="full_boxes"/>
+                                                        </group>
                                                     </form>
                                                 </field>
-                                                <newline/>
-                                                <field name="is_box_qty"
-                                                       on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                                                <newline/>
-                                                <field name="box_qty"
-                                                       attrs="{'invisible': [('is_box_qty', '=', False)]}"
-                                                       on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                                                <field name="tale_qty"
-                                                       attrs="{'invisible': [('is_box_qty', '=', True)]}"
-                                                       on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                                                <field name="bunch_per_box" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                                                <field name="uom" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                                                <field name="bunch_type" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                                                <newline/>
-                                                <field name="stimated_stems" attrs="{'invisible': [('is_box_qty', '=', False)]}"/>
-                                                <newline/>
-                                                <field name="bxs_qty"/>
-                                                <newline/>
-                                                <field name="full_boxes"/>
-                                                <newline/>
+                                                <newline/>                                                
                                                 <field name="subclient_id" domain="[('customer','=', True)]" context="{'default_supplier': False, 'default_customer': True,'subcliente_de': cliente_id}"/>
                                             </form>
                                         </field>
@@ -131,56 +124,54 @@
 										    <tree>
                                                 <field name="product_id"/>
 												<field name="variant_id" />
-                                                <field name="lenghts" />
-                                                <field name="str_sale_price"/>
-                                                <field name="qty" />
-                                                <field name="is_box_qty" />
-                                                <field name="bunch_per_box" />
-                                                <field name="bunch_type" />
-                                                <field name="uom" />
-                                                <field name="bxs_qty" />
-                                                <field name="full_boxes" />
-                                                <field name="subclient_id"/>
+                                                <field name="lengths" />
+                                                <field name="sale_prices"/>  
+                                                <field name="bxs_qty"/>  
+                                                <field name="full_boxes"/>                                               
 											</tree>
 											<form>
                                                 <field name="cliente_id" invisible="1"/>
                                                 <field name="product_id" required="1"/>
 												<field name="variant_id" required="1" domain="[('product_id', '=', product_id)]"/>
                                                 <newline/>
-                                                <field name="length_ids" context="{ 'variant_id': variant_id}">
-                                                    <tree string="Length" editable="bottom">
+                                                <field name="length_ids" context="{'variant_id': variant_id}">
+                                                    <tree string="Length">
                                                         <field name="variant_id" invisible="1"/>
-                                                        <field name="length" required="1"/>
-                                                        <field name="sale_price" />
+                                                        <field name="qty"/>	
+                                                        <field name="length"/>
+                                                        <field name="sale_price"/>                   						                            
+							                            <field name="bunch_per_box" />
+							                            <field name="bunch_type" />							                          					                            
+							                            <field name="bxs_qty"/>
+                                                        <field name="full_boxes"/>
                                                     </tree>
                                                     <form string="Length">
-                                                        <field name="variant_id" invisible="1"/>
-                                                        <field name="length"/>
-                                                        <field name="sale_price" />
-                                                    </form>
+                                                        <group> 
+	                                                        <field name="variant_id" invisible="1"/>
+	                                                        <field name="length" required="1"/>
+	                                                        <field name="sale_price" required="1"/>
+                                                            <newline/>
+	                                                 		<field name="is_box_qty" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+	                                                        <field name="box_qty" attrs="{'invisible': [('is_box_qty', '=', False)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+								                            <field name="tale_qty" attrs="{'invisible': [('is_box_qty', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+							                                <newline/>
+								                            <field name="bunch_per_box" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+								                            <field name="bunch_type" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+								                            <field name="uom" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+							                                <newline/>
+								                            <field name="bxs_qty"/>
+	                                                        <field name="full_boxes"/>
+                                                        </group>
+							                        </form>
                                                 </field>
-                                                <newline/>
-												<field name="is_box_qty" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-												<newline/>
-												<field name="box_qty" attrs="{'invisible': [('is_box_qty', '=', False)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-												<field name="tale_qty" attrs="{'invisible': [('is_box_qty', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-												<field name="bunch_per_box" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-												<field name="uom" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-												<field name="bunch_type" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-												 <newline/>
-												<field name="stimated_stems" attrs="{'invisible': [('is_box_qty', '=', False)]}"/>
-                                                <newline/>
-                                                <field name="bxs_qty" />
-                                                <newline/>
-                                                <field name="full_boxes"/>
-                                                <newline/>
+                                                <newline/>												 
                                                 <field name="subclient_id" domain="[('customer','=', True)]" context="{'default_supplier': False, 'default_customer': True,'subcliente_de': cliente_id}"/>
                                          	</form>
 										 </field>
                                          <newline/>
-                                        <field name="days"/>
-                                        <newline/>
-                                        <field name="freight_agency_id"/>
+                                         <field name="days"/>
+                                         <newline/>
+                                         <field name="freight_agency_id"/>
                                     </group>
 	                            </form>
 	                        </field>

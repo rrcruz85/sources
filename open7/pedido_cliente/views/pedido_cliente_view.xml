@@ -60,7 +60,7 @@
                     <field name="supplier_id"/>
                     <field name="product_id"/>
                     <field name="variant_id"/>
-                    <field name="lengths"/>
+                    <field name="length"/>
                     <field name="subclient_id"/>
                     <field name="is_box_qty"/>
                     <field name="qty"/>
@@ -69,7 +69,7 @@
                     <field name="uom"/>
                     <field name="purchase_price"/>
                     <field name="sale_price"/>
-                    <field name="origin"/>
+                    <field name="origin_id"/>
                     <field name="sucursal_id"/>
                 </tree>
             </field>
@@ -87,7 +87,7 @@
                     <field name="supplier_id" required="1"/>
                     <field name="product_id" required="1"/>
                     <field name="variant_id"  required="1" domain="[('product_id','=',product_id)]"/>
-                    <field name="lengths"/>
+                    <field name="length"/>
                     <newline/>
                     <field name="is_box_qty"/>
                     <field name="qty"/>
@@ -99,7 +99,7 @@
                     <field name="purchase_price"/>
                     <field name="sale_price"/>
                     <newline/>
-                    <field name="origin"/>
+                    <field name="origin_id"/>
                     <field name="subclient_id"/>
                     <field name="sucursal_id"/>
                 </form>
@@ -155,96 +155,127 @@
                     <field nolabel="1" name="variant_ids" colspan="4" context="{'pedido_id': active_id,'cliente_id': partner_id, 'lines': variant_ids}">
                         <tree colors="red: missing_qty &gt; 0; green: missing_qty == 0; MediumVioletRed : missing_qty &lt; 0">
                             <field name="pedido_id" invisible="1"/>
-                            <field name="missing_qty" invisible="1"/>
+                            <field name="missing_qty" invisible="1"/>                            
                             <field name="line"/>
                             <field name="type"/>
                             <field name="product_id"/>
                             <field name="variant_id"/>
                             <field name="lengths"/>
-                            <field name="subclient_id"/>
-                            <field name="sale_price"/>
+                            <field name="sale_prices"/>                            
                             <field name="request_qty"/>
                             <field name="missing_qty2"/>
-                            <field name="bunch_per_box"/>
-                            <field name="bunch_type"/>
-                            <field name="uom"/>
-                            <field name="qty"/>
+                            <field name="bxs_qty"/>
                             <field name="full_boxes"/>
-                            <button invisible="1" name="search_providers" string="Buscar Proveedores" type="object" icon="terp-partner"/>
-                            <button name="purchase" string="Comprar" type="object" icon="terp-dolar"/>
+                            <field name="subclient_id"/>                            
                         </tree>
                         <form>
-                            <field name="is_standing_order" invisible="1"/>
-                            <field name="pedido_id" invisible="1"/>
-                            <field name="cliente_id" invisible="1"/>
-                            <field name="line" invisible="1"/>
-                            <field name="type"  attrs="{'readonly': [('is_standing_order', '=', True)]}" />
-                            <newline/>
-                            <field name="product_id" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}"/>
-                            <newline/>
-                            <field name="variant_id"  attrs="{'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_variant(variant_id,context)" required="1" domain="[('product_id', '=', product_id)]"/>
-                            <newline/>
-                            <field name="length_ids" context="{ 'variant_id': variant_id}" attrs="{'readonly': [('is_standing_order', '=', True)]}">
-                                <tree string="Length" editable="bottom">
-                                    <field name="variant_id" invisible="1"/>
-                                    <field name="length" required="1"/>
-                                    <field name="sale_price"/>
-                                </tree>
-                                <form string="Length">
-                                    <field name="variant_id" invisible="1"/>
-                                    <field name="length"/>
-                                    <field name="sale_price"/>
-                                </form>
-                            </field>
-                            <newline/>
-                            <field name="subclient_id" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}" domain="[('customer','=', True)]" context="{'default_customer': True, 'default_supplier':False,'subcliente_de': cliente_id}"/>
-                            <field name="is_box_qty" attrs="{'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                            <newline/>
-                            <field name="box_qty" attrs="{'invisible': [('is_box_qty', '=', False)], 'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                            <field name="tale_qty" attrs="{'invisible': [('is_box_qty', '=', True)], 'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                            <field name="bunch_per_box" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                            <field name="uom" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                            <field name="bunch_type" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
-                            <newline/>
-                            <field name="stimated_stems" string="Stems" attrs="{'invisible': [('is_box_qty', '=', False)]}"/>
-                            <newline/>
-                            <field name="qty"/>
-                            <field name="full_boxes"/>
+                            <group>
+	                            <field name="is_standing_order" invisible="1"/>
+	                            <field name="pedido_id" invisible="1"/>
+	                            <field name="cliente_id" invisible="1"/>
+	                            <field name="line" invisible="1"/>
+	                            <field name="type"  attrs="{'readonly': [('is_standing_order', '=', True)]}" />
+	                            <newline/>
+	                            <field name="product_id" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}"/>
+	                            <newline/>
+	                            <field name="variant_id"  attrs="{'readonly': [('is_standing_order', '=', True)]}" required="1" domain="[('product_id', '=', product_id)]"/>
+							    <newline/>
+								<field name="length_ids" context="{'variant_id': variant_id}" attrs="{'readonly': [('is_standing_order', '=', True)]}">
+									<tree string="Length" colors="red: missing_qty &gt; 0; green: missing_qty == 0; MediumVioletRed : missing_qty &lt; 0">
+										<field name="variant_id" invisible="1" />
+										<field name="missing_qty" invisible="1" />	
+										<field name="qty" />
+										<field name="length" />
+										<field name="sale_price" />
+										<field name="bunch_per_box" />
+								        <field name="bunch_type" />							                          					                            
+								        <field name="bxs_qty"/>
+	                                    <field name="full_boxes"/>
+	                                    <field name="missing_qty2"/>
+	                                    <button name="purchase" attrs="{'invisible': [('missing_qty', '=', 0)]}" string="Comprar" type="object" icon="terp-dolar"/>
+									</tree>
+									<form string="Length">								
+										 <group> 
+		                                     <field name="variant_id" invisible="1"/>
+		                                     <field name="missing_qty" invisible="1" />	
+		                                     <field name="length" required="1"/>
+		                                     <field name="sale_price" required="1"/>
+	                                         <newline/>
+		                                     <field name="is_box_qty" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+		                                     <field name="box_qty" attrs="{'invisible': [('is_box_qty', '=', False)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+									         <field name="tale_qty" attrs="{'invisible': [('is_box_qty', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+								             <newline/>
+									         <field name="bunch_per_box" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+									         <field name="bunch_type" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+									         <field name="uom" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+								             <newline/>
+									         <field name="bxs_qty"/>
+		                                     <field name="full_boxes"/>
+		                                     <newline/>
+		                                     <button name="purchase" string="Comprar" attrs="{'invisible': [('missing_qty', '=', 0)]}" type="object" icon="terp-dolar"/>
+	                                     </group>									
+									</form>
+								</field>
+	                            <newline/>
+	                            <field name="subclient_id" required="1" attrs="{'readonly': [('is_standing_order', '=', True)]}" domain="[('customer','=', True)]" context="{'default_customer': True, 'default_supplier':False,'subcliente_de': cliente_id}"/>
+	                            <newline/>
+	                            <field name="bxs_qty"/>
+	                            <field name="full_boxes"/>
+                            </group>
                         </form>
                     </field>
                     <newline/>
                     <h2>Purchased Lines</h2>
-                    <field name="line_ids"/>
+                    <field name="purchase_line_ids">
+                    	<tree string="Purchase Lines" editable="top" colors="red: confirmada == False">
+		                    <field name="pedido_id" invisible="1"/>
+		                    <field name="name" attrs="{'readonly': [('confirmada', '=', True)]}"/>
+		                    <field name="type" attrs="{'readonly': [('confirmada', '=', True)]}" required="1"/>
+		                    <field name="confirmada" attrs="{'readonly': [('confirmada', '=', True)]}"/>
+		                    <field name="supplier_id" required="1" attrs="{'readonly': [('confirmada', '=', True)]}"/>
+		                    <field name="product_id" required="1" attrs="{'readonly': [('confirmada', '=', True)]}"/>
+		                    <field name="variant_id" required="1" attrs="{'readonly': [('confirmada', '=', True)]}" domain="[('product_id','=',product_id)]"/>
+		                    <field name="length" required="1" attrs="{'readonly': [('confirmada', '=', True)]}"/>
+		                    <field name="qty" required="1" attrs="{'readonly': [('confirmada', '=', True)]}" on_change="on_change_qty(qty,bunch_type)"/>
+		                    <field name="is_box_qty" attrs="{'readonly': [('confirmada', '=', True)]}"/>
+		                    <field name="bunch_type" attrs="{'readonly': [('confirmada', '=', True)]}" required="1"/>
+		                    <field name="bunch_per_box" attrs="{'readonly': [('confirmada', '=', True)]}" required="1"/>
+		                    <field name="uom" required="1" attrs="{'readonly': [('confirmada', '=', True)]}"/>		                    
+		                    <field name="bxs_qty"/>
+		                    <field name="full_boxes"/>		                    	                    
+		                    <field name="purchase_price" required="1" attrs="{'readonly': [('confirmada', '=', True)]}"/>
+		                    <field name="total_purchase"/>
+		                    <field name="sale_price" required="1" attrs="{'readonly': [('confirmada', '=', True)]}"/>	
+		                    <field name="total_sale"/>	 
+		                    <field name="profit"/>                   
+		                    <field name="origin_id" attrs="{'readonly': [('confirmada', '=', True)]}"/>
+		                    <field name="sucursal_id" attrs="{'readonly': [('confirmada', '=', True)]}"/>
+		                    <field name="subclient_id" attrs="{'readonly': [('confirmada', '=', True)]}"/>		                    
+		                </tree>
+		                <form string="Purchase Line">
+		                    <field name="pedido_id" invisible="1"/>
+		                    <field name="name"/>
+		                    <field name="type"/>
+		                    <field name="confirmada"/>
+		                    <field name="supplier_id"/>
+		                    <field name="product_id"/>
+		                    <field name="variant_id"/>
+		                    <field name="length"/>
+		                    <field name="subclient_id"/>
+		                    <field name="qty"/>
+		                    <field name="bunch_type"/>
+		                    <field name="bunch_per_box"/>		                   
+		                    <field name="uom"/>	                    
+		                    <field name="purchase_price"/>
+		                    <field name="sale_price"/>		                    
+		                    <field name="origin_id"/>
+		                    <field name="sucursal_id"/>
+		                </form>
+                    </field>
                 </form>
             </field>
         </record>
-
-        <record id="action_pedido_cliente" model="ir.actions.act_window">
-            <field name="name">Pedidos de Clientes</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">pedido.cliente</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <menuitem name="Pedido" id="menu_pedido_cliente_root"/>
-        <menuitem name="Pedido" id="menu_pedido_cliente_menu" parent="menu_pedido_cliente_root"/>
-        <menuitem name="Pedidos de Clientes" action="action_pedido_cliente" id="menu_pedido_cliente" parent="menu_pedido_cliente_menu" sequence="1"/>
-
-        <!--Automatic Purchase Order Generation
-        <record model="ir.cron" id="automatic_purchase_order_request_cron">
-            <field name="name">Purchase Order Generation</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False"/>
-            <field name="model" eval="'purchase.request.template'"/>
-            <field name="function" eval="'_generate_requests_every'"/>
-            <field name="args" eval="'()'" />
-            <field name="active" eval="False" />
-        </record>
-        -->
-		
+       		
 		<!-- AIRLINE FORM VIEW -->
         <record id="pedido_cliente_airline_form_view" model="ir.ui.view">
             <field name="name">pedido_cliente_airline_form_view</field>
@@ -261,21 +292,17 @@
             </field>
         </record>
         
-        <record id="detalle_line_length_form_view" model="ir.ui.view">
-            <field name="name">detalle_line_length_form_view</field>
-            <field name="model">detalle.lines.length</field>
-            <field name="priority" eval="0"/>
-            <field name="arch" type="xml">
-            	<form string="Length" version="7.0">
-                    <sheet>
-                        <field name="detalle_id" readonly="1"/>
-                        <newline/>
-                        <field name="length" required="1"/>
-                        <field name="purchase_price" required="1"/>                         
-                    </sheet>
-                </form>
-            </field>
+        <record id="action_pedido_cliente" model="ir.actions.act_window">
+            <field name="name">Pedidos de Clientes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pedido.cliente</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
         </record>
 
+        <menuitem name="Pedido" id="menu_pedido_cliente_root"/>
+        <menuitem name="Pedido" id="menu_pedido_cliente_menu" parent="menu_pedido_cliente_root"/>
+        <menuitem name="Pedidos de Clientes" action="action_pedido_cliente" id="menu_pedido_cliente" parent="menu_pedido_cliente_menu" sequence="2"/>
+        
     </data>
 </openerp>
