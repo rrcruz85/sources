@@ -180,7 +180,7 @@
 	                            <newline/>
 	                            <field name="variant_id"  attrs="{'readonly': [('is_standing_order', '=', True)]}" required="1" domain="[('product_id', '=', product_id)]"/>
 							    <newline/>
-								<field name="length_ids" context="{'variant_id': variant_id}" attrs="{'readonly': [('is_standing_order', '=', True)]}">
+								<field name="length_ids" context="{'product_id':product_id, 'variant_id': variant_id}" attrs="{'readonly': [('is_standing_order', '=', True)]}">
 									<tree string="Length" colors="red: missing_qty &gt; 0; green: missing_qty == 0; MediumVioletRed : missing_qty &lt; 0">
 										<field name="variant_id" invisible="1" />
 										<field name="missing_qty" invisible="1" />	
@@ -198,7 +198,7 @@
 										 <group> 
 		                                     <field name="variant_id" invisible="1"/>
 		                                     <field name="missing_qty" invisible="1" />	
-		                                     <field name="length" required="1"/>
+		                                     <field name="length" required="1" on_change="on_change_length(length, missing_qty, context)"/>
 		                                     <field name="sale_price" required="1"/>
 	                                         <newline/>
 		                                     <field name="is_box_qty" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>

@@ -31,6 +31,7 @@ class product_product(osv.osv):
     _columns = {
         'variants_ids'          : fields.one2many('product.variant', 'product_id', 'Variantes')
     }
+    
 product_product()
 
 class product_variant(osv.osv):
@@ -48,16 +49,79 @@ class product_variant(osv.osv):
             variants = [v.variant_id.id for v in p.variant_ids]
             return  self.name_get(cr, user, variants, context)
         return super(product_variant, self).name_search(cr, user, name, args, operator=operator, context=context, limit=limit)
+    
+    def _get_info(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        for obj in self.browse(cr, uid, ids, context=context):
+            res[obj.id] = {'lengths':'','prices':''}
+            lengths = [(l.length, str(l.sale_price))for l in obj.length_ids]            
+            
+            res[obj.id]['lengths'] = '-'.join(map(lambda r: r[0], lengths))
+            res[obj.id]['prices'] = '-'.join(map(lambda r: r[1], lengths))
+        return res
+    
 
     _columns = {
+        'product_id'            : fields.many2one('product.product', 'Producto', required = True),
         'code'                  : fields.char('Codigo', size = 10, required = True),
         'name'                  : fields.char('Nombre', size = 128, required = True),
-        'price'                 : fields.float('Precio', digits=(16, 6)),
-        'description'           : fields.text('Length or Weigth'),
-        'product_id'            : fields.many2one('product.product', 'Producto', required = True)
+        'length_ids'            : fields.one2many('product.variant.length', 'variant_id', 'Lengths'),
+        'lengths'               : fields.function(_get_info, type='char', string='Lengths', multi = '_data'),
+        'prices'                : fields.function(_get_info, type='char', string='Sale Prices', multi = '_data'),
     }
+    
+    _defaults = {
+        'product_id'            : lambda self, cr, uid, context : context['product_id'] if context and 'product_id' in context else None,
+    }
+    
+    def _check_length_not_repeated(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        lengths = [l.length for l in obj.length_ids] 
+        return len(list(set(lengths))) == len(lengths)
+    
+    _constraints = [
+        (_check_length_not_repeated, 'Existen Longitudes Repetidas', []),
+    ]
+
 
 product_variant()
+
+
+class product_variant_length(osv.osv):
+    _name = 'product.variant.length'
+    _description = 'product.variant.length'
+    
+    def name_get(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if not ids:
+            return []
+        res = []        
+        for obj in self.browse(cr, uid, ids, context=context):
+            res.append((obj.id, obj.variant_id.product_id.name + '/' + obj.variant_id.name + '/' + obj.length))
+        return res
+    
+    _columns = {
+        'variant_id'            : fields.many2one('product.variant', 'Variedad', required = True),        
+        'sale_price'            : fields.float('Sale Price', digits=(10, 2), required = True),
+        'length'                : fields.char('Length',size =256, required = True),
+        'description'           : fields.text('Description'),
+    }
+    
+    _defaults = {
+        'variant_id'            : lambda self, cr, uid, context : context['variant_id'] if context and 'variant_id' in context else None,
+    }
+    
+    def _check_price(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return obj.sale_price > 0 
+    
+    _constraints = [
+        (_check_price, 'El precio debe ser mayor que 0', []),
+    ]
+
+product_variant_length()
+
 
 class product_supplierinfo(osv.osv):
     _name = 'product.supplierinfo'

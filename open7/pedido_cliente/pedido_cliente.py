@@ -25,7 +25,6 @@ from openerp.osv import osv
 from openerp.osv import fields
 from openerp.tools.translate import _
 import time
-import math
 import re
 
 class pedido_cliente(osv.osv):
@@ -34,20 +33,10 @@ class pedido_cliente(osv.osv):
 
     def _get_info(self, cr, uid, ids, field_name, arg, context):
         res = {}
-        uom = {'FB':1,'HB':2,'QB':4,'OB':8}
         for obj in self.browse(cr, uid, ids, context=context):
             boxes = 0
             stems = 0
             tipo_flete = obj.partner_id.tipo_flete if obj.partner_id.tipo_flete else 'n'
-            '''
-            for v in obj.variant_ids:
-                if v.is_box_qty:
-                    boxes += math.ceil(float(v.box_qty)/uom[v.uom])
-                    stems += math.ceil(float(v.box_qty * int(v.bunch_type) * v.bunch_per_box))
-                else:
-                    stems += math.ceil(float(v.tale_qty))
-                    boxes += math.ceil(float(v.tale_qty)/ (int(v.bunch_type) * v.bunch_per_box  * uom[v.uom]))
-            '''
             res[obj.id] = {'boxes':boxes, 'stems':stems, 'tipo_flete' : tipo_flete}
         return res
 
@@ -317,19 +306,38 @@ class request_product_variant_length(osv.osv):
         return obj.sale_price > 0  
     
     def _check_length(self, cr, uid, ids, context=None):
-        obj = self.browse(cr, uid, ids[0], context=context)
-        exist = False
-        for v in obj.variant_id.product_id.variants_ids:
-            if v.id == obj.variant_id.variant_id.id and v.description == obj.length:
-                exist = True
-                break                
-        return exist 
+        obj = self.browse(cr, uid, ids[0], context=context)            
+        cr.execute("select count(*) from product_variant_length l inner join product_variant v " +
+                    "on l.variant_id = v.id where l.length = %s and l.variant_id = %s and v.product_id  = %s", (obj.length, obj.variant_id.variant_id.id, obj.variant_id.product_id.id,))
+        records = cr.fetchall()      
+        return records[0][0] 
     
     _constraints = [
         (_check_stems_qty, 'La cantidad de tallos debe coincidir con la cantidad de bunches por el numero de unidades por bunch', []),
         (_check_sale_price, 'El precio de venta debe ser mayor que cero', ['sale_price']), 
-        #(_check_length, 'La longitud del producto esta incorrecta, el producto no tiene ninguna variedad con la longitud especificada', []),
+        (_check_length, 'La longitud del producto esta incorrecta, el producto no tiene ninguna variedad con la longitud especificada', []),
     ]
+    
+    def on_change_length(self, cr, uid, ids, length, missing_qty, context=None):
+        res = {'value':{'sale_price':0}}
+        
+        variant_id = 0
+        if not variant_id and context and 'variant_id' in context:
+            variant_id = context['variant_id']
+        
+        product_id = 0
+        if not product_id and context and 'product_id' in context:
+            product_id = context['product_id']
+        
+        if length and variant_id and product_id:            
+            cr.execute("select l.sale_price from product_variant_length l inner join product_variant v " +
+                    "on l.variant_id = v.id where l.length = %s and l.variant_id = %s and v.product_id  = %s", (length, variant_id, product_id,))
+            records = cr.fetchall()
+            if not records:
+                raise osv.except_osv("Error", "La longitud del producto esta incorrecta, el producto no tiene ninguna variedad con la longitud especificada")
+            else:
+                res['value']['sale_price'] = records[0][0]
+        return res
     
     def on_change_vals(self, cr, uid, ids, is_box_qty, box_qty, tale_qty, bunch_per_box, bunch_type, uom, context=None):
         res = {'value':{'bxs_qty': 'BXS', 'full_boxes':0}}
@@ -513,20 +521,18 @@ class detalle_line(osv.osv):
         return obj.bunch_type * obj.bunch_per_box == obj.qty if not obj.is_box_qty else True
     
     def _check_length(self, cr, uid, ids, context=None):
-        obj = self.browse(cr, uid, ids[0], context=context)
-        exist = False
-        for v in obj.product_id.variants_ids:
-            if v.id == obj.variant_id.id and v.description == obj.length:
-                exist = True
-                break                
-        return exist   
+        obj = self.browse(cr, uid, ids[0], context=context)            
+        cr.execute("select count(*) from product_variant_length l inner join product_variant v " +
+                    "on l.variant_id = v.id where l.length = %s and l.variant_id = %s and v.product_id  = %s", (obj.length, obj.variant_id.id, obj.product_id.id,))
+        records = cr.fetchall()      
+        return records[0][0]   
     
     _constraints = [
         (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
         (_check_sale_price, 'El valor del precio de venta debe ser mayor que 0', []),
         (_check_purchase_price, 'El valor del precio de compra debe ser mayor que 0', []),
         (_check_stems_qty, 'La cantidad de tallos debe coincidir con la cantidad de bunches por el numero de unidades por bunch', []),
-        #(_check_length, 'La longitud del producto esta incorrecta, el producto no tiene ninguna variedad con la longitud especificada', []),
+        (_check_length, 'La longitud del producto esta incorrecta, el producto no tiene ninguna variedad con la longitud especificada', []),
     ]
     
     def on_change_vals(self, cr, uid, ids, is_box_qty, qty, bunch_per_box, bunch_type, uom, context=None):
@@ -566,15 +572,15 @@ class freight_agency(osv.osv):
     _name = 'freight.agency'
     _description = 'freight.agency'
     _columns = {
-        'name'    : fields.char('Nombre', size=128),
-        'address'    : fields.char('Direccion', size=256),
-        'mobil'    : fields.char('Mobil', size=64),
-        'phone1'    : fields.char('Tel.1', size=64),
-        'phone2'    : fields.char('Tel.2', size=64),
-        'contact'    : fields.char('Contacto', size=128),
-        'cuarto_frio'    : fields.char('Cuarto Frio', size=256),
-        'email1'    : fields.char('Correo 1', size=128),
-        'email2'    : fields.char('Correo 2', size=128),
+        'name'          : fields.char('Nombre', size=128),
+        'address'       : fields.char('Direccion', size=256),
+        'mobil'         : fields.char('Mobil', size=64),
+        'phone1'        : fields.char('Tel.1', size=64),
+        'phone2'        : fields.char('Tel.2', size=64),
+        'contact'       : fields.char('Contacto', size=128),
+        'cuarto_frio'   : fields.char('Cuarto Frio', size=256),
+        'email1'        : fields.char('Correo 1', size=128),
+        'email2'        : fields.char('Correo 2', size=128),
     }
 
     def _check_email1(self, cr, uid, ids, context=None):
@@ -622,18 +628,18 @@ class confirm_invoice(osv.osv):
     _description = 'Confirm Invoice'
 
     _columns = {
-        'pedido_id'      : fields.many2one('pedido.cliente','Pedido'),
-        'supplier_id'    : fields.many2one('res.partner','Supplier'),
-        'line_ids': fields.one2many('confirm.invoice.line', 'invoice_id', 'Purchase Lines'),
-        'invoice_number' : fields.char('Supplier Invoice Number', size=64),
-        'date_invoice': fields.date('Invoice Date', help="Keep empty to use the current date"),
-        'account_id': fields.many2one('account.account', 'Account To Pay Supplier', domain=[('type', '=', 'payable')]),
-        'fiscal_position': fields.many2one('account.fiscal.position', 'Fiscal Position'),
-        'period_id': fields.many2one('account.period', 'Fiscal Period', domain=[('state', '<>', 'done')], ),
-        'currency_id': fields.many2one('res.currency', 'Currency'),
-        'journal_id': fields.many2one('account.journal', 'Journal', domain=[('type', '=', 'purchase')]),
-        'company_id': fields.many2one('res.company', 'Company'),
-        'user_id': fields.many2one('res.users', 'Salesperson'),
+        'pedido_id'         : fields.many2one('pedido.cliente','Pedido'),
+        'supplier_id'       : fields.many2one('res.partner','Supplier'),
+        'line_ids'          : fields.one2many('confirm.invoice.line', 'invoice_id', 'Purchase Lines'),
+        'invoice_number'    : fields.char('Supplier Invoice Number', size=64),
+        'date_invoice'      : fields.date('Invoice Date', help="Keep empty to use the current date"),
+        'account_id'        : fields.many2one('account.account', 'Account To Pay Supplier', domain=[('type', '=', 'payable')]),
+        'fiscal_position'   : fields.many2one('account.fiscal.position', 'Fiscal Position'),
+        'period_id'         : fields.many2one('account.period', 'Fiscal Period', domain=[('state', '<>', 'done')], ),
+        'currency_id'       : fields.many2one('res.currency', 'Currency'),
+        'journal_id'        : fields.many2one('account.journal', 'Journal', domain=[('type', '=', 'purchase')]),
+        'company_id'        : fields.many2one('res.company', 'Company'),
+        'user_id'           : fields.many2one('res.users', 'Salesperson'),
     }
 
 confirm_invoice()
@@ -643,31 +649,31 @@ class confirm_invoice_line(osv.osv):
     _description = 'Invoice Line'
 
     _columns = {
-        'invoice_id'      : fields.many2one('confirm.invoice','Invoice',ondelete='cascade'),
-        'pedido_id'      : fields.many2one('pedido.cliente','Pedido',ondelete='cascade'),
-        'detalle_id'      : fields.many2one('detalle.lines','Detalle', ondelete='cascade'),
-        'supplier_id'    : fields.many2one('res.partner','Supplier'),
+        'invoice_id'            : fields.many2one('confirm.invoice','Invoice',ondelete='cascade'),
+        'pedido_id'             : fields.many2one('pedido.cliente','Pedido',ondelete='cascade'),
+        'detalle_id'            : fields.many2one('detalle.lines','Detalle', ondelete='cascade'),
+        'supplier_id'           : fields.many2one('res.partner','Supplier'),
 
-        'line_number'   : fields.char(size=128, string ='#', help='Line Number'),
-        'product_id'      : fields.many2one('product.product','Product'),
-        'variant_id'      : fields.many2one('product.variant','Variety',),
-        'length'              : fields.char(size=128, string ='Length'),
-        'purchase_price'  : fields.float('Purchase Price'),
-        'sale_price'  : fields.float('Sale Price'),
-        'qty'             : fields.float('Qty', help = "Quantity"),
-        'boxes'             : fields.float('Full Boxes'),
-        'total_purchase'    : fields.float(string='Total'),
-        'total_sale'    : fields.float(string='Total'),
-        'bunch_per_box'   : fields.integer('Bunch per Box'),
+        'line_number'           : fields.char(size=128, string ='#', help='Line Number'),
+        'product_id'            : fields.many2one('product.product','Product'),
+        'variant_id'            : fields.many2one('product.variant','Variety',),
+        'length'                : fields.char(size=128, string ='Length'),
+        'purchase_price'        : fields.float('Purchase Price'),
+        'sale_price'            : fields.float('Sale Price'),
+        'qty'                   : fields.float('Qty', help = "Quantity"),
+        'boxes'                 : fields.float('Full Boxes'),
+        'total_purchase'        : fields.float(string='Total'),
+        'total_sale'            : fields.float(string='Total'),
+        'bunch_per_box'         : fields.integer('Bunch per Box'),
         'bunch_type'            : fields.integer( 'Stems x Bunch'),
-        'uom'              : fields.selection([('FB', 'FB'),
+        'uom'                   : fields.selection([('FB', 'FB'),
                                                ('HB', 'HB'),
                                                ('QB', 'QB'),
                                                ('OB', 'OB')], 'UOM'),
         'origin'                : fields.many2one('detalle.lines.origin', string='Origin'),
         'subclient_id'          : fields.many2one('res.partner', 'SubClient'),
         'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
-        'type'                     : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
+        'type'                  : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
         'is_box_qty'            : fields.boolean('Box Packing?'),
         'confirmada'            : fields.boolean('Confirmada'),
     }
@@ -680,15 +686,15 @@ class confirm_client_invoice(osv.osv):
 
     _columns = {
         'pedido_id'      : fields.many2one('pedido.cliente','Pedido'),
-        'line_ids': fields.one2many('confirm.client.invoice.line', 'invoice_id', 'Purchase Lines'),
-        'date_invoice': fields.date('Invoice Date', help="Keep empty to use the current date"),
-        'account_id': fields.many2one('account.account', 'Account To Pay Supplier', domain=[('type', '=', 'receivable')]),
+        'line_ids'       : fields.one2many('confirm.client.invoice.line', 'invoice_id', 'Purchase Lines'),
+        'date_invoice'   : fields.date('Invoice Date', help="Keep empty to use the current date"),
+        'account_id'     : fields.many2one('account.account', 'Account To Pay Supplier', domain=[('type', '=', 'receivable')]),
         'fiscal_position': fields.many2one('account.fiscal.position', 'Fiscal Position'),
-        'period_id': fields.many2one('account.period', 'Fiscal Period', domain=[('state', '<>', 'done')], ),
-        'currency_id': fields.many2one('res.currency', 'Currency'),
-        'journal_id': fields.many2one('account.journal', 'Journal', domain=[('type', '=', 'purchase')]),
-        'company_id': fields.many2one('res.company', 'Company'),
-        'user_id': fields.many2one('res.users', 'Salesperson'),
+        'period_id'      : fields.many2one('account.period', 'Fiscal Period', domain=[('state', '<>', 'done')], ),
+        'currency_id'    : fields.many2one('res.currency', 'Currency'),
+        'journal_id'     : fields.many2one('account.journal', 'Journal', domain=[('type', '=', 'purchase')]),
+        'company_id'     : fields.many2one('res.company', 'Company'),
+        'user_id'        : fields.many2one('res.users', 'Salesperson'),
    }
 
 confirm_client_invoice()
@@ -699,32 +705,32 @@ class confirm_client_invoice_line(osv.osv):
 
     _columns = {
         'invoice_id'      : fields.many2one('confirm.client.invoice','Invoice'),
-        'pedido_id'      : fields.many2one('pedido.cliente','Pedido'),
+        'pedido_id'       : fields.many2one('pedido.cliente','Pedido'),
         'detalle_id'      : fields.many2one('detalle.lines','Detalle'),
-        'supplier_id'    : fields.many2one('res.partner','Supplier'),
+        'supplier_id'     : fields.many2one('res.partner','Supplier'),
 
-        'line_number'   : fields.char(size=128, string ='#', help='Line Number'),
+        'line_number'     : fields.char(size=128, string ='#', help='Line Number'),
         'product_id'      : fields.many2one('product.product','Product'),
         'variant_id'      : fields.many2one('product.variant','Variety',),
-        'length'              : fields.char(size=128, string ='Length'),
+        'length'          : fields.char(size=128, string ='Length'),
         'purchase_price'  : fields.float('Purchase Price'),
-        'sale_price'  : fields.float('Sale Price'),
+        'sale_price'      : fields.float('Sale Price'),
         'qty'             : fields.integer('Qty', help = "Quantity"),
-        'boxes'             : fields.float('Full Boxes'),
-        'total_purchase'    : fields.float(string='Total'),
-        'total_sale'    : fields.float(string='Total'),
+        'boxes'           : fields.float('Full Boxes'),
+        'total_purchase'  : fields.float(string='Total'),
+        'total_sale'      : fields.float(string='Total'),
         'bunch_per_box'   : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.integer( 'Stems x Bunch'),
-        'uom'              : fields.selection([('FB', 'FB'),
+        'bunch_type'      : fields.integer( 'Stems x Bunch'),
+        'uom'             : fields.selection([('FB', 'FB'),
                                                ('HB', 'HB'),
                                                ('QB', 'QB'),
                                                ('OB', 'OB')], 'UOM'),
-        'origin'                : fields.many2one('detalle.lines.origin', string='Origin'),
-        'subclient_id'          : fields.many2one('res.partner', 'SubClient'),
-        'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
-        'type'                     : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
-        'is_box_qty'            : fields.boolean('Box Packing?'),
-        'confirmada'            : fields.boolean('Confirmada'),
+        'origin'          : fields.many2one('detalle.lines.origin', string='Origin'),
+        'subclient_id'    : fields.many2one('res.partner', 'SubClient'),
+        'sucursal_id'     : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
+        'type'            : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
+        'is_box_qty'      : fields.boolean('Box Packing?'),
+        'confirmada'      : fields.boolean('Confirmada'),
     }
 
 confirm_client_invoice_line()

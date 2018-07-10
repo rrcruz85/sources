@@ -268,9 +268,17 @@ class sale_request_product_variant_length(osv.osv):
         obj = self.browse(cr, uid, ids[0], context=context)
         return obj.sale_price > 0  
     
+    def _check_length(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)            
+        cr.execute("select count(*) from product_variant_length l inner join product_variant v " +
+                    "on l.variant_id = v.id where l.length = %s and l.variant_id = %s and v.product_id  = %s", (obj.length, obj.variant_id.variant_id.id, obj.variant_id.product_id.id,))
+        records = cr.fetchall()      
+        return records[0][0] 
+    
     _constraints = [
         (_check_stems_qty, 'La cantidad de tallos debe coincidir con la cantidad de bunches por el numero de unidades por bunch', []),
         (_check_sale_price, 'El precio de venta debe ser mayor que cero', ['sale_price']), 
+        (_check_length, 'La longitud del producto esta incorrecta, el producto no tiene ninguna variedad con la longitud especificada', []),
     ]
     
     def on_change_vals(self, cr, uid, ids, is_box_qty, box_qty, tale_qty, bunch_per_box, bunch_type, uom, context=None):
@@ -437,11 +445,19 @@ class purchase_request_product_variant_length(osv.osv):
     
     def _check_purchase_price(self, cr, uid, ids, context=None):
         obj = self.browse(cr, uid, ids[0], context=context)
-        return obj.purchase_price > 0  
+        return obj.purchase_price > 0 
+    
+    def _check_length(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)            
+        cr.execute("select count(*) from product_variant_length l inner join product_variant v " +
+                    "on l.variant_id = v.id where l.length = %s and l.variant_id = %s and v.product_id  = %s", (obj.length, obj.variant_id.variant_id.id, obj.variant_id.product_id.id,))
+        records = cr.fetchall()      
+        return records[0][0]  
     
     _constraints = [
         (_check_stems_qty, 'La cantidad de tallos debe coincidir con la cantidad de bunches por el numero de unidades por bunch', []),
         (_check_purchase_price, 'El precio de compra debe ser mayor que cero', ['purchase_price']), 
+        (_check_length, 'La longitud del producto esta incorrecta, el producto no tiene ninguna variedad con la longitud especificada', []),
     ]
     
     def on_change_vals(self, cr, uid, ids, is_box_qty, box_qty, tale_qty, bunch_per_box, bunch_type, uom, context=None):

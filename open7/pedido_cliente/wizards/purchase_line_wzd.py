@@ -180,13 +180,11 @@ class purchase_line_length_wzd(osv.osv_memory):
         return obj.bunch_type * obj.bunch_per_box == obj.qty if not obj.is_box_qty else True
     
     def _check_length(self, cr, uid, ids, context=None):
-        obj = self.browse(cr, uid, ids[0], context=context)
-        exist = False
-        for v in obj.product_id.variants_ids:
-            if v.id == obj.variant_id.id and v.description == obj.length:
-                exist = True
-                break                
-        return exist 
+        obj = self.browse(cr, uid, ids[0], context=context)            
+        cr.execute("select count(*) from product_variant_length l inner join product_variant v " +
+                    "on l.variant_id = v.id where l.length = %s and l.variant_id = %s and v.product_id  = %s", (obj.length, obj.variant_id.id, obj.product_id.id,))
+        records = cr.fetchall()      
+        return records[0][0]  
 
     _constraints = [
         (_check_bunch_type, 'El valor del campo Stems x Bunch debe ser mayor que 0 y menor o igual que 25.', []),
