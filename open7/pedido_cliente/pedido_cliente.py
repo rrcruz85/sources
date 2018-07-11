@@ -38,7 +38,7 @@ class pedido_cliente(osv.osv):
         cr.execute("delete from detalle_lines where active = False")
         
         for id in ids:
-            lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[('pedido_id','=',id)])
+            lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[('pedido_id','=', id)])
             if lines:
                 self.pool.get('purchase.lines.wzd').unlink(cr,uid,lines)
             cr.execute( "SELECT "+
@@ -616,8 +616,10 @@ class detalle_line(osv.osv):
                                             'detalle.lines': (lambda self, cr, uid, ids, c=None: ids, ['length_ids'], 10),
                                             'detalle.lines.length': (_get_ids, ['length'], 10),
                                         }),
-        'confirmada'            : fields.boolean('Confirmada'),
-        'active'                : fields.boolean('Active'),
+        'confirmada'            : fields.boolean('Confirmada'),    
+        'active'                : fields.boolean('Active'),    
+        'agrupada'              : fields.boolean('Agrupada'),
+        'group_id'              : fields.integer('Group Id'),
     }
 
     _defaults = {
@@ -625,8 +627,8 @@ class detalle_line(osv.osv):
         'uom': 'HB',
         'type': 'open_market',
         'bunch_per_box' : 12,
+        'active':True,
         'pedido_id'    :lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else None,
-        'active'       : True
     }
 
     def _check_bunch_type(self, cr, uid, ids, context=None):

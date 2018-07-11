@@ -33,11 +33,12 @@ class puchase_lines_wzd(osv.osv_memory):
         uom = {'FB':1,'HB':2,'QB':4,'OB':8}
         for obj in self.browse(cr, uid, ids, context=context):
             
-            cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.pedido_id = " + str(obj.pedido_id.id) + 
+            cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(obj.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(obj.pedido_id.id) + 
                        " and dl.supplier_id = " + str(obj.supplier_id.id) + " and dl.product_id = " + str(obj.product_id.id) +
-                       " group by dl.pedido_id, dl.supplier_id, dl.product_id")
+                       " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")
             
-            totals = cr.fetchone()[0]
+            record = cr.fetchone()
+            totals = record[0] if record else 0            
             
             res[obj.id] = {'total_qty_purchased': 'BXS', 'stimated_qty': 'BXS','qty':''}
             if obj.detalle_id.is_box_qty:
@@ -45,10 +46,15 @@ class puchase_lines_wzd(osv.osv_memory):
             else:
                 res[obj.id]['total_qty_purchased'] = str(obj.purchased_qty) + ' Stems'
 
-            #bxs_qty = obj.purchased_qty if obj.detalle_id.is_box_qty else (1 if not (obj.purchased_qty / (int(obj.bunch_type) * obj.bunch_per_box)) else (obj.purchased_qty / (int(obj.bunch_type) * obj.bunch_per_box)))
-            res[obj.id]['qty'] = str(round(float(obj.bunch_per_box)/totals, 2) if totals else 0) + ' ' + obj.uom
-            full_boxes = (round(float(obj.bunch_per_box)/totals, 2) if totals else 0)/uom[obj.uom]
-            res[obj.id]['stimated_qty'] = full_boxes
+            if obj.detalle_id.agrupada:
+                res[obj.id]['qty'] = str(round(float(obj.bunch_per_box)/totals, 2) if totals else 0) + ' ' + obj.uom
+                full_boxes = (round(float(obj.bunch_per_box)/totals, 2) if totals else 0)/uom[obj.uom]
+                res[obj.id]['stimated_qty'] = full_boxes
+            else:
+                bxs_qty = obj.purchased_qty if obj.detalle_id.is_box_qty else (1 if not (obj.purchased_qty /(int(obj.bunch_type) * obj.bunch_per_box)) else (obj.purchased_qty / (int(obj.bunch_type) * obj.bunch_per_box)))
+                res[obj.id]['qty'] = str(round(float(bxs_qty), 2)) + ' ' + obj.uom
+                full_boxes = round(float(bxs_qty)/uom[obj.uom], 2)
+                res[obj.id]['stimated_qty'] = full_boxes
         return res
 
     _columns = {
@@ -77,7 +83,7 @@ class puchase_lines_wzd(osv.osv_memory):
         'total_qty_purchased'   : fields.function(_get_info, type='char', string='Purchased Qty', multi="_vals"),
         'qty'                   : fields.function(_get_info, type='char', string='BXS', multi = '_vals'),
         'stimated_qty'          : fields.function(_get_info, type='float', string='Full Boxes', multi="_vals"),
-        'confirmada'            : fields.boolean(string='Confirmada'),
+        'confirmada'            : fields.boolean(string='Confirmada'),       
     }
 
     _order = "line"
@@ -442,10 +448,13 @@ class split_purchase_line_wzd(osv.osv_memory):
                 'bunch_per_box' : line.bunches,
                 'bunch_type'    : detalle.bunch_type,
                 'uom'           : detalle.uom,
-                'sale_price'    : detalle.sale_price,
+                'sale_price'    : detalle.sale_price,                 
                 'origin'        : detalle.origin.id if detalle.origin else None,
                 'subclient_id'  : detalle.subclient_id.id if detalle.subclient_id else None,
-                'sucursal_id'   : detalle.sucursal_id.id if detalle.sucursal_id else None               
+                'sucursal_id'   : detalle.sucursal_id.id if detalle.sucursal_id else None,
+                'confirmada'    : detalle.confirmada,
+                'agrupada'      : True, 
+                'group_id'      : detalle.id
             }))
         
         if total != detalle.bunch_per_box:
