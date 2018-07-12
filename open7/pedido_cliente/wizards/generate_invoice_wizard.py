@@ -21,7 +21,6 @@
 ##############################################################################
 from osv import osv
 from osv import fields
-import math
 import time
 
 class invoice_wizard(osv.osv_memory):
@@ -55,7 +54,7 @@ class invoice_wizard(osv.osv_memory):
         journal_obj = self.pool.get('account.journal')
         domain = [('company_id', '=', company_id)]
         if isinstance(type_inv, list):
-            domain.append(('type', 'in', [type2journal.get(type) for type in type_inv if type2journal.get(type)]))
+            domain.append(('type', 'in', [type2journal.get(t) for t in type_inv if type2journal.get(t)]))
         else:
             domain.append(('type', '=', type2journal.get(type_inv, 'sale')))
         res = journal_obj.search(cr, uid, domain, limit=1)
@@ -121,10 +120,19 @@ class invoice_wizard(osv.osv_memory):
             if p_ids:
                 list_vals = []
                 obj = self.pool.get('confirm.invoice').browse(cr, uid, p_ids[0])
-                total = sum([v.bunch_per_box for v in obj.line_ids])
                 
                 for v in obj.line_ids:
-                    qty_bxs = float(v.qty) if v.is_box_qty else round(float(v.bunch_per_box)/total, 2) #float(v.qty) / (int(v.bunch_type) * v.bunch_per_box)
+                    
+                    if v.detalle_id.agrupada:
+                        cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(v.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(pedido_id) + 
+                                    " and dl.supplier_id = " + str(supplier_id) + " and dl.product_id = " + str(v.product_id.id) +
+                                    " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
+                        record = cr.fetchone()
+                        totals = record[0] if record else 0                        
+                        qty_bxs = round(float(v.bunch_per_box)/totals, 2) if totals else 0
+                    else:
+                        qty_bxs = v.qty if v.is_box_qty else (1 if not (v.qty /(int(v.bunch_type) * v.bunch_per_box)) else (v.qty / (int(v.bunch_type) * v.bunch_per_box)))
+                    
                     vals = {
                         'confirmed_line_id' : v.id,
                         'pedido_id': pedido_id,
@@ -194,11 +202,17 @@ class invoice_wizard(osv.osv_memory):
         uom = {'FB':1,'HB':2,'QB':4,'OB':8}
         for o in self.browse(cr, uid, ids):
             i = 1            
-            total = sum([l.bunch_per_box for l in o.line_ids])            
             for v in o.line_ids:                
-                qty_bxs = v.qty if v.is_box_qty else round(float(v.bunch_per_box)/total, 2) #float(v.qty) / (int(v.bunch_type) * v.bunch_per_box)
-                #if qty_bxs == 0:
-                #    qty_bxs = 1
+                if v.detalle_id.agrupada:
+                    cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(v.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(v.pedido_id.id) + 
+                                    " and dl.supplier_id = " + str(v.supplier_id.id) + " and dl.product_id = " + str(v.product_id.id) +
+                                    " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
+                    record = cr.fetchone()
+                    totals = record[0] if record else 0                        
+                    qty_bxs = round(float(v.bunch_per_box)/totals, 2) if totals else 0
+                else:
+                    qty_bxs = v.qty if v.is_box_qty else (1 if not (v.qty /(int(v.bunch_type) * v.bunch_per_box)) else (v.qty / (int(v.bunch_type) * v.bunch_per_box)))
+             
                 boxes = qty_bxs / uom[v.uom]
                 
                 dict_vals = {
@@ -249,8 +263,7 @@ class invoice_wizard(osv.osv_memory):
             sequence = 1
             line_ids = []
             if not o.box_line_ids:
-                total = sum([l.bunch_per_box for l in o.line_ids])
-            
+                
                 for l in o.line_ids:
                     if l.confirmed_line_id:
                         line_ids.append(l.confirmed_line_id.id)
@@ -266,7 +279,16 @@ class invoice_wizard(osv.osv_memory):
 
                     taxes = [(4, t.id) for t in l.product_id.supplier_taxes_id]
                     
-                    qty_bxs = l.qty if l.is_box_qty else round(float(l.bunch_per_box)/total, 2) #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
+                    if l.detalle_id.agrupada:
+                        cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(l.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(l.pedido_id.id) + 
+                                    " and dl.supplier_id = " + str(l.supplier_id.id) + " and dl.product_id = " + str(l.product_id.id) +
+                                    " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
+                        record = cr.fetchone()
+                        totals = record[0] if record else 0                        
+                        qty_bxs = round(float(l.bunch_per_box)/totals, 2) if totals else 0
+                    else:
+                        qty_bxs = l.qty if l.is_box_qty else (1 if not (l.qty /(int(l.bunch_type) * l.bunch_per_box)) else (l.qty / (int(l.bunch_type) * l.bunch_per_box)))
+                    
                     boxes = float(qty_bxs) / uom[l.uom]
                     
                     stems = l.qty if not l.is_box_qty else l.qty * int(l.bunch_type) * l.bunch_per_box
@@ -281,7 +303,7 @@ class invoice_wizard(osv.osv_memory):
                     if l.uom == 'QB':
                         qb_qty = l.qty if l.is_box_qty else qty_bxs #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
 
-                    qty_bxs = str(qty_bxs) + l.uom
+                    qty_bxs = str(qty_bxs) + ' ' + l.uom
                     
                     vals = {
                         'sequence_box': sequence,
@@ -322,9 +344,18 @@ class invoice_wizard(osv.osv_memory):
                             name += ' - ' + l.length
 
                         taxes = [(4, t.id) for t in l.product_id.supplier_taxes_id]
-                        qty_bxs = l.qty if l.is_box_qty else float(l.qty)/ (int(l.bunch_type) * l.bunch_per_box)
-                        boxes = float(qty_bxs)/uom[l.uom]
-                        qty_bxs = str(qty_bxs) + l.uom
+                        
+                        if l.detalle_id.agrupada:
+                            cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(l.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(l.pedido_id.id) + 
+                                        " and dl.supplier_id = " + str(l.supplier_id.id) + " and dl.product_id = " + str(l.product_id.id) +
+                                        " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
+                            record = cr.fetchone()
+                            totals = record[0] if record else 0                        
+                            qty_bxs = round(float(l.bunch_per_box)/totals, 2) if totals else 0
+                        else:
+                            qty_bxs = l.qty if l.is_box_qty else (1 if not (l.qty /(int(l.bunch_type) * l.bunch_per_box)) else (l.qty / (int(l.bunch_type) * l.bunch_per_box)))
+                    
+                        boxes = float(qty_bxs)/uom[l.uom]                        
                         stems = l.qty if not l.is_box_qty else l.qty * int(l.bunch_type) * l.bunch_per_box
 
                         hb_qty = 0
@@ -334,9 +365,9 @@ class invoice_wizard(osv.osv_memory):
                         if l.uom == 'OB':
                             hb_qty = boxes * 8
                         if l.uom == 'HB':
-                            hb_qty = l.qty if l.is_box_qty else float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
+                            hb_qty = l.qty if l.is_box_qty else qty_bxs #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
                         if l.uom == 'QB':
-                            qb_qty = l.qty if l.is_box_qty else float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
+                            qb_qty = l.qty if l.is_box_qty else qty_bxs#float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
 
                         vals = {
                             'sequence_box': sequence,
@@ -344,7 +375,7 @@ class invoice_wizard(osv.osv_memory):
                             'box': boxes,
                             'hb': hb_qty,
                             'qb': qb_qty,
-                            'qty_bxs' : qty_bxs,
+                            'qty_bxs' : qty_bxs + ' ' + l.uom,
                             'name': name,
                             'uos_id': l.product_id.uom_id.id if l.product_id.uom_id else False,
                             'product_id': l.product_id.id,
@@ -476,7 +507,7 @@ class invoice_line_wizard(osv.osv_memory):
         boxes = float(qty_bxs) / uom_dict[uom] if uom else 0
 
         res = {'value':
-                         {'boxes': boxes,
+                         { 'boxes': boxes,
                            'total_purchase': qty * purchase_price if not is_box_qty else  (qty * int(bunch_type) * bunch_per_box) * purchase_price if bunch_type and bunch_per_box else 0 ,
                            'total_sale': qty * sale_price if not is_box_qty else (qty * int(bunch_type) * bunch_per_box) * sale_price if bunch_type and bunch_per_box else 0,
                            'qty_bxs':  str(qty_bxs) + ' ' + uom

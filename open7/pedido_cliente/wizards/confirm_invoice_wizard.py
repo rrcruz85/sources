@@ -55,7 +55,7 @@ class confirm_invoice_wizard(osv.osv_memory):
         journal_obj = self.pool.get('account.journal')
         domain = [('company_id', '=', company_id)]
         if isinstance(type_inv, list):
-            domain.append(('type', 'in', [type2journal.get(type) for type in type_inv if type2journal.get(type)]))
+            domain.append(('type', 'in', [type2journal.get(t) for t in type_inv if type2journal.get(t)]))
         else:
             domain.append(('type', '=', type2journal.get(type_inv, 'sale')))
         res = journal_obj.search(cr, uid, domain, limit=1)
@@ -144,12 +144,19 @@ class confirm_invoice_wizard(osv.osv_memory):
                 confirmed_lines = list(set(confirmed_lines))
                 self.pool.get('detalle.lines').write(cr, uid, confirmed_lines,{'confimada': False})
 
-            total = sum([l.bunch_per_box for l in pedido.purchase_line_ids])            
-            
             for v in pedido.purchase_line_ids:
-                if v.supplier_id.id == supplier_id:
-                    qty_bxs = float(v.qty) if v.is_box_qty else round(float(v.bunch_per_box)/total, 2)
-                    boxes = float(qty_bxs) / 2 #uom[v.uom]
+                if v.supplier_id.id == supplier_id:                    
+                    if v.agrupada:
+                        cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(v.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(pedido_id) + 
+                                    " and dl.supplier_id = " + str(supplier_id) + " and dl.product_id = " + str(v.product_id.id) +
+                                    " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
+                        record = cr.fetchone()
+                        totals = record[0] if record else 0                        
+                        qty_bxs = round(float(v.bunch_per_box)/totals, 2) if totals else 0
+                    else:
+                        qty_bxs = v.qty if v.is_box_qty else (1 if not (v.qty /(int(v.bunch_type) * v.bunch_per_box)) else (v.qty / (int(v.bunch_type) * v.bunch_per_box)))
+                    
+                    boxes = float(qty_bxs) /uom[v.uom]
                     vals = {
                         'pedido_id': pedido_id,
                         'supplier_id': supplier_id,
@@ -201,7 +208,6 @@ class confirm_invoice_wizard(osv.osv_memory):
                                                                       ('supplier_id', '=', o.supplier_id.id)])
             line = 1
             lines_confirmed = []
-            total = sum([l.bunch_per_box for l in o.line_ids])
             
             for l in o.line_ids:
                 account_id = l.product_id.property_account_expense.id if l.product_id.property_account_expense else False
@@ -209,8 +215,19 @@ class confirm_invoice_wizard(osv.osv_memory):
                     account_id = l.product_id.categ_id.property_account_expense_categ.id if l.product_id.categ_id and l.product_id.categ_id.property_account_expense_categ else False
                 if not account_id:
                     raise osv.except_osv('Error',"El producto " + l.product_id.name_template + " no tiene una cuenta de gastos configurada.")
-                boxes = l.qty if l.is_box_qty  else round(float(l.bunch_per_box)/total, 2)  #l.qty / (int(l.bunch_type) * l.bunch_per_box)
-                boxes = boxes / uom[l.uom]
+                
+                if l.detalle_id.agrupada:
+                    cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(l.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(l.invoice_id.pedido_id.id) + 
+                                    " and dl.supplier_id = " + str(l.supplier_id.id) + " and dl.product_id = " + str(l.product_id.id) +
+                                    " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
+                    record = cr.fetchone()
+                    totals = record[0] if record else 0                        
+                    qty_bxs = round(float(l.bunch_per_box)/totals, 2) if totals else 0
+                else:
+                    qty_bxs = l.qty if l.is_box_qty else (1 if not (l.qty /(int(l.bunch_type) * l.bunch_per_box)) else (l.qty / (int(l.bunch_type) * l.bunch_per_box)))
+                    
+                boxes = qty_bxs / uom[l.uom]
+                
                 vals = {
                     'pedido_id': l.invoice_id.pedido_id.id if l.invoice_id and l.invoice_id.pedido_id else False,
                     'detalle_id': l.detalle_id.id if l.detalle_id else False,
@@ -238,11 +255,9 @@ class confirm_invoice_wizard(osv.osv_memory):
                     'confirmada': True
                 }
                 lines.append((0, 0, vals))
-
-                full_boxes = l.qty if l.is_box_qty else round(float(l.bunch_per_box)/total, 2) #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
-                full_boxes = full_boxes / uom[l.uom]
+                
                 dict_vals = {
-                    'boxes': full_boxes,
+                    'boxes': boxes,
                     'total_purchase': l.qty * l.purchase_price if not l.is_box_qty else l.qty * l.bunch_per_box * int(
                         l.bunch_type) * l.purchase_price,
                     'total_sale': l.qty * l.sale_price if not l.is_box_qty else l.qty * l.bunch_per_box * int(
@@ -335,7 +350,6 @@ class confirm_invoice_wizard(osv.osv_memory):
             lines = []
             sequence = 1
             line_ids = []
-            total = sum([l.bunch_per_box for l in o.line_ids])
             
             for l in o.line_ids:
                 if l.confirmed_line_id:
@@ -352,7 +366,16 @@ class confirm_invoice_wizard(osv.osv_memory):
 
                 taxes = [(4, t.id) for t in l.product_id.supplier_taxes_id]
 
-                qty_bxs = l.qty if l.is_box_qty else round(float(l.bunch_per_box)/total, 2)
+                if l.detalle_id.agrupada:
+                    cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(l.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(l.invoice_id.pedido_id.id) + 
+                                    " and dl.supplier_id = " + str(l.supplier_id.id) + " and dl.product_id = " + str(l.product_id.id) +
+                                    " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
+                    record = cr.fetchone()
+                    totals = record[0] if record else 0                        
+                    qty_bxs = round(float(l.bunch_per_box)/totals, 2) if totals else 0
+                else:
+                    qty_bxs = l.qty if l.is_box_qty else (1 if not (l.qty /(int(l.bunch_type) * l.bunch_per_box)) else (l.qty / (int(l.bunch_type) * l.bunch_per_box)))
+                
                 stems = l.qty if not l.is_box_qty else l.qty * int(l.bunch_type) * l.bunch_per_box
                 
                 boxes = float(qty_bxs)/uom[l.uom]
@@ -368,7 +391,7 @@ class confirm_invoice_wizard(osv.osv_memory):
                 if l.uom == 'QB':
                     qb_qty = l.qty if l.is_box_qty else qty_bxs #float(l.qty)/ (int(l.bunch_type) * l.bunch_per_box)
 
-                qty_bxs = str(qty_bxs) + l.uom
+                qty_bxs = str(qty_bxs) + ' ' +l.uom
   
                 vals = {
                     'sequence_box': sequence,
@@ -569,8 +592,6 @@ class confirm_windows_wizard(osv.osv_memory):
             context = {}
         list_vals = []
         obj =self.pool.get('confirm.windows.wizard').browse(cr,uid,ids[0]).confirm_id
-        
-        total = sum([l.bunch_per_box for l in obj.line_ids])
         
         for v in obj.line_ids:
             vals = {

@@ -91,9 +91,9 @@ class pedido_cliente(osv.osv):
                 vals = {
                     'pedido_id'     : record[0],
                     'request_qty'   : request_qty,
-                    'type'   : record[1],
+                    'type'          : record[1],
                     'supplier_id'   : record[2],
-                    'product_id'   : record[3],
+                    'product_id'    : record[3],
                     'variant_id'    : record[4],
                     'lenght'        : record[5],
                     'purchased_qty' : record[6],
@@ -108,9 +108,9 @@ class pedido_cliente(osv.osv):
                     'detalle_id'    : record[15],
                     'bunch_type'    : record[16],
                     'bunch_per_box' : record[17],
-                    'uom': record[18],
-                    'line': record[19],
-                    'confirmada': record[20]
+                    'uom'           : record[18],
+                    'line'          : record[19],
+                    'confirmada'    : record[20]
                 }
                 list_ids.append(self.pool.get('purchase.lines.wzd').create(cr,uid,vals))
             res[id] = list_ids
@@ -343,10 +343,10 @@ class request_product_variant(osv.osv):
     def on_change_vals(self, cr, uid, ids, is_box_qty, box_qty, tale_qty, bunch_per_box, bunch_type, uom, context=None):
         res = {'value':{'stimated_stems':0,'qty':0, 'full_boxes': 0}}
         uom_dict = {'FB':1,'HB':2,'QB':4,'OB':8}
-       	if is_box_qty:
-           res['value']['stimated_stems'] = box_qty * int(bunch_type)* bunch_per_box
+        if is_box_qty:
+            res['value']['stimated_stems'] = box_qty * int(bunch_type)* bunch_per_box
         else:
-           res['value']['stimated_stems'] = tale_qty
+            res['value']['stimated_stems'] = tale_qty
         bxs_qty = box_qty if is_box_qty else  (1  if not (tale_qty / (int(bunch_type) * bunch_per_box)) else (tale_qty / (int(bunch_type) * bunch_per_box)))
         res['value']['qty']  = str(bxs_qty) + ' ' + uom
         full_boxes = float(bxs_qty)/uom_dict[uom]
@@ -456,8 +456,7 @@ class request_product_variant(osv.osv):
 
         vals = self._get_info(cr,uid, ids, '', [])
         lengths = [(0,0,{'length': l.length, 'purchase_price': 0})for l in obj.length_ids]
-        lengths_desc = [l.length for l in obj.length_ids]
-
+       
         #Buscando Proveedores
         farm_ids = []
         l_ids = self.pool.get('purchase.request.template').search(cr,uid,[('client_id','=',obj.pedido_id.partner_id.id)])
