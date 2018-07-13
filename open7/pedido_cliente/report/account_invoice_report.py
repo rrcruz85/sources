@@ -295,15 +295,17 @@ class AccountInvoiceReport(report_rml):
                                 avg(cl.sale_price) as unit_price,
                                 sum(case when cl.is_box_qty = TRUE then (cl.qty * cl.bunch_per_box * cl.bunch_type::int * cl.sale_price)::FLOAT else (cl.qty * cl.sale_price)::FLOAT end) as total,
                                 pp."name" as subclient,
-                                pt.id as product_id
+                                pt.id as product_id,
+                                dl.group_id   
                                 from
                                 confirm_invoice_line cl
+                                inner join detalle_lines dl on cl.detalle_id = dl."id"
                                 inner join res_partner p on cl.supplier_id = p."id"
                                 inner join product_variant v on v."id" = cl.variant_id
-                                LEFT JOIN res_partner pp on cl.subclient_id = pp."id"
                                 INNER JOIN product_template pt on pt."id" = cl.product_id
+                                LEFT JOIN res_partner pp on cl.subclient_id = pp."id"                               
                                 where cl.pedido_id = %s
-                                GROUP BY p.name, v."name", cl."length",pp."name",pt."name",pt.id
+                                GROUP BY p.name, v."name", cl."length",pp."name",pt."name",pt.id,dl.group_id
                                 order by p.name, pp."name") lines""", (pedido.id,))
 
             lines = cr.fetchall()
@@ -312,18 +314,20 @@ class AccountInvoiceReport(report_rml):
             supplier_tmp = lines[0][0] if lines else ''
             
             for line in lines:
+                total_bunches = sum(map(lambda r: r[4], filter(lambda r: r[12] == line[12], lines))) if line[12] else 0
+                
                 supplier = line[0]
                 variety = line[1]
                 length = line[2]
                 stems_cant = line[3]
                 bunch_cant =  line[4]
-                hb_cont =  line[5]
+                hb_cont =  line[4]/total_bunches if total_bunches else line[5]
                 qb_cont =  line[6]
                 description =  line[7]
                 sale_price =  line[8]
                 total =  line[9]
                 subclient =  line[10]
-                taxes = line[12]
+                taxes = line[13]
 
                 if supplier not in summary:
                     summary[supplier] = [stems_cant, bunch_cant, hb_cont, qb_cont, total, taxes]

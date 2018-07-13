@@ -318,14 +318,16 @@ class AccountInvoiceVarietyReport(report_rml):
                                 sum(case when cl.is_box_qty = TRUE then (cl.qty * cl.bunch_per_box * cl.bunch_type::int * cl.sale_price)::FLOAT else (cl.qty * cl.sale_price)::FLOAT end)/
                                 sum(case when cl.is_box_qty = TRUE then cl.qty * cl.bunch_per_box * cl.bunch_type::int else cl.qty end) as unit_price,
                                 sum(case when cl.is_box_qty = TRUE then (cl.qty * cl.bunch_per_box * cl.bunch_type::int * cl.sale_price)::FLOAT else (cl.qty * cl.sale_price)::FLOAT end) as total,
-                                min(cl.product_id) as product_id
+                                min(cl.product_id) as product_id,
+                                dl.group_id
                                 from
                                 confirm_invoice_line cl
+                                inner join detalle_lines dl on cl.detalle_id = dl."id"
                                 inner join product_variant v on v."id" = cl.variant_id
                                 inner join pedido_cliente p on p.id = cl.pedido_id
                                 LEFT JOIN res_partner pp on cl.subclient_id = pp."id"
                                 where cl.pedido_id = %s
-                                GROUP BY v."name", cl."length",pp."name"
+                                GROUP BY v."name", cl."length",pp."name",dl.group_id
                                 order by pp."name",v."name") lines""", (pedido.id, pedido.id,))
 
             lines = cr.fetchall()
@@ -336,12 +338,11 @@ class AccountInvoiceVarietyReport(report_rml):
             total_bunch = 0
             total_price = 0
             total_taxes = 0
-            total_hb_inv = sum([line[6] for line in lines])
             
-            for line in lines:
+            for line in lines:                
+                total_bunches = sum(map(lambda r: r[6], filter(lambda r: r[12] == line[12], lines))) if line[12] else 0               
                 variety = line[0]
                 length = line[1]
-                #hb_cont = line[2]
                 qb_cont = line[3]
                 unit_per_hb = line[4]
                 stems = line[5]
@@ -353,8 +354,8 @@ class AccountInvoiceVarietyReport(report_rml):
                 total_qb += line[3]
                 total_stems += line[5]
                 total_price += line[10]
-                total_taxes += line[12]
-                line_hb = round(float(bunch)/total_hb_inv,2)
+                total_taxes += line[13]
+                line_hb =  line[6]/total_bunches if total_bunches else line[2]
                 total_hb += line_hb
                 total_bunch += bunch
                 
@@ -363,7 +364,7 @@ class AccountInvoiceVarietyReport(report_rml):
                             <tr>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(variety[0:25] if variety else '')) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + (ustr(length[0:15])) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(line_hb) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(line_hb,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(round(qb_cont,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(int(unit_per_hb)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(round(stems,2)) + """</para></td>
@@ -485,46 +486,43 @@ class AccountInvoiceVarietyReport(report_rml):
                                 <td></td>
                             </tr>"""
 
-            cr.execute("""SELECT
-                                pp."name" as finca,
+            cr.execute(""" SELECT
+                                pp.name as farm,                                
                                 sum(case
                                 when cl.uom = 'HB' then (case when cl.is_box_qty = TRUE then cl.qty else cl.qty/(cl.bunch_type::INT * cl.bunch_per_box) end)
                                 when cl.uom = 'FB' then (case when cl.is_box_qty = TRUE then cl.qty * 2 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box)) * 2 end)
                                 when cl.uom = 'OB' then (case when cl.is_box_qty = TRUE then cl.qty / 4 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box * 4)) end)
-                                else 0 end)/2 as hb,
+                                else 0 end) as hb,
                                 sum(case when cl.uom = 'QB' then (case when cl.is_box_qty = TRUE then cl.qty else cl.qty/(cl.bunch_type::INT * cl.bunch_per_box) end)
                                 when cl.uom = 'FB' then (case when cl.is_box_qty = TRUE then cl.qty * 4 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box)) * 4 end)
                                 when cl.uom = 'OB' then (case when cl.is_box_qty = TRUE then cl.qty / 2 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box * 2)) end)
-                                else 0 end)/4 as qb,
-                                (sum(case
-                                when cl.uom = 'HB' then (case when cl.is_box_qty = TRUE then cl.qty else cl.qty/(cl.bunch_type::INT * cl.bunch_per_box) end)
-                                when cl.uom = 'FB' then (case when cl.is_box_qty = TRUE then cl.qty * 2 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box)) * 2 end)
-                                when cl.uom = 'OB' then (case when cl.is_box_qty = TRUE then cl.qty / 4 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box * 4)) end)
-                                else 0 end)/2 +
-                                sum(case when cl.uom = 'QB' then (case when cl.is_box_qty = TRUE then cl.qty else cl.qty/(cl.bunch_type::INT * cl.bunch_per_box) end)
-                                when cl.uom = 'FB' then (case when cl.is_box_qty = TRUE then cl.qty * 4 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box)) * 4 end)
-                                when cl.uom = 'OB' then (case when cl.is_box_qty = TRUE then cl.qty / 2 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box * 2)) end)
-                                else 0 end)/4)/2 as total
+                                else 0 end) as qb,   
+                                dl.group_id 
                                 from
                                 confirm_invoice_line cl
+                                inner join detalle_lines dl on cl.detalle_id = dl."id"                                
                                 inner join pedido_cliente p on p.id = cl.pedido_id
-                                inner JOIN res_partner pp on cl.supplier_id = pp."id"
+                                LEFT JOIN res_partner pp on cl.supplier_id = pp."id"
                                 where cl.pedido_id = %s
-                                GROUP BY pp."name"
+                                GROUP BY pp."name", dl.group_id 
                                 order by pp."name" """, (pedido.id,))
             lines = cr.fetchall()
             total_hb = 0
             total_qb = 0
             total_fb = 0
             for line in lines:
-                total_hb += line[1]
-                total_qb += line[2]
-                total_fb += line[3]
+                hb = line[1]/2 if line[3] else line[1]
+                qb = line[2]/4 if line[3] else line[2]
+                total = line[1]/4 + line[2]/8 if line[3] else line[1]/2 + line[2]/4
+                total_hb += hb
+                total_qb += qb
+                total_fb += total
+                
                 rml += """<tr>"""
                 rml += """<td><para style="P6_CENTER">""" + ustr(line[0] or '') + """</para></td>"""
-                rml += """<td><para style="P6_CENTER">""" + (str(round(line[1], 2))) + """</para></td>"""
-                rml += """<td><para style="P6_CENTER">""" + (str(round(line[2], 2))) + """</para></td>"""
-                rml += """<td><para style="P6_CENTER">""" + (str(round(line[3], 2))) + """</para></td>"""
+                rml += """<td><para style="P6_CENTER">""" + (str(round(hb, 2))) + """</para></td>"""
+                rml += """<td><para style="P6_CENTER">""" + (str(round(qb, 2))) + """</para></td>"""
+                rml += """<td><para style="P6_CENTER">""" + (str(round(total, 2))) + """</para></td>"""
                 rml += """<td></td></tr>"""
 
             rml += """<tr>
