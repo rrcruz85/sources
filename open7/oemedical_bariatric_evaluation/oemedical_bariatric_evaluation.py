@@ -63,37 +63,39 @@ class OeMedicalBariatricEvaluation(osv.osv):
     def _compute_vals(self, cr, uid, ids, name, args, context=None):
         res = {}
         obj = self.pool.get('oemedical.bariatric.evaluation').browse(cr, uid, ids, context=context)[0]
+        res[obj.id] = {}
         
         cr.execute("select id from oemedical_nutritional where patient_id = %s and " + 
                    "eva_date = (select max(eva_date) from oemedical_nutritional where patient_id = %s)",(obj.patient_id.id, obj.patient_id.id,))  
            
-        record = cr.fetchall()[0]      
+        records = cr.fetchone()
         
-        nut = self.pool.get('oemedical.nutritional').browse(cr, uid, record[0])
-        res[obj.id] = {}
-        res[obj.id]['preop_hta'] = nut.preop_hta
-        res[obj.id]['hip_preop_med'] = nut.hip_preop_med
-        res[obj.id]['hip_preop_dos'] = nut.hip_preop_dos
-        res[obj.id]['hip_preop_val'] = nut.hip_preop_val
-        res[obj.id]['hip_preop_hac'] = nut.hip_preop_hac
-        res[obj.id]['diab_mel_dm'] = nut.diab_mel_dm
-        res[obj.id]['diab_mel_med'] = nut.diab_mel_med
-        res[obj.id]['diab_mel_dos'] = nut.diab_mel_dos
-        res[obj.id]['diab_mel_val'] = nut.diab_mel_val
-        res[obj.id]['diab_mel_hac'] = nut.diab_mel_hac
-        res[obj.id]['preop_dis'] = nut.preop_dis
-        res[obj.id]['preop_dis_med'] = nut.preop_dis_med
-        res[obj.id]['preop_dis_dos'] = nut.preop_dis_dos
-        res[obj.id]['preop_dis_val'] = nut.preop_dis_val
-        res[obj.id]['preop_dis_hac'] = nut.preop_dis_hac
-        res[obj.id]['hig_gra'] = nut.hig_gra
-        res[obj.id]['hig_gra_med'] = nut.hig_gra_med
-        res[obj.id]['hig_gra_dos'] = nut.hig_gra_dos
-        res[obj.id]['hig_gra_val'] = nut.hig_gra_val
-        res[obj.id]['hig_gra_hac'] = nut.hig_gra_hac
-            
-        res[obj.id]['pes_pak'] = nut.pes_pak
-        res[obj.id]['est_pac'] = nut.est_pac
+        if records and records[0]:            
+        
+            nut = self.pool.get('oemedical.nutritional').browse(cr, uid, records[0])
+            res[obj.id]['preop_hta'] = nut.preop_hta
+            res[obj.id]['hip_preop_med'] = nut.hip_preop_med
+            res[obj.id]['hip_preop_dos'] = nut.hip_preop_dos
+            res[obj.id]['hip_preop_val'] = nut.hip_preop_val
+            res[obj.id]['hip_preop_hac'] = nut.hip_preop_hac
+            res[obj.id]['diab_mel_dm'] = nut.diab_mel_dm
+            res[obj.id]['diab_mel_med'] = nut.diab_mel_med
+            res[obj.id]['diab_mel_dos'] = nut.diab_mel_dos
+            res[obj.id]['diab_mel_val'] = nut.diab_mel_val
+            res[obj.id]['diab_mel_hac'] = nut.diab_mel_hac
+            res[obj.id]['preop_dis'] = nut.preop_dis
+            res[obj.id]['preop_dis_med'] = nut.preop_dis_med
+            res[obj.id]['preop_dis_dos'] = nut.preop_dis_dos
+            res[obj.id]['preop_dis_val'] = nut.preop_dis_val
+            res[obj.id]['preop_dis_hac'] = nut.preop_dis_hac
+            res[obj.id]['hig_gra'] = nut.hig_gra
+            res[obj.id]['hig_gra_med'] = nut.hig_gra_med
+            res[obj.id]['hig_gra_dos'] = nut.hig_gra_dos
+            res[obj.id]['hig_gra_val'] = nut.hig_gra_val
+            res[obj.id]['hig_gra_hac'] = nut.hig_gra_hac
+                
+            res[obj.id]['pes_pak'] = nut.pes_pak
+            res[obj.id]['est_pac'] = nut.est_pac
             
               
         return res
@@ -333,33 +335,35 @@ class OeMedicalBariatricEvaluation(osv.osv):
             cr.execute("select id from oemedical_nutritional where patient_id = %s and " + 
                    "eva_date = (select max(eva_date) from oemedical_nutritional where patient_id = %s)",(patient_id, patient_id,))  
            
-            record = cr.fetchall()[0]      
+            records = cr.fetchone()
         
-            nut = self.pool.get('oemedical.nutritional').browse(cr, uid, record[0])
+            if records and records[0]:        
         
-            res['value']['preop_hta'] = nut.preop_hta
-            res['value']['hip_preop_med'] = nut.hip_preop_med
-            res['value']['hip_preop_dos'] = nut.hip_preop_dos
-            res['value']['hip_preop_val'] = nut.hip_preop_val
-            res['value']['hip_preop_hac'] = nut.hip_preop_hac
-            res['value']['diab_mel_dm'] = nut.diab_mel_dm
-            res['value']['diab_mel_med'] = nut.diab_mel_med
-            res['value']['diab_mel_dos'] = nut.diab_mel_dos
-            res['value']['diab_mel_val'] = nut.diab_mel_val
-            res['value']['diab_mel_hac'] = nut.diab_mel_hac
-            res['value']['preop_dis'] = nut.preop_dis
-            res['value']['preop_dis_med'] = nut.preop_dis_med
-            res['value']['preop_dis_dos'] = nut.preop_dis_dos
-            res['value']['preop_dis_val'] = nut.preop_dis_val
-            res['value']['preop_dis_hac'] = nut.preop_dis_hac
-            res['value']['hig_gra'] = nut.hig_gra
-            res['value']['hig_gra_med'] = nut.hig_gra_med
-            res['value']['hig_gra_dos'] = nut.hig_gra_dos
-            res['value']['hig_gra_val'] = nut.hig_gra_val
-            res['value']['hig_gra_hac'] = nut.hig_gra_hac
-                
-            res['value']['pes_pak'] = nut.pes_pak
-            res['value']['est_pac'] = nut.est_pac
+                nut = self.pool.get('oemedical.nutritional').browse(cr, uid, records[0])
+            
+                res['value']['preop_hta'] = nut.preop_hta
+                res['value']['hip_preop_med'] = nut.hip_preop_med
+                res['value']['hip_preop_dos'] = nut.hip_preop_dos
+                res['value']['hip_preop_val'] = nut.hip_preop_val
+                res['value']['hip_preop_hac'] = nut.hip_preop_hac
+                res['value']['diab_mel_dm'] = nut.diab_mel_dm
+                res['value']['diab_mel_med'] = nut.diab_mel_med
+                res['value']['diab_mel_dos'] = nut.diab_mel_dos
+                res['value']['diab_mel_val'] = nut.diab_mel_val
+                res['value']['diab_mel_hac'] = nut.diab_mel_hac
+                res['value']['preop_dis'] = nut.preop_dis
+                res['value']['preop_dis_med'] = nut.preop_dis_med
+                res['value']['preop_dis_dos'] = nut.preop_dis_dos
+                res['value']['preop_dis_val'] = nut.preop_dis_val
+                res['value']['preop_dis_hac'] = nut.preop_dis_hac
+                res['value']['hig_gra'] = nut.hig_gra
+                res['value']['hig_gra_med'] = nut.hig_gra_med
+                res['value']['hig_gra_dos'] = nut.hig_gra_dos
+                res['value']['hig_gra_val'] = nut.hig_gra_val
+                res['value']['hig_gra_hac'] = nut.hig_gra_hac
+                    
+                res['value']['pes_pak'] = nut.pes_pak
+                res['value']['est_pac'] = nut.est_pac
         return res
             
 OeMedicalBariatricEvaluation()
