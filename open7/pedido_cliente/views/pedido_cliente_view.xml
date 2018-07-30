@@ -6,106 +6,6 @@
         Pedido cliente
         -->
 
-        <record id="view_freight_agency_tree" model="ir.ui.view">
-            <field name="name">freight.agency.tree</field>
-            <field name="model">freight.agency</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Freight Agencies">
-                    <field name="name"/>
-                    <field name="address"/>
-                    <field name="mobil"/>
-                    <field name="phone1"/>
-                    <field name="phone2"/>
-                    <field name="contact"/>
-                    <field name="cuarto_frio"/>
-                    <field name="email1"/>
-                    <field name="email2"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="view_freight_agency_form" model="ir.ui.view">
-            <field name="name">freight.agency.form</field>
-            <field name="model">freight.agency</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Freight Agency">
-                    <field name="name" required="1"/>
-                    <field name="mobil"/>
-                    <newline/>
-                    <field name="address" colspan="4"/>
-                    <newline/>
-                    <field name="phone1"/>
-                    <field name="phone2"/>
-                    <newline/>
-                    <field name="contact"/>
-                    <field name="cuarto_frio"/>
-                    <newline/>
-                    <field name="email1" widget="email"/>
-                    <field name="email2" widget="email"/>
-                </form>
-            </field>
-        </record>
-
-        <record id="view_detalle_line_tree" model="ir.ui.view">
-            <field name="name">detalle.lines.tree</field>
-            <field name="model">detalle.lines</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Detalle Lines">
-                    <field name="pedido_id" invisible="1"/>
-                    <field name="name"/>
-                    <field name="type"/>
-                    <field name="supplier_id"/>
-                    <field name="product_id"/>
-                    <field name="variant_id"/>
-                    <field name="lengths"/>
-                    <field name="subclient_id"/>
-                    <field name="is_box_qty"/>
-                    <field name="qty"/>
-                    <field name="bunch_per_box"/>
-                    <field name="bunch_type"/>
-                    <field name="uom"/>
-                    <field name="purchase_price"/>
-                    <field name="sale_price"/>
-                    <field name="origin"/>
-                    <field name="sucursal_id"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="view_detalle_line_form" model="ir.ui.view">
-            <field name="name">detalle.lines.form</field>
-            <field name="model">detalle.lines</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Detalle Lines">
-                    <field name="pedido_id" invisible="1"/>
-                    <field name="type"/>
-                    <newline/>
-                    <field name="supplier_id" required="1"/>
-                    <field name="product_id" required="1"/>
-                    <field name="variant_id"  required="1" domain="[('product_id','=',product_id)]"/>
-                    <field name="lengths"/>
-                    <newline/>
-                    <field name="is_box_qty"/>
-                    <field name="qty"/>
-                    <newline/>
-                    <field name="bunch_per_box"/>
-                    <field name="bunch_type"/>
-                    <field name="uom"/>
-                    <newline/>
-                    <field name="purchase_price"/>
-                    <field name="sale_price"/>
-                    <newline/>
-                    <field name="origin"/>
-                    <field name="subclient_id"/>
-                    <field name="sucursal_id"/>
-                </form>
-            </field>
-        </record>
-        
         <record id="view_pedido_cliente_tree" model="ir.ui.view">
             <field name="name">pedido.cliente.tree</field>
             <field name="model">pedido.cliente</field>
@@ -214,53 +114,117 @@
                     </field>
                     <newline/>
                     <h2>Purchased Lines</h2>
-                    <field name="line_ids"/>
-                </form>
-            </field>
-        </record>
-
-        <record id="action_pedido_cliente" model="ir.actions.act_window">
-            <field name="name">Pedidos de Clientes</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">pedido.cliente</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <menuitem name="Pedido" id="menu_pedido_cliente_root"/>
-        <menuitem name="Pedido" id="menu_pedido_cliente_menu" parent="menu_pedido_cliente_root"/>
-        <menuitem name="Pedidos de Clientes" action="action_pedido_cliente" id="menu_pedido_cliente" parent="menu_pedido_cliente_menu" sequence="1"/>
-
-        <!--Automatic Purchase Order Generation
-        <record model="ir.cron" id="automatic_purchase_order_request_cron">
-            <field name="name">Purchase Order Generation</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False"/>
-            <field name="model" eval="'purchase.request.template'"/>
-            <field name="function" eval="'_generate_requests_every'"/>
-            <field name="args" eval="'()'" />
-            <field name="active" eval="False" />
-        </record>
-        -->
-		
-		<!-- AIRLINE FORM VIEW -->
-        <record id="pedido_cliente_airline_form_view" model="ir.ui.view">
-            <field name="name">pedido_cliente_airline_form_view</field>
-            <field name="model">pedido_cliente.airline</field>
-            <field name="arch" type="xml">
-            	<form string="Airline" version="7.0">
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="avb_number"/>
-                        </group>
-                    </sheet>
+                    <button name="group_lines" string="Group Lines per Box" type="object" class="oe_link"/>
+	    	        <field name="line_ids"/>
                 </form>
             </field>
         </record>
         
+        
+        <!-- Freight Agency -->
+        
+        <record id="view_freight_agency_tree" model="ir.ui.view">
+            <field name="name">freight.agency.tree</field>
+            <field name="model">freight.agency</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Freight Agencies">
+                    <field name="name"/>
+                    <field name="address"/>
+                    <field name="mobil"/>
+                    <field name="phone1"/>
+                    <field name="phone2"/>
+                    <field name="contact"/>
+                    <field name="cuarto_frio"/>
+                    <field name="email1"/>
+                    <field name="email2"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_freight_agency_form" model="ir.ui.view">
+            <field name="name">freight.agency.form</field>
+            <field name="model">freight.agency</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Freight Agency">
+                    <field name="name" required="1"/>
+                    <field name="mobil"/>
+                    <newline/>
+                    <field name="address" colspan="4"/>
+                    <newline/>
+                    <field name="phone1"/>
+                    <field name="phone2"/>
+                    <newline/>
+                    <field name="contact"/>
+                    <field name="cuarto_frio"/>
+                    <newline/>
+                    <field name="email1" widget="email"/>
+                    <field name="email2" widget="email"/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Detalle Lines -->
+        <record id="view_detalle_line_tree" model="ir.ui.view">
+            <field name="name">detalle.lines.tree</field>
+            <field name="model">detalle.lines</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Purchase Lines" editable="top">
+                    <field name="pedido_id" invisible="1"/>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="supplier_id"/>
+                    <field name="product_id"/>
+                    <field name="variant_id"/>
+                    <field name="lengths"/>
+                    <field name="subclient_id"/>
+                    <field name="is_box_qty"/>
+                    <field name="qty"/>
+                    <field name="bunch_per_box"/>
+                    <field name="bunch_type"/>
+                    <field name="uom"/>
+                    <field name="purchase_price"/>
+                    <field name="sale_price"/>
+                    <field name="origin"/>
+                    <field name="sucursal_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_detalle_line_form" model="ir.ui.view">
+            <field name="name">detalle.lines.form</field>
+            <field name="model">detalle.lines</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Detalle Lines">
+                    <field name="pedido_id" invisible="1"/>
+                    <field name="type"/>
+                    <newline/>
+                    <field name="supplier_id" required="1"/>
+                    <field name="product_id" required="1"/>
+                    <field name="variant_id"  required="1" domain="[('product_id','=',product_id)]"/>
+                    <field name="lengths"/>
+                    <newline/>
+                    <field name="is_box_qty"/>
+                    <field name="qty"/>
+                    <newline/>
+                    <field name="bunch_per_box"/>
+                    <field name="bunch_type"/>
+                    <field name="uom"/>
+                    <newline/>
+                    <field name="purchase_price"/>
+                    <field name="sale_price"/>
+                    <newline/>
+                    <field name="origin"/>
+                    <field name="subclient_id"/>
+                    <field name="sucursal_id"/>
+                </form>
+            </field>
+        </record>
+        
+           
         <record id="detalle_line_length_form_view" model="ir.ui.view">
             <field name="name">detalle_line_length_form_view</field>
             <field name="model">detalle.lines.length</field>
@@ -276,6 +240,35 @@
                 </form>
             </field>
         </record>
+        
+        
+        <!-- AIRLINE FORM VIEW -->
+        <record id="pedido_cliente_airline_form_view" model="ir.ui.view">
+            <field name="name">pedido_cliente_airline_form_view</field>
+            <field name="model">pedido_cliente.airline</field>
+            <field name="arch" type="xml">
+            	<form string="Airline" version="7.0">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="avb_number"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+     
+        <record id="action_pedido_cliente" model="ir.actions.act_window">
+            <field name="name">Pedidos de Clientes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pedido.cliente</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Pedido" id="menu_pedido_cliente_root"/>
+        <menuitem name="Pedido" id="menu_pedido_cliente_menu" parent="menu_pedido_cliente_root"/>
+        <menuitem name="Pedidos de Clientes" action="action_pedido_cliente" id="menu_pedido_cliente" parent="menu_pedido_cliente_menu" sequence="1"/>
 
     </data>
 </openerp>

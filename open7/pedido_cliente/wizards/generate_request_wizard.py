@@ -58,10 +58,10 @@ class generate_request_wizard(osv.osv_memory):
             if dia <= 0:
                 dia = 7 + dia
 
-            uom = {'FB':1,'HB':2,'QB':4,'OB':8}
             request_lines = []
             tmp_dict = {}
             line = 1
+            purchase_line_number = 1
             for v in p.variant_ids:
                 lengths =  [(0,0,{'length': l.length,'sale_price':l.sale_price}) for l in v.length_ids]
                 sale_lengths =  [l.length.upper() for l in v.length_ids]
@@ -107,6 +107,7 @@ class generate_request_wizard(osv.osv_memory):
                         lengths =  [(0,0,{'length': l.length,'purchase_price':l.purchase_price}) for l in s .length_ids]
 
                         detalle_dict = {
+                            'name': purchase_line_number,
                             'supplier_id': s.template_id.partner_id.id,
                             'type': 'standing_order',
                             'product_id': v.product_id.id,
@@ -124,6 +125,7 @@ class generate_request_wizard(osv.osv_memory):
                         list_details.append((0, 0, detalle_dict))
                         l_key = str(s.template_id.partner_id.id) + ',' + str(v.product_id.id) + ',' + str(v.variant_id.id) + ',' + str(v.subclient_id.id if v.subclient_id else '') + ',' + '-'.join(purchase_lengths)
                         tmp_dict[key].append(l_key)
+                        purchase_line_number += 1
 
             cr.execute('select max(p.name) from pedido_cliente p where p.partner_id = %s', (p.partner_id.id,))
             result = cr.fetchone()
@@ -155,7 +157,6 @@ class generate_request_wizard(osv.osv_memory):
                 for key in tmp_dict.keys():
                     request = key.split(',')
                     request_ids = self.pool.get('request.product.variant').search(cr, uid, [('pedido_id', '=', pedido_id), ('product_id', '=', int(request[0])), ('variant_id', '=', int(request[1])),('subclient_id', '=', int(request[2]) if request[2] else False),('lengths', '=', request[3])])
-
                     if request_ids:
                         for line in tmp_dict[key]:
                             line_vals = line.split(',')
@@ -194,8 +195,6 @@ class generate_request_wizard(osv.osv_memory):
                 days['Sun'] = 7
 
             for day in days.keys():
-                #if days[day] >= hoy:
-                #if days[day] <> hoy:
                 fecha = proximo_dia(day, p.days)
                 fechaTmp = fecha - timedelta(days= p.days)
                 existe = self.pool.get('pedido.cliente').search(cr,uid,[('sale_request_id','=', p.id), ('request_date','=',fechaTmp),('partner_id','=',p.partner_id.id),('type','=','standing_order'),('state','=','draft')], count=True)

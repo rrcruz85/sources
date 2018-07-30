@@ -159,7 +159,7 @@ class AccountInvoiceReport(report_rml):
                             <tr><td><para style="P14_BOLD_CENTER">INVOICE PACKING</para></td></tr>
                         </blockTable>"""
 
-            invoice_obj = pooler.get_pool(cr.dbname).get('confirm.invoice')
+            invoice_obj = pooler.get_pool(cr.dbname).get('detalle.lines')
             invoices = invoice_obj.search(cr, uid, [('pedido_id', '=', pedido.id)])
             invoice_number = invoice_obj.browse(cr, uid, invoices[0]).invoice_number
 
@@ -280,32 +280,31 @@ class AccountInvoiceReport(report_rml):
                                 where ptt.prod_id = lines.product_id), 0) as taxes
                                 from (
                                 SELECT p.name as farm, v."name" as varianty, "length",
-                                sum(case when cl.is_box_qty = TRUE then cl.qty * cl.bunch_per_box * cl.bunch_type::int else cl.qty end) as stems,
-                                sum(case when cl.is_box_qty = TRUE then cl.qty * cl.bunch_per_box  else cl.qty/cl.bunch_type::FLOAT end) as bunch,
+                                sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
+                                sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box  else dl.qty/dl.bunch_type::FLOAT end) as bunch,
                                 sum(case
-                                when cl.uom = 'HB' then (case when cl.is_box_qty = TRUE then cl.qty else cl.qty/(cl.bunch_type::INT * cl.bunch_per_box) end)
-                                when cl.uom = 'FB' then (case when cl.is_box_qty = TRUE then cl.qty * 2 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box)) * 2 end)
-                                when cl.uom = 'OB' then (case when cl.is_box_qty = TRUE then cl.qty / 4 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box * 4)) end)
+                                when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
+                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 4)) end)
                                 else 0 end) as hb,
-                                sum(case when cl.uom = 'QB' then (case when cl.is_box_qty = TRUE then cl.qty else cl.qty/(cl.bunch_type::INT * cl.bunch_per_box) end)
-                                when cl.uom = 'FB' then (case when cl.is_box_qty = TRUE then cl.qty * 4 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box)) * 4 end)
-                                when cl.uom = 'OB' then (case when cl.is_box_qty = TRUE then cl.qty / 2 else (cl.qty/(cl.bunch_type::INT * cl.bunch_per_box * 2)) end)
+                                sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 4 end)
+                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
                                 else 0 end) as qb,
                                 pt."name" as product,
-                                avg(cl.sale_price) as unit_price,
-                                sum(case when cl.is_box_qty = TRUE then (cl.qty * cl.bunch_per_box * cl.bunch_type::int * cl.sale_price)::FLOAT else (cl.qty * cl.sale_price)::FLOAT end) as total,
+                                avg(dl.sale_price) as unit_price,
+                                sum(case when dl.is_box_qty = TRUE then (dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price)::FLOAT else (dl.qty * dl.sale_price)::FLOAT end) as total,
                                 pp."name" as subclient,
                                 pt.id as product_id,
                                 dl.group_id   
                                 from
-                                confirm_invoice_line cl
-                                inner join detalle_lines dl on cl.detalle_id = dl."id"
-                                inner join res_partner p on cl.supplier_id = p."id"
-                                inner join product_variant v on v."id" = cl.variant_id
-                                INNER JOIN product_template pt on pt."id" = cl.product_id
-                                LEFT JOIN res_partner pp on cl.subclient_id = pp."id"                               
-                                where cl.pedido_id = %s
-                                GROUP BY p.name, v."name", cl."length",pp."name",pt."name",pt.id,dl.group_id
+                                detalle_lines dl on dl.detalle_id = dl."id"
+                                inner join res_partner p on dl.supplier_id = p."id"
+                                inner join product_variant v on v."id" = dl.variant_id
+                                INNER JOIN product_template pt on pt."id" = dl.product_id
+                                LEFT JOIN res_partner pp on dl.subclient_id = pp."id"                               
+                                where dl.pedido_id = %s
+                                GROUP BY p.name, v."name", dl."length",pp."name",pt."name",pt.id,dl.group_id
                                 order by p.name, pp."name") lines""", (pedido.id,))
 
             lines = cr.fetchall()

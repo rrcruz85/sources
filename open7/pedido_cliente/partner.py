@@ -89,7 +89,7 @@ class res_partner(osv.osv):
             'sale_request_ids'      : fields.one2many('sale.request', 'partner_id', 'Ordenes de Ventas'),
             'purchase_template_ids' : fields.one2many('purchase.request.template', 'partner_id', 'Plantillas de Compras'),
             'sub_client_ids'        : fields.many2many('res.partner', 'subclient_relation', 'supplier_id', 'client_id', 'Subclientes'),
-            'tipo_neg_id'        : fields.many2one('res.partner.tipo.negociacion','Tipo Negociacion'),
+            'tipo_neg_id'           : fields.many2one('res.partner.tipo.negociacion','Tipo Negociacion'),
             'tipo_flete'            : fields.selection([('cf_f_0', 'C&F Flete Cero'),('fob_f_0', 'FOB Flete Cero'),('fob_f_p', 'FOB Flete Pagado')], string = 'Flete'),
     }
 

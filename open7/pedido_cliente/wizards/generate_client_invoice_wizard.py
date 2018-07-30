@@ -99,9 +99,9 @@ class invoice_client_wizard(osv.osv_memory):
         res = {'value': {}}
         if pedido_id:
             pedido = self.pool.get('pedido.cliente').browse(cr, uid, pedido_id)
-            p_ids = self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', pedido_id)])
+            p_ids = []#self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', pedido_id)])
             if p_ids:
-                confirmed_supplier_ids = [l.supplier_id.id for l in self.pool.get('confirm.invoice').browse(cr, uid, p_ids)]
+                confirmed_supplier_ids = []#[l.supplier_id.id for l in self.pool.get('confirm.invoice').browse(cr, uid, p_ids)]
                 lines = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', pedido_id)])
                 line_ids = list(set([l.supplier_id.id for l in self.pool.get('detalle.lines').browse(cr, uid, lines)]))
                 warning = {}
@@ -117,7 +117,7 @@ class invoice_client_wizard(osv.osv_memory):
                 if not warning:
                     uom = {'FB': 1, 'HB': 2, 'QB': 4, 'OB': 8}
                     line = 1
-                    for obj in self.pool.get('confirm.invoice').browse(cr, uid, p_ids):
+                    for obj in self.pool.get('detalle.lines').browse(cr, uid, p_ids):
                                   
                         for v in obj.line_ids:
                             
@@ -161,14 +161,7 @@ class invoice_client_wizard(osv.osv_memory):
                             line += 1
                             res['value']['account_id'] = pedido.partner_id.property_account_receivable.id if pedido.partner_id.property_account_receivable else None
                             res['value']['fiscal_position'] = pedido.partner_id.property_account_position.id if pedido.partner_id.property_account_position else None
-                            # res['value']['date_invoice'] = obj.date_invoice
-                            # res['value']['account_id'] = obj.account_id.id
-                            # res['value']['fiscal_position'] = obj.fiscal_position.id
-                            # res['value']['period_id'] = obj.period_id.id
-                            # res['value']['currency_id'] = obj.currency_id.id
-                            # res['value']['journal_id'] = obj.journal_id.id
-                            # res['value']['company_id'] = obj.company_id.id
-                            # res['value']['user_id'] = obj.user_id.id
+                         
                 pedido = self.pool.get('pedido.cliente').browse(cr, uid, pedido_id)
                 res['value']['client_id'] = pedido.partner_id.id
                 res['value']['line_ids'] = list_vals
@@ -182,12 +175,12 @@ class invoice_client_wizard(osv.osv_memory):
     def go_next(self, cr, uid, ids, context=None):
 
         obj = self.browse(cr, uid, ids[0])
-        p_ids = self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', obj.pedido_id.id)])
+        p_ids = [] #self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', obj.pedido_id.id)])
         if not p_ids:
             raise osv.except_osv('Error',
                                  "Para el pedido seleccionado no se ha confirmado ninguna factura para los proveedores.")
         else:
-            confirmed_supplier_ids = [l.supplier_id.id for l in self.pool.get('confirm.invoice').browse(cr, uid, p_ids)]
+            confirmed_supplier_ids = []#[l.supplier_id.id for l in self.pool.get('confirm.invoice').browse(cr, uid, p_ids)]
             lines = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', obj.pedido_id.id)])
             line_ids = list(set([l.supplier_id.id for l in self.pool.get('detalle.lines').browse(cr, uid, lines)]))
             not_confirmed_ids = list(set(line_ids) - set(confirmed_supplier_ids))
@@ -260,8 +253,8 @@ class invoice_client_wizard(osv.osv_memory):
     def generate_invoice(self, cr, uid, ids, context=None):
         uom = {'FB': 1, 'HB': 2, 'QB': 4, 'OB': 8}
         for o in self.browse(cr, uid, ids):
-            p_ids = self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', o.pedido_id.id)])
-            confirmed_supplier_ids = [l.supplier_id.id for l in self.pool.get('confirm.invoice').browse(cr, uid, p_ids)]
+            p_ids = []#self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', o.pedido_id.id)])
+            confirmed_supplier_ids = [] #[l.supplier_id.id for l in self.pool.get('confirm.invoice').browse(cr, uid, p_ids)]
             lines = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', o.pedido_id.id)])
             line_ids = list(set([l.supplier_id.id for l in self.pool.get('detalle.lines').browse(cr, uid, lines)]))
             not_confirmed_ids = list(set(line_ids) - set(confirmed_supplier_ids))

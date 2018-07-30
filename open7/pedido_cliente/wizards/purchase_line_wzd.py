@@ -75,8 +75,7 @@ class purchase_line_wzd(osv.osv_memory):
         'full_boxes'            : fields.function(_get_quantity, type='float', string='Full Boxes'),
         'stimated_stems'     : fields.function(_get_info, type='integer', string='Stems'),
         'qty_bxs'                 : fields.char(string='BXS', size = 10),
-        'supplier_ids'                 : fields.char(string='Suppliers', size = 250),
-        'confirmada'            : fields.boolean(help='Confirmada'),
+        'supplier_ids'                 : fields.char(string='Suppliers', size = 250),       
     }
 
     def get_client(self, cr, uid, context):

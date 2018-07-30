@@ -116,10 +116,10 @@ class invoice_wizard(osv.osv_memory):
     def on_change_pedido_supplier(self, cr, uid, ids, pedido_id, supplier_id, context=None):
         res = {'value':{}}
         if pedido_id and supplier_id:
-            p_ids = self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', pedido_id),('supplier_id', '=', supplier_id)])
+            p_ids = []#self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', pedido_id),('supplier_id', '=', supplier_id)])
             if p_ids:
                 list_vals = []
-                obj = self.pool.get('confirm.invoice').browse(cr, uid, p_ids[0])
+                obj = self.pool.get('detalle.lines').browse(cr, uid, p_ids[0])
                 
                 for v in obj.line_ids:
                     
@@ -192,7 +192,7 @@ class invoice_wizard(osv.osv_memory):
     def go_next(self, cr, uid, ids, context=None):
 
         obj = self.browse(cr, uid, ids[0])
-        p_ids = self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', obj.pedido_id.id),('supplier_id', '=', obj.supplier_id.id)])
+        p_ids = self.pool.get('').search(cr, uid, [('pedido_id', '=', obj.pedido_id.id),('supplier_id', '=', obj.supplier_id.id)])
         if not p_ids:
             raise osv.except_osv('Error',"Para el proveedor seleccionado no se ha confirmado su factura. Por favor confirme la factura para este proveedor antes de realizar este paso.")
 
@@ -472,7 +472,7 @@ class invoice_line_wizard(osv.osv_memory):
         'pedido_id'      : fields.many2one('pedido.cliente','Pedido'),
         'detalle_id'      : fields.many2one('detalle.lines','Detalle'),
         'supplier_id'    : fields.many2one('res.partner','Supplier'),
-        'confirmed_line_id'    : fields.many2one('confirm.invoice.line','Confirmed Line'),
+        #'confirmed_line_id'    : fields.many2one('confirm.invoice.line','Confirmed Line'),
 
         'line_number'   : fields.char(size=128, string ='#', help='Line Number'),
         'product_id'      : fields.many2one('product.product','Product'),
