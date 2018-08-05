@@ -46,12 +46,13 @@ class group_box_wizard(osv.osv_memory):
         return result
     
     def save(self, cr, uid, ids, context=None):
-        obj = self.browse(cr, uid, ids[0])
-        lines = []
+        obj = self.browse(cr, uid, ids[0])        
         for l in obj.line_ids:
-            lines += [ll.detalle_id.id for ll in l.detalle_ids]
-       
-        self.pool.get('detalle.lines').write(cr, uid, lines, {'box': True})
+            boxes = [d.box_id.id for d in l.detalle_ids if d.box_id]
+            if boxes:
+                self.pool.get('detalle.lines.box').unlink(cr, uid, list(set(boxes)))
+            lines = [(4, d.detalle_id.id) for d in l.detalle_ids]       
+            self.pool.get('detalle.lines.box').create(cr, uid, {'line_ids': lines})
          
         return {
             'name'      : 'Pedidos de Clientes',
@@ -59,9 +60,8 @@ class group_box_wizard(osv.osv_memory):
             'view_mode' : 'form,tree',
             'res_model' : 'pedido.cliente',
             'type'      : 'ir.actions.act_window',
-            #'res_id'    : obj.pedido_id.id,
+            'res_id'    : obj.pedido_id.id,
         }
-
         
 group_box_wizard()
 
@@ -69,7 +69,7 @@ class group_box_line_wizard(osv.osv_memory):
     _name = 'group.box.line.wizard'
     _description = 'Group Lines By Box'
    
-    _columns = {
+    _columns = {         
         'group_id'          : fields.many2one('group.box.wizard', 'Group'), 
         'pedido_id'         : fields.many2one('pedido.cliente', 'Pedido'), 
         'box'               : fields.char(size=2, string='Box'),

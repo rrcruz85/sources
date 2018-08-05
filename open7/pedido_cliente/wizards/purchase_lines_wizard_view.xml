@@ -7,11 +7,11 @@
             <field name="model">purchase.lines.wzd</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Purchase Lines" editable="top" colors="red: box == False"> 
+                <tree string="Purchase Lines" editable="top" colors="red: box_id == False; green: box_id != False"> 
                     <field name="detalle_id" invisible="1"/>
                     <field name="pedido_id" invisible="1"/>
                     <field name="request_qty" invisible="1"/>
-                    <field name="box" invisible="1"/>
+                    <field name="box_id" invisible="1"/>
                     <field name="line_number"/>
                     <field name="line"/>
                     <field name="type"/>                   

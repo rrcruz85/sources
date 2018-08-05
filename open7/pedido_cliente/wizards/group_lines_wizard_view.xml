@@ -29,7 +29,7 @@
 						                    <field name="detalle_id" invisible="1"/>
 						                    <field name="pedido_id" invisible="1"/>
 						                    <field name="request_qty" invisible="1"/>
-						                    <field name="box" invisible="1"/>
+						                    <field name="box_id" invisible="1"/>
 						                    <field name="line_number" readonly="1"/>
 						                    <field name="line" readonly="1"/>
 						                    <field name="type" readonly="1"/>                   

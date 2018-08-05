@@ -37,8 +37,8 @@ class pedido_cliente(osv.osv):
         
         cr.execute("delete from detalle_lines where active = False")
         
-        for id in ids:
-            lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[('pedido_id','=', id)])
+        for d_id in ids:
+            lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[('pedido_id','=', d_id)])
             if lines:
                 self.pool.get('purchase.lines.wzd').unlink(cr,uid,lines)
             cr.execute( "SELECT "+
@@ -63,7 +63,8 @@ class pedido_cliente(osv.osv):
                         "detalle_lines.uom as uom,"+
                         "request_product_variant.line,"+                        
                         "case when detalle_lines.is_box_qty then detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box else detalle_lines.qty end as stems," +
-                        "detalle_lines.name as linenumber "+
+                        "detalle_lines.name as linenumber,"+
+                        "detalle_lines.box_id as box_id "+                        
                         "FROM "+
                         "public.detalle_lines,"+
                         "public.request_product_variant,"+
@@ -74,7 +75,7 @@ class pedido_cliente(osv.osv):
                         "AND detalle_lines.line_id = request_product_variant.id "+
                         "AND pedido_cliente.id = %s " +
                         "order by " +
-                        "detalle_lines.name ", (id,))
+                        "detalle_lines.name ", (d_id,))
 
             result = cr.fetchall()
             list_ids = []
@@ -86,7 +87,7 @@ class pedido_cliente(osv.osv):
                            "WHERE " +
                            "v.pedido_id = %s and " +
                            "v.product_id = %s and " +
-                           "v.variant_id = %s " , (id, record[3], record[4],))
+                           "v.variant_id = %s " , (d_id, record[3], record[4],))
                 result = cr.fetchone()
                 request_qty = result[0]
 
@@ -113,11 +114,12 @@ class pedido_cliente(osv.osv):
                     'uom'           : record[18],
                     'line'          : record[19],                     
                     'stems'         : record[20],
-                    'line_number'   : record[21] if record[21] else line_number
+                    'line_number'   : record[21] if record[21] else line_number,
+                    'box_id'        : record[22] if record[22] else False
                 }
                 line_number += 1
                 list_ids.append(self.pool.get('purchase.lines.wzd').create(cr,uid,vals))
-            res[id] = list_ids
+            res[d_id] = list_ids
         return res
 
     def _get_info(self, cr, uid, ids, field_name, arg, context):
@@ -161,10 +163,7 @@ class pedido_cliente(osv.osv):
         'precio_flete'          : fields.float('Precio Flete', digits = (0,2)),
         'sale_request_id'       : fields.many2one('sale.request', 'Sale Request'),       
     }
-
-    def name_search(self, cr, user, name='', args=None, operator='ilike', context=None, limit=100):
-        return super(pedido_cliente, self).name_search(cr, user, name, args, operator=operator, context=context, limit=limit)
-
+   
     def name_get(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -216,7 +215,7 @@ class pedido_cliente(osv.osv):
         context['default_pedido_id'] = ids[0]
         proveedores = []
         for l in self.browse(cr, uid, ids[0]).purchase_line_ids:
-            if not l.confirmada and l.supplier_id.name not in proveedores:
+            if l.supplier_id.name not in proveedores:
                 proveedores.append(l.supplier_id.name)
         if proveedores:
             raise osv.except_osv('Error', "Los siguientes proveedores: "+ ','.join(proveedores) + " tienen lineas de compras sin confirmar.\nPara poder imprimir este pedido debe confirmar todas las lineas de compras de los proveedores.")
@@ -248,28 +247,6 @@ class pedido_cliente(osv.osv):
         }
 
 pedido_cliente()
-
-class AirLine(osv.osv):
-    _name = 'pedido_cliente.airline'
-    _description = 'pedido_cliente.airline'
-
-    _columns = {
-        'name': fields.char('Name', required=True),
-        'avb_number': fields.char('#AVB', required=True),
-    }
-
-    def name_get(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        if not ids:
-            return []
-        reads = self.browse(cr, uid, ids, context=context)
-        res = []
-        for record in reads:
-            res.append((record.id, str(record.avb_number) + '/' + record.name))
-        return res
-
-AirLine()
 
 class request_product_variant(osv.osv):
     _name = 'request.product.variant'
@@ -555,7 +532,7 @@ request_product_variant_length()
 
 class detalle_line(osv.osv):
     _name = 'detalle.lines'
-    _description = 'Detalle de compras'
+    _description = 'Lineas de compras'
     
     def name_get(self, cr, uid, ids, context=None):
         if context is None:
@@ -636,8 +613,8 @@ class detalle_line(osv.osv):
                                         }),
         'active'                : fields.boolean('Active'),    
         'agrupada'              : fields.boolean('Agrupada'),
-        'group_id'              : fields.integer('Group Id'),
-        'box'                   : fields.boolean('Box'),
+        'group_id'              : fields.integer('Group Id'),   
+        'box_id'                : fields.many2one('detalle.lines.box', 'Box'), 
     }
 
     _defaults = {
@@ -645,9 +622,8 @@ class detalle_line(osv.osv):
         'uom'           : 'HB',
         'type'          : 'open_market',
         'bunch_per_box' : 12,
-        'active'        :True,
-        'box'           : False,
-        'pedido_id'     :lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else None,
+        'active'        : True,         
+        'pedido_id'     : lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else False,
     }
 
     def _check_bunch_type(self, cr, uid, ids, context=None):
@@ -685,10 +661,42 @@ class detalle_line_origin(osv.osv):
     _description = 'detalle.lines.origin'
     
     _columns = {
-        'name'                  : fields.char('Origen'),
+        'name'  : fields.char('Origen'),
     }
 
 detalle_line_origin()
+
+class detalle_line_box(osv.osv):
+    _name = 'detalle.lines.box'
+    _description = 'Box'
+   
+    _columns = {
+        'line_ids'  : fields.one2many('detalle.lines','box_id','Lines'),
+    }
+    
+detalle_line_box()
+
+class pedido_cliente_airline(osv.osv):
+    _name = 'pedido_cliente.airline'
+    _description = 'pedido_cliente.airline'
+
+    _columns = {
+        'name': fields.char('Name', required=True),
+        'avb_number': fields.char('#AVB', required=True),
+    }
+
+    def name_get(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if not ids:
+            return []
+        reads = self.browse(cr, uid, ids, context=context)
+        res = []
+        for record in reads:
+            res.append((record.id, str(record.avb_number) + '/' + record.name))
+        return res
+
+pedido_cliente_airline()
 
 class freight_agency(osv.osv):
     _name = 'freight.agency'
@@ -744,3 +752,5 @@ class freight_agency(osv.osv):
     ]
 
 freight_agency()
+
+

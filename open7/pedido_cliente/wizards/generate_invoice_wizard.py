@@ -31,7 +31,7 @@ class invoice_wizard(osv.osv_memory):
         'invoice_number' : fields.char('Supplier Invoice Number', size=64, help="The reference of this invoice as provided by the supplier."),
         'pedido_id'      : fields.many2one('pedido.cliente','Pedido'),
         'supplier_id'    : fields.many2one('res.partner','Supplier'),
-        'date_invoice': fields.date('Invoice Date', help="Keep empty to use the current date"),
+        'date_invoice'   : fields.date('Invoice Date', help="Keep empty to use the current date"),
         'account_id'     : fields.many2one('account.account', 'Account To Pay Supplier', domain=[('type','=','payable')]),
         'fiscal_position': fields.many2one('account.fiscal.position', 'Fiscal Position'),
         'period_id'      : fields.many2one('account.period', 'Fiscal Period', domain=[('state','<>','done')],),
@@ -39,9 +39,7 @@ class invoice_wizard(osv.osv_memory):
         'journal_id'     : fields.many2one('account.journal', 'Journal', domain=[('type','=','purchase')]),
         'company_id'     : fields.many2one('res.company', 'Company'),
         'user_id'        : fields.many2one('res.users', 'Salesperson'),
-        'line_ids'       : fields.one2many('invoice.line.wizard','invoice_id','Purchase Lines'),
-        'box_line_ids'      : fields.one2many('line.box.wizard','invoice_id','Invoice Lines per Box'),
-        'next'    : fields.boolean('Next?'),
+        'line_ids'       : fields.one2many('invoice.line.wizard','invoice_id','Invoice Wizard'),
     }
 
     def _get_journal(self, cr, uid, context=None):
@@ -85,25 +83,24 @@ class invoice_wizard(osv.osv_memory):
         return False
 
     _defaults = {
-        'journal_id': _get_journal,
-        'period_id': _get_period,
-        'currency_id': _get_currency,
-        'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'invoice.wizard', context=c),
-        'user_id': lambda s, cr, u, c: u,
-        'date_invoice' : time.strftime('%Y-%m-%d'),
+        'journal_id'    : _get_journal,
+        'period_id'     : _get_period,
+        'currency_id'   : _get_currency,
+        'company_id'    : lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'invoice.wizard', context=c),
+        'user_id'       : lambda s, cr, u, c: u,
+        'date_invoice'  : time.strftime('%Y-%m-%d'),
     }
 
     def on_change_pedido(self, cr, uid, ids, pedido_id, context=None):
         res = {'value': {}}
-        if pedido_id:
-            if context and 'default_next' not in context:
-                res['value']['supplier_id'] = False
-                res['value']['line_ids'] = []
-                res['value']['box_line_ids'] = []
-                res['value']['account_id'] = False
-                res['value']['fiscal_position'] = False
+        if pedido_id and context and 'default_next' not in context:
+            res['value']['supplier_id'] = False
+            res['value']['line_ids'] = []
+            res['value']['box_line_ids'] = []
+            res['value']['account_id'] = False
+            res['value']['fiscal_position'] = False
         return res
-		
+    
     def _get_account_id(self, cr, uid, supplier_id, context=None):
         if context is None:
             context = {}
@@ -116,172 +113,15 @@ class invoice_wizard(osv.osv_memory):
     def on_change_pedido_supplier(self, cr, uid, ids, pedido_id, supplier_id, context=None):
         res = {'value':{}}
         if pedido_id and supplier_id:
-            p_ids = []#self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', pedido_id),('supplier_id', '=', supplier_id)])
-            if p_ids:
+            lines_not_confirmed = self.pool.get('detalle.lines').search(cr, uid, [('box', '=', False),('pedido_id', '=', pedido_id),('supplier_id', '=', supplier_id)])
+            if lines_not_confirmed:
                 list_vals = []
-                obj = self.pool.get('detalle.lines').browse(cr, uid, p_ids[0])
-                
-                for v in obj.line_ids:
-                    
-                    if v.detalle_id.agrupada:
-                        cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(v.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(pedido_id) + 
-                                    " and dl.supplier_id = " + str(supplier_id) + " and dl.product_id = " + str(v.product_id.id) +
-                                    " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
-                        record = cr.fetchone()
-                        totals = record[0] if record else 0                        
-                        qty_bxs = round(float(v.bunch_per_box)/totals, 2) if totals else 0
-                    else:
-                        qty_bxs = v.qty if v.is_box_qty else (1 if not (v.qty /(int(v.bunch_type) * v.bunch_per_box)) else (v.qty / (int(v.bunch_type) * v.bunch_per_box)))
-                    
-                    vals = {
-                        'confirmed_line_id' : v.id,
-                        'pedido_id': pedido_id,
-                        'supplier_id': supplier_id,
-                        'detalle_id': v.detalle_id.id if v.detalle_id else False,
-                        'line_number': v.line_number,
-                        'product_id': v.product_id.id if v.product_id else False,
-                        'variant_id': v.variant_id.id if v.variant_id else False,
-                        'length': v.length,
-                        'purchase_price': v.purchase_price,
-                        'sale_price': v.sale_price,
-                        'qty': v.qty,
-                        'boxes': v.boxes,
-                        'total_purchase': v.total_purchase,
-                        'total_sale': v.total_sale,
-                        'bunch_per_box': v.bunch_per_box,
-                        'bunch_type': v.bunch_type,
-                        'uom': v.uom,
-                        'origin': v.origin.id if v.origin else False,
-                        'subclient_id': v.subclient_id.id if v.subclient_id else False,
-                        'sucursal_id': v.sucursal_id.id if v.sucursal_id else False,
-                        'type': v.type if v.type else False,
-                        'is_box_qty': v.is_box_qty,
-                        'qty_bxs': str(qty_bxs) + ' ' + v.uom
-                    }
-                    list_vals.append((0, 0, vals))
-                res['value']['invoice_number'] = obj.invoice_number
-                res['value']['date_invoice'] = obj.date_invoice
-                res['value']['account_id'] = obj.account_id.id
-                res['value']['fiscal_position'] = obj.fiscal_position.id
-                res['value']['period_id'] = obj.period_id.id
-                res['value']['currency_id'] = obj.currency_id.id
-                res['value']['journal_id'] = obj.journal_id.id
-                res['value']['company_id'] = obj.company_id.id
-                res['value']['user_id'] = obj.user_id.id
-                res['value']['line_ids'] = list_vals
-                res['value']['box_line_ids'] = []
-                res['value']['next'] = False
-            else:
-                raise osv.except_osv('Error',"Para el proveedor seleccionado no se ha confirmado su factura. Por favor confirme la factura para este proveedor antes de realizar este paso.")
-
-            # warning_msgs = ''
-            # if not res['value']['account_id']:
-            #     warning_msgs += 'El proveedor no tiene la cuenta de pagos configurada.\n'
-            # if not res['value']['fiscal_position']:
-            #     warning_msgs += 'El proveedor no tiene la posición fiscal configurada.\n'
-            # if product_accounts:
-            #     warning_msgs = 'Los siguientes productos ' + ','.join(list(product_accounts)) + ' no tienen una cuenta de gasto configurada.'
-            # if warning_msgs:
-            #     warning = {
-            #            'title': _('Configuration Error!'),
-            #            'message' : warning_msgs
-            #     }
-            #     res['warning'] = warning
-        return res
-
-    def go_next(self, cr, uid, ids, context=None):
-
-        obj = self.browse(cr, uid, ids[0])
-        p_ids = self.pool.get('').search(cr, uid, [('pedido_id', '=', obj.pedido_id.id),('supplier_id', '=', obj.supplier_id.id)])
-        if not p_ids:
-            raise osv.except_osv('Error',"Para el proveedor seleccionado no se ha confirmado su factura. Por favor confirme la factura para este proveedor antes de realizar este paso.")
-
-        if not context:
-            context = {}
-        context['default_next'] = True
-        uom = {'FB':1,'HB':2,'QB':4,'OB':8}
-        for o in self.browse(cr, uid, ids):
-            i = 1            
-            for v in o.line_ids:                
-                if v.detalle_id.agrupada:
-                    cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(v.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(v.pedido_id.id) + 
-                                    " and dl.supplier_id = " + str(v.supplier_id.id) + " and dl.product_id = " + str(v.product_id.id) +
-                                    " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
-                    record = cr.fetchone()
-                    totals = record[0] if record else 0                        
-                    qty_bxs = round(float(v.bunch_per_box)/totals, 2) if totals else 0
-                else:
-                    qty_bxs = v.qty if v.is_box_qty else (1 if not (v.qty /(int(v.bunch_type) * v.bunch_per_box)) else (v.qty / (int(v.bunch_type) * v.bunch_per_box)))
-             
-                boxes = qty_bxs / uom[v.uom]
-                
-                dict_vals = {
-                    'line_number': str(i),
-                    'boxes': boxes,
-                    'total_purchase': v.qty * v.purchase_price if not v.is_box_qty else ((v.qty * v.bunch_per_box * int(v.bunch_type))) * v.purchase_price,
-                    'total_sale': v.qty * v.sale_price if not v.is_box_qty else ((v.qty * v.bunch_per_box * int(v.bunch_type))) * v.sale_price,
-                    'qty_bxs' : str(qty_bxs) + ' ' + v.uom,
-                }
-                self.pool.get('invoice.line.wizard').write(cr, uid, [v.id], dict_vals)
-                i += 1
-
-        self.write(cr, uid, ids,{'next':True, 'supplier_id': obj.supplier_id.id, 'pedido_id': obj.pedido_id.id})
-
-
-        return {
-            'name': 'Generate Supplier Invoice',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'invoice.wizard',
-            'type': 'ir.actions.act_window',
-            'res_id': ids[0],
-            'target' : 'new',
-            'context': context
-        }
-
-    def go_previous(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'next': False,'box_line_ids':[]})
-        if not context:
-            context = {}
-        context['default_next'] = False
-        context['default_box_line_ids'] = []
-        return {
-            'name': 'Generate Supplier Invoice',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'invoice.wizard',
-            'type': 'ir.actions.act_window',
-            'res_id': ids[0],
-            'target': 'new',
-            'context': context
-        }
-
-    def generate_invoice(self, cr, uid, ids, context=None):
-        uom = {'FB':1,'HB':2,'QB':4,'OB':8}
-        for o in self.browse(cr,uid,ids):
-            lines = []
-            sequence = 1
-            line_ids = []
-            if not o.box_line_ids:
-                
-                for l in o.line_ids:
-                    if l.confirmed_line_id:
-                        line_ids.append(l.confirmed_line_id.id)
-                        account_id = l.product_id.property_account_expense.id if l.product_id.property_account_expense else False
-                    if not account_id:
-                        account_id = l.product_id.categ_id.property_account_expense_categ.id if l.product_id.categ_id and l.product_id.categ_id.property_account_expense_categ else False
-                    if not account_id:
-                        raise osv.except_osv('Error',"El producto " + l.product_id.name_template + " no tiene una cuenta de gastos configurada.")
-
-                    name = l.variant_id.name if l.variant_id else ''
-                    if l.length:
-                        name += ' - ' + l.length
-
-                    taxes = [(4, t.id) for t in l.product_id.supplier_taxes_id]
-                    
-                    if l.detalle_id.agrupada:
-                        cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(l.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(l.pedido_id.id) + 
-                                    " and dl.supplier_id = " + str(l.supplier_id.id) + " and dl.product_id = " + str(l.product_id.id) +
+                detalle_ids = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', pedido_id),('supplier_id', '=', supplier_id)])
+                lines = self.pool.get('detalle.lines').browse(cr, uid, detalle_ids)
+                for l in lines:                
+                    if l.agrupada:
+                        cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(l.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(pedido_id) + 
+                                    " and dl.supplier_id = " + str(supplier_id) + " and dl.product_id = " + str(l.product_id.id) +
                                     " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
                         record = cr.fetchone()
                         totals = record[0] if record else 0                        
@@ -289,109 +129,106 @@ class invoice_wizard(osv.osv_memory):
                     else:
                         qty_bxs = l.qty if l.is_box_qty else (1 if not (l.qty /(int(l.bunch_type) * l.bunch_per_box)) else (l.qty / (int(l.bunch_type) * l.bunch_per_box)))
                     
-                    boxes = float(qty_bxs) / uom[l.uom]
-                    
-                    stems = l.qty if not l.is_box_qty else l.qty * int(l.bunch_type) * l.bunch_per_box
-                    hb_qty = 0
-                    qb_qty = 0
-                    if l.uom == 'FB':
-                        hb_qty = boxes * 2
-                    if l.uom == 'OB':
-                        hb_qty = boxes * 8
-                    if l.uom == 'HB':
-                        hb_qty = l.qty if l.is_box_qty else qty_bxs #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
-                    if l.uom == 'QB':
-                        qb_qty = l.qty if l.is_box_qty else qty_bxs #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
-
-                    qty_bxs = str(qty_bxs) + ' ' + l.uom
-                    
                     vals = {
-                        'sequence_box': sequence,
-                        'stems': stems,
-                        'box': boxes,
-                        'hb': hb_qty,
-                        'qb': qb_qty,
-                        'qty_bxs': qty_bxs,
-                        'name': name,
-                        'uos_id': l.product_id.uom_id.id if l.product_id.uom_id else False,
-                        'product_id': l.product_id.id,
-                        'account_id': account_id,
-                        'price_unit': l.purchase_price,
-                        'quantity': l.qty * l.bunch_per_box * int(l.bunch_type) if l.is_box_qty else l.qty,
-                        'sequence': 10,
-                        'uom': l.uom,
-                        'bunch_type': l.bunch_type,
-                        'invoice_line_tax_id': taxes,
-                        'is_box_qty': l.is_box_qty,
+                        'pedido_id': pedido_id,
+                        'supplier_id': supplier_id,
+                        'detalle_id': l.detalle_id.id if l.detalle_id else False,
+                        'line_number': l.name,
+                        'product_id': l.product_id.id if l.product_id else False,
+                        'variant_id': l.variant_id.id if l.variant_id else False,
+                        'length': l.length,
+                        'purchase_price': l.purchase_price,
+                        'sale_price': l.sale_price,
+                        'qty': l.qty,
+                        'boxes': l.boxes,
+                        'total_purchase': l.total_purchase,
+                        'total_sale': l.total_sale,
                         'bunch_per_box': l.bunch_per_box,
-                        'mark_id': l.subclient_id.id if l.subclient_id else False
+                        'bunch_type': l.bunch_type,
+                        'uom': l.uom,
+                        'origin': l.origin.id if l.origin else False,
+                        'subclient_id': l.subclient_id.id if l.subclient_id else False,
+                        'sucursal_id': l.sucursal_id.id if l.sucursal_id else False,
+                        'type': l.type if l.type else False,
+                        'is_box_qty': l.is_box_qty,
+                        'qty_bxs': str(qty_bxs) + ' ' + l.uom
                     }
-                    lines.append((0, 0, vals))
-                    sequence += 1
-            else:
-                for v in o.box_line_ids:
-                    for l in v.line_wzd_ids:
-                        if l.confirmed_line_id:
-                            line_ids.append(l.confirmed_line_id.id)
-                        account_id = l.product_id.property_account_expense.id if l.product_id.property_account_expense else False
-                        if not account_id:
-                            account_id = l.product_id.categ_id.property_account_expense_categ.id if l.product_id.categ_id and l.product_id.categ_id.property_account_expense_categ else False
-                        if not account_id:
-                            raise osv.except_osv('Error',"El producto " + l.product_id.name_template + " no tiene una cuenta de gastos configurada.")
+                    list_vals.append((0, 0, vals))
+                res['value']['line_ids'] = list_vals
+                res['value']['box_line_ids'] = []
+                res['value']['next'] = False
+            #else:
+            #    raise osv.except_osv('Error',"Para el proveedor seleccionado no se han definido las cajas donde se encuentran.")
+           
+        return res
 
-                        name = l.variant_id.name if l.variant_id else ''
-                        if l.length:
-                            name += ' - ' + l.length
+    def generate_invoice(self, cr, uid, ids, context=None):
+        uom = {'FB':1,'HB':2,'QB':4,'OB':8}
+        for o in self.browse(cr,uid,ids):
+            lines = []
+            sequence = 1
+            
+            for l in l.line_ids:                        
+                account_id = l.product_id.property_account_expense.id if l.product_id.property_account_expense else False
+                if not account_id:
+                    account_id = l.product_id.categ_id.property_account_expense_categ.id if l.product_id.categ_id and l.product_id.categ_id.property_account_expense_categ else False
+                if not account_id:
+                    raise osv.except_osv('Error', "El producto " + l.product_id.name_template + " no tiene una cuenta de gastos configurada.")
 
-                        taxes = [(4, t.id) for t in l.product_id.supplier_taxes_id]
+                name = l.variant_id.name if l.variant_id else ''
+                if l.length:
+                    name += ' - ' + l.length
+
+                taxes = [(4, t.id) for t in l.product_id.supplier_taxes_id]
                         
-                        if l.detalle_id.agrupada:
-                            cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(l.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(l.pedido_id.id) + 
-                                        " and dl.supplier_id = " + str(l.supplier_id.id) + " and dl.product_id = " + str(l.product_id.id) +
-                                        " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
-                            record = cr.fetchone()
-                            totals = record[0] if record else 0                        
-                            qty_bxs = round(float(l.bunch_per_box)/totals, 2) if totals else 0
-                        else:
-                            qty_bxs = l.qty if l.is_box_qty else (1 if not (l.qty /(int(l.bunch_type) * l.bunch_per_box)) else (l.qty / (int(l.bunch_type) * l.bunch_per_box)))
+                if l.detalle_id.agrupada:
+                    cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(l.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(l.pedido_id.id) + 
+                                " and dl.supplier_id = " + str(l.supplier_id.id) + " and dl.product_id = " + str(l.product_id.id) + 
+                                " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")            
+                    record = cr.fetchone()
+                    totals = record[0] if record else 0                        
+                    qty_bxs = round(float(l.bunch_per_box) / totals, 2) if totals else 0
+                else:
+                    qty_bxs = l.qty if l.is_box_qty else (1 if not (l.qty / (int(l.bunch_type) * l.bunch_per_box)) else (l.qty / (int(l.bunch_type) * l.bunch_per_box)))
                     
-                        boxes = float(qty_bxs)/uom[l.uom]                        
-                        stems = l.qty if not l.is_box_qty else l.qty * int(l.bunch_type) * l.bunch_per_box
+                boxes = float(qty_bxs) / uom[l.uom]                        
+                stems = l.qty if not l.is_box_qty else l.qty * int(l.bunch_type) * l.bunch_per_box
 
-                        hb_qty = 0
-                        qb_qty = 0
-                        if l.uom == 'FB':
-                            hb_qty = boxes * 2
-                        if l.uom == 'OB':
-                            hb_qty = boxes * 8
-                        if l.uom == 'HB':
-                            hb_qty = l.qty if l.is_box_qty else qty_bxs #float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
-                        if l.uom == 'QB':
-                            qb_qty = l.qty if l.is_box_qty else qty_bxs#float(l.qty) / (int(l.bunch_type) * l.bunch_per_box)
+                hb_qty = 0
+                qb_qty = 0
+                if l.uom == 'FB':
+                    hb_qty = boxes * 2
+                if l.uom == 'OB':
+                    hb_qty = boxes * 8
+                if l.uom == 'HB':
+                    hb_qty = l.qty if l.is_box_qty else qty_bxs
+                if l.uom == 'QB':
+                    qb_qty = l.qty if l.is_box_qty else qty_bxs 
 
-                        vals = {
-                            'sequence_box': sequence,
-                            'stems':stems,
-                            'box': boxes,
-                            'hb': hb_qty,
-                            'qb': qb_qty,
-                            'qty_bxs' : qty_bxs + ' ' + l.uom,
-                            'name': name,
-                            'uos_id': l.product_id.uom_id.id if l.product_id.uom_id else False,
-                            'product_id': l.product_id.id,
-                            'account_id': account_id,
-                            'price_unit': l.purchase_price,
-                            'quantity': l.qty * l.bunch_per_box * int(l.bunch_type) if l.is_box_qty else l.qty,
-                            'sequence': 10,
-                            'uom': l.uom,
-                            'bunch_type': l.bunch_type,
-                            'invoice_line_tax_id': taxes,
-                            'is_box_qty': l.is_box_qty,
-                            'bunch_per_box': l.bunch_per_box,
-                            'mark_id': l.subclient_id.id if l.subclient_id else False
-                        }
-                        lines.append((0, 0, vals))
-                    sequence += 1
+                vals = {
+                    'sequence_box': sequence,
+                    'stems':stems,
+                    'box': boxes,
+                    'hb': hb_qty,
+                    'qb': qb_qty,
+                    'qty_bxs' : qty_bxs + ' ' + l.uom,
+                    'name': name,
+                    'uos_id': l.product_id.uom_id.id if l.product_id.uom_id else False,
+                    'product_id': l.product_id.id,
+                    'account_id': account_id,
+                    'price_unit': l.purchase_price,
+                    'quantity': l.qty * l.bunch_per_box * int(l.bunch_type) if l.is_box_qty else l.qty,
+                    'sequence': 10,
+                    'uom': l.uom,
+                    'bunch_type': l.bunch_type,
+                    'invoice_line_tax_id': taxes,
+                    'is_box_qty': l.is_box_qty,
+                    'bunch_per_box': l.bunch_per_box,
+                    'mark_id': l.subclient_id.id if l.subclient_id else False
+                }
+                
+                lines.append((0, 0, vals))
+                sequence += 1
             inv_vals = {
                 'name': 'Invoice for ' + o.supplier_id.name,
                 'type': 'in_invoice',
@@ -415,14 +252,7 @@ class invoice_wizard(osv.osv_memory):
             invoice_id = self.pool.get('account.invoice').create(cr, uid, inv_vals, context)
             invoice = self.pool.get('account.invoice').browse(cr, uid, invoice_id)
             self.pool.get('account.invoice').write(cr, uid, [invoice_id], {'check_total':invoice.amount_total})
-
-            #Borrando las lineas no seleccionadas
-            #p_ids = self.pool.get('confirm.invoice').search(cr,uid,[('pedido_id','=',o.pedido_id.id),('supplier_id','=',o.supplier_id.id)])
-            #if p_ids and line_ids:
-            #    l_ids = self.pool.get('confirm.invoice.line').search(cr, uid, [('invoice_id', '=', p_ids[0]),('id', 'not in', line_ids)])
-            #    if l_ids:
-            #        self.pool.get('confirm.invoice.line').unlink(cr, uid, l_ids)
-
+   
         return {
             'name': 'Supplier Invoices',
             'view_type': 'form',
@@ -432,22 +262,6 @@ class invoice_wizard(osv.osv_memory):
             'domain': [('type', '=', 'in_invoice')],
             'context': {'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase'},
         }
-
-    def on_change_box_line_ids(self, cr, uid, ids, box_line_ids, context=None):
-        res = {'value': {}}
-        selected = []
-        if box_line_ids:
-            for record in box_line_ids:
-                if record[0] == 0:
-                    for l in record[2]['line_wzd_ids']:
-                        if l[0] == 6 and l[2]:
-                            selected += l[2]
-                            self.pool.get('invoice.line.wizard').write(cr,uid,l[2],{'selected': True})
-        if ids:
-            not_selected_ids = self.pool.get('invoice.line.wizard').search(cr,uid,[('invoice_id','=',ids[0]),('id','not in',selected)])
-            if not_selected_ids:
-                self.pool.get('invoice.line.wizard').write(cr,uid,not_selected_ids,{'selected': False})
-        return res
     
 invoice_wizard()
 
@@ -461,10 +275,10 @@ class invoice_line_wizard(osv.osv_memory):
         uom_dict = {'FB':1,'HB':2,'QB':4,'OB':8}
         for obj in self.browse(cr, uid, ids, context=context):
             if obj.is_box_qty:
-               res[obj.id] = str(obj.qty) + ' ' + obj.uom
+                res[obj.id] = str(obj.qty) + ' ' + obj.uom
             else:
-               qty = obj.boxes * uom_dict[obj.uom] if obj.boxes else float(obj.qty)/ (int(obj.bunch_type) * obj.bunch_per_box)
-               res[obj.id] = str(qty) + ' ' + obj.uom
+                qty = obj.boxes * uom_dict[obj.uom] if obj.boxes else float(obj.qty)/ (int(obj.bunch_type) * obj.bunch_per_box)
+                res[obj.id] = str(qty) + ' ' + obj.uom
         return res
 
     _columns = {
@@ -472,8 +286,7 @@ class invoice_line_wizard(osv.osv_memory):
         'pedido_id'      : fields.many2one('pedido.cliente','Pedido'),
         'detalle_id'      : fields.many2one('detalle.lines','Detalle'),
         'supplier_id'    : fields.many2one('res.partner','Supplier'),
-        #'confirmed_line_id'    : fields.many2one('confirm.invoice.line','Confirmed Line'),
-
+      
         'line_number'   : fields.char(size=128, string ='#', help='Line Number'),
         'product_id'      : fields.many2one('product.product','Product'),
         'variant_id'      : fields.many2one('product.variant','Variety',),
@@ -544,8 +357,8 @@ class invoice_line_wizard(osv.osv_memory):
                         ('variant_id', '=', variety_id)])
                     if val_ids:
                         pv = self.pool.get('purchase.request.product.variant').browse(cr, uid, val_ids[0])
-                        purchase_prices = [p.purchase_price for p in pv.length_ids]
-                        lenghts = [p.length for p in pv.length_ids]
+                        purchase_prices = [p.purchase_price for p in pl.length_ids]
+                        lenghts = [p.length for p in pl.length_ids]
                         res['value']['purchase_price'] = sum(purchase_prices) / len(
                             purchase_prices) if purchase_prices else 0
                         res['value']['length'] = '-'.join(lenghts)
@@ -592,8 +405,8 @@ class line_box_wizard(osv.osv_memory):
 
     _columns = {
         'invoice_id'      : fields.many2one('invoice.wizard','Invoice'),
-        'boxes'            : fields.integer('Boxes'),
-        'line_wzd_ids'  : fields.many2many('invoice.line.wizard','box_line_relation','box_id','line_id', 'Invoice Lines'),
+        'boxes'           : fields.integer('Boxes'),
+        'line_wzd_ids'    : fields.many2many('invoice.line.wizard','box_line_relation','box_id','line_id', 'Invoice Lines'),
     }
 
     _defaults = {

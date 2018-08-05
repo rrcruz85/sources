@@ -66,8 +66,8 @@ class puchase_lines_wzd(osv.osv_memory):
 
     _columns = {
         'line_number'           : fields.char(string='#', size = 128, help = 'Line Number'),
-        'line'                  : fields.integer(string='Request Line', help = 'Request Line'),
-        'box'                   : fields.boolean('Box'),
+        'line'                  : fields.integer(string='Request Line', help = 'Request Line'),        
+        'box_id'                : fields.many2one('detalle.lines.box', 'Box',),
         'pedido_id'             : fields.many2one('pedido.cliente', 'Pedido',),
         'detalle_id'            : fields.many2one('detalle.lines', 'Detalle'),
         'type'                  : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
@@ -95,7 +95,7 @@ class puchase_lines_wzd(osv.osv_memory):
         'stimated_qty'          : fields.function(_get_info, type='float', string='Full Boxes', multi="_vals"),              
     }
 
-    _order = "line"
+    _order = "line_number"
     
     def split_purchase_line(self, cr, uid, ids, *args):
         
@@ -109,7 +109,7 @@ class puchase_lines_wzd(osv.osv_memory):
             'supplier_id'     : detalle.supplier_id.id if detalle.supplier_id else None,
             'type'            : detalle.type,
             'product_id'      : detalle.product_id.id,
-            'variant_id'      : detalle.variant_id.id,
+            'variant_id'      : detalle.variant_id.id,            
             'length'          : ','.join(lengths),   
             'qty'             : detalle.qty,         
             'bunch_per_box'   : detalle.bunch_per_box,
@@ -198,7 +198,6 @@ class puchase_lines_wzd(osv.osv_memory):
         }
 
 puchase_lines_wzd()
-
 
 class detalle_line_wzd(osv.osv_memory):
     _name = 'detalle.line.wzd'
@@ -351,7 +350,6 @@ class detalle_line_wzd(osv.osv_memory):
 
 detalle_line_wzd()
 
-
 class detalle_line_length_wzd(osv.osv_memory):
     _name = 'detalle.line.length.wzd'
     _description = 'Lengths'
@@ -367,7 +365,6 @@ class detalle_line_length_wzd(osv.osv_memory):
     }
 
 detalle_line_length_wzd()
-
 
 class split_purchase_line_wzd(osv.osv_memory):
     _name = 'split.purchase.line.wzd'
@@ -397,6 +394,7 @@ class split_purchase_line_wzd(osv.osv_memory):
             
             lines.append((0,0,{                
                 'line_id'       : detalle.line_id.id if detalle.line_id else None,
+                'box_id'        : detalle.box_id.id if detalle.box_id else None,
                 'name'          : detalle.name,
                 'type'          : detalle.type,
                 'supplier_id'   : detalle.supplier_id.id,
@@ -429,7 +427,7 @@ class split_purchase_line_wzd(osv.osv_memory):
         self.pool.get('detalle.lines').write(cr, uid, [detalle_id], {'active': False})
         
         return {
-            'name'      : 'Pedidos de Clientes',
+            'name'      : _('Pedidos de Clientes'),
             'view_type' : 'form',
             'view_mode' : 'form',
             'res_model' : 'pedido.cliente',

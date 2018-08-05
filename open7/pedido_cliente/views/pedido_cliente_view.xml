@@ -70,7 +70,6 @@
                             <field name="uom"/>
                             <field name="qty"/>
                             <field name="full_boxes"/>
-                            <button invisible="1" name="search_providers" string="Buscar Proveedores" type="object" icon="terp-partner"/>
                             <button name="purchase" string="Comprar" type="object" icon="terp-dolar"/>
                         </tree>
                         <form>
