@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="view_oemedical_patient_ophthalmic_tree" model="ir.ui.view">
+			<field name="name">oemedical.patient.ophthalmic.tree</field>
+			<field name="model">oemedical.patient.ophthalmic</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Oemedical Patient ophthalmic">
+					<field name="patient_id" />
+					<field name="ophthalmic_date" />
+					<field name="doctor" />
+					<!--field name="directions" /-->
+					<field name="eva_value" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_oemedical_patient_ophthalmic_form" model="ir.ui.view">
+			<field name="name">oemedical.patient.ophthalmic.form</field>
+			<field name="model">oemedical.patient.ophthalmic</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<form string="Oemedical Patient ophthalmic" version="7.0">
+				<sheet>
+					<!--div class="oe_right oe_button_box" name="buttons">
+                        <button type="object"
+                            name="evolution_print"
+                            string="Imprimir"/>
+                    </div-->
+					<group>
+						<field name="patient_id" />
+						<field name="doctor" />
+						<field name="ophthalmic_date" readonly="0"/>
+					</group>
+					<group string='Distancia'>
+				         <field name="oi_distance" />
+						 <field name="od_distance" />
+				    </group>	
+					<group string='Lectura'>
+						<field name="oi_reading" />
+						<field name="od_reading" />
+					</group>
+					<group>
+						<field name="diagnostico" />
+						<field name="material" />
+						<field name="altura" />
+						<field name="eva_value" />
+					</group>
+				</sheet>
+				</form>
+			</field>
+		</record>
+		
+	    <record id="view_oemedical_patient_ophthalmic_graph" model="ir.ui.view">
+    	     <field name="name">oemedical.patient.ophthalmic.graph</field>
+        	 <field name="model">oemedical.patient.ophthalmic</field>
+        	 <field name="type">graph</field>
+         	<field name="arch" type="xml">
+            	<graph string="Patient Ophthalmic Graph" type="line">
+                	<!--field name="patient_id" group="False"/-->
+                	<field name="date_str"/>
+                	<field name="eva_value"  group="False"/>
+            	</graph>
+			</field>
+		</record>
+
+		<record id="view_oemedical_patient_ophthalmic_search" model="ir.ui.view">
+			<field name="name">oemedical.patient.ophthalmic.search</field>
+			<field name="model">oemedical.patient.ophthalmic</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<search string="Oemedical Patient ophthalmic">
+					<field name="patient_id" />
+					<field name="ophthalmic_date" />
+					<field name="eva_value" />
+					<!--field name="directions" /-->
+					<newline />
+					<group expand="0" string="Group By...">
+						<!--filter string="Tratamiento:" domain="[]"
+							context="{'group_by':'directions'}" /-->
+						<filter string="Doctor" domain="[]"
+							context="{'group_by':'doctor'}" />
+						<filter string="Patient" domain="[]"
+							context="{'group_by':'patient_id'}" />
+						<filter string="EVA" domain="[]"
+							context="{'group_by':'eva_value'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		
+<!--act_window domain="[('patient_id', '=', active_id)]" id="act_patient_ophthalmic_history" name="Oftalmica" res_model="oemedical.patient.ophthalmic" src_model="oemedical.patient"/-->
+
+		<record model="ir.actions.act_window" id="act_open_oemedical_patient_ophthalmic_view">
+			<field name="name">Patient ophthalmictherapy</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">oemedical.patient.ophthalmic</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,graph</field>
+			<!--field name="view_id" ref="view_oemedical_patient_ophthalmic_graph"/-->
+			<field name="search_view_id" ref="view_oemedical_patient_ophthalmic_search" />
+			<field name="domain">[]</field>
+			<field name="context">{}</field>
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_patient_ophthalmic_view_form">
+			<field name="act_window_id" ref="act_open_oemedical_patient_ophthalmic_view" />
+			<field name="sequence" eval="15" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_oemedical_patient_ophthalmic_form" />
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_patient_ophthalmic_view_tree">
+			<field name="act_window_id" ref="act_open_oemedical_patient_ophthalmic_view" />
+			<field name="sequence" eval="10" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_oemedical_patient_ophthalmic_tree" />
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="act_oemedical_patient_ophthalmic_graph">
+            <field name="sequence" eval="16"/>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="view_oemedical_patient_ophthalmic_graph"/>
+            <field name="act_window_id" ref="act_open_oemedical_patient_ophthalmic_view"/>
+        </record>
+
+
+	</data>
+</openerp>

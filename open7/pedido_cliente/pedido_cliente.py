@@ -34,8 +34,11 @@ class pedido_cliente(osv.osv):
 
     def _get_purchase_lines(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-        for id in ids:
-            lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[('pedido_id','=',id)])
+        
+        cr.execute("delete from detalle_lines where active = False")
+        
+        for d_id in ids:
+            lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[('pedido_id','=', d_id)])
             if lines:
                 self.pool.get('purchase.lines.wzd').unlink(cr,uid,lines)
             cr.execute( "SELECT "+
@@ -46,7 +49,6 @@ class pedido_cliente(osv.osv):
                         "detalle_lines.variant_id,"+
                         "detalle_lines.lengths as lenght,"+
                         "detalle_lines.qty as purchased_qty,"+
-                        # "case when detalle_lines.is_box_qty then (detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box) else detalle_lines.qty end as purchased_qty,"+
                         "detalle_lines.purchase_price::varchar purchase_price,"+
                         "detalle_lines.sale_price::varchar sale_price,"+
                         "case when detalle_lines.is_box_qty then detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box * detalle_lines.purchase_price else detalle_lines.qty * detalle_lines.purchase_price end as farm_total,"+
@@ -59,20 +61,25 @@ class pedido_cliente(osv.osv):
                         "detalle_lines.bunch_type as bunch_type,"+
                         "detalle_lines.bunch_per_box as bunch_per_box,"+
                         "detalle_lines.uom as uom,"+
-                        "request_product_variant.line "+
+                        "request_product_variant.line,"+                        
+                        "case when detalle_lines.is_box_qty then detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box else detalle_lines.qty end as stems," +
+                        "detalle_lines.name as linenumber,"+
+                        "detalle_lines.box_id as box_id "+                        
                         "FROM "+
                         "public.detalle_lines,"+
                         "public.request_product_variant,"+
                         "public.pedido_cliente "+
                         "WHERE "+
+                        "detalle_lines.active = True AND "+
                         "detalle_lines.pedido_id = pedido_cliente.id "+
                         "AND detalle_lines.line_id = request_product_variant.id "+
                         "AND pedido_cliente.id = %s " +
                         "order by " +
-                        "request_product_variant.line ", (id,))
+                        "detalle_lines.name ", (d_id,))
 
             result = cr.fetchall()
             list_ids = []
+            line_number = 1
             for record in result:
                 cr.execute("SELECT " +
                            "sum((case when is_box_qty then box_qty * bunch_type::int * bunch_per_box else tale_qty end))" +
@@ -80,16 +87,16 @@ class pedido_cliente(osv.osv):
                            "WHERE " +
                            "v.pedido_id = %s and " +
                            "v.product_id = %s and " +
-                           "v.variant_id = %s " , (id, record[3], record[4],))
+                           "v.variant_id = %s " , (d_id, record[3], record[4],))
                 result = cr.fetchone()
                 request_qty = result[0]
 
                 vals = {
                     'pedido_id'     : record[0],
                     'request_qty'   : request_qty,
-                    'type'   : record[1],
+                    'type'          : record[1],
                     'supplier_id'   : record[2],
-                    'product_id'   : record[3],
+                    'product_id'    : record[3],
                     'variant_id'    : record[4],
                     'lenght'        : record[5],
                     'purchased_qty' : record[6],
@@ -105,10 +112,14 @@ class pedido_cliente(osv.osv):
                     'bunch_type'    : record[16],
                     'bunch_per_box' : record[17],
                     'uom'           : record[18],
-                    'line': record[19]
+                    'line'          : record[19],                     
+                    'stems'         : record[20],
+                    'line_number'   : record[21] if record[21] else line_number,
+                    'box_id'        : record[22] if record[22] else False
                 }
+                line_number += 1
                 list_ids.append(self.pool.get('purchase.lines.wzd').create(cr,uid,vals))
-            res[id] = list_ids
+            res[d_id] = list_ids
         return res
 
     def _get_info(self, cr, uid, ids, field_name, arg, context):
@@ -141,21 +152,18 @@ class pedido_cliente(osv.osv):
                                                     ('cancel', 'Cancelado')], 'State', readonly=True),
         'variant_ids'           : fields.one2many('request.product.variant', 'pedido_id', 'Request Lines', ondelete='cascade'),
         'purchase_line_ids'     : fields.one2many('detalle.lines', 'pedido_id', 'Purchased Lines',ondelete='cascade'),
-        'boxes'         : fields.function(_get_info, type='integer', string='Full Boxes', multi = '_val'),
-        'stems'        : fields.function(_get_info, type='integer', string='Stems', multi = '_val'),
-        'tipo_flete'        : fields.function(_get_info, type='char', string='Tipo Flete', multi = '_val'),
+        'boxes'                 : fields.function(_get_info, type='integer', string='Full Boxes', multi = '_val'),
+        'stems'                 : fields.function(_get_info, type='integer', string='Stems', multi = '_val'),
+        'tipo_flete'            : fields.function(_get_info, type='char', string='Tipo Flete', multi = '_val'),
         'line_ids'              : fields.function(_get_purchase_lines, type='one2many', relation="purchase.lines.wzd", string='Purchase Lines'),
 
-        'account_invoice_ids': fields.one2many('account.invoice', 'pedido_cliente_id', 'Invoices'),
-        'airline_id': fields.many2one('pedido_cliente.airline', string='Airline'),
-        'number': fields.char('Flight Number'),
-        'precio_flete'  : fields.float('Precio Flete', digits = (0,2)),
-        'sale_request_id' : fields.many2one('sale.request', 'Sale Request'),
+        'account_invoice_ids'   : fields.one2many('account.invoice', 'pedido_cliente_id', 'Invoices'),
+        'airline_id'            : fields.many2one('pedido_cliente.airline', string='Airline'),
+        'number'                : fields.char('Flight Number'),
+        'precio_flete'          : fields.float('Precio Flete', digits = (0,2)),
+        'sale_request_id'       : fields.many2one('sale.request', 'Sale Request'),       
     }
-
-    def name_search(self, cr, user, name='', args=None, operator='ilike', context=None, limit=100):
-        return super(pedido_cliente, self).name_search(cr, user, name, args, operator=operator, context=context, limit=limit)
-
+   
     def name_get(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -183,7 +191,7 @@ class pedido_cliente(osv.osv):
         'state'        : 'draft',
         'name'         : 1,
         'request_date' : time.strftime('%Y-%m-%d'),
-        'type'         : 'open_market',
+        'type'         : 'open_market'        
     }
 
     def _check_tipo_flete(self, cr, uid, ids, context=None):
@@ -205,6 +213,13 @@ class pedido_cliente(osv.osv):
         if not context:
             context = {}
         context['default_pedido_id'] = ids[0]
+        proveedores = []
+        for l in self.browse(cr, uid, ids[0]).purchase_line_ids:
+            if l.supplier_id.name not in proveedores:
+                proveedores.append(l.supplier_id.name)
+        if proveedores:
+            raise osv.except_osv('Error', "Los siguientes proveedores: "+ ','.join(proveedores) + " tienen lineas de compras sin confirmar.\nPara poder imprimir este pedido debe confirmar todas las lineas de compras de los proveedores.")
+     
         return {
             'name'      : _('Print report'),
             'view_type' : 'form',
@@ -215,31 +230,23 @@ class pedido_cliente(osv.osv):
             'view_id'   : '',
             'context'   : context
         }
+        
+    def group_lines(self, cr, uid, ids, context=None):
+        if not context:
+            context = {}
+        context['default_pedido_id'] = ids[0]
+       
+        return {
+            'name'      : _('Group lines per Box'),
+            'view_type' : 'form',
+            "view_mode" : 'form',
+            'res_model' : 'group.box.wizard',
+            'type'      : 'ir.actions.act_window',
+            'target'    : 'new',           
+            'context'   : context
+        }
 
 pedido_cliente()
-
-class AirLine(osv.osv):
-    _name = 'pedido_cliente.airline'
-    _description = 'pedido_cliente.airline'
-
-    _columns = {
-        'name': fields.char('Name', required=True),
-        'avb_number': fields.char('#AVB', required=True),
-    }
-
-    def name_get(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        if not ids:
-            return []
-        reads = self.browse(cr, uid, ids, context=context)
-        res = []
-        for record in reads:
-            res.append((record.id, str(record.avb_number) + '/' + record.name))
-        return res
-
-AirLine()
-
 
 class request_product_variant(osv.osv):
     _name = 'request.product.variant'
@@ -293,38 +300,38 @@ class request_product_variant(osv.osv):
 
     _columns = {
         'line'                      : fields.integer(string = '#', help= 'Line Number'),
-        'pedido_id'             : fields.many2one('pedido.cliente', string ='Pedido',ondelete='cascade'),
-        'cliente_id'           : fields.related('pedido_id','partner_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
-        'type'                     : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
-        'product_id'           : fields.many2one('product.product','Product'),
-        'variant_id'            : fields.many2one('product.variant','Variety'),
-        'length_ids'            : fields.one2many('request.product.variant.length','variant_id','Lengths'),
-        'length_deleted'     : fields.boolean('Deleted'),
-      	'is_box_qty'           : fields.boolean('Box Packing?'),
-        'is_standing_order' : fields.boolean('Is standing order'),
-        'box_qty'               : fields.integer('BXS'),
-		'tale_qty'               : fields.integer('Stems'),
-		'bunch_per_box'     : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.integer( 'Stems x Bunch'),
-        'uom'                      : fields.selection([('FB', 'FB'),
+        'pedido_id'                 : fields.many2one('pedido.cliente', string ='Pedido',ondelete='cascade'),
+        'cliente_id'                : fields.related('pedido_id','partner_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
+        'type'                      : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
+        'product_id'                : fields.many2one('product.product','Product'),
+        'variant_id'                : fields.many2one('product.variant','Variety'),
+        'length_ids'                : fields.one2many('request.product.variant.length','variant_id','Lengths'),
+        'length_deleted'            : fields.boolean('Deleted'),
+      	'is_box_qty'                : fields.boolean('Box Packing?'),
+        'is_standing_order'         : fields.boolean('Is standing order'),
+        'box_qty'                   : fields.integer('BXS'),
+		'tale_qty'                  : fields.integer('Stems'),
+		'bunch_per_box'             : fields.integer('Bunch per Box'),
+        'bunch_type'                : fields.integer( 'Stems x Bunch'),
+        'uom'                       : fields.selection([('FB', 'FB'),
                                                     ('HB', 'HB'),
                                                     ('QB', 'QB'),
                                                     ('OB', 'OB')], 'UOM'),
-        'subclient_id'          : fields.many2one('res.partner', 'SubCliente'),
-        'purchased_line_ids' : fields.one2many('detalle.lines','line_id','Purchased Lines'),
+        'subclient_id'              : fields.many2one('res.partner', 'SubCliente'),
+        'purchased_line_ids'        : fields.one2many('detalle.lines','line_id','Purchased Lines'),
 
-        'sale_price'              : fields.function(_get_info, type='float', string='Sale Price', multi = '_data'),
-        'lengths'                  : fields.function(_get_info, type='char', string='Lengths', multi = '_data',
+        'sale_price'                : fields.function(_get_info, type='float', string='Sale Price', multi = '_data'),
+        'lengths'                   : fields.function(_get_info, type='char', string='Lengths', multi = '_data',
                                         store = {
                                             'request.product.variant': (lambda self,cr,uid,ids,c=None: ids, ['length_ids','length_deleted'], 10),
                                             'request.product.variant.length': (_get_ids, ['length'], 10),
                                         }),
-        'qty'                        : fields.function(_get_info, type='char', string='BXS', multi = '_data'),
-        'stimated_stems'     : fields.function(_get_info, type='integer', string='Stimated Stems', multi = '_data'),
-        'full_boxes'              : fields.function(_get_info, type='float', string='Full Boxes', multi = '_data'),
-        'request_qty'           : fields.function(_get_info, type='char', string='Qty', multi = '_data'),
-        'missing_qty'           : fields.function(_get_info, type='integer', string='Misssing Qty', multi = '_data'),
-        'missing_qty2'           : fields.function(_get_info, type='char', string='Misssing Qty', multi = '_data'),
+        'qty'                       : fields.function(_get_info, type='char', string='BXS', multi = '_data'),
+        'stimated_stems'            : fields.function(_get_info, type='integer', string='Stimated Stems', multi = '_data'),
+        'full_boxes'                : fields.function(_get_info, type='float', string='Full Boxes', multi = '_data'),
+        'request_qty'               : fields.function(_get_info, type='char', string='Qty', multi = '_data'),
+        'missing_qty'               : fields.function(_get_info, type='integer', string='Misssing Qty', multi = '_data'),
+        'missing_qty2'              : fields.function(_get_info, type='char', string='Misssing Qty', multi = '_data'),
     }
 
     _order = "line"
@@ -332,10 +339,10 @@ class request_product_variant(osv.osv):
     def on_change_vals(self, cr, uid, ids, is_box_qty, box_qty, tale_qty, bunch_per_box, bunch_type, uom, context=None):
         res = {'value':{'stimated_stems':0,'qty':0, 'full_boxes': 0}}
         uom_dict = {'FB':1,'HB':2,'QB':4,'OB':8}
-       	if is_box_qty:
-           res['value']['stimated_stems'] = box_qty * int(bunch_type)* bunch_per_box
+        if is_box_qty:
+            res['value']['stimated_stems'] = box_qty * int(bunch_type)* bunch_per_box
         else:
-           res['value']['stimated_stems'] = tale_qty
+            res['value']['stimated_stems'] = tale_qty
         bxs_qty = box_qty if is_box_qty else  (1  if not (tale_qty / (int(bunch_type) * bunch_per_box)) else (tale_qty / (int(bunch_type) * bunch_per_box)))
         res['value']['qty']  = str(bxs_qty) + ' ' + uom
         full_boxes = float(bxs_qty)/uom_dict[uom]
@@ -445,8 +452,7 @@ class request_product_variant(osv.osv):
 
         vals = self._get_info(cr,uid, ids, '', [])
         lengths = [(0,0,{'length': l.length, 'purchase_price': 0})for l in obj.length_ids]
-        lengths_desc = [l.length for l in obj.length_ids]
-
+       
         #Buscando Proveedores
         farm_ids = []
         l_ids = self.pool.get('purchase.request.template').search(cr,uid,[('client_id','=',obj.pedido_id.partner_id.id)])
@@ -476,7 +482,7 @@ class request_product_variant(osv.osv):
             'default_origin': False,
             'default_subclient_id': obj.subclient_id.id if obj.subclient_id else False,
             'default_sucursal_id': False,
-            'default_supplier_ids': ','.join(farm_ids)
+            #'default_supplier_ids': ','.join(farm_ids)
         }
         return {
             'name': _("Purchase Line"),
@@ -526,7 +532,19 @@ request_product_variant_length()
 
 class detalle_line(osv.osv):
     _name = 'detalle.lines'
-    _description = 'Detalle de compras'
+    _description = 'Lineas de compras'
+    
+    def name_get(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if not ids:
+            return []
+        res = []
+        types = {'standing_order' : 'Standing Order','open_market': 'Open Market'}
+        
+        for obj in self.browse(cr, uid, ids, context=context):
+            res.append((obj.id, types[obj.type] + '/' + obj.product_id.name_template + '/' + obj.variant_id.name + '/' + obj.lengths))
+        return res
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         if context and 'lines' in context:
@@ -542,6 +560,7 @@ class detalle_line(osv.osv):
                     if detalle_id and detalle_id['detalle_id'] and detalle_id['detalle_id'][0]:
                         ids.append(detalle_id['detalle_id'][0])
             return ids
+        args.append(['active','=',True])
         return super(detalle_line, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def _get_info(self, cr, uid, ids, field_name, arg, context = None):
@@ -562,18 +581,18 @@ class detalle_line(osv.osv):
         return res
 
     _columns = {
-        'pedido_id'            : fields.many2one('pedido.cliente', 'Request',ondelete='cascade'),
-        'line_id'                 : fields.many2one('request.product.variant', 'Lines'),
+        'pedido_id'             : fields.many2one('pedido.cliente', 'Request',ondelete='cascade'),
+        'line_id'               : fields.many2one('request.product.variant', 'Lines'),
         'name'                  : fields.char(size = 128, string= 'Line Number'),
-        'type'                    : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Order'),
+        'type'                  : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Order'),
         'supplier_id'           : fields.many2one('res.partner', 'Farm', required=True, domain=[('supplier', '=', True)]),
         'product_id'            : fields.many2one('product.product', string='Product',required=True),
         'variant_id'            : fields.many2one('product.variant', 'Variety', required=True),
         'length_ids'            : fields.one2many('detalle.lines.length','detalle_id','Lengths'),
-        'qty'                      : fields.float('Qty'),
+        'qty'                   : fields.float('Qty'),
         'is_box_qty'            : fields.boolean('Box Packing?'),
 		'bunch_per_box'         : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.integer( 'Stems x Bunch'),
+        'bunch_type'            : fields.integer('Stems x Bunch'),
         'uom'                   : fields.selection([('FB', 'FB'),
                                                     ('HB', 'HB'),
                                                     ('QB', 'QB'),
@@ -582,25 +601,29 @@ class detalle_line(osv.osv):
         'origin'                : fields.many2one('detalle.lines.origin', string='Origin'),
         'subclient_id'          : fields.many2one('res.partner', 'SubCliente'),
         'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
-        'purchase_price'      : fields.function(_get_info, type='float', string='Purchase Price', multi = '_data',
+        'purchase_price'        : fields.function(_get_info, type='float', string='Purchase Price', multi = '_data',
                                         store={
                                             'detalle.lines': (lambda self, cr, uid, ids, c=None: ids, ['length_ids'], 10),
                                             'detalle.lines.length': (_get_ids, ['purchase_price'], 10),
                                         }),
-        'lengths'                  : fields.function(_get_info, type='char', string='Lengths', multi = '_data',
+        'lengths'               : fields.function(_get_info, type='char', string='Lengths', multi = '_data',
                                         store={
                                             'detalle.lines': (lambda self, cr, uid, ids, c=None: ids, ['length_ids'], 10),
                                             'detalle.lines.length': (_get_ids, ['length'], 10),
                                         }),
-        'confirmada'    : fields.boolean('Confirmada'),
+        'active'                : fields.boolean('Active'),    
+        'agrupada'              : fields.boolean('Agrupada'),
+        'group_id'              : fields.integer('Group Id'),   
+        'box_id'                : fields.many2one('detalle.lines.box', 'Box'), 
     }
 
     _defaults = {
-        'bunch_type': 25,
-        'uom': 'HB',
-        'type': 'open_market',
-        'bunch_per_box' : 10,
-        'pedido_id'    :lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else None,
+        'bunch_type'    : 25,
+        'uom'           : 'HB',
+        'type'          : 'open_market',
+        'bunch_per_box' : 12,
+        'active'        : True,         
+        'pedido_id'     : lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else False,
     }
 
     def _check_bunch_type(self, cr, uid, ids, context=None):
@@ -616,12 +639,20 @@ detalle_line()
 class detalle_line_length(osv.osv):
     _name = 'detalle.lines.length'
     _description = 'Variety Length'
+    _rec_name = 'length'
 
     _columns = {
         'detalle_id'            : fields.many2one('detalle.lines','Detalle', ondelete='cascade'),
-        'length'           : fields.char(string='Length', size = 128),
-        'purchase_price'            : fields.float(string='Purchase Price'),
+        'length'                : fields.char(string='Length', size = 128),
+        'purchase_price'        : fields.float(string='Purchase Price'),
 	}
+    
+    def get_default_detalle_id(self, cr, uid, context = None):         
+        return context['detalle_id'] if context and 'detalle_id' in context else None
+    
+    _defaults = {
+        'detalle_id'     :  get_default_detalle_id,
+    }  
 
 detalle_line_length()
 
@@ -630,10 +661,42 @@ class detalle_line_origin(osv.osv):
     _description = 'detalle.lines.origin'
     
     _columns = {
-        'name'                  : fields.char('Origen'),
+        'name'  : fields.char('Origen'),
     }
 
 detalle_line_origin()
+
+class detalle_line_box(osv.osv):
+    _name = 'detalle.lines.box'
+    _description = 'Box'
+   
+    _columns = {
+        'line_ids'  : fields.one2many('detalle.lines','box_id','Lines'),
+    }
+    
+detalle_line_box()
+
+class pedido_cliente_airline(osv.osv):
+    _name = 'pedido_cliente.airline'
+    _description = 'pedido_cliente.airline'
+
+    _columns = {
+        'name': fields.char('Name', required=True),
+        'avb_number': fields.char('#AVB', required=True),
+    }
+
+    def name_get(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if not ids:
+            return []
+        reads = self.browse(cr, uid, ids, context=context)
+        res = []
+        for record in reads:
+            res.append((record.id, str(record.avb_number) + '/' + record.name))
+        return res
+
+pedido_cliente_airline()
 
 class freight_agency(osv.osv):
     _name = 'freight.agency'
@@ -689,121 +752,5 @@ class freight_agency(osv.osv):
     ]
 
 freight_agency()
-
-class confirm_invoice(osv.osv):
-    _name = 'confirm.invoice'
-    _description = 'Confirm Invoice'
-
-    _columns = {
-        'pedido_id'      : fields.many2one('pedido.cliente','Pedido'),
-        'supplier_id'    : fields.many2one('res.partner','Supplier'),
-        'line_ids': fields.one2many('confirm.invoice.line', 'invoice_id', 'Purchase Lines'),
-        'invoice_number' : fields.char('Supplier Invoice Number', size=64),
-        'date_invoice': fields.date('Invoice Date', help="Keep empty to use the current date"),
-        'account_id': fields.many2one('account.account', 'Account To Pay Supplier', domain=[('type', '=', 'payable')]),
-        'fiscal_position': fields.many2one('account.fiscal.position', 'Fiscal Position'),
-        'period_id': fields.many2one('account.period', 'Fiscal Period', domain=[('state', '<>', 'done')], ),
-        'currency_id': fields.many2one('res.currency', 'Currency'),
-        'journal_id': fields.many2one('account.journal', 'Journal', domain=[('type', '=', 'purchase')]),
-        'company_id': fields.many2one('res.company', 'Company'),
-        'user_id': fields.many2one('res.users', 'Salesperson'),
-    }
-
-confirm_invoice()
-
-class confirm_invoice_line(osv.osv):
-    _name = 'confirm.invoice.line'
-    _description = 'Invoice Line'
-
-    _columns = {
-        'invoice_id'      : fields.many2one('confirm.invoice','Invoice',ondelete='cascade'),
-        'pedido_id'      : fields.many2one('pedido.cliente','Pedido',ondelete='cascade'),
-        'detalle_id'      : fields.many2one('detalle.lines','Detalle', ondelete='cascade'),
-        'supplier_id'    : fields.many2one('res.partner','Supplier'),
-
-        'line_number'   : fields.char(size=128, string ='#', help='Line Number'),
-        'product_id'      : fields.many2one('product.product','Product'),
-        'variant_id'      : fields.many2one('product.variant','Variety',),
-        'length'              : fields.char(size=128, string ='Length'),
-        'purchase_price'  : fields.float('Purchase Price'),
-        'sale_price'  : fields.float('Sale Price'),
-        'qty'             : fields.float('Qty', help = "Quantity"),
-        'boxes'             : fields.float('Full Boxes'),
-        'total_purchase'    : fields.float(string='Total'),
-        'total_sale'    : fields.float(string='Total'),
-        'bunch_per_box'   : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.integer( 'Stems x Bunch'),
-        'uom'              : fields.selection([('FB', 'FB'),
-                                               ('HB', 'HB'),
-                                               ('QB', 'QB'),
-                                               ('OB', 'OB')], 'UOM'),
-        'origin'                : fields.many2one('detalle.lines.origin', string='Origin'),
-        'subclient_id'          : fields.many2one('res.partner', 'SubClient'),
-        'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
-        'type'                     : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
-        'is_box_qty'            : fields.boolean('Box Packing?'),
-        'confirmada'            : fields.boolean('Confirmada'),
-    }
-
-confirm_invoice_line()
-
-class confirm_client_invoice(osv.osv):
-    _name = 'confirm.client.invoice'
-    _description = 'Confirm Invoice'
-
-    _columns = {
-        'pedido_id'      : fields.many2one('pedido.cliente','Pedido'),
-        'line_ids': fields.one2many('confirm.client.invoice.line', 'invoice_id', 'Purchase Lines'),
-        'date_invoice': fields.date('Invoice Date', help="Keep empty to use the current date"),
-        'account_id': fields.many2one('account.account', 'Account To Pay Supplier', domain=[('type', '=', 'receivable')]),
-        'fiscal_position': fields.many2one('account.fiscal.position', 'Fiscal Position'),
-        'period_id': fields.many2one('account.period', 'Fiscal Period', domain=[('state', '<>', 'done')], ),
-        'currency_id': fields.many2one('res.currency', 'Currency'),
-        'journal_id': fields.many2one('account.journal', 'Journal', domain=[('type', '=', 'purchase')]),
-        'company_id': fields.many2one('res.company', 'Company'),
-        'user_id': fields.many2one('res.users', 'Salesperson'),
-   }
-
-confirm_client_invoice()
-
-class confirm_client_invoice_line(osv.osv):
-    _name = 'confirm.client.invoice.line'
-    _description = 'Invoice Line'
-
-    _columns = {
-        'invoice_id'      : fields.many2one('confirm.client.invoice','Invoice'),
-        'pedido_id'      : fields.many2one('pedido.cliente','Pedido'),
-        'detalle_id'      : fields.many2one('detalle.lines','Detalle'),
-        'supplier_id'    : fields.many2one('res.partner','Supplier'),
-
-        'line_number'   : fields.char(size=128, string ='#', help='Line Number'),
-        'product_id'      : fields.many2one('product.product','Product'),
-        'variant_id'      : fields.many2one('product.variant','Variety',),
-        'length'              : fields.char(size=128, string ='Length'),
-        'purchase_price'  : fields.float('Purchase Price'),
-        'sale_price'  : fields.float('Sale Price'),
-        'qty'             : fields.integer('Qty', help = "Quantity"),
-        'boxes'             : fields.float('Full Boxes'),
-        'total_purchase'    : fields.float(string='Total'),
-        'total_sale'    : fields.float(string='Total'),
-        'bunch_per_box'   : fields.integer('Bunch per Box'),
-        'bunch_type'            : fields.integer( 'Stems x Bunch'),
-        'uom'              : fields.selection([('FB', 'FB'),
-                                               ('HB', 'HB'),
-                                               ('QB', 'QB'),
-                                               ('OB', 'OB')], 'UOM'),
-        'origin'                : fields.many2one('detalle.lines.origin', string='Origin'),
-        'subclient_id'          : fields.many2one('res.partner', 'SubClient'),
-        'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
-        'type'                     : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
-        'is_box_qty'            : fields.boolean('Box Packing?'),
-        'confirmada'            : fields.boolean('Confirmada'),
-    }
-
-confirm_client_invoice_line()
-
-
-
-
 
 

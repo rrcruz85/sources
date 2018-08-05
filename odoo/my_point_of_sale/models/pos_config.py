@@ -1,22 +1,23 @@
 # -*- coding: utf-8 -*-
-
 from openerp.osv import fields, osv
-
+from openerp.tools.translate import _
 
 class PosConfig(osv.osv):
     _inherit = 'pos.config'
     _columns = {
-        'show_all_products': fields.boolean(
-            'Show all products?', help='If not checked, the product list in the point of sale will be limited...'
+
+        'pos_ticket_report': fields.boolean(
+            'Print Pos Ticket Report', help='If not checked, the pos ticket will be printed as defaults'
         ),
 
         'iva_compensation': fields.float(
             'IVA Compensation (%)', digits=(16, 2),
-            help="It's the value of the IVA compensation that will be apply to the products..."
+            help="It's the value of the IVA compensation that will be apply to the products"
         ),
 
-        'products_ids': fields.many2many(
-            'product.template', 'my_pos_product_pos_config_rel', 'tpv_id', 'product_id', string='Available products...'
+        'card_comition': fields.float(
+            'Card Comition (%)', digits=(16, 2),
+            help="It's the value of the charged comition for the use of card payment"
         ),
 
         'journal_ids' : fields.many2many('account.journal', 'pos_config_journal_rel',
@@ -24,10 +25,18 @@ class PosConfig(osv.osv):
                      domain="[('journal_user', '=', True ), ('type', 'in', ['bank', 'cash','card', 'check'])]",),
     }
 
-    _defaults = {
-        'show_all_products': lambda *a: True,
-    }
+    def _check_iva_comp_value(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return (obj.iva_compensation >= 0.0 and obj.iva_compensation <= 100)
 
+    def _check_card_comition(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context=context)
+        return (obj.card_comition >= 0.0 and obj.card_comition <= 100)
+
+    _constraints = [
+        (_check_iva_comp_value, _('Error: Invalid value for the iva_compensation number. This value must be between 0 and 100.'), ['iva_compensation']),
+        (_check_card_comition, _('Error: Invalid value for the card comition. This value must be between 0 and 100.'),['card_comition']),
+    ]
 
 class pos_session(osv.osv):
     _inherit = 'pos.session'

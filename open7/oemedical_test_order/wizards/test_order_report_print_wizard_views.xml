@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!--
+        OeMedical Test Order Report Wizard
+        Model: oemedical_test_order.test_order_report_print_wizard
+        -->
+
+        <!-- FORM VIEW -->
+        <record id="oemedical_test_order_report_print_wizard_view_form" model="ir.ui.view">
+            <field name="name">oemedical_test_order_report_print_wizard_view_form</field>
+            <field name="model">oemedical_test_order.test_order_report_print_wizard</field>
+            <field name="arch" type="xml">
+                <form string="YYY" version="7.0">
+                    <sheet>
+                        <br/><br/><br/>
+                        <h3>Seleccione las secciones que desea sean impresas en el reporte...</h3>
+                        <br/><br/>
+
+                        <group>
+                            <group>
+                                <field name="preoperatorio"/>
+                                <field name="primer_mes"/>
+                                <field name="tercer_mes"/>
+                            </group>
+
+                            <group>
+                                <field name="sexto_o_neoveno_mes"/>
+                                <field name="primer_anno"/>
+                            </group>
+                        </group>
+                    </sheet>
+
+                    <footer>
+                        <button string="Print report..." name="action_print_report" type="object" class="oe_highlight"/>
+                        <field name="send_report"/>
+                        <label for="send_report"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

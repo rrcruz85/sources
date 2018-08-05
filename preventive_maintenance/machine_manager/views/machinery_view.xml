@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+        <!-- Parent Menu on Right Panes -->
+        <menuitem id="menu_machinery_manager" name="Machinery Manager" sequence="85"/>
+        <menuitem id="menu_machinery_config" name="Configuration" parent="menu_machinery_manager" sequence="2"/>
+
+        <!-- ========================== Machines ========================== -->
+        <record id="machines_view_form" model="ir.ui.view">
+            <field name="name">machines.form</field>
+            <field name="model">machinery</field>
+            <field name="arch" type="xml">
+                <form string="Machines">
+                    <group colspan="4" col="6">
+                        <separator string="Machine Details" colspan="6" />
+                        <newline />
+                        <field name="name" />
+                        <field name="company" invisible="1"/>
+                        <field name="location" />
+                        <field name="product" domain="[('machine_ok','=',True)]" />
+                        <field name="serial_char" attrs="{'invisible':[('product','!=', False)]}"/>
+                        <field name="serial" context="{'default_product_id': product}"
+                        attrs="{'invisible':[('product','=', False)]}" />
+                    </group>
+
+                    <separator string="Analysis Information" colspan="4" />
+
+                    <notebook colspan="4">
+                        <page string="Additional Details">
+                           <group>
+                                 <group>
+                                    <separator string="Current Details"
+                                        colspan="4" />
+                                    <field name="status" />
+                                    <field name="ownership" />
+                                    <field name="power" />
+                                    <field name="mac" />
+                                    <field name="phone" />
+                                    <field name="ambit" />
+                                    <field name="salvage_value" />
+                                </group>
+                                <group>
+                                    <separator string="Manufacture Details"
+                                    colspan="4" />
+                                    <field name="manufacturer" />
+                                    <field name="year" />
+                                    <field name="model" />
+                                    <field name="model_type" />
+                                </group>
+                                <group>
+                                    <separator string="Extra Information"
+                                        colspan="4" />
+                                    <field name="card" />
+                                    <field name="cardexp" />
+                                </group>
+                                <group>
+                                    <separator string="Insurance"
+                                        colspan="4" />
+                                    <field name="insurance" />
+                                    <field name="policy" />
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Financial Details">
+                            <group>
+                                <group>
+                                    <separator string="Purchase Info" colspan="4"  />
+                                    <field name="purch_date" />
+                                    <field name="purch_partner" />
+                                    <field name="purch_inv" />
+                                    <field name="purch_cost" />
+                                    <field name="purch_cycles" />
+                                    <field name="enrolldate" />
+                                </group>
+                                <group>
+                                    <separator string="Financial Details" colspan="4" />
+                                    <field name="deprecperc" />
+                                    <field name="deprecperiod" />
+                                    <field name="assetacc" />
+                                    <field name="depracc" />
+                                </group>
+                            </group>
+                            <group>
+                                <separator string="Warranty Expiry"/>
+                                <newline/>
+                                <field name="warrexp" />
+                                <field name="warrexpcy" />
+                            </group>
+                        </page>
+
+                        <page string="Machine Users">
+                            <field name="users"/>
+                        </page>
+
+                        <page string="Maintenance">
+                            <group>
+                            <separator string="Preventive Maintenance"
+                                colspan="4" />
+                            <field name="actcycles" />
+                            <field name="primarymeter" />
+                            <field name="bcyl" />
+                            <field name="bdate" />
+                            </group>
+                        </page>
+
+                        <!-- ========================== INFO REFERENTE AL REPORTE ========================== -->
+                        <page string="Machine Gathering Information ">
+                            <group>
+                                <group>
+                                    <field name="marca"/>
+                                    <field name="motor_nro"/>
+                                    <field name="color"/>
+                                    <field name="customer_id"/>
+                                    <field name="broker_id"/>
+                                    <field name="consultant_id"/>
+                                </group>
+
+                                <group>
+                                    <field name="reception_date"/>
+                                    <field name="license_plate"/>
+                                    <field name="body_nro"/>
+                                    <field name="odometer_value"/>
+                                    <field name="work_order"/>
+                                    <field name="cia"/>
+                                </group>
+                            </group>
+
+                            <group string="Nivel de combustible" col="12">
+                                <div style="float:left !important; display:inline-block !important;">
+                                    <span><strong>0</strong></span>
+                                    <span><strong>___</strong></span>
+                                    <span><strong>____</strong></span>
+                                    <span><strong>1/2</strong></span>
+                                    <span><strong>___</strong></span>
+                                    <span><strong>____</strong></span>
+                                    <span><strong>1</strong></span>
+                                    <br/>
+                                    <field name="fuel_level_0" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_1_8" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_1_4" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_3_8" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_1_2" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_5_8" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_3_4" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_7_8" readonly="1" nolabel ="1" style="display: inline-block !important;"/>
+                                    <field name="fuel_level_1"  style="display: inline-block !important;"/>
+                                </div>
+                            </group>
+
+                            <group string="Accesorios" col="12">
+                                <group colspan="3">
+                                    <field name="antenna"/>
+                                    <field name="triangulos"/>
+                                    <field name="moquetas"/>
+                                    <field name="tapacubos"/>
+
+                                    <label for="otros"/>
+                                    <div>
+                                        <field name="otros"/>
+                                        <field name="otros_description" attrs="{'invisible': [('otros', '=', False)]}"/>
+                                    </div>
+                                </group>
+
+                                <group colspan="3">
+                                    <field name="radio"/>
+                                    <field name="seguro_aros"/>
+                                    <field name="espejos"/>
+                                    <field name="llanta"/>
+                                    <field name="botiquin"/>
+                                </group>
+
+                                <group colspan="3">
+                                    <field name="plumas"/>
+                                    <field name="signos"/>
+                                    <field name="llave_ruedas"/>
+                                    <field name="gata"/>
+                                    <field name="tapagas"/>
+                                </group>
+
+                                <group colspan="3">
+                                    <field name="extinguidor"/>
+                                    <field name="encendedor"/>
+                                    <field name="compac"/>
+                                    <field name="herramientas"/>
+                                </group>
+                            </group>
+
+                            <group string="Trabajos a realizar">
+                                <field name="work_to_realize_ids" nolabel="1">
+                                    <tree>
+                                        <field name="name"/>
+                                    </tree>
+                                </field>
+                            </group>
+
+                            <group string="Observaciones">
+                                <field name="observation_ids" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                    </tree>
+                                </field>
+                            </group>
+
+                            <group string="ROTURAS, FALTANTES, ABOLLADURAS Y RASPONES MARCADOS CON 'X'">
+                                <field name="coordinates" class="coordinates" nolabel="1" invisible="1"/>
+                            </group>
+
+                            <input id="button_update_image" type="button" value="Update..." class="oe_link button_update_image" onClick="UpdateAction();"/>
+                            <button name="action_clear" string="Borrar marcas..." type="object" class="oe_link oe_edit_only"/>
+
+                            <div style="height: 300px;">
+                                <img id="car_image2" class="img-responsive" src="/machine_manager/static/img/car.png" onClick="ImageOnClick(event);" style="width: 500px; height: 300px; border: 1px black solid;">
+                                    <canvas id="car_canvas" style="position: relative; top: -300px;" onClick="ImageOnClick(event);"/>
+                                </img>
+                            </div>
+                        </page>
+                    </notebook>
+
+                    <script>
+                        updated = false;
+
+                        function UpdateAction() {
+                            UpdateCanvas();
+                            value = $('.coordinates').text().trim();
+                            if (value == '') {
+                                value = $('.coordinates input').attr('value');
+                            }
+
+                            if (value == '' || value == undefined) {
+                                ClearCanvas();
+                                return;
+                            }
+
+                            cords_list = value.split(';');
+                            cont = 0;
+
+                            while (cont != cords_list.length) {
+                                val = cords_list[cont].split(',');
+                                if (val != undefined) {
+                                    if (val != '') {
+                                        x = val[0].trim();
+                                        y = val[1].trim();
+                                        drawCoordinates(x, y);
+                                        cont++;
+                                    }
+                                }
+                            }
+                        };
+
+                        function ImageOnClick(event) {
+                            UpdateCanvas();
+                            var car_image = $('#car_image2')
+                            var rect = car_image[0].getBoundingClientRect();
+                            var x = event.clientX - rect.left;
+                            var y = event.clientY - rect.top;
+                            drawCoordinates(x, y);
+                            UpdateCoordinatesInformation(x, y);
+                        };
+
+                        function drawCoordinates(x, y) {
+                            var ctx = $("#car_canvas")[0].getContext("2d");
+                            ctx.fillStyle = "#ff2626";
+                            ctx.beginPath();
+                            ctx.arc(x, y, 5, 0, Math.PI * 2, true);
+                            ctx.fill();
+                        };
+
+                        function UpdateCoordinatesInformation(x, y) {
+                            value = $('.coordinates input').attr('value');
+                            if (value == undefined) {
+                                value = '';
+                            }
+
+                            if (value != '') {
+                                value = value + ';' + x + ',' + y;
+                            }
+                            else {
+                                value = x + ',' + y;
+                            }
+
+                            $('.coordinates input').attr('value', value);
+                        };
+
+                        function UpdateCanvas() {
+                            if (updated == false) {
+                                $("#car_canvas")[0].width = $('#car_image2')[0].width;
+                                $("#car_canvas")[0].height = $('#car_image2')[0].height;
+                                updated = true;
+                            }
+                        };
+
+                        function ClearCanvas() {
+                            var ctx = $("#car_canvas")[0].getContext("2d");
+                            ctx.clearRect(0, 0, $("#car_canvas")[0].width, $("#car_canvas")[0].height);
+                        };
+                    </script>
+                </form>
+            </field>
+        </record>
+
+        <record id="machine_view_tree" model="ir.ui.view">
+            <field name="name">machine.tree</field>
+            <field name="model">machinery</field>
+            <field name="arch" type="xml">
+                <tree string="Machines">
+                    <field name="product_categ"/>
+                    <field name="product"/>
+                    <field name="manufacturer"/>
+                    <field name="name" />
+                    <field name="company"  />
+                    <field name="year" />
+                    <field name="model"/>
+                    <field name="model_type"/>
+                    <field name="serial"/>
+                    <field name="year"/>
+                    <field name="salvage_value"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="machine_view_search" model="ir.ui.view">
+            <field name="name">machine.search</field>
+            <field name="model">machinery</field>
+            <field name="arch" type="xml">
+                <search string="Search machinery">
+                   <field name="product"/>
+                   <field name="serial"/>
+                   <field name="manufacturer"/>
+                   <field name="model"/>
+                   <field name="model_type"/>
+                   <field name="serial_char"/>
+                   <group expand="0" string="Group By">
+                       <filter string="Model type" context="{'group_by' : 'model_type'}"/>
+                       <filter string="Model" context="{'group_by' : 'model'}"/>
+                       <filter string="Product" context="{'group_by' : 'product'}"/>
+                       <filter string="Product category" context="{'group_by' : 'product_categ'}"/>
+                       <filter string="Manufacturer" context="{'group_by' : 'manufacturer'}"/>
+                   </group>
+               </search>
+            </field>
+        </record>
+
+
+        <record id="machine_form_action" model="ir.actions.act_window">
+            <field name="name">Machines</field>
+            <field name="res_model">machinery</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_machines" name="Machines" parent="menu_machinery_config" action="machine_form_action" sequence="1"/>
+    </data>
+</openerp>

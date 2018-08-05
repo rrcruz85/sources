@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="view_oemedical_patient_dental_tree" model="ir.ui.view">
+			<field name="name">oemedical.patient.dental.tree</field>
+			<field name="model">oemedical.patient.dental</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Oemedical Patient Dental">
+					<field name="patient_id" />
+					<field name="dental_date" />
+					<field name="doctor" />
+					<!--field name="directions" /-->
+					<field name="eva_value" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_oemedical_patient_dental_form" model="ir.ui.view">
+			<field name="name">oemedical.patient.dental.form</field>
+			<field name="model">oemedical.patient.dental</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<form string="Oemedical Patient dental" version="7.0">
+				<sheet>
+					<!--div class="oe_right oe_button_box" name="buttons">
+                        <button type="object"
+                            name="evolution_print"
+                            string="Imprimir"/>
+                    </div-->
+					<group>
+						<field name="patient_id" />
+						<field name="doctor" />
+						<field name="dental_date" readonly="0"/>
+					</group>
+					<!--group string='Distancia'>
+				         <field name="oi_distance" />
+						 <field name="od_distance" />
+				    </group>	
+					<group string='Lectura'>
+						<field name="oi_reading" />
+						<field name="od_reading" />
+					</group-->
+					<group string='Examen del Sistema Estomatognático' col="4">
+						<field name="labios" />
+						<field name="mejillas" />
+						<field name="max_superior" />
+						<field name="max_inferior" />
+						<field name="lengua" />
+						<field name="paladar" />
+						<field name="piso" />
+						<field name="carrillos" />
+						<field name="glan_salivales" />	
+						<field name="oro_faringe" />
+						<field name="atm" />
+						<field name="ganglios" />
+					</group>
+					<group>
+						<field name="detalle" />
+						<field name="eva_value" />
+					</group>
+				</sheet>
+				</form>
+			</field>
+		</record>
+		
+	    <record id="view_oemedical_patient_dental_graph" model="ir.ui.view">
+    	     <field name="name">oemedical.patient.dental.graph</field>
+        	 <field name="model">oemedical.patient.dental</field>
+        	 <field name="type">graph</field>
+         	<field name="arch" type="xml">
+            	<graph string="Patient dental Graph" type="line">
+                	<!--field name="patient_id" group="False"/-->
+                	<field name="date_str"/>
+                	<field name="eva_value"  group="False"/>
+            	</graph>
+			</field>
+		</record>
+
+		<record id="view_oemedical_patient_dental_search" model="ir.ui.view">
+			<field name="name">oemedical.patient.dental.search</field>
+			<field name="model">oemedical.patient.dental</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<search string="Oemedical Patient dental">
+					<field name="patient_id" />
+					<field name="dental_date" />
+					<field name="eva_value" />
+					<!--field name="directions" /-->
+					<newline />
+					<group expand="0" string="Group By...">
+						<!--filter string="Tratamiento:" domain="[]"
+							context="{'group_by':'directions'}" /-->
+						<filter string="Doctor" domain="[]"
+							context="{'group_by':'doctor'}" />
+						<filter string="Patient" domain="[]"
+							context="{'group_by':'patient_id'}" />
+						<filter string="EVA" domain="[]"
+							context="{'group_by':'eva_value'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		
+<!--act_window domain="[('patient_id', '=', active_id)]" id="act_patient_dental_history" name="Historia Dental" res_model="oemedical.patient.dental" src_model="oemedical.patient"/-->
+
+		<record model="ir.actions.act_window" id="act_open_oemedical_patient_dental_view">
+			<field name="name">Patient dentaltherapy</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">oemedical.patient.dental</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,graph</field>
+			<!--field name="view_id" ref="view_oemedical_patient_dental_graph"/-->
+			<field name="search_view_id" ref="view_oemedical_patient_dental_search" />
+			<field name="domain">[]</field>
+			<field name="context">{}</field>
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_patient_dental_view_form">
+			<field name="act_window_id" ref="act_open_oemedical_patient_dental_view" />
+			<field name="sequence" eval="15" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_oemedical_patient_dental_form" />
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_patient_dental_view_tree">
+			<field name="act_window_id" ref="act_open_oemedical_patient_dental_view" />
+			<field name="sequence" eval="10" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_oemedical_patient_dental_tree" />
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="act_oemedical_patient_dental_graph">
+            <field name="sequence" eval="16"/>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="view_oemedical_patient_dental_graph"/>
+            <field name="act_window_id" ref="act_open_oemedical_patient_dental_view"/>
+        </record>
+
+
+	</data>
+</openerp>

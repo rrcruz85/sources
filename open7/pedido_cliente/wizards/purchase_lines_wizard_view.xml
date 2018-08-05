@@ -7,23 +7,26 @@
             <field name="model">purchase.lines.wzd</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Purchase Lines" editable="top"> <!-- colors="red: request_qty &gt; total_qty; green: request_qty == total_qty; MediumVioletRed : request_qty &lt; total_qty"-->
+                <tree string="Purchase Lines" editable="top" colors="red: box_id == False; green: box_id != False"> 
                     <field name="detalle_id" invisible="1"/>
                     <field name="pedido_id" invisible="1"/>
                     <field name="request_qty" invisible="1"/>
+                    <field name="box_id" invisible="1"/>
+                    <field name="line_number"/>
                     <field name="line"/>
-                    <field name="type"/>
+                    <field name="type"/>                   
                     <field name="supplier_id"/>
                     <field name="product_id"/>
                     <field name="variant_id"/>
                     <field name="lenght"/>
                     <field name="subclient_id"/>
-                    <field name="total_qty_purchased"/>
+                    <field name="total_qty_purchased"/>                    
                     <field name="bunch_type"/>
-                    <field name="bunch_per_box"/>
-                    <field name="uom"/>
+                    <field name="bunch_per_box"/>                    
+                    <field name="stems"/>
+                    <field name="uom" invisible="1"/>
                     <field name="qty"/>
-                    <field name="stimated_qty"/>
+                    <field name="stimated_qty" sum="Total Boxes"/>
                     <field name="purchase_price"/>
                     <field name="farm_total" sum="Total Farm"/>
                     <field name="sale_price"/>
@@ -31,12 +34,13 @@
                     <field name="profit" sum="Total Profit"/>
                     <field name="origin_id"/>
                     <field name="sucursal_id"/>
+                    <button name="split_purchase_line"  context ="{'detalle_id':detalle_id}" string="Split Line" type="object" icon="gtk-justify-center"/>
                     <button name="edit_lines" string="Edit" type="object" icon="gtk-edit"/>
                     <button name="delete_lines" string="Delete" type="object" icon="gtk-close"/>
                 </tree>
             </field>
         </record>
-
+     
         <record id="view_detalle_line_wzd_form" model="ir.ui.view">
             <field name="name">detalle.line.wzd.form</field>
             <field name="model">detalle.line.wzd</field>
@@ -49,7 +53,7 @@
                             <field name="cliente_id" invisible="1"/>
                             <field name="supplier_ids" invisible="1"/>
                             <newline/>
-                            <field name="type" required="1"/>
+                            <field name="type" required="1"/>                            
                             <newline/>
                             <field name="supplier_id" context="{'default_supplier': True, 'default_customer': False,'get_supplier_ids' : supplier_ids}"
                                    colspan="4" required="1" domain="[('supplier','=',True)]"/>
@@ -108,5 +112,71 @@
                 </form>
             </field>
         </record>
+
+        <record id="view_split_purchase_line_wzd_form" model="ir.ui.view">
+            <field name="name">split.purchase.line.wzd.form</field>
+            <field name="model">split.purchase.line.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Detail Bunches" version="7.0">
+                    <sheet>
+                        <field name="detalle_id" invisible="1"/>                        
+                        <group col="8" colspan="8"> 
+                            <h2>Purchase Line</h2> 
+                            <newline/>                         
+                            <field name="parent_line_ids" nolabel ="1" readonly="1" editable="bottom">
+                                <tree string="Purchase Line">
+                                    <field name="type"/>
+                                    <field name="supplier_id"/>
+                                    <field name="product_id"/>
+                                    <field name="variant_id"/>
+                                    <field name="length"/>
+                                    <field name="qty"/>
+                                    <field name="bunch_per_box"/>
+                                    <field name="bunch_type"/>
+                                    <field name="stems"/>
+                                    <field name="qty_uom"/>
+                                </tree> 
+                                <form string="Purchase Line">
+                                    <field name="type"/>
+                                    <field name="supplier_id"/>
+                                    <field name="product_id"/>
+                                    <field name="variant_id"/>
+                                    <field name="length"/>
+                                    <field name="qty"/>
+                                    <field name="bunch_per_box"/>
+                                    <field name="bunch_type"/>
+                                    <field name="qty_uom"/>
+                                </form>                                  
+                            </field>
+                            <newline/>
+                            <h2>Detail Lines</h2>
+                            <newline/>   
+                            <field name="line_ids" nolabel ="1" editable="bottom" context="{'detalle_id': detalle_id}">
+                                <tree string="Lines" editable="bottom">
+                                    <field name="detalle_id" invisible="1"/>
+                                    <field name="type" readonly="1"/>
+                                    <field name="supplier_id" readonly="1"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="variant_id" domain="[('product_id','=',product_id)]" required="1" on_change="onchange_variant_id(detalle_id,supplier_id,product_id,variant_id)"/>
+                                    <field name="length_id" required="1" on_change="onchange_length_id(length_id)" options="{'no_open': True}"/>
+                                    <field name="purchase_price" required="1"/>  
+                                    <field name="bunches" required="1" on_change="onchange_bunches(stems_per_bunch, box_qty, bunches)"/>   
+                                    <field name="stems_per_bunch" readonly="1"/>   
+                                    <field name="box_qty" readonly="1" on_change="onchange_bunches(stems_per_bunch, box_qty, bunches)"/>   
+                                    <field name="stems" readonly="1"/>                                                                         
+                                </tree>                                                                  
+                            </field>                                                  
+                        </group>
+                        <footer>
+                            <button name="save" string="Save" type="object" class="oe_highlight"/>
+                            or
+                            <button string="Cancel" class="oe_link" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
     </data>
 </openerp>

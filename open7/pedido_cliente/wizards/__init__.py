@@ -5,5 +5,4 @@ import generate_request_wizard
 import generate_invoice_wizard
 import generate_client_invoice_wizard
 import wizard_to_print_invoice_packing
-import confirm_invoice_wizard
-import confirm_client_invoice_wizard
+import group_lines_wizard

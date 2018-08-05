@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+    
+        <!-- FORM VIEW INHERIT -->
+        <record id="oemedical_report_patient_view_form_inherit_2" model="ir.ui.view">
+            <field name="name">oemedical_report_patient_view_form_inherit_2</field>
+            <field name="model">oemedical.patient</field>
+            <field name="inherit_id" ref="oemedical_pre_posoperatorio_report.oemedical_report_patient_view_form_inherit"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name='evolution_question_ids' position='attributes'>
+	            	    <attribute name='context'>{'patient_id': active_id}</attribute>
+	            	</field>
+                </data>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

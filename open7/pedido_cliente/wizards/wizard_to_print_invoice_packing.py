@@ -24,10 +24,11 @@ class wizard_to_print_movements(osv.osv_memory):
             context = {}
 
         wizard = self.browse(cr, uid, ids[0], context)
-
-        p_ids = self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', wizard.pedido_id.id)])
-        if not p_ids:
-            raise osv.except_osv('Error',"Para el pedido seleccionado no se ha confirmado ninguna linea de factura a los proveedores.")
+        #p_ids = self.pool.get('confirm.invoice').search(cr, uid, [('pedido_id', '=', wizard.pedido_id.id)])
+        #if not p_ids:
+        #    raise osv.except_osv('Error',"Para el pedido seleccionado no se ha confirmado ninguna linea de factura a los proveedores.")
+        #elif not self.pool.get('confirm.invoice.line').search(cr, uid, [('invoice_id', 'in', p_ids)], count=True):
+        #    raise osv.except_osv('Error',"Para el pedido seleccionado no se ha confirmado ninguna linea de factura a los proveedores.")
 
         datas = {
             'make_by': wizard.make_by,

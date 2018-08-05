@@ -13,16 +13,20 @@
     'depends': ['base'],
 
     'data': [
-
-
-        # Templates...
-        'static/src/xml/assets_backend.xml',
-
-
+        'views/test_module_view.xml',
+        'views/test_module_menuitem.xml',
     ],
 
     'qweb': [
-        'static/src/xml/pos.xml',
+        'static/src/xml/test.xml',
+    ],
+
+    'css': [
+         'static/src/css/styles.css',
+    ],
+
+    'js': [
+        'static/src/css/widgets.js',
     ],
 
     'demo':[],

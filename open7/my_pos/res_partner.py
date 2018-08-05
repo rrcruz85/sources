@@ -9,27 +9,18 @@ _logger = logging.getLogger('INFO')
 
 class res_partner(osv.Model):
     _inherit = 'res.partner'
-    
-#    def create(self, cr, uid, vals, context={}):
-#        i=1
-#        while i<2000:
-#            res_id = super(res_partner, self).create(cr, uid, vals, context)
-#            _logger.info(i)
-#            i+=1
-#        
-#        return res_id
-    
+
     def write_partner_from_pos(self, cr, uid, cid, cname, czip, cphone, cmobile, cemail, cid_type, cid_number, context=None):
         if context is None: context = {}
         client_id = int(cid)
         
         try:
             if client_id != 0 and client_id != -1:
-                self.write(cr, uid, client_id, {'name': cname, 'street': czip, 'phone': cphone, 'mobile': cmobile, 'email': cemail, 'ced_ruc': cid_number, 'type_ced_ruc': cid_type}, context=context)
+                self.write(cr, uid, client_id, {'name': cname, 'street': czip, 'phone': cphone, 'mobile': cmobile, 'email': cemail, 'ced_ruc': cid_number, 'type_ced_ruc': cid_type, 'tipo_persona': '9' if cid_type == 'ruc' else '1'}, context=context)
                 idClient = client_id
             else:
                 company_id =  self.pool.get('res.company')._company_default_get(cr, uid, 'res.partner', context=context),
-                idClient = self.create(cr, uid, {'name': cname, 'street': czip, 'phone': cphone, 'mobile': cmobile, 'email': cemail, 'ced_ruc': cid_number, 'type_ced_ruc': cid_type, 'company_id': company_id}, context=context)
+                idClient = self.create(cr, uid, {'name': cname, 'street': czip, 'phone': cphone, 'mobile': cmobile, 'email': cemail, 'ced_ruc': cid_number, 'type_ced_ruc': cid_type, 'tipo_persona': '9' if cid_type == 'ruc' else '1' ,'company_id': company_id}, context=context)
         except Exception, e:
             cr.rollback()
             return _('Error! %s') % (str(e))
@@ -46,7 +37,7 @@ class res_partner(osv.Model):
             if partner.ced_ruc == '9999999999999':
                 return True
             if partner.tipo_persona == '9':
-                return self._check_ruc(partner.ced_ruc, partner.property_account_position.name)
+                return self._check_ruc(partner.ced_ruc, partner.property_account_position.name if partner.property_account_position else '')
             else:
                 if partner.ced_ruc[:2] == '51':
                     return True
@@ -107,15 +98,10 @@ class res_partner(osv.Model):
         'ced_ruc'               : fields.char('No. Identificacion', size = 15, required=False, readonly=False),
         'type_ced_ruc'          : fields.selection([('ruc', 'Ruc'), ('cedula', 'Cedula'), ('pasaporte', 'Pasaporte')], 'Tipo identificacion', select=True, readonly=False),
         'tipo_persona'               : fields.char('Tipo Persona',size = 15,  required=False, readonly=False),
-
-    }
-
-    _defaults = {
-        'tipo_persona': '9',
     }
 
     _constraints = [
-        (_check_ced_ruc, _('Error: Invalid value for the identification number...'), ['ced_ruc']),
+        (_check_ced_ruc, _('Error: Cedula o Ruc incorrecto'), ['ced_ruc']),
     ]
 
 res_partner()

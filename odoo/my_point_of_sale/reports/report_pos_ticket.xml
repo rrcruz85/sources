@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+        <template id="report_pos_ticket">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                        <div class="page">
+                            <div>
+                                <div class="text-center">
+                                    <span>Nota de Venta</span><br/>
+                                    <span t-field="o.date_order"/> <span t-field="o.pos_reference"/>
+                                </div>
+                                <br/>
+                                <div  t-if="o.partner_id">
+                                    <span t-if="o.partner_id.name" t-field="o.partner_id.name"/><br/>
+                                    <span t-if="o.partner_id.ced_ruc"> Id:<span t-field="o.partner_id.ced_ruc"/></span><br/>
+                                    <span t-if="o.partner_id.contact_address" t-field="o.partner_id.contact_address"/><br/>
+                                    <span t-if="o.partner_id.email" t-field="o.partner_id.email"/><br/>
+                                    <span t-if="o.partner_id.phone" t-field="o.partner_id.phone"/><br/>
+                                </div>
+                                <br/>
+                                <div>
+                                    <span t-field="o.user_id.company_id.name"/><br/>
+                                    Phone: <span t-field="o.user_id.company_id.phone"/><br/>
+                                    User: <span t-field="o.user_id.name"/><br/>
+                                    Shop: <span t-field="o.location_id.name"/><br/>
+                                </div>
+                                <br/>
+                                <div>
+                                    <table class="table table-condensed">
+                                           <thead>
+                                               <tr>
+                                                   <th>Product</th>
+                                                   <th class="text-right">Quantity</th>
+                                                   <th class="text-right">Price</th>
+                                               </tr>
+                                           </thead>
+                                           <tbody>
+                                               <tr t-foreach="o.lines" t-as="line">
+                                                   <td><span t-field="line.product_id"/></td>
+                                                   <td class="text-right">
+                                                       <t t-if="o.state != 'cancel' and o.statement_ids">
+                                                           <span t-field="line.qty"/>
+                                                       </t>
+                                                   </td>
+                                                   <td class="text-right">
+                                                       <t t-if="o.state != 'cancel' and o.statement_ids">
+                                                           <span t-esc="line.price_subtotal"/> <span t-if="line.company_id.currency_id" t-esc="line.company_id.currency_id.symbol"/>
+                                                       </t>
+                                                       <t t-if="line.discount != 0.0">
+                                                           <span t-esc="line.discount"/>%
+                                                       </t>
+                                                   </td>
+                                               </tr>
+                                           </tbody>
+                                    </table>
+                                </div>
+                                <br/>
+                                <div>
+                                    <table class="table">
+                                        <tr>
+                                            <td>Subtotal:</td><td></td>
+                                            <td class="text-right"> <span t-field="o.amount_untaxed"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></td>
+                                        </tr>
+                                        <tr t-if="o.amount_card_comition &gt; 0">
+                                            <td>Card Comition:</td><td></td>
+                                            <td class="text-right"> <span t-field="o.amount_card_comition"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></td>
+                                        </tr>
+                                        <tr t-if="o.session_id.config_id.iva_compensation &gt; 0">
+                                            <td>Iva Compensation:</td><td></td>
+                                            <td class="text-right"> <span t-field="o.amount_iva_compensation"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></td>
+                                        </tr>
+                                        <!--
+                                        <tr>
+                                            <td>Iva 0:</td><td></td>
+                                            <td class="text-right"> 0.00 <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></td>
+                                        </tr>
+                                        -->
+                                        <tr>
+                                            <td>Taxes:</td><td></td>
+                                            <td class="text-right"> <span t-field="o.amount_tax"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Discount:</td><td></td>
+                                            <td class="text-right"> <span t-field="o.total_discount"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Total:</b></td><td></td>
+                                            <td class="text-right"><b><span t-field="o.amount_total"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></b></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <br/>
+                                <div>
+                                    <table class="table table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>Payment Mode</th>
+                                                <th class="text-right">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="o.paymentLines" t-as="d">
+                                                <td>
+                                                    <span t-esc="d.name"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="d.amount"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Change:</b></td>
+                                                <td class="text-right">
+                                                    <b><span t-esc="o.total_change"/> <span t-if="o.company_id.currency_id" t-esc="o.company_id.currency_id.symbol"/></b>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div t-if = "o.company_id.warranty">
+                                    <h5><b><u>Warranty:</u></b></h5>
+                                    <small  t-esc="o.company_id.warranty">
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                </t>
+            </t>
+        </template>
+
+        <report
+                id="action_report_pos_ticket"
+                string="Pos Ticket"
+                model="pos.order"
+                report_type="qweb-pdf"
+                name="my_point_of_sale.report_pos_ticket"
+                file="my_point_of_sale.report_pos_ticket"
+        />
+
+    </data>
+</openerp>

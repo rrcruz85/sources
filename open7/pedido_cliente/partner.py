@@ -89,7 +89,7 @@ class res_partner(osv.osv):
             'sale_request_ids'      : fields.one2many('sale.request', 'partner_id', 'Ordenes de Ventas'),
             'purchase_template_ids' : fields.one2many('purchase.request.template', 'partner_id', 'Plantillas de Compras'),
             'sub_client_ids'        : fields.many2many('res.partner', 'subclient_relation', 'supplier_id', 'client_id', 'Subclientes'),
-            'tipo_neg_id'        : fields.many2one('res.partner.tipo.negociacion','Tipo Negociacion'),
+            'tipo_neg_id'           : fields.many2one('res.partner.tipo.negociacion','Tipo Negociacion'),
             'tipo_flete'            : fields.selection([('cf_f_0', 'C&F Flete Cero'),('fob_f_0', 'FOB Flete Cero'),('fob_f_p', 'FOB Flete Pagado')], string = 'Flete'),
     }
 
@@ -206,15 +206,15 @@ class sale_request_product_variant(osv.osv):
                                                     ('QB', 'QB'),
                                                     ('OB', 'OB')], string = 'UOM', help='Unit of Measure'),
         'subclient_id'          : fields.many2one('res.partner', string ='SubClient'),
-        'sale_price'         : fields.function(_get_info, type='float', string='Sale Price', multi = '_data'),
-        'str_sale_price'         : fields.function(_get_info, type='char', string='Sale Prices', multi = '_data'),
-        'lenghts'         : fields.function(_get_info, type='char', string='Length', multi = '_data'),
+        'sale_price'            : fields.function(_get_info, type='float', string='Sale Price', multi = '_data'),
+        'str_sale_price'        : fields.function(_get_info, type='char', string='Sale Prices', multi = '_data'),
+        'lenghts'               : fields.function(_get_info, type='char', string='Length', multi = '_data'),
         'stimated_boxs'         : fields.function(_get_info, type='integer', string='Stimated Boxs', multi = '_val'),
         'stimated_stems'        : fields.function(_get_info, type='integer', string='Stimated Stems', multi = '_val'),
         'stimated_qty'          : fields.function(_get_info, type='char', string='Stimated Qty', multi = '_val'),
         'qty'                   : fields.function(_get_info, type='char', string='Qty', multi = '_val'),
         'full_boxes'            : fields.function(_get_info, type='float', string='Full Boxes', multi = '_data'),
-        'bxs_qty'            : fields.function(_get_info, type='char', string='BXS', multi = '_data'),
+        'bxs_qty'               : fields.function(_get_info, type='char', string='BXS', multi = '_data'),
     }
 	
     def on_change_vals(self, cr, uid, ids, is_box_qty, box_qty, tale_qty, bunch_per_box, bunch_type, uom, context=None):
@@ -360,7 +360,7 @@ class purchase_request_product_variant(osv.osv):
         'template_id'           : fields.many2one('purchase.request.template', string ='Plantilla', required = True),
         'product_id'            : fields.many2one('product.product','Product'),
         'variant_id'            : fields.many2one('product.variant','Variety'),
-        'cliente_id'           : fields.related('template_id','client_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
+        'cliente_id'            : fields.related('template_id','client_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
         'subclient_id'          : fields.many2one('res.partner', string ='SubCliente'),
 
         'length_ids'            : fields.one2many('purchase.request.product.variant.length','variant_id','Length'),
@@ -373,15 +373,15 @@ class purchase_request_product_variant(osv.osv):
                                                     ('HB', 'HB'),
                                                     ('QB', 'QB'),
                                                     ('OB', 'OB')],string="UOM", help = 'Unit of Measure'),
-        'purchase_price'         : fields.function(_get_info, type='float', string='Purchase Price', multi = '_data'),
-        'str_purchase_price'         : fields.function(_get_info, type='char', string='Purchase Prices', multi = '_data'),
-        'lenghts'         : fields.function(_get_info, type='char', string='Length', multi = '_data'),
+        'purchase_price'        : fields.function(_get_info, type='float', string='Purchase Price', multi = '_data'),
+        'str_purchase_price'    : fields.function(_get_info, type='char', string='Purchase Prices', multi = '_data'),
+        'lenghts'               : fields.function(_get_info, type='char', string='Length', multi = '_data'),
         'stimated_boxs'         : fields.function(_get_info, type='integer', string='Stimated Boxs', multi = '_data'),
         'stimated_stems'        : fields.function(_get_info, type='integer', string='Stimated Stems', multi = '_data'),
         'request_qty'           : fields.function(_get_info, type='char', string='Qty', multi = '_data'),
         'stimated_qty'          : fields.function(_get_info, type='char', string='Stimated Qty', multi = '_data'),
         'full_boxes'            : fields.function(_get_info, type='float', string='Full Boxes', multi = '_data'),
-        'bxs_qty'            : fields.function(_get_info, type='char', string='BXS', multi = '_data'),
+        'bxs_qty'               : fields.function(_get_info, type='char', string='BXS', multi = '_data'),
     }
 	
     def on_change_vals(self, cr, uid, ids, is_box_qty, box_qty, tale_qty, bunch_per_box, bunch_type, uom, context=None):
@@ -425,13 +425,14 @@ purchase_request_product_variant()
 class purchase_request_product_variant_length(osv.osv):
     _name = 'purchase.request.product.variant.length'
     _description = 'Variety Length'
-
+    _rec_name = 'length'
+    
     _columns = {
         'variant_id'            : fields.many2one('purchase.request.product.variant','Variety'),
-        'length'           : fields.char(string='Length', size = 128),
-        'purchase_price'            : fields.float(string='Purchase Price'),
+        'length'                : fields.char(string='Length', size = 128),
+        'purchase_price'        : fields.float(string='Purchase Price'),
 	}
-
+    
     _defaults = {
         'variant_id'     :  lambda self, cr, uid, context : context['variant_id'] if context and 'variant_id' in context else None,
     }

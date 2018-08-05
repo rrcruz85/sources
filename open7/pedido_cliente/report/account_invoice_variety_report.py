@@ -98,15 +98,15 @@ class AccountInvoiceVarietyReport(report_rml):
                                 <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,-1" thickness="0.1"/>
                                 <lineStyle kind="LINEAFTER" colorName="#000000" start="-1,0" stop="-1,-1" thickness="0.1"/>
 
-                                <blockSpan start="0,0" stop="0,1"/>
+                                <blockSpan start="0,0" stop="0,0"/>
                                 <blockSpan start="2,0" stop="3,0"/>
-                                <blockSpan start="4,0" stop="4,1"/>
-                                <blockSpan start="5,0" stop="5,1"/>
-                                <blockSpan start="6,0" stop="6,1"/>
-                                <blockSpan start="7,0" stop="7,1"/>
-                                <blockSpan start="8,0" stop="8,1"/>
-                                <blockSpan start="9,0" stop="9,1"/>
-                                <blockSpan start="10,0" stop="10,1"/>
+                                <blockSpan start="4,0" stop="4,0"/>
+                                <blockSpan start="5,0" stop="5,0"/>
+                                <blockSpan start="6,0" stop="6,0"/>
+                                <blockSpan start="7,0" stop="7,0"/>
+                                <blockSpan start="8,0" stop="8,0"/>
+                                <blockSpan start="9,0" stop="9,0"/>
+                                <blockSpan start="10,0" stop="10,0"/>
                             </blockTableStyle>
 
                             <blockTableStyle id="TableX">
@@ -164,6 +164,8 @@ class AccountInvoiceVarietyReport(report_rml):
                             <paraStyle name="P8_BOLD_CENTER" fontName="Helvetica-Bold" fontSize="8.0" alignment="CENTER"/>
 
                             <paraStyle name="P6_BOLD_CENTER_TITLE" fontName="Helvetica-Bold" fontSize="4.0" leading="4" alignment="CENTER"/>
+                            <paraStyle name="P6_BOLD_JUSTIFY_TITLE" fontName="Helvetica-Bold" fontSize="4.0" leading="4" alignment="JUSTIFY"/>
+
                             <paraStyle name="P6_BOLD_CENTER" fontName="Helvetica-Bold" fontSize="5.0" alignment="CENTER"/>
                             <paraStyle name="P6_BOLD_LEFT" fontName="Helvetica-Bold" fontSize="6.0" leading="5" alignment="LEFT"/>
                             <paraStyle name="P6_CENTER" fontName="Helvetica" fontSize="6.0" leading="5" alignment="CENTER"/>
@@ -257,208 +259,119 @@ class AccountInvoiceVarietyReport(report_rml):
                             </tr>
                         </blockTable>"""
 
-            rml += """  <blockTable colWidths="500.0" rowHeights="12.0" style="LEFT_RIGHT">
+            rml += """<blockTable colWidths="500.0" rowHeights="12.0" style="LEFT_RIGHT">
                             <tr><td><para style="P8_BOLD_LEFT">COUNTRY OF ORIGIN """ + ustr('(País de Origen): ') + """ ECUADOR</para></td></tr>
                         </blockTable>"""
 
-            rml += """  <blockTable colWidths="85.0,55.0,20.0,20.0,40.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="12.0,12.0" style="TableHeader">
+            rml += """<blockTable colWidths="85.0,55.0,20.0,20.0,40.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="12.0,12.0" style="TableHeader">
                             <tr>
                                 <td><para style="P6_BOLD_CENTER_TITLE">VARIETY</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">LENGTH</para></td>
+                                <td><para style="P6_BOLD_JUSTIFY_TITLE">PIECES/PACKING</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">UNITS X HB</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">STEMS TOTAL</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">BUNCH TOTAL</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">UNITS</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">STEMS</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">BUNCH</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">DESCRIPTION</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">CLIENT REMARKS</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">UNIT PRICE</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">TOTAL PRICE</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">CLIENT</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">UNIT</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">TOTAL</para></td>
                             </tr>
                             <tr>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">CM</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">HB</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">QB</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">HB</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">x HB</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">TOTAL</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">TOTAL</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">REMARKS</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">PRICE</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">PRICE</para></td>
                             </tr>
                         </blockTable>"""
 
-            total_farm_stems = 0
+            cr.execute("""select *,
+                                coalesce((select sum(case when t."type" = 'percent' then t.amount * lines.stems else t.amount end)
+                                from product_taxes_rel ptt
+                                inner JOIN account_tax t on ptt.tax_id = t.id
+                                where ptt.prod_id = lines.product_id), 0) as taxes
+                                from (
+                                SELECT
+                                v."name" as variety,
+                                "length",
+                                sum(case
+                                when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
+                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 4)) end)
+                                else 0 end) as hb,
+                                sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 4 end)
+                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
+                                else 0 end) as qb,
+                                (select sum(dl.bunch_per_box * dl.bunch_type::int) from detalle_lines dl where pedido_id = %s) as units_per_hb,
+                                sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
+                                sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box  else dl.qty/dl.bunch_type::FLOAT end) as bunch,
+                                min(case when p."type" = 'standing_order' then 'Standing Order' else 'Open Market' end) as Descripcion,
+                                pp."name" as subclient,
+                                sum(case when dl.is_box_qty = TRUE then (dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price)::FLOAT else (dl.qty * dl.sale_price)::FLOAT end)/
+                                sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as unit_price,
+                                sum(case when dl.is_box_qty = TRUE then (dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price)::FLOAT else (dl.qty * dl.sale_price)::FLOAT end) as total,
+                                min(dl.product_id) as product_id,
+                                dl.group_id
+                                from
+                                detalle_lines dl on dl.detalle_id = dl."id"
+                                inner join product_variant v on v."id" = dl.variant_id
+                                inner join pedido_cliente p on p.id = dl.pedido_id
+                                LEFT JOIN res_partner pp on dl.subclient_id = pp."id"
+                                where dl.pedido_id = %s
+                                GROUP BY v."name", dl."length",pp."name",dl.group_id
+                                order by pp."name",v."name") lines""", (pedido.id, pedido.id,))
+
+            lines = cr.fetchall()
+
+            total_hb = 0
+            total_qb = 0
             total_stems = 0
-
-            total_farm_bunch = 0.0
-            total_bunch = 0.0
-
-            total_fb, total_hb, total_qb, total_price = 0.0, 0.0, 0.0, 0.0
-            summary = {}
-            total_tax = 0.0
-            last_supplier_name = ''
-
-            subtotal_hb, subtotal_qb = 0.0, 0.0
-            subtotal_stems, subtotal_bunchcant = 0.0, 0.0
-            subtotal_amount = 0.0
-
-            invoice_obj = pooler.get_pool(cr.dbname).get('confirm.invoice')
-            invoices = invoice_obj.search(cr, uid, [('pedido_id', '=', pedido.id)])
-            invoice_line_obj = pooler.get_pool(cr.dbname).get('confirm.invoice.line')
-            invoices_ids = invoice_line_obj.search(cr, uid, [('invoice_id', 'in', invoices)])
-
-            data_to_print = []
-            uom = {'FB':1,'HB':2,'QB':4,'OB':8}
-            for line in invoice_line_obj.browse(cr, uid, invoices_ids):
-                stems_cant = line.qty * line.bunch_per_box * int(line.bunch_type) if line.is_box_qty else line.qty
-                bunch_cant = float(stems_cant) / int(line.bunch_type)
-                cant = float(stems_cant) / (int(line.bunch_type) * line.bunch_per_box)
-                qb_cont, hb_cont = 0.0, 0.0
-
-                bxs_qty = line.qty if line.is_box_qty else (1.0 if not (line.qty / (int(line.bunch_type) * line.bunch_per_box)) else (float(line.qty) / (int(line.bunch_type) * line.bunch_per_box)))
-                full_boxes = float(bxs_qty)/uom[line.uom]
-
-                if not line.is_box_qty:
-                    if line.uom == 'QB':
-                        qb_cont = cant
-                    elif line.uom == 'HB':
-                        hb_cont = cant
-                    elif line.uom == 'FB':
-                        hb_cont = cant * 2
-                    else:
-                        hb_cont = cant * 4
-                else:
-                    if line.uom == 'HB':
-                        hb_cont = line.qty
-                    elif line.uom == 'QB':
-                        qb_cont = line.qty
-                    elif line.uom == 'FB':
-                        hb_cont = line.qty * 2
-                    else:
-                        hb_cont = line.qty / 4
-
-                total_farm_bunch += line.qty if line.is_box_qty else float(line.qty) / int(line.bunch_type)
-                total_tmp = line.qty * int(line.bunch_type) * line.bunch_per_box * line.sale_price if line.is_box_qty else line.qty * line.sale_price
-
-                total_bunch += bunch_cant
-                total_price += total_tmp
-                total_farm_stems += stems_cant
-                total_stems += stems_cant
-
-                total_hb += hb_cont
-                total_qb += qb_cont
-
-                #units_x_hb = stems_cant / hb_cont if hb_cont != 0 else 0
-                units_x_hb =line.bunch_type
-
-                for tax in line.product_id.taxes_id:
-                    if tax.type == 'percent':
-                        total_tax += tax.amount * total_tmp
-                    elif tax.type == 'fixed':
-                        total_tax += tax.amount
-
-                if not len(data_to_print):
-                    data_to_print.append([
-                        line.supplier_id,
-                        line.variant_id,
-                        line.length,
-                        hb_cont,
-                        units_x_hb,
-                        stems_cant,
-                        bunch_cant,
-                        pedido.partner_id,
-                        line.sale_price,
-                        total_tmp,
-                        full_boxes,
-                        qb_cont,
-                    ])
-                else:
-                    exist = False
-                    for _data in data_to_print:
-                        y = _data[1].id == line.variant_id.id
-                        z = _data[2] == line.length
-
-                        if y and z:
-                            _data[3] += hb_cont
-                            _data[4] += units_x_hb
-                            _data[5] += stems_cant
-                            _data[6] += bunch_cant
-                            _data[9] += total_tmp
-                            _data[10] += full_boxes
-                            _data[11] += qb_cont
-                            exist = True
-                            break
-
-                    if not exist:
-                        data_to_print.append([
-                            line.supplier_id,
-                            line.variant_id,
-                            line.length,
-                            hb_cont,
-                            units_x_hb,
-                            stems_cant,
-                            bunch_cant,
-                            pedido.partner_id,
-                            line.sale_price,
-                            total_tmp,
-                            full_boxes,
-                            qb_cont
-                        ])
-
-            last_variant = ''
-            subtotal_hb, subtotal_qb, subtotal_bunchcant, subtotal_amount = 0.0, 0.0, 0.0, 0.0
-
-            for data in data_to_print:
-                if last_variant == '':
-                    last_variant = data[1].name if data[1].name else ''
-                elif last_variant != '' and last_variant != data[1].name:
-                    last_variant = data[1].name
-                    rml += """
-                        <blockTable colWidths="85.0,55.0,20.0,20.0,40.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
-                            <tr>
-                                <td><para style="P5_COURIER_BOLD_JUSTIFY">""" + ustr('Total farm') + """</para></td>
-                                <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_hb,2)) + """</para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_qb,2)) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_stems,2)) + """</para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_bunchcant,2)) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_amount,2)) + """</para></td>
-                            </tr>
-                        </blockTable>"""
-
-                    subtotal_hb = 0.0
-                    subtotal_qb = 0.0
-                    subtotal_stems = 0.0
-                    subtotal_bunchcant = 0.0
-                    subtotal_amount = 0.0
-
-                subtotal_hb += data[3]
-                subtotal_qb += data[11]
-                subtotal_stems += int(data[5])
-                subtotal_bunchcant += int(data[6])
-                subtotal_amount += float(data[9]) if isinstance(data[9], float) else 0.0
-
+            total_bunch = 0
+            total_price = 0
+            total_taxes = 0
+            
+            for line in lines:                
+                total_bunches = sum(map(lambda r: r[6], filter(lambda r: r[12] == line[12], lines))) if line[12] else 0               
+                variety = line[0]
+                length = line[1]
+                qb_cont = line[3]
+                unit_per_hb = line[4]
+                stems = line[5]
+                bunch = line[6]
+                description = line[7]
+                subclient = line[8]
+                sale_price = line[9]
+                total = line[10]                
+                total_qb += line[3]
+                total_stems += line[5]
+                total_price += line[10]
+                total_taxes += line[13]
+                line_hb =  line[6]/total_bunches if total_bunches else line[2]
+                total_hb += line_hb
+                total_bunch += bunch
+                
                 rml += """
                         <blockTable colWidths="85.0,55.0,20.0,20.0,40.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
                             <tr>
-                                <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(data[1].name if data[1].name else '')[0:25]) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + (ustr(data[2])[0:15]) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[3],2)) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[11],2)) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(int(data[4])) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[5],2)) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[6],2)) + """</para></td>
-                                <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(data[1].product_id.name)[0:20] if data[1].product_id and data[1].product_id.name else '') + """</para></td>
-                                <td><para style="P5_COURIER_JUSTIFY">""" + ustr(data[7].name or '') + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[8],2)) + """</para></td>
-                                <td><para style="P5_COURIER_CENTER">""" + str(round(data[9],2)) + """</para></td>
+                                <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(variety[0:25] if variety else '')) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + (ustr(length[0:15])) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(line_hb,2)) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(qb_cont,2)) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(int(unit_per_hb)) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(stems,2)) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(bunch,2)) + """</para></td>
+                                <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(description[0:20] if description else '')) + """</para></td>
+                                <td><para style="P5_COURIER_JUSTIFY">""" + ustr(subclient or '') + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(sale_price,2)) + """</para></td>
+                                <td><para style="P5_COURIER_CENTER">""" + str(round(total,2)) + """</para></td>
                             </tr>
                         </blockTable>"""
 
@@ -467,33 +380,15 @@ class AccountInvoiceVarietyReport(report_rml):
                             <tr>
                                 <td><para style="P5_COURIER_BOLD_JUSTIFY">""" + _('Total farm') + """</para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_hb,2)) + """</para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_qb,2)) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(total_hb,2)) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(total_qb,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_stems,2)) + """</para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_bunchcant,2)) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(total_stems,0)) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(total_bunch,2)) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(float(total_hb)/2 + float(total_qb)/4, 2)) + """ Full Boxes</para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_CENTER"></para></td>
-                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(subtotal_amount,2)) + """</para></td>
-                            </tr>
-                        </blockTable>"""
-
-            total_fb += float(total_hb)/2 + float(total_qb)/4
-
-            rml += """  <blockTable colWidths="85.0,55.0,20.0,20.0,40.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
-                            <tr>
-                                <td><para style="P6_BOLD_CENTER_TITLE">TOTAL</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_hb,2)) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_qb,2)) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_farm_stems,2)) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_farm_bunch,2)) + """</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_fb,2)) + """ Full Box</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">""" + str(round(total_price,2)) + """</para></td>
+                                <td><para style="P5_COURIER_BOLD_CENTER">""" + str(round(total_price,2)) + """</para></td>
                             </tr>
                         </blockTable>"""
 
@@ -523,12 +418,12 @@ class AccountInvoiceVarietyReport(report_rml):
                                         <tr>
                                             <td><para style="P6_LEFT">""" + ustr('TOTAL INVOICE') + """</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_price + total_tax,2)) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_price + total_taxes,2)) + """</para></td>
                                         </tr>
                                         <tr>
                                             <td><para style="P6_LEFT">I.V.A</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_tax,2)) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_taxes,2)) + """</para></td>
                                         </tr>
                                         <tr>
                                             <td><para style="P6_LEFT">SUBTOTAL</para></td>
@@ -546,7 +441,7 @@ class AccountInvoiceVarietyReport(report_rml):
                                         <tr>
                                             <td><para style="P6_LEFT">TOTAL</para></td>
                                             <td><para style="P6_LEFT_1">USD</para></td>
-                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_price + total_tax + flete_value,2)) + """</para></td>
+                                            <td><para style="P6_LEFT_1">""" + ustr('$') + str(round(total_price + total_taxes + flete_value,2)) + """</para></td>
                                         </tr>
                                     </blockTable>
                                 </td>
@@ -590,58 +485,54 @@ class AccountInvoiceVarietyReport(report_rml):
                                 <td></td>
                             </tr>"""
 
-            partner_obj = pooler.get_pool(cr.dbname).get('res.partner')
-            partner_ids = partner_obj.search(cr, uid, [])
-            partners = partner_obj.browse(cr, uid, partner_ids, context)
+            cr.execute(""" SELECT
+                                pp.name as farm,                                
+                                sum(case
+                                when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
+                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 4)) end)
+                                else 0 end) as hb,
+                                sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 4 end)
+                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
+                                else 0 end) as qb,   
+                                dl.group_id 
+                                from
+                                confirm_invoice_line cl
+                                inner join detalle_lines dl on dl.detalle_id = dl."id"                                
+                                inner join pedido_cliente p on p.id = dl.pedido_id
+                                LEFT JOIN res_partner pp on dl.supplier_id = pp."id"
+                                where dl.pedido_id = %s
+                                GROUP BY pp."name", dl.group_id 
+                                order by pp."name" """, (pedido.id,))
+            lines = cr.fetchall()
+            total_hb = 0
+            total_qb = 0
+            total_fb = 0
+            for line in lines:
+                hb = line[1]/2 if line[3] else line[1]
+                qb = line[2]/4 if line[3] else line[2]
+                total = line[1]/4 + line[2]/8 if line[3] else line[1]/2 + line[2]/4
+                total_hb += hb
+                total_qb += qb
+                total_fb += total
+                
+                rml += """<tr>"""
+                rml += """<td><para style="P6_CENTER">""" + ustr(line[0] or '') + """</para></td>"""
+                rml += """<td><para style="P6_CENTER">""" + (str(round(hb, 2))) + """</para></td>"""
+                rml += """<td><para style="P6_CENTER">""" + (str(round(qb, 2))) + """</para></td>"""
+                rml += """<td><para style="P6_CENTER">""" + (str(round(total, 2))) + """</para></td>"""
+                rml += """<td></td></tr>"""
 
-            summary = {}
-            last_supplier_name = ''
-            for line in pedido.line_ids:
-                qb_cont, hb_cont = 0.0, 0.0
-                if not line.detalle_id.is_box_qty:
-                    stems = int(str(line.total_qty_purchased).split(' ')[0])
-                    cant = float(stems) / (int(line.bunch_type) * line.bunch_per_box)
-                    if line.uom == 'QB':
-                        qb_cont = cant
-                    elif line.uom == 'HB':
-                        hb_cont = cant
-                    elif line.uom == 'FB':
-                        hb_cont = cant * 2
-                    else:
-                        hb_cont = cant * 4
-                else:
-                    if line.uom == 'HB':
-                        hb_cont = line.detalle_id.qty
-                    elif line.uom == 'QB':
-                        qb_cont = line.detalle_id.qty
-                    else:
-                        hb_cont = int(str(line.stimated_qty).split(' ')[0]) * 2
-
-                if last_supplier_name != line.supplier_id.name and not summary.get(line.supplier_id.id, False):
-                    summary[line.supplier_id.id] = [0.0, 0.0, 0.0]
-
-                summary[line.supplier_id.id][0] += hb_cont
-                summary[line.supplier_id.id][1] += qb_cont
-                summary[line.supplier_id.id][2] += float(hb_cont)/2 if hb_cont else float(qb_cont)/4
-
-            for partner in partners:
-                if summary.get(partner.id, False):
-                    res = summary[partner.id]
-                    rml += """<tr>"""
-                    rml += """<td><para style="P6_CENTER">""" + ustr(partner.name if partner.name else '') + """</para></td>"""
-                    for x in res:
-                        rml += """<td><para style="P6_CENTER">""" + (str(round(x,2)) if x else '') + """</para></td>"""
-                    rml += """<td></td></tr>"""
-
-            rml += """ <tr>
+            rml += """<tr>
                                 <td><para style="P6_CENTER">TOTAL</para></td>
                                 <td><para style="P6_CENTER">""" + str(round(total_hb,2)) + """</para></td>
                                 <td><para style="P6_CENTER">""" + str(round(total_qb,2)) + """</para></td>
-                                <td><para style="P6_CENTER">""" + str(round(float(total_fb),2)) + """</para></td>
+                                <td><para style="P6_CENTER">""" + str(round(total_fb ,2)) + """</para></td>
                                 <td></td>
                             </tr>"""
 
-            rml += """  </blockTable>"""
+            rml += """</blockTable>"""
 
             rml += """  </story>
                     </document>"""

@@ -15,9 +15,10 @@
         'views/res_partner_view.xml',
         'views/product_view.xml',
         'views/pos_view.xml',
-        'views/account_invoice_view.xml',
-        
+        'views/account_invoice_view.xml',        
         'reports/reports_menu.xml',
+		'reports/post_most_sold_product_report.xml',
+		'wizards/pos_most_sold_product_wzd.xml',
     ],
     'qweb': [
         'static/src/xml/pos.xml',

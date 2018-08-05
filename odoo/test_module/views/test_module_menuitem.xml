@@ -4,7 +4,8 @@
 
         <!-- Top menu item -->
         <menuitem name="Test Module" id="menu_test_module" sequence="60"/>
-        <menuitem id="menu_items" name="Items" parent="menu_test_module" sequence="1"/>
+        <menuitem id="menu_items" name="Actions" parent="menu_test_module" sequence="1"/>
+        <menuitem id="menu_show_template" name="Show Template" parent="menu_items" sequence="1" action="action_show_module"/>
 
     </data>
 </openerp>

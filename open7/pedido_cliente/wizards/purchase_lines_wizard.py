@@ -21,13 +21,22 @@
 ##############################################################################
 from osv import osv
 from osv import fields
-import math
 from openerp.tools.translate import _
 
 class puchase_lines_wzd(osv.osv_memory):
     _name = 'purchase.lines.wzd'
     _description = 'Purchase Lines'
-
+    
+    def search(self, cr, uid, args, offset=0, limit=None, order=None,context=None, count=False):
+        if context is None:
+            context = {}
+        ids = super(puchase_lines_wzd, self).search(cr, uid, args,offset,limit,order, context,count)
+        if 'lines_selected' in context and context['lines_selected']:
+            selected_lines = context['lines_selected'].split(',')
+            lines = self.read(cr, uid, ids, ['line_number'])
+            ids = [l['id'] for l in lines if l['line_number'] not in selected_lines]        
+        return ids
+    
     def _get_info(self, cr, uid, ids, field_name, arg, context):
         res = {}
         uom = {'FB':1,'HB':2,'QB':4,'OB':8}
@@ -38,17 +47,30 @@ class puchase_lines_wzd(osv.osv_memory):
             else:
                 res[obj.id]['total_qty_purchased'] = str(obj.purchased_qty) + ' Stems'
 
-            bxs_qty = obj.purchased_qty if obj.detalle_id.is_box_qty else (1 if not (obj.purchased_qty / (int(obj.bunch_type) * obj.bunch_per_box)) else (obj.purchased_qty / (int(obj.bunch_type) * obj.bunch_per_box)))
-            res[obj.id]['qty'] = str(bxs_qty) + ' ' + obj.uom
-            full_boxes = float(bxs_qty)/uom[obj.uom]
-            res[obj.id]['stimated_qty'] = full_boxes
+            if obj.detalle_id.agrupada:
+                cr.execute("select  sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(obj.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(obj.pedido_id.id) + 
+                           " and dl.supplier_id = " + str(obj.supplier_id.id) + " and dl.product_id = " + str(obj.product_id.id) +
+                           " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")
+                record = cr.fetchone()
+                totals = record[0] if record else 0
+                qty = (float(obj.bunch_per_box)/totals) * obj.detalle_id.qty if obj.detalle_id.is_box_qty else (float(obj.bunch_per_box)/totals)  
+                res[obj.id]['qty'] = str(round(qty, 2) if totals else 0) + ' ' + obj.uom
+                full_boxes = (round(qty, 2) if totals else 0)/uom[obj.uom]
+                res[obj.id]['stimated_qty'] = full_boxes
+            else:
+                bxs_qty = obj.purchased_qty if obj.detalle_id.is_box_qty else (1 if not (obj.purchased_qty /(int(obj.bunch_type) * obj.bunch_per_box)) else (obj.purchased_qty / (int(obj.bunch_type) * obj.bunch_per_box)))
+                res[obj.id]['qty'] = str(round(float(bxs_qty), 2)) + ' ' + obj.uom
+                full_boxes = round(float(bxs_qty)/uom[obj.uom], 2)
+                res[obj.id]['stimated_qty'] = full_boxes
         return res
 
     _columns = {
-        'line'                    : fields.integer(string='#', help = 'Request Line'),
+        'line_number'           : fields.char(string='#', size = 128, help = 'Line Number'),
+        'line'                  : fields.integer(string='Request Line', help = 'Request Line'),        
+        'box_id'                : fields.many2one('detalle.lines.box', 'Box',),
         'pedido_id'             : fields.many2one('pedido.cliente', 'Pedido',),
         'detalle_id'            : fields.many2one('detalle.lines', 'Detalle'),
-        'type'                    : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
+        'type'                  : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
         'supplier_id'           : fields.many2one('res.partner', 'Farm',),
         'product_id'            : fields.many2one('product.product', 'Product'),
         'variant_id'            : fields.many2one('product.variant', 'Variety'),
@@ -58,27 +80,62 @@ class puchase_lines_wzd(osv.osv_memory):
         'bunch_per_box'         : fields.integer(string='Bunch Per Box'),
         'request_qty'           : fields.integer(string='Request Qty'),
         'purchased_qty'         : fields.integer(string='Purchased Qty'),
+        'stems'                 : fields.integer(string='Stems'),
         'purchase_price'        : fields.char(size = 128, string= 'Purchase price'),
         'farm_total'            : fields.float(string= 'Farm total'),
         'sale_price'            : fields.char(size = 128, string= 'Sale price'),
         'total'                 : fields.float(string= 'Total'),
         'profit'                : fields.float(string= 'Profit'),
-        'is_purchase'        : fields.boolean(string= 'Purchase'),
+        'is_purchase'           : fields.boolean(string= 'Purchase'),
         'origin_id'             : fields.many2one('detalle.lines.origin', string='Origin'),
         'subclient_id'          : fields.many2one('res.partner', 'SubCliente'),
         'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
         'total_qty_purchased'   : fields.function(_get_info, type='char', string='Purchased Qty', multi="_vals"),
-        'qty'                        : fields.function(_get_info, type='char', string='BXS', multi = '_vals'),
-        'stimated_qty'          : fields.function(_get_info, type='float', string='Full Boxes', multi="_vals"),
+        'qty'                   : fields.function(_get_info, type='char', string='BXS', multi = '_vals'),
+        'stimated_qty'          : fields.function(_get_info, type='float', string='Full Boxes', multi="_vals"),              
     }
 
-    _order = "line"
+    _order = "line_number"
+    
+    def split_purchase_line(self, cr, uid, ids, *args):
+        
+        obj = self.browse(cr,uid,ids[0])
+        detalle = obj.detalle_id
+        
+        lengths = [l.length for l in detalle.length_ids]
+        bxs_qty = detalle.qty if detalle.is_box_qty else (1 if not int(detalle.qty / (detalle.bunch_type * detalle.bunch_per_box)) else int(detalle.qty / (detalle.bunch_type * detalle.bunch_per_box)))
+           
+        vals = [(0,0,{
+            'supplier_id'     : detalle.supplier_id.id if detalle.supplier_id else None,
+            'type'            : detalle.type,
+            'product_id'      : detalle.product_id.id,
+            'variant_id'      : detalle.variant_id.id,            
+            'length'          : ','.join(lengths),   
+            'qty'             : detalle.qty,         
+            'bunch_per_box'   : detalle.bunch_per_box,
+            'bunch_type'      : detalle.bunch_type,             
+            'qty_uom'         : str(bxs_qty) + ' ' + detalle.uom,
+            'stems'           : detalle.qty * detalle.bunch_per_box * detalle.bunch_type if detalle.is_box_qty else detalle.qty
+        })]
+        
+        context = {
+            'default_detalle_id'      : detalle.id,  
+            'default_parent_line_ids' : vals   
+        }   
+    
+        return {
+            'name': _("Detail Bunches"),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'split.purchase.line.wzd',
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+            'context': context,
+        }        
 
     def delete_lines(self, cr, uid, ids, *args):
         obj = self.browse(cr,uid,ids[0])
-        if obj.detalle_id.confirmada:
-            raise osv.except_osv('Error', "Esta linea de compra no puede ser borrada porque ya fue confirmada.")
-
+       
         self.pool.get('detalle.lines').unlink(cr, uid, [obj.detalle_id.id])
         return {
                 'name'      : 'Pedidos de Clientes',
@@ -92,9 +149,6 @@ class puchase_lines_wzd(osv.osv_memory):
     def edit_lines(self, cr, uid, ids, *args):
         obj = self.browse(cr,uid,ids[0])
         detalle = obj.detalle_id
-
-        if detalle.confirmada:
-            raise osv.except_osv('Error', "Esta linea de compra no puede ser modificada porque ya fue confirmada.")
 
         lengths = [(0,0,{'length': l.length, 'purchase_price': l.purchase_price}) for l in detalle.length_ids]
 
@@ -111,7 +165,7 @@ class puchase_lines_wzd(osv.osv_memory):
                             farm_ids.append(str(ll.variant_id.template_id.partner_id.id))
 
         context = {
-            'default_detalle_id': obj.detalle_id.id,
+            'default_detalle_id': obj.detalle_id.id,           
             'default_cliente_id': obj.detalle_id.pedido_id.partner_id.id,
             'default_supplier_id': detalle.supplier_id.id if detalle.supplier_id else None,
             'default_type': detalle.type,
@@ -145,7 +199,6 @@ class puchase_lines_wzd(osv.osv_memory):
 
 puchase_lines_wzd()
 
-
 class detalle_line_wzd(osv.osv_memory):
     _name = 'detalle.line.wzd'
     _description = 'Detalle de compras'
@@ -174,8 +227,8 @@ class detalle_line_wzd(osv.osv_memory):
 
     _columns = {
         'detalle_id'            : fields.many2one('detalle.lines', 'Details'),
-        'cliente_id'           : fields.related('detalle_id','pedido_id','partner_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
-        'type'                     : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
+        'cliente_id'            : fields.related('detalle_id','pedido_id','partner_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
+        'type'                  : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
         'supplier_id'           : fields.many2one('res.partner', 'Farm', required=True, domain=[('supplier', '=', True)]),
         'product_id'            : fields.many2one('product.product', 'Product', required=True),
         'variant_id'            : fields.many2one('product.variant', 'Variety', required=True),
@@ -193,14 +246,14 @@ class detalle_line_wzd(osv.osv_memory):
         'origin'                : fields.many2one('detalle.lines.origin', string='Origin'),
         'subclient_id'          : fields.many2one('res.partner', 'SubCliente'),
         'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
-        'supplier_ids'            : fields.char(string='Supplier Ids', size = 128),
-
+        'supplier_ids'          : fields.char(string='Supplier Ids', size = 128),
+       
         'total_purchase'        : fields.function(_get_quantity, type='float', string='Farm Total', multi='compute_data'),
         'total_sale'            : fields.function(_get_quantity, type='float', string='Total', multi='compute_data'),
         'profit'                : fields.function(_get_quantity, type='float', string='Profit', multi='compute_data'),
         'full_boxes'            : fields.function(_get_quantity, type='float', string='Full Boxes', multi = '_data'),
-        'qty_bxs'            : fields.function(_get_quantity, type='char', string='BXS', multi = '_data'),
-        'stimated_stems'     : fields.function(_get_quantity, type='integer', string='Stems', multi = '_data'),
+        'qty_bxs'               : fields.function(_get_quantity, type='char', string='BXS', multi = '_data'),
+        'stimated_stems'        : fields.function(_get_quantity, type='integer', string='Stems', multi = '_data'),
     }
 
     def on_chance_vals(self, cr, uid, ids, is_box_qty,box_qty,tale_qty, bunch_type,bunch_per_box, uom, sale_price, length_ids, context=None):
@@ -249,7 +302,7 @@ class detalle_line_wzd(osv.osv_memory):
             l_ids = [l.id for l in detalle.detalle_id.length_ids]
             self.pool.get('detalle.lines.length').unlink(cr, uid, l_ids)
 
-            lengths =  [(0,0,{'length': l.length,'purchase_price':l.purchase_price}) for l in detalle .length_ids]
+            lengths =  [(0,0,{'length': l.length,'purchase_price':l.purchase_price}) for l in detalle.length_ids]
 
             detalle_dict = {
                 'supplier_id': detalle.supplier_id.id if detalle.supplier_id else None,
@@ -267,7 +320,7 @@ class detalle_line_wzd(osv.osv_memory):
                 'sucursal_id': detalle.sucursal_id.id if detalle.sucursal_id else None,
             }
             self.pool.get('detalle.lines').write(cr,uid,[detalle.detalle_id.id], detalle_dict)
-
+        
             return {
                     'name'      : 'Pedidos de Clientes',
                     'view_type' : 'form',
@@ -297,15 +350,14 @@ class detalle_line_wzd(osv.osv_memory):
 
 detalle_line_wzd()
 
-
 class detalle_line_length_wzd(osv.osv_memory):
     _name = 'detalle.line.length.wzd'
     _description = 'Lengths'
 
     _columns = {
-        'detalle_id'   : fields.many2one('detalle.line.wzd', 'Details'),
+        'detalle_id'       : fields.many2one('detalle.line.wzd', 'Details'),
         'length'           : fields.char(string='Length', size = 128, required=True),
-        'purchase_price'            : fields.float(string='Purchase Price'),
+        'purchase_price'   : fields.float(string='Purchase Price'),
      }
 
     _defaults = {
@@ -313,3 +365,202 @@ class detalle_line_length_wzd(osv.osv_memory):
     }
 
 detalle_line_length_wzd()
+
+class split_purchase_line_wzd(osv.osv_memory):
+    _name = 'split.purchase.line.wzd'
+    _description = 'Split'
+
+    _columns = {
+        'detalle_id'         : fields.many2one('detalle.lines', 'Details'),
+        'parent_line_ids'    : fields.one2many('split.purchase.line.parent.wzd', 'parent_line_id', 'Parent Line'),
+        'line_ids'           : fields.one2many('split.purchase.line.detail.wzd', 'detail_line_id', 'Detail Lines'),
+    }
+    
+    def save(self, cr, uid, ids, arg, context=None):
+        
+        obj = self.browse(cr,uid,ids[0])
+        detalle = obj.detalle_id
+        
+        total = 0
+        stems = 0
+        lines = []
+        for line in obj.line_ids:
+            
+            if line.purchase_price <= 0.0:
+                raise osv.except_osv('Error', "El precio de compra no puede ser menor o igual a cero.")
+            
+            total += line.bunches
+            stems += line.box_qty * line.bunches * line.stems_per_bunch if detalle.is_box_qty else line.bunches * line.stems_per_bunch
+            
+            lines.append((0,0,{                
+                'line_id'       : detalle.line_id.id if detalle.line_id else None,
+                'box_id'        : detalle.box_id.id if detalle.box_id else None,
+                'name'          : detalle.name,
+                'type'          : detalle.type,
+                'supplier_id'   : detalle.supplier_id.id,
+                'product_id'    : detalle.product_id.id,
+                'variant_id'    : line.variant_id.id if line.variant_id else None,
+                'length_ids'    : [(0,0,{'length': line.length_id.length, 'purchase_price': line.length_id.purchase_price})],
+                'qty'           : line.box_qty if detalle.is_box_qty else line.bunches * line.stems_per_bunch,
+                'is_box_qty'    : detalle.is_box_qty,
+                'bunch_per_box' : line.bunches,
+                'bunch_type'    : line.stems_per_bunch,
+                'uom'           : detalle.uom,
+                'sale_price'    : detalle.sale_price,                 
+                'origin'        : detalle.origin.id if detalle.origin else None,
+                'subclient_id'  : detalle.subclient_id.id if detalle.subclient_id else None,
+                'sucursal_id'   : detalle.sucursal_id.id if detalle.sucursal_id else None,
+                'agrupada'      : True, 
+                'group_id'      : detalle.id
+            }))
+        
+        if total != detalle.bunch_per_box:
+            raise osv.except_osv('Error', "La cantidad de bunches especificados por lineas debe ser igual a " + str(detalle.bunch_per_box))
+        
+        total_stems = detalle.qty * detalle.bunch_per_box * detalle.bunch_type if detalle.is_box_qty else detalle.qty
+        if stems != total_stems:
+            raise osv.except_osv('Error', "La cantidad total de tallos especificados por lineas debe ser igual a " + str(total_stems))
+        
+        pedido_id = detalle.pedido_id.id  
+        detalle_id = detalle.id     
+        self.pool.get('pedido.cliente').write(cr, uid, [pedido_id], {'purchase_line_ids': lines})        
+        self.pool.get('detalle.lines').write(cr, uid, [detalle_id], {'active': False})
+        
+        return {
+            'name'      : _('Pedidos de Clientes'),
+            'view_type' : 'form',
+            'view_mode' : 'form',
+            'res_model' : 'pedido.cliente',
+            'type'      : 'ir.actions.act_window',
+            'res_id'    : pedido_id,
+        }  
+
+split_purchase_line_wzd()
+
+class split_purchase_line_parent_wzd(osv.osv_memory):
+    _name = 'split.purchase.line.parent.wzd'
+    _description = 'Parent Line'
+
+    _columns = {
+        'parent_line_id' : fields.many2one('split.purchase.line.wzd', 'Parent Line'),        
+        'type'           : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
+        'supplier_id'    : fields.many2one('res.partner', 'Farm'),
+        'product_id'     : fields.many2one('product.product', 'Product'),
+        'variant_id'     : fields.many2one('product.variant', 'Variety'),
+        'length'         : fields.char('Lengths', size=256),
+        'qty'            : fields.integer('Qty'),
+        'bunch_per_box'  : fields.integer('Bunches'),
+        'bunch_type'     : fields.integer('Stems x Bunch'),
+        'stems'          : fields.integer('Stems'),
+        'qty_uom'        : fields.char('Boxes',size=256)                 
+    }     
+
+split_purchase_line_parent_wzd()
+
+class split_purchase_line_detail_wzd(osv.osv_memory):
+    _name = 'split.purchase.line.detail.wzd'
+    _description = 'Detail Line'
+    
+    _columns = {
+        'detail_line_id' : fields.many2one('split.purchase.line.wzd', 'Purchase Line'),        
+        'detalle_id'     : fields.many2one('detalle.lines', 'Details'),
+        'type'           : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
+        'supplier_id'    : fields.many2one('res.partner', 'Farm'),
+        'product_id'     : fields.many2one('product.product', 'Product'),
+        'variant_id'     : fields.many2one('product.variant', 'Variety', domain="[('product_id','=',product_id)]"),
+        'length_id'      : fields.many2one('purchase.request.product.variant.length', 'Length'),            
+        'bunches'        : fields.integer('Bunches'),
+        'purchase_price' : fields.float(string='Price', help="Purchase Price"),  
+        'stems_per_bunch': fields.integer('Stems per Bunch'),
+        'box_qty'        : fields.integer('Boxes'),
+        'stems'          : fields.integer('Stems'),       
+    }
+    
+    def onchange_bunches(self, cr, uid, ids, stems_per_bunch, box_qty, bunches, context=None):
+        res = {'value': {}}
+        if not context:
+            context = {}
+        if stems_per_bunch and box_qty and bunches:           
+            res['value']['stems'] = stems_per_bunch * box_qty * bunches                            
+        return res 
+    
+    def onchange_variant_id(self, cr, uid, ids, detalle_id, supplier_id, product_id, variant_id, context=None):
+        res = {'value': {}}
+        if not context:
+            context = {}
+        if detalle_id and supplier_id and product_id and variant_id:           
+            detalle = self.pool.get('detalle.lines').browse(cr, uid, detalle_id)   
+            request_ids = self.pool.get('purchase.request.template').search(cr, uid, [('partner_id','=', supplier_id),('client_id', '=', detalle.pedido_id.partner_id.id)])
+            request_variant_ids = self.pool.get('purchase.request.product.variant').search(cr, uid, [('template_id','in', request_ids),('product_id','=', product_id),('variant_id', '=', variant_id)])
+            request_variant_length_ids = self.pool.get('purchase.request.product.variant.length').search(cr, uid, [('variant_id','in', request_variant_ids)])
+            if request_variant_length_ids:
+                res['domain']  =   {'length_id': [('id','in',request_variant_length_ids)]}
+                res['value']['length_id'] = request_variant_length_ids[0]                          
+        return res            
+    
+    def onchange_length_id(self, cr, uid, ids, length_id, context=None):
+        res = {'value': {}} 
+        if length_id:
+            length = self.pool.get('purchase.request.product.variant.length').browse(cr, uid, length_id)       
+            res['value']['purchase_price'] = length.purchase_price
+        return res
+    
+    def get_default_type(self, cr, uid, context = None):         
+        detalle_id = context['detalle_id'] if context and 'detalle_id' in context else None
+        if detalle_id:
+            detalle = self.pool.get('detalle.lines').browse(cr, uid, detalle_id)
+            return detalle.type                     
+        return 'standing_order'
+    
+    def get_default_supplier_id(self, cr, uid, context = None):
+         
+        detalle_id = context['detalle_id'] if context and 'detalle_id' in context else None
+        if detalle_id:
+            detalle = self.pool.get('detalle.lines').browse(cr, uid, detalle_id)             
+            return detalle.supplier_id.id                        
+        return None
+    
+    def get_default_product_id(self, cr, uid, context = None):
+         
+        detalle_id = context['detalle_id'] if context and 'detalle_id' in context else None
+        if detalle_id:
+            detalle = self.pool.get('detalle.lines').browse(cr, uid, detalle_id)             
+            return detalle.product_id.id                        
+        return None
+    
+    def get_default_variant_id(self, cr, uid, context = None):
+         
+        detalle_id = context['detalle_id'] if context and 'detalle_id' in context else None
+        if detalle_id:
+            detalle = self.pool.get('detalle.lines').browse(cr, uid, detalle_id)             
+            return detalle.variant_id.id                        
+        return None   
+    
+    def get_default_stems_per_bunch(self, cr, uid, context = None):
+         
+        detalle_id = context['detalle_id'] if context and 'detalle_id' in context else None
+        if detalle_id:
+            detalle = self.pool.get('detalle.lines').browse(cr, uid, detalle_id)             
+            return detalle.bunch_type                        
+        return None
+    
+    def get_default_box_qty(self, cr, uid, context = None):
+         
+        detalle_id = context['detalle_id'] if context and 'detalle_id' in context else None
+        if detalle_id:
+            detalle = self.pool.get('detalle.lines').browse(cr, uid, detalle_id)             
+            return detalle.qty if detalle.is_box_qty else 1                        
+        return None
+     
+    
+    _defaults = {
+        'detalle_id'     :  lambda self, cr, uid, context : context['detalle_id'] if context and 'detalle_id' in context else None,
+        'type'           :  get_default_type,
+        'supplier_id'    :  get_default_supplier_id,
+        'product_id'     :  get_default_product_id,
+        'variant_id'     :  get_default_variant_id,
+        'stems_per_bunch':  get_default_stems_per_bunch,
+        'box_qty'        :  get_default_box_qty                 
+    }     
+
+split_purchase_line_detail_wzd()

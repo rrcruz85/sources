@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_detailsofsales_inherit" inherit_id="point_of_sale.report_detailsofsales">
+
+            <xpath expr="//table/thead/th[5]" position="after">
+                <th class="text-right"><strong>IVA Comp.</strong></th>
+            </xpath>
+
+            <xpath expr="//table/tbody" position="replace">
+                <tr t-foreach="pos_sales_details(data['form'])" t-as="line_ids">
+                    <td>
+                        <span t-esc="formatLang(line_ids['date_order'], date_time=True)"/>
+                    </td>
+                    <td>
+                        <span t-esc="line_ids['pos_name']"/>
+                    </td>
+                    <td>
+                        [
+                        <t t-if="line_ids['code']">
+                            <span t-esc="line_ids['code']"/>
+                        </t>
+                        ]
+                        <span t-esc="line_ids['name']"/>
+                    </td>
+                    <td class="text-right">
+                        <span t-esc="formatLang(line_ids['price_unit'], dp='Sale Price', currency_obj=res_company.currency_id)"/>
+                    </td>
+                    <td class="text-center">
+                        <span t-esc="formatLang(line_ids['qty'])"/>
+                        <span t-esc="line_ids['uom']"/>
+                    </td>
+                    <td class="text-center">
+                        <span t-esc="formatLang(line_ids['iva_comp'],dp='Sale Price')"/>
+                    </td>
+                    <td class="text-center">
+                        <span t-esc="formatLang(line_ids['discount'], dp='Sale Price')"/>
+                    </td>
+                    <td class="text-center">
+                        <t t-if="line_ids['invoice_id']">
+                            <span t-esc="getinvoice(line_ids['invoice_id'])"/>
+                        </t>
+                    </td>
+                </tr>
+            </xpath>
+
+        </template>
+    </data>
+</openerp>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <template id="report_invoice_message">
+            <div class="page">
+                <h2>
+                    <span>No existe una factura creada para esta orden.</span>
+                </h2>
+                <h4>
+                    <span>Para poder ejecutar este reporte primero debe crear una factura.</span>
+                </h4>
+            </div>
+        </template>
+    </data>
+</openerp>

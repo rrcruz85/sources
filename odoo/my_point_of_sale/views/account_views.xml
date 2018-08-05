@@ -48,6 +48,7 @@
 
                                 <field name="bank_id"/>
                                 <field name="check_number"/>
+                                <field name="check_date"/>
                                 <field name="card_number"/>
                                 <field name="card_type_id"/>
                                 <field name="approval_number"/>

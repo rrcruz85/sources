@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+<data noupdate="0">
+    <record id="num_glo" model="oemedical.test.list">            
+        <field name="name">Numeración Globular</field>
+        <field name="type">HEMATOLOGIA</field>
+    </record>
+    
+    <record id="formula_leuco" model="oemedical.test.list">
+        <field name="name">Formula Leucocitaria</field>
+        <field name="type">HEMATOLOGIA</field>
+    </record>
+
+    <record id="t_coagulacion" model="oemedical.test.list">
+        <field name="name">T.Coagulacion</field>
+        <field name="type">COAGULACION</field>
+    </record>
+
+    <record id="exam2_coag" model="oemedical.test.list">
+        <field name="name">Coagulac Exam 2</field>
+        <field name="type">COAGULACION</field>
+    </record>
+
+    <record id="exam1_quim" model="oemedical.test.list">
+        <field name="name">Quim Sang Exam 1</field>
+        <field name="type">QUIMICA SANGUINEA</field>
+    </record>
+
+    <record id="exam2_quim" model="oemedical.test.list">
+        <field name="name">Quim Sangui Exam 2</field>
+        <field name="type">QUIMICA SANGUINEA</field>
+    </record>
+
+    <record id="colesterol_prlp" model="oemedical.test.list">
+        <field name="name">COLESTEROL</field>
+        <field name="type">PERFIL LIPIDICO</field>
+    </record>
+
+    <record id="hdl_colesterol_prlp" model="oemedical.test.list">
+        <field name="name">HDL COLESTEROL</field>
+        <field name="type">PERFIL LIPIDICO</field>
+    </record>
+
+    <record id="ldl_colesterol_prlp" model="oemedical.test.list">
+        <field name="name">LDL COLESTEROL</field>
+        <field name="type">PERFIL LIPIDICO</field>
+    </record>
+
+    <record id="triglicerido_prlp" model="oemedical.test.list">
+        <field name="name">TRIGLICERIDO</field>
+        <field name="type">PERFIL LIPIDICO</field>
+    </record>
+
+    <record id="vldl_prlp" model="oemedical.test.list">
+        <field name="name">V.L.D.L.</field>
+        <field name="type">PERFIL LIPIDICO</field>
+    </record>
+
+    <record id="vldl_prlp" model="oemedical.test.list">
+        <field name="name">V.L.D.L.</field>
+        <field name="type">PERFIL LIPIDICO</field>
+    </record>
+
+    <record id="esteres_prlp" model="oemedical.test.list">
+        <field name="name">ESTERES DE COLESTEROL</field>
+        <field name="type">PERFIL LIPIDICO</field>
+    </record>
+
+    <record id="apolipo_prlp" model="oemedical.test.list">
+        <field name="name">APO-LIPOPROTEINAS A Y B</field>
+        <field name="type">PERFIL LIPIDICO</field>
+    </record>
+
+    <record id="lipidos_prlp" model="oemedical.test.list">
+        <field name="name">LIPIDOS TOTALES</field>
+        <field name="type">PERFIL LIPIDICO</field>
+    </record>
+    
+</data>
+</openerp>

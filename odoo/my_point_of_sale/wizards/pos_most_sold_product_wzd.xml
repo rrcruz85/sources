@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_pos_most_sold_product_wzd" model="ir.ui.view">
+            <field name="name">Most Sold Products Report</field>
+            <field name="model">pos.most.sold.product.wzd</field>
+            <field name="arch" type="xml">
+                <form string="Most Sold Products Report">
+                    <group col="4">
+                        <field name="nbr_product" required="1"/>
+                        <newline/>
+                        <field name="date_start" required="1"/>
+                        <field name="date_end" required="1"/>
+                        <newline/>
+                        <field name="nbr_records" required="1"/>
+                    </group>
+                    <h3>Customers:</h3>
+                    <field name="partner_ids" domain="[('customer','=',True)]"/>
+                    <footer>
+                        <button name="show_sale_analysis_view" type="object" string="Show Product Sales Analysis" class="oe_highlight"/>
+                        <button name="print_report_pdf" type="object" string="Print Report" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_pos_most_sold_product_wzd" model="ir.actions.act_window">
+            <field name="name">Most Sold Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pos.most.sold.product.wzd</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="view_report_pos_most_sold_product_graph" model="ir.ui.view">
+            <field name="name">pos.most.sold.product.line.graph</field>
+            <field name="model">pos.most.sold.product.line</field>
+            <field name="arch" type="xml">
+                <graph string="Most Sold Products Analysis" type="pivot">
+                    <field name="partner_id" type="row"/>
+                    <field name="product_id" type="row"/>
+                    <field name="date_order" interval="month" type="col"/>
+                    <field name="product_qty" type="measure"/>
+                    <field name="price_total" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="view_report_pos_most_sold_product_search" model="ir.ui.view">
+            <field name="name">pos.most.sold.product.line.search</field>
+            <field name="model">pos.most.sold.product.line</field>
+            <field name="arch" type="xml">
+                <search string="Most Sold Products Analysis">
+                    <field name="date_order"/>
+                    <filter string="Year" name="year"
+                                                        domain="[('date_order','&lt;=', time.strftime('%%Y-%%m-%%d')),('date_order','&gt;=',time.strftime('%%Y-01-01'))]"
+                                                        help="Sold products during current year"/>
+                    <filter string="Month" name="month"
+                                                                            domain="[('date_order','&lt;=', time.strftime('%%Y-%%m-%%d')),('date_order','&gt;=',time.strftime('%%Y-%%m-01'))]"
+                                                                            help="Sold products during current month"/>
+                    <separator/>
+                    <!--
+                    <field name="partner_id"/>
+                    <field name="product_id"/>
+                    -->
+                    <group expand="1" string="Group By">
+                        <filter string="Product" context="{'group_by':'product_id'}"/>
+                        <separator/>
+                        <filter string="Year" context="{'group_by':'date_order:year'}" help="Year of the sale"/>
+                        <filter string="Month" context="{'group_by':'date_order:month'}" help="Month of the sale"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <menuitem action="action_pos_most_sold_product_wzd" id="menu_pos_most_sold_product_wzd" parent="point_of_sale.menu_point_rep" sequence="5"/>
+
+
+    </data>
+</openerp>

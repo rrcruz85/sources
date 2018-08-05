@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!--
+        OeMedical Patient
+        Model: oemedical.patient
+        -->
+
+        <!-- FORM VIEW INHERIT -->
+        <record id="oemedical_patient_view_form_inherit" model="ir.ui.view">
+            <field name="name">oemedical_patient_view_form_inherit</field>
+            <field name="model">oemedical.patient</field>
+            <field name="inherit_id" ref="oemedical.view_oemedical_patient_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//notebook" position="inside">
+                        <page string="Test Orders...">
+                            <field name="test_order_ids"/>
+                        </page>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <!--
+        OeMedical Test Order
+        Model: oemedical.test_order
+        -->
+
+        <!-- TREE VIEW -->
+        <record id="oemedical_test_order_view_tree" model="ir.ui.view">
+            <field name="name">oemedical_test_order_view_tree</field>
+            <field name="model">oemedical.test_order</field>
+            <field name="arch" type="xml">
+                <tree string="Test Orders" version="7.0">
+                    <field name="doctor_id"/>
+                    <field name="date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- FORM VIEW -->
+        <record id="oemedical_test_order_view_form" model="ir.ui.view">
+            <field name="name">oemedical_test_order_view_form</field>
+            <field name="model">oemedical.test_order</field>
+            <field name="arch" type="xml">
+                <form string="Test Order" version="7.0">
+                    <sheet>
+                        <div class="oe_right">
+                            <button string="Print report..."
+                                    name="action_print_report" type="object" class="oe_highlight"
+                            />
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="doctor_id"/>
+                                <field name="date"/>
+                                <field name="notes"/>
+                            </group>
+                            <group/>
+                        </group>
+
+                        <notebook>
+                            <page string="Preoperatorios...">
+                                <div class="oe_right">
+                                    <field name="pre_select_all" on_change="onchange_global_selector_pre(pre_select_all)" nolabel="1"/>
+                                    <label for="pre_select_all"/>
+                                </div>
+                                <br/>
+                                <label for="pre_biometria_hematica"/>
+                                <field name="pre_biometria_hematica" nolabel="1"/><p/>
+                                <label for="pre_plaquetas"/>
+                                <field name="pre_plaquetas" nolabel="1"/><p/>
+                                <label for="pre_globulos_blancos"/>
+                                <field name="pre_globulos_blancos" nolabel="1"/><p/>
+                                <label for="pre_linfocitos"/>
+                                <field name="pre_linfocitos" nolabel="1"/><p/>
+                                <label for="pre_hematocritos"/>
+                                <field name="pre_hematocritos" nolabel="1"/><p/>
+                                <label for="pre_hemoglobina"/>
+                                <field name="pre_hemoglobina" nolabel="1"/><p/>
+                                <label for="pre_urea"/>
+                                <field name="pre_urea" nolabel="1"/><p/>
+                                <label for="pre_creatinina"/>
+                                <field name="pre_creatinina" nolabel="1"/><p/>
+                                <label for="pre_glucosa"/>
+                                <field name="pre_glucosa" nolabel="1"/><p/>
+                                <label for="pre_tp_ttp_inr"/>
+                                <field name="pre_tp_ttp_inr" nolabel="1"/><p/>
+                                <label for="pre_acido_urico"/>
+                                <field name="pre_acido_urico" nolabel="1"/><p/>
+                                <label for="pre_bun"/>
+                                <field name="pre_bun" nolabel="1"/><p/>
+                                <label for="pre_proteinas_totales"/>
+                                <field name="pre_proteinas_totales" nolabel="1"/><p/>
+                                <label for="pre_albumina"/>
+                                <field name="pre_albumina" nolabel="1"/><p/>
+                                <label for="pre_perfil_lipidico"/>
+                                <field name="pre_perfil_lipidico" nolabel="1"/><p/>
+                                <label for="pre_perfil_hepatico"/>
+                                <field name="pre_perfil_hepatico" nolabel="1"/><p/>
+                                <label for="pre_perfil_anemia"/>
+                                <field name="pre_perfil_anemia" nolabel="1"/><p/>
+                                <label for="pre_minerales"/>
+                                <field name="pre_minerales" nolabel="1"/><p/>
+                                <label for="pre_pruebas_tiroideas"/>
+                                <field name="pre_pruebas_tiroideas" nolabel="1"/><p/>
+                                <label for="pre_emo"/>
+                                <field name="pre_emo" nolabel="1"/><p/>
+                                <label for="pre_ecografia_abdominal"/>
+                                <field name="pre_ecografia_abdominal" nolabel="1"/><p/>
+                                <label for="pre_composicion_dexa"/>
+                                <field name="pre_composicion_dexa" nolabel="1"/><p/>
+                                <label for="pre_radiografia_torax"/>
+                                <field name="pre_radiografia_torax" nolabel="1"/><p/>
+                                <label for="pre_evaluacion_cardiologica"/>
+                                <field name="pre_evaluacion_cardiologica" nolabel="1"/><p/>
+                                <label for="pre_evaluacion_neumologica"/>
+                                <field name="pre_evaluacion_neumologica" nolabel="1"/><p/>
+                                <label for="pre_endoscopia_digestiva_alta"/>
+                                <field name="pre_endoscopia_digestiva_alta" nolabel="1"/><p/>
+                                <label for="pre_evaluacion_nutricional"/>
+                                <field name="pre_evaluacion_nutricional" nolabel="1"/><p/>
+                                <label for="pre_evaluacion_psicologica"/>
+                                <field name="pre_evaluacion_psicologica" nolabel="1"/><p/>
+                                <label for="pre_oma"/>
+                                <field name="pre_oma" nolabel="1"/><p/>
+                                <label for="pre_peptido_c"/>
+                                <field name="pre_peptido_c" nolabel="1"/><p/>
+                                <label for="pre_curva_glucosa_dos"/>
+                                <field name="pre_curva_glucosa_dos" nolabel="1"/><p/>
+                                <label for="pre_curva_glucosa_cuatro"/>
+                                <field name="pre_curva_glucosa_cuatro" nolabel="1"/><p/>
+                                <label for="pre_others"/>
+                                <field name="pre_others" nolabel="1"/><p/>
+                                <field name="pre_others_text" nolabel="1"/><p/>
+                            </page>
+
+                            <page string="Primer mes...">
+                                <div class="oe_right">
+                                    <field name="one_select_all" on_change="onchange_global_selector_one(one_select_all)" nolabel="1"/>
+                                    <label for="one_select_all"/>
+                                </div>
+
+                                <br/>
+                                <label for="one_biometria_hematica"/>
+                                <field name="one_biometria_hematica" nolabel="1"/><p/>
+                                <label for="one_urea"/>
+                                <field name="one_urea" nolabel="1"/><p/>
+                                <label for="one_creatinina"/>
+                                <field name="one_creatinina" nolabel="1"/><p/>
+                                <label for="one_glucosa"/>
+                                <field name="one_glucosa" nolabel="1"/><p/>
+                                <label for="one_acido_urico"/>
+                                <field name="one_acido_urico" nolabel="1"/><p/>
+                                <label for="one_bun"/>
+                                <field name="one_bun" nolabel="1"/><p/>
+                                <label for="one_proteinas_totales"/>
+                                <field name="one_proteinas_totales" nolabel="1"/><p/>
+                                <label for="one_albumina"/>
+                                <field name="one_albumina" nolabel="1"/><p/>
+                                <label for="one_perfil_lipidico"/>
+                                <field name="one_perfil_lipidico" nolabel="1"/><p/>
+                                <label for="one_perfil_hepatico"/>
+                                <field name="one_perfil_hepatico" nolabel="1"/><p/>
+                                <label for="one_sodio"/>
+                                <field name="one_sodio" nolabel="1"/><p/>
+                                <label for="one_potasio"/>
+                                <field name="one_potasio" nolabel="1"/><p/>
+                                <label for="one_oma"/>
+                                <field name="one_oma" nolabel="1"/><p/>
+                                <label for="one_peptido_c"/>
+                                <field name="one_peptido_c" nolabel="1"/><p/>
+                                <label for="one_curva_glucosa_dos"/>
+                                <field name="one_curva_glucosa_dos" nolabel="1"/><p/>
+                                <label for="one_curva_glucosa_cuatro"/>
+                                <field name="one_curva_glucosa_cuatro" nolabel="1"/><p/>
+                                <label for="one_others"/>
+                                <field name="one_others" nolabel="1"/><p/>
+                                <field name="one_others_text" nolabel="1"/><p/>
+                            </page>
+
+                            <page string="Tercer mes...">
+                                <div class="oe_right">
+                                    <field name="three_select_all" on_change="onchange_global_selector_three(three_select_all)" nolabel="1"/>
+                                    <label for="three_select_all"/>
+                                </div>
+
+                                <br/>
+                                <label for="three_biometria_hematica"/>
+                                <field name="three_biometria_hematica" nolabel="1"/><p/>
+                                <label for="three_urea"/>
+                                <field name="three_urea" nolabel="1"/><p/>
+                                <label for="three_creatinina"/>
+                                <field name="three_creatinina" nolabel="1"/><p/>
+                                <label for="three_glucosa"/>
+                                <field name="three_glucosa" nolabel="1"/><p/>
+                                <label for="three_acido_urico"/>
+                                <field name="three_acido_urico" nolabel="1"/><p/>
+                                <label for="three_bun"/>
+                                <field name="three_bun" nolabel="1"/><p/>
+                                <label for="three_proteinas_totales"/>
+                                <field name="three_proteinas_totales" nolabel="1"/><p/>
+                                <label for="three_albumina"/>
+                                <field name="three_albumina" nolabel="1"/><p/>
+                                <label for="three_perfil_lipidico"/>
+                                <field name="three_perfil_lipidico" nolabel="1"/><p/>
+                                <label for="three_perfil_hepatico"/>
+                                <field name="three_perfil_hepatico" nolabel="1"/><p/>
+                                <label for="three_sodio"/>
+                                <field name="three_sodio" nolabel="1"/><p/>
+                                <label for="three_potasio"/>
+                                <field name="three_potasio" nolabel="1"/><p/>
+                                <label for="three_calcio"/>
+                                <field name="three_calcio" nolabel="1"/><p/>
+                                <label for="three_oma"/>
+                                <field name="three_oma" nolabel="1"/><p/>
+                                <label for="three_peptido_c"/>
+                                <field name="three_peptido_c" nolabel="1"/><p/>
+                                <label for="three_curva_glucosa_dos"/>
+                                <field name="three_curva_glucosa_dos" nolabel="1"/><p/>
+                                <label for="three_curva_glucosa_cuatro"/>
+                                <field name="three_curva_glucosa_cuatro" nolabel="1"/><p/>
+                                <label for="three_others"/>
+                                <field name="three_others" nolabel="1"/><p/>
+                                <field name="three_others_text" nolabel="1"/><p/>
+                            </page>
+
+                            <page string="Sexto o noveno mes...">
+                                <div class="oe_right">
+                                    <field name="six_or_nine_select_all" on_change="onchange_global_selector_six_or_nine(six_or_nine_select_all)" nolabel="1"/>
+                                    <label for="six_or_nine_select_all"/>
+                                </div>
+
+                                <group>
+                                    <field name="six_or_nine_month"/>
+                                </group>
+
+                                <br/>
+                                <label for="six_or_nine_biometria_hematica"/>
+                                <field name="six_or_nine_biometria_hematica" nolabel="1"/><p/>
+                                <label for="six_or_nine_urea"/>
+                                <field name="six_or_nine_urea" nolabel="1"/><p/>
+                                <label for="six_or_nine_creatinina"/>
+                                <field name="six_or_nine_creatinina" nolabel="1"/><p/>
+                                <label for="six_or_nine_glucosa"/>
+                                <field name="six_or_nine_glucosa" nolabel="1"/><p/>
+                                <label for="six_or_nine_hemoglobina_glicosilada"/>
+                                <field name="six_or_nine_hemoglobina_glicosilada" nolabel="1"/><p/>
+                                <label for="six_or_nine_acido_urico"/>
+                                <field name="six_or_nine_acido_urico" nolabel="1"/><p/>
+                                <label for="six_or_nine_bun"/>
+                                <field name="six_or_nine_bun" nolabel="1"/><p/>
+                                <label for="six_or_nine_proteinas_totales"/>
+                                <field name="six_or_nine_proteinas_totales" nolabel="1"/><p/>
+                                <label for="six_or_nine_albumina"/>
+                                <field name="six_or_nine_albumina" nolabel="1"/><p/>
+                                <label for="six_or_nine_perfil_lipidico"/>
+                                <field name="six_or_nine_perfil_lipidico" nolabel="1"/><p/>
+                                <label for="six_or_nine_perfil_hepatico"/>
+                                <field name="six_or_nine_perfil_hepatico" nolabel="1"/><p/>
+                                <label for="six_or_nine_perfil_hierro"/>
+                                <field name="six_or_nine_perfil_hierro" nolabel="1"/><p/>
+                                <label for="six_or_nine_sodio"/>
+                                <field name="six_or_nine_sodio" nolabel="1"/><p/>
+                                <label for="six_or_nine_potasio"/>
+                                <field name="six_or_nine_potasio" nolabel="1"/><p/>
+                                <label for="six_or_nine_calcio"/>
+                                <field name="six_or_nine_calcio" nolabel="1"/><p/>
+                                <label for="six_or_nine_eco_abdomen" attrs="{'invisible': [('six_or_nine_month', '!=', 'six')]}"/>
+                                <field name="six_or_nine_eco_abdomen"  attrs="{'invisible': [('six_or_nine_month', '!=', 'six')]}" nolabel="1"/><p/>
+                                <label for="six_or_nine_oma"/>
+                                <field name="six_or_nine_oma" nolabel="1"/><p/>
+                                <label for="six_or_nine_peptido_c"/>
+                                <field name="six_or_nine_peptido_c" nolabel="1"/><p/>
+                                <label for="six_or_nine_curva_glucosa_dos"/>
+                                <field name="six_or_nine_curva_glucosa_dos" nolabel="1"/><p/>
+                                <label for="six_or_nine_curva_glucosa_cuatro"/>
+                                <field name="six_or_nine_curva_glucosa_cuatro" nolabel="1"/><p/>
+                                <label for="six_or_nine_others"/>
+                                <field name="six_or_nine_others" nolabel="1"/><p/>
+                                <field name="six_or_nine_others_text" nolabel="1"/><p/>
+                            </page>
+
+                            <page string="Primer año...">
+                                <div class="oe_right">
+                                    <field name="first_year_select_all" on_change="onchange_global_selector_first_year(first_year_select_all)" nolabel="1"/>
+                                    <label for="first_year_select_all"/>
+                                </div>
+
+                                <br/>
+                                <label for="first_year_biometria_hematica"/>
+                                <field name="first_year_biometria_hematica" nolabel="1"/><p/>
+                                <label for="first_year_urea"/>
+                                <field name="first_year_urea" nolabel="1"/><p/>
+                                <label for="first_year_creatinina"/>
+                                <field name="first_year_creatinina" nolabel="1"/><p/>
+                                <label for="first_year_glucosa"/>
+                                <field name="first_year_glucosa" nolabel="1"/><p/>
+                                <label for="first_year_tp_ttp_inr"/>
+                                <field name="first_year_tp_ttp_inr" nolabel="1"/><p/>
+                                <label for="first_year_acido_urico"/>
+                                <field name="first_year_acido_urico" nolabel="1"/><p/>
+                                <label for="first_year_bun"/>
+                                <field name="first_year_bun" nolabel="1"/><p/>
+                                <label for="first_year_proteinas_totales"/>
+                                <field name="first_year_proteinas_totales" nolabel="1"/><p/>
+                                <label for="first_year_albumina"/>
+                                <field name="first_year_albumina" nolabel="1"/><p/>
+                                <label for="first_year_perfil_lipidico"/>
+                                <field name="first_year_perfil_lipidico" nolabel="1"/><p/>
+                                <label for="first_year_perfil_hepatico"/>
+                                <field name="first_year_perfil_hepatico" nolabel="1"/><p/>
+                                <label for="first_year_perfil_hierro"/>
+                                <field name="first_year_perfil_hierro" nolabel="1"/><p/>
+                                <label for="first_year_minerales"/>
+                                <field name="first_year_minerales" nolabel="1"/><p/>
+                                <label for="first_year_pruebas_tiroideas"/>
+                                <field name="first_year_pruebas_tiroideas" nolabel="1"/><p/>
+                                <label for="first_year_emo"/>
+                                <field name="first_year_emo" nolabel="1"/><p/>
+                                <label for="first_year_ecografia_abdominal"/>
+                                <field name="first_year_ecografia_abdominal" nolabel="1"/><p/>
+                                <label for="first_year_composicion_dexa"/>
+                                <field name="first_year_composicion_dexa" nolabel="1"/><p/>
+                                <label for="first_year_oma"/>
+                                <field name="first_year_oma" nolabel="1"/><p/>
+                                <label for="first_year_peptido_c"/>
+                                <field name="first_year_peptido_c" nolabel="1"/><p/>
+                                <label for="first_year_curva_glucosa_dos"/>
+                                <field name="first_year_curva_glucosa_dos" nolabel="1"/><p/>
+                                <label for="first_year_curva_glucosa_cuatro"/>
+                                <field name="first_year_curva_glucosa_cuatro" nolabel="1"/><p/>
+                                <label for="first_year_others"/>
+                                <field name="first_year_others" nolabel="1"/><p/>
+                                <field name="first_year_others_text" nolabel="1"/><p/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

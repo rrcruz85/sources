@@ -8,3 +8,5 @@ import account_journal
 import account_invoice
 import res_partner
 import account_bank_statement
+import res_company
+import stock

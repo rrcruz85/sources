@@ -647,6 +647,18 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
     			
     		this._super();
         },
+        print: function () {
+            if ((this.pos.get('selectedOrder')).get('orderLines').length >= 2) {
+                $("div.pos-sale-ticket").css("max-height", "800px");
+            }
+            else {
+                $("div.pos-sale-ticket").css("max-height", "400px");
+            }
+            window.print();
+            if ((this.pos.get('selectedOrder')).get('orderLines').length >= 2) {
+                $("div.pos-sale-ticket").css("max-height", "370px");
+            }
+        },
     });
     
     module.myPaymentScreenWidget = module.PaymentScreenWidget.include({
@@ -675,6 +687,28 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             }
             else {
             	this.$('.client_data_div').html();
+            }
+        },
+
+        validateCurrentOrder: function () {
+            var currentOrder = this.pos.get('selectedOrder');
+            if (currentOrder.attributes.orderLines.length >= 2) {
+                $("div.pos-sale-ticket").css("max-height", "800px");
+            }
+            else {
+                $("div.pos-sale-ticket").css("max-height", "400px");
+            }
+
+            this.pos.push_order(currentOrder.exportAsJSON())
+            if (this.pos.iface_print_via_proxy) {
+                this.pos.proxy.print_receipt(currentOrder.export_for_printing());
+                this.pos.get('selectedOrder').destroy();    //finish order and go back to scan screen
+            } else {
+                this.pos_widget.screen_selector.set_current_screen(this.next_screen);
+            }
+
+            if (currentOrder.attributes.orderLines.length >= 2) {
+                $("div.pos-sale-ticket").css("max-height", "370px");
             }
         },
         

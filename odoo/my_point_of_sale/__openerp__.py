@@ -10,7 +10,7 @@
     'description': """
     """,
 
-    'depends': ['base', 'account', 'point_of_sale', 'product'],
+    'depends': ['base', 'account', 'point_of_sale', 'product','stock'],
 
     'data': [
         # Datas to load...
@@ -25,6 +25,9 @@
         'views/account_journal_views.xml',
         'views/res_partner_views.xml',
         'views/account_views.xml',
+        'views/res_company_views.xml',
+        'views/account_invoice_view.xml',
+        'wizards/pos_most_sold_product_wzd.xml',
 
         # Templates...
         'static/src/xml/assets_backend.xml',
@@ -33,10 +36,19 @@
         'reports/report_receipt.xml',
         'reports/report_saleslines.xml',
         'reports/report_invoice.xml',
+        'reports/report_detailsofsales.xml',
+        'reports/report_pos_ticket.xml',
+        # Template...
+        'reports/post_most_sold_product_report.xml',
+        'views/pos_order_template.xml',
     ],
 
     'qweb': [
         'static/src/xml/pos.xml',
+    ],
+
+    'css':[
+        'static/src/css/styles.css',
     ],
 
     'demo':['demo/account_journal_demo.xml'],

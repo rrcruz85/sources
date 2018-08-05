@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<record id="oemedical_header_webkit" model="ir.header_webkit">
+            <field name="name">Medical Format</field>
+            <field name="css"><![CDATA[
+body {
+    font-family:Arial;
+    font-size:11;
+}
+
+.header1 {
+position:absolute;
+left:0.0cm;
+top:0.0cm;
+width:300px;
+}
+
+.header2 {
+position:absolute;
+left:11cm;
+top:0.0cm;
+font-size:11;
+}
+            ]]>
+              </field>
+            <field name="html"><![CDATA[
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+                }
+            }
+        </script>
+        <style type="text/css">
+            ${css}
+        </style>
+    </head>
+    <body style="border:0; margin: 0;" onload="subst()">
+        <table class="header1" style="border-bottom: 0px solid black">
+            <tr>
+                <td><img src="data:image/jpeg;base64,${company.logo}" width="200px" height="70px"/></td>
+            </tr>
+        </table>
+        <table class="header2" style="width:50%">
+            <tr>
+                <td style="text-align:right">${company.partner_id.street or ''|entity}</td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Phone: ${company.partner_id.phone or ''|entity} </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Mail: ${company.partner_id.email or ''|entity}</td>
+            </tr>
+        </table> ${_debug or ''|n} </body>
+</html>]]>
+                </field>
+            <field name="footer_html"><![CDATA[
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+                }
+            }
+        </script>
+    </head>
+    <body style="border:0; margin: 0; font-size:9;" onload="subst()">
+        <table style="border-top: 1px solid black; width: 100%">
+            <tr>
+                <td></td>
+            </tr>
+        </table>
+        <center>
+        %if company.phone:
+            Teléfono: ${company.phone} &nbsp; |
+        %endif
+        %if company.fax:
+            &nbsp; Fax: ${company.fax} &nbsp; |</td>
+        %endif
+        %if company.website:
+            &nbsp; Sitio Web: ${company.website}</td>
+        %endif
+        </center>
+        <center>
+            Contacto: ${user.name} - Página: <span class="page"/>
+        </center>
+    </body>
+</html>
+]]>
+            </field>
+            <field name="orientation">Portrait</field>
+            <field name="format">A4</field>
+            <field eval="10" name="margin_top"/>
+            <field eval="30" name="margin_bottom"/>
+            <field eval="10" name="margin_right" />
+            <field eval="10" name="margin_left" />
+        </record>
+
+        <report auto="False"
+                id="oemedical_patient_evalprint"
+                model="oemedical.patient.evaluation"
+                name="oemedical.patient.evalprint.webkit"
+                file="oemedical/report/oemedical_patient_evalprint.mako"
+                string="Formato de Evaluación"
+                header="True"
+				webkit_header="oemedical_header_webkit"
+                report_type="webkit"/>
+
+    </data>
+</openerp>
