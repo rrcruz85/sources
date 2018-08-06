@@ -39,7 +39,7 @@ class invoice_wizard(osv.osv_memory):
         'journal_id'     : fields.many2one('account.journal', 'Journal', domain=[('type','=','purchase')]),
         'company_id'     : fields.many2one('res.company', 'Company'),
         'user_id'        : fields.many2one('res.users', 'Salesperson'),
-        'line_ids'       : fields.one2many('invoice.line.wizard','invoice_id','Invoice Wizard'),
+        'line_ids'       : fields.one2many('invoice.line.wizard','invoice_id','Invoice Lines'),
     }
 
     def _get_journal(self, cr, uid, context=None):
@@ -82,25 +82,6 @@ class invoice_wizard(osv.osv_memory):
             return period_ids[0]
         return False
 
-    _defaults = {
-        'journal_id'    : _get_journal,
-        'period_id'     : _get_period,
-        'currency_id'   : _get_currency,
-        'company_id'    : lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'invoice.wizard', context=c),
-        'user_id'       : lambda s, cr, u, c: u,
-        'date_invoice'  : time.strftime('%Y-%m-%d'),
-    }
-
-    def on_change_pedido(self, cr, uid, ids, pedido_id, context=None):
-        res = {'value': {}}
-        if pedido_id and context and 'default_next' not in context:
-            res['value']['supplier_id'] = False
-            res['value']['line_ids'] = []
-            res['value']['box_line_ids'] = []
-            res['value']['account_id'] = False
-            res['value']['fiscal_position'] = False
-        return res
-    
     def _get_account_id(self, cr, uid, supplier_id, context=None):
         if context is None:
             context = {}
@@ -109,15 +90,33 @@ class invoice_wizard(osv.osv_memory):
         else:
             prop = self.pool.get('ir.property').get(cr, uid, 'property_account_expense_categ', 'product.category', context=context)
         return prop and prop.id or False
+    
+    _defaults = {
+        'journal_id'    : _get_journal,
+        'period_id'     : _get_period,
+        'currency_id'   : _get_currency,
+        'company_id'    : lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'invoice.wizard', context=c),
+        'user_id'       : lambda s, cr, u, c: u,
+        'date_invoice'  : time.strftime('%Y-%m-%d'),
+    }  
+    
+    def on_change_pedido(self, cr, uid, ids, pedido_id, context=None):
+        res = {'value': {}}
+        if pedido_id and context:
+            res['value']['supplier_id'] = False
+            res['value']['line_ids'] = []           
+            res['value']['account_id'] = False
+            res['value']['fiscal_position'] = False
+        return res
 
     def on_change_pedido_supplier(self, cr, uid, ids, pedido_id, supplier_id, context=None):
         res = {'value':{}}
         if pedido_id and supplier_id:
-            lines_not_confirmed = self.pool.get('detalle.lines').search(cr, uid, [('box', '=', False),('pedido_id', '=', pedido_id),('supplier_id', '=', supplier_id)])
-            if lines_not_confirmed:
+            lines_confirmed = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', pedido_id),('supplier_id', '=', supplier_id)], order = 'name')
+            if lines_confirmed:
+                uom = {'FB': 1, 'HB': 2, 'QB': 4, 'OB': 8}
                 list_vals = []
-                detalle_ids = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', pedido_id),('supplier_id', '=', supplier_id)])
-                lines = self.pool.get('detalle.lines').browse(cr, uid, detalle_ids)
+                lines = self.pool.get('detalle.lines').browse(cr, uid, lines_confirmed)
                 for l in lines:                
                     if l.agrupada:
                         cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(l.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(pedido_id) + 
@@ -128,47 +127,50 @@ class invoice_wizard(osv.osv_memory):
                         qty_bxs = round(float(l.bunch_per_box)/totals, 2) if totals else 0
                     else:
                         qty_bxs = l.qty if l.is_box_qty else (1 if not (l.qty /(int(l.bunch_type) * l.bunch_per_box)) else (l.qty / (int(l.bunch_type) * l.bunch_per_box)))
+                     
                     
                     vals = {
-                        'pedido_id': pedido_id,
-                        'supplier_id': supplier_id,
-                        'detalle_id': l.detalle_id.id if l.detalle_id else False,
-                        'line_number': l.name,
-                        'product_id': l.product_id.id if l.product_id else False,
-                        'variant_id': l.variant_id.id if l.variant_id else False,
-                        'length': l.length,
+                        'pedido_id'     : pedido_id,
+                        'supplier_id'   : supplier_id,
+                        'detalle_id'    : l.id,
+                        'line_number'   : l.name,
+                        'product_id'    : l.product_id.id if l.product_id else False,
+                        'variant_id'    : l.variant_id.id if l.variant_id else False,
+                        'length'        : l.lengths,
                         'purchase_price': l.purchase_price,
-                        'sale_price': l.sale_price,
-                        'qty': l.qty,
-                        'boxes': l.boxes,
-                        'total_purchase': l.total_purchase,
-                        'total_sale': l.total_sale,
-                        'bunch_per_box': l.bunch_per_box,
-                        'bunch_type': l.bunch_type,
-                        'uom': l.uom,
-                        'origin': l.origin.id if l.origin else False,
-                        'subclient_id': l.subclient_id.id if l.subclient_id else False,
-                        'sucursal_id': l.sucursal_id.id if l.sucursal_id else False,
-                        'type': l.type if l.type else False,
-                        'is_box_qty': l.is_box_qty,
-                        'qty_bxs': str(qty_bxs) + ' ' + l.uom
+                        'sale_price'    : l.sale_price,
+                        'qty'           : l.qty,
+                        'boxes'         : qty_bxs/uom[l.uom],
+                        'total_purchase': l.qty * l.purchase_price if not l.is_box_qty else ((l.qty * l.bunch_per_box * int(l.bunch_type))) * l.purchase_price,
+                        'total_sale'    : l.qty * l.sale_price if not l.is_box_qty else ((l.qty * l.bunch_per_box * int(l.bunch_type))) * l.sale_price,
+                        'bunch_per_box' : l.bunch_per_box,
+                        'bunch_type'    : l.bunch_type,
+                        'uom'           : l.uom,
+                        'origin'        : l.origin.id if l.origin else False,
+                        'subclient_id'  : l.subclient_id.id if l.subclient_id else False,
+                        'sucursal_id'   : l.sucursal_id.id if l.sucursal_id else False,
+                        'type'          : l.type if l.type else False,
+                        'is_box_qty'    : l.is_box_qty,
+                        'qty_bxs'       : str(qty_bxs) + ' ' + l.uom,
+                        'box_id'        : l.box_id.id if l.box_id else False,
+                        'box'           : l.box_id.box if l.box_id else False,
                     }
                     list_vals.append((0, 0, vals))
-                res['value']['line_ids'] = list_vals
-                res['value']['box_line_ids'] = []
-                res['value']['next'] = False
-            #else:
-            #    raise osv.except_osv('Error',"Para el proveedor seleccionado no se han definido las cajas donde se encuentran.")
-           
+                res['value']['line_ids'] = list_vals                 
         return res
 
     def generate_invoice(self, cr, uid, ids, context=None):
         uom = {'FB':1,'HB':2,'QB':4,'OB':8}
         for o in self.browse(cr,uid,ids):
+            lines_not_confirmed = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', o.pedido_id.id),('supplier_id', '=', o.supplier_id.id),('box_id', '=', False)])
+            if lines_not_confirmed:
+                records = self.pool.get('detalle.lines').read(cr, uid, lines_not_confirmed, ['name'])
+                lineas = ','.join(map(lambda r: r['name'], records))
+                raise osv.except_osv('Error',"Las siguientes lineas: [" + lineas + "] no tienen un id de caja asignado")
+       
             lines = []
-            sequence = 1
-            
-            for l in l.line_ids:                        
+            sequence = 1            
+            for l in o.line_ids:                        
                 account_id = l.product_id.property_account_expense.id if l.product_id.property_account_expense else False
                 if not account_id:
                     account_id = l.product_id.categ_id.property_account_expense_categ.id if l.product_id.categ_id and l.product_id.categ_id.property_account_expense_categ else False
@@ -178,6 +180,11 @@ class invoice_wizard(osv.osv_memory):
                 name = l.variant_id.name if l.variant_id else ''
                 if l.length:
                     name += ' - ' + l.length
+                
+                if l.detalle_id and l.detalle_id.type == 'standing_order':
+                    name = 'Standing Order ' + name
+                if l.detalle_id and l.detalle_id.type != 'standing_order':
+                    name = 'Open Market ' + name
 
                 taxes = [(4, t.id) for t in l.product_id.supplier_taxes_id]
                         
@@ -206,25 +213,25 @@ class invoice_wizard(osv.osv_memory):
                     qb_qty = l.qty if l.is_box_qty else qty_bxs 
 
                 vals = {
-                    'sequence_box': sequence,
-                    'stems':stems,
-                    'box': boxes,
-                    'hb': hb_qty,
-                    'qb': qb_qty,
-                    'qty_bxs' : qty_bxs + ' ' + l.uom,
-                    'name': name,
-                    'uos_id': l.product_id.uom_id.id if l.product_id.uom_id else False,
-                    'product_id': l.product_id.id,
-                    'account_id': account_id,
-                    'price_unit': l.purchase_price,
-                    'quantity': l.qty * l.bunch_per_box * int(l.bunch_type) if l.is_box_qty else l.qty,
-                    'sequence': 10,
-                    'uom': l.uom,
-                    'bunch_type': l.bunch_type,
-                    'invoice_line_tax_id': taxes,
-                    'is_box_qty': l.is_box_qty,
-                    'bunch_per_box': l.bunch_per_box,
-                    'mark_id': l.subclient_id.id if l.subclient_id else False
+                    'sequence_box'          : l.box_id.box if l.box_id else sequence,
+                    'stems'                 : stems,
+                    'box'                   : boxes,
+                    'hb'                    : hb_qty,
+                    'qb'                    : qb_qty,
+                    'qty_bxs'               : str(qty_bxs) + ' ' + l.uom,
+                    'name'                  : name,
+                    'uos_id'                : l.product_id.uom_id.id if l.product_id.uom_id else False,
+                    'product_id'            : l.product_id.id,
+                    'account_id'            : account_id,
+                    'price_unit'            : l.purchase_price,
+                    'quantity'              : l.qty * l.bunch_per_box * int(l.bunch_type) if l.is_box_qty else l.qty,
+                    'sequence'              : 10,
+                    'uom'                   : l.uom,
+                    'bunch_type'            : l.bunch_type,
+                    'invoice_line_tax_id'   : taxes,
+                    'is_box_qty'            : l.is_box_qty,
+                    'bunch_per_box'         : l.bunch_per_box,
+                    'mark_id'               : l.subclient_id.id if l.subclient_id else False
                 }
                 
                 lines.append((0, 0, vals))
@@ -269,47 +276,51 @@ class invoice_line_wizard(osv.osv_memory):
     _name = 'invoice.line.wizard'
     _description = 'Invoice Line'
     _rec_name = 'line_number'
+    _order = 'line_number'
 
     def _get_info(self, cr, uid, ids, field_name, arg, context):
         res = {}
         uom_dict = {'FB':1,'HB':2,'QB':4,'OB':8}
         for obj in self.browse(cr, uid, ids, context=context):
+            res[obj.id] = {'qty_bxs':'','box': 0}
             if obj.is_box_qty:
-                res[obj.id] = str(obj.qty) + ' ' + obj.uom
+                res[obj.id]['qty_bxs'] = str(obj.qty) + ' ' + obj.uom
             else:
                 qty = obj.boxes * uom_dict[obj.uom] if obj.boxes else float(obj.qty)/ (int(obj.bunch_type) * obj.bunch_per_box)
-                res[obj.id] = str(qty) + ' ' + obj.uom
+                res[obj.id]['qty_bxs'] = str(qty) + ' ' + obj.uom
+            res[obj.id]['box'] = obj.box_id.box if obj.box_id else False
         return res
 
     _columns = {
-        'invoice_id'      : fields.many2one('invoice.wizard','Invoice'),
-        'pedido_id'      : fields.many2one('pedido.cliente','Pedido'),
-        'detalle_id'      : fields.many2one('detalle.lines','Detalle'),
-        'supplier_id'    : fields.many2one('res.partner','Supplier'),
+        'invoice_id'        : fields.many2one('invoice.wizard','Invoice'),
+        'pedido_id'         : fields.many2one('pedido.cliente','Pedido'),
+        'detalle_id'        : fields.many2one('detalle.lines','Detalle'),
+        'supplier_id'       : fields.many2one('res.partner','Supplier'),
       
-        'line_number'   : fields.char(size=128, string ='#', help='Line Number'),
-        'product_id'      : fields.many2one('product.product','Product'),
-        'variant_id'      : fields.many2one('product.variant','Variety',),
-        'length'              : fields.char(size=128, string ='Length'),
-        'purchase_price'  : fields.float('Purchase Price'),
-        'sale_price'  : fields.float('Sale Price'),
-        'qty'             : fields.float('Qty', help = "Quantity"),
+        'line_number'       : fields.char(size=128, string ='#', help='Line Number'),
+        'product_id'        : fields.many2one('product.product','Product'),
+        'variant_id'        : fields.many2one('product.variant','Variety',),
+        'length'            : fields.char(size=128, string ='Length'),
+        'purchase_price'    : fields.float('Purchase Price'),
+        'sale_price'        : fields.float('Sale Price'),
+        'qty'               : fields.float('Qty', help = "Quantity"),
         'boxes'             : fields.float('Full Boxes'),
         'total_purchase'    : fields.float(string='Total'),
-        'total_sale'    : fields.float(string='Total'),
-        'bunch_per_box'   : fields.integer('Bunch per Box'),
-        'bunch_type'      : fields.integer('Stems x Bunch'),
-        'uom'              : fields.selection([('FB', 'FB'),
+        'total_sale'        : fields.float(string='Total'),
+        'bunch_per_box'     : fields.integer('Bunch per Box'),
+        'bunch_type'        : fields.integer('Stems x Bunch'),
+        'uom'               : fields.selection([('FB', 'FB'),
                                                ('HB', 'HB'),
                                                ('QB', 'QB'),
                                                ('OB', 'OB')], 'UOM'),
-        'origin'                : fields.many2one('detalle.lines.origin', string='Origin'),
-        'subclient_id'          : fields.many2one('res.partner', 'SubCliente'),
-        'sucursal_id'           : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
-        'type'                     : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
-        'is_box_qty'            : fields.boolean('Box Packing?'),
-        'qty_bxs'                 : fields.function(_get_info, type='char', string='BXS'),
-        'selected'               : fields.boolean('Selected'),
+        'origin'            : fields.many2one('detalle.lines.origin', string='Origin'),
+        'subclient_id'      : fields.many2one('res.partner', 'SubCliente'),
+        'sucursal_id'       : fields.many2one('res.partner.subclient.sucursal', 'Sucursal'),
+        'type'              : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Type'),
+        'is_box_qty'        : fields.boolean('Box Packing?'),
+        'qty_bxs'           : fields.function(_get_info, type='char', string='BXS', multi='_vals'), 
+        'box'               : fields.function(_get_info, type='integer', string='Box Id',multi='_vals'),       
+        'box_id'            : fields.many2one('detalle.lines.box', 'Box'), 
     }
 
     def on_change_vals(self, cr, uid, ids, qty,purchase_price,sale_price, uom,is_box_qty,bunch_per_box,bunch_type, context=None):
@@ -357,8 +368,8 @@ class invoice_line_wizard(osv.osv_memory):
                         ('variant_id', '=', variety_id)])
                     if val_ids:
                         pv = self.pool.get('purchase.request.product.variant').browse(cr, uid, val_ids[0])
-                        purchase_prices = [p.purchase_price for p in pl.length_ids]
-                        lenghts = [p.length for p in pl.length_ids]
+                        purchase_prices = [p.purchase_price for p in pv.length_ids]
+                        lenghts = [p.length for p in p.length_ids]
                         res['value']['purchase_price'] = sum(purchase_prices) / len(
                             purchase_prices) if purchase_prices else 0
                         res['value']['length'] = '-'.join(lenghts)
@@ -372,20 +383,20 @@ class invoice_line_wizard(osv.osv_memory):
             return 0
 
     _defaults = {
-        'bunch_per_box': 10,
-        'bunch_type'   : 25,
-        'uom'          : 'HB',
-        'type'  : 'open_market',
-        'pedido_id'    :  lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else False,
+        'bunch_per_box' : 12,
+        'bunch_type'    : 25,
+        'uom'           : 'HB',
+        'type'          : 'open_market',
+        'pedido_id'     :  lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else False,
         'product_id'    :  lambda self, cr, uid, context : context['product_id'] if context and 'product_id' in context else False,
         'invoice_id'    :  lambda self, cr, uid, context : context['invoice_id'] if context and 'invoice_id' in context else False,
-        'supplier_id'    :  lambda self, cr, uid, context : context['supplier_id'] if context and 'supplier_id' in context else False,
-        'line_number'  : get_default_line_number,
+        'supplier_id'   :  lambda self, cr, uid, context : context['supplier_id'] if context and 'supplier_id' in context else False,
+        'line_number'   : get_default_line_number,
     }
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         if context and context.get('invoice_id', False):
-            ids = self.search(cr,uid,[('invoice_id','=',context['invoice_id']),('selected','=',False)])
+            ids = self.search(cr,uid,[('invoice_id','=',context['invoice_id'])])
             return ids
         return super(invoice_line_wizard, self).search(cr, uid, args, offset, limit, order, context, count)
 
@@ -398,21 +409,4 @@ class invoice_line_wizard(osv.osv_memory):
     ]
 
 invoice_line_wizard()
-
-class line_box_wizard(osv.osv_memory):
-    _name = 'line.box.wizard'
-    _description = 'Invoice Box Line'
-
-    _columns = {
-        'invoice_id'      : fields.many2one('invoice.wizard','Invoice'),
-        'boxes'           : fields.integer('Boxes'),
-        'line_wzd_ids'    : fields.many2many('invoice.line.wizard','box_line_relation','box_id','line_id', 'Invoice Lines'),
-    }
-
-    _defaults = {
-        'boxes': 1,
-        'invoice_id'     :  lambda self, cr, uid, context : context['invoice_id'] if context and 'invoice_id' in context else False,
-    }
-
-line_box_wizard()
 
