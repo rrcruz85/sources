@@ -115,6 +115,19 @@
                     <h2>Purchased Lines</h2>
                     <button name="group_lines" string="Group Lines per Box" type="object" class="oe_link"/>
 	    	        <field name="line_ids"/>
+	    	        <newline/>
+                    <h2>Summary per Farm</h2>                    
+	    	        <field name="summary_line_ids" readonly="1" nolabel="1">
+	    	        	<tree string="Farms" editable="top">
+                           <field name="pedido_id" invisible="1"/>
+                           <field name="farm_id"/>
+                           <field name="hb" sum="Total HB"/>
+                           <field name="qb" sum="Total QB"/>                           
+                           <field name="box" sum="Total FB"/>
+                           <field name="stems" sum="Total Stems"/>
+                           <field name="total_sale" sum="Total Sale"/>
+                        </tree>
+	    	        </field>
                 </form>
             </field>
         </record>

@@ -52,7 +52,7 @@ class group_box_wizard(osv.osv_memory):
             if boxes:
                 self.pool.get('detalle.lines.box').unlink(cr, uid, list(set(boxes)))
             lines = [(4, d.detalle_id.id) for d in l.detalle_ids]       
-            self.pool.get('detalle.lines.box').create(cr, uid, {'line_ids': lines})
+            self.pool.get('detalle.lines.box').create(cr, uid, {'box': l.box,'pedido_id': obj.pedido_id.id,'line_ids': lines})
          
         return {
             'name'      : 'Pedidos de Clientes',
@@ -72,7 +72,7 @@ class group_box_line_wizard(osv.osv_memory):
     _columns = {         
         'group_id'          : fields.many2one('group.box.wizard', 'Group'), 
         'pedido_id'         : fields.many2one('pedido.cliente', 'Pedido'), 
-        'box'               : fields.char(size=2, string='Box'),
+        'box'               : fields.integer(string='Box Id', help = 'Box id must be unique per client request'),
         'lines'             : fields.char(size=128, string='Lines'),
         'lines_selected'    : fields.char(size=128, string='Lines'),
         'detalle_ids'       : fields.many2many('purchase.lines.wzd', 'group_box_purchase_lines_relation', 'group_id', 'detalle_id', 'Lines'),             
@@ -87,8 +87,11 @@ class group_box_line_wizard(osv.osv_memory):
             }
         return result
     
+    def get_box_number(self, cr, uid, context=None):
+        return len(context['lines']) + 1 if 'lines' in context else 1                    
+        
     _defaults = {
-        'box'               :  '1',
+        'box'               :  get_box_number,
         'group_id'          :  lambda self, cr, uid, context : context['group_id'] if context and 'group_id' in context else False,
         'pedido_id'         :  lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else False,
         'lines_selected'    :  lambda self, cr, uid, context : context['lines_selected'] if context and 'lines_selected' in context else False,

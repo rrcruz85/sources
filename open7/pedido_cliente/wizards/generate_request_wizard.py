@@ -107,20 +107,20 @@ class generate_request_wizard(osv.osv_memory):
                         lengths =  [(0,0,{'length': l.length,'purchase_price':l.purchase_price}) for l in s .length_ids]
 
                         detalle_dict = {
-                            'name': purchase_line_number,
-                            'supplier_id': s.template_id.partner_id.id,
-                            'type': 'standing_order',
-                            'product_id': v.product_id.id,
-                            'variant_id': v.variant_id.id,
-                            'length_ids': lengths,
-                            'qty': qty,
-                            'is_box_qty': s.is_box_qty,
-                            'bunch_type': s.bunch_type if s.bunch_type else 25,
-                            'bunch_per_box': s.bunch_per_box,
-                            'uom': s.uom,
-                            'sale_price': sum(sale_prices) / len(sale_prices) if sale_prices else 0,
-                            'subclient_id': v.subclient_id.id if v.subclient_id else False,
-                            'sucursal_id': s.template_id.sucursal_id.id if s.template_id.sucursal_id else False,
+                            'name'          : str(purchase_line_number),
+                            'supplier_id'   : s.template_id.partner_id.id,
+                            'type'          : 'standing_order',
+                            'product_id'    : v.product_id.id,
+                            'variant_id'    : v.variant_id.id,
+                            'length_ids'    : lengths,
+                            'qty'           : qty,
+                            'is_box_qty'    : s.is_box_qty,
+                            'bunch_type'    : s.bunch_type if s.bunch_type else 25,
+                            'bunch_per_box' : qty/(s.bunch_type if s.bunch_type else 25),
+                            'uom'           : s.uom,
+                            'sale_price'    : sum(sale_prices) / len(sale_prices) if sale_prices else 0,
+                            'subclient_id'  : v.subclient_id.id if v.subclient_id else False,
+                            'sucursal_id'   : s.template_id.sucursal_id.id if s.template_id.sucursal_id else False,
                         }
                         list_details.append((0, 0, detalle_dict))
                         l_key = str(s.template_id.partner_id.id) + ',' + str(v.product_id.id) + ',' + str(v.variant_id.id) + ',' + str(v.subclient_id.id if v.subclient_id else '') + ',' + '-'.join(purchase_lengths)

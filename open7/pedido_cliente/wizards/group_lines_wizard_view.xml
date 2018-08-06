@@ -13,7 +13,7 @@
                         <group col="8">
                             <field name="pedido_id"  invisible="1"/> 
                             <field name="lines_selected"  invisible="1"/> 
-                            <field name="line_ids" nolabel="1" on_change="on_chance_line_ids(line_ids)" context="{'lines_selected': lines_selected,'group_id': active_id, 'pedido_id': pedido_id}">
+                            <field name="line_ids" nolabel="1" on_change="on_chance_line_ids(line_ids)" context="{'lines_selected': lines_selected,'group_id': active_id, 'pedido_id': pedido_id, 'lines': line_ids}">
                                <tree string="Lines">
                                   <field name="box"/>  
                                	  <field name="lines"/>  
@@ -23,8 +23,9 @@
                                   <field name="group_id"  invisible="1"/>
                                   <field name="lines" invisible="1"/>  
                                   <field name="lines_selected" invisible="1"/>  
-                                  <field name="box" readonly="1"/>                                  
-                               	  <field name="detalle_ids" nolabel="1" domain="[('pedido_id','=',pedido_id)]" on_change="on_chance_detalle_ids(detalle_ids)" context="{'lines_selected': lines_selected}">
+                                  <field name="box" required="1"/> 
+                                  <newline/>                                 
+                               	  <field name="detalle_ids" domain="[('pedido_id','=',pedido_id)]" on_change="on_chance_detalle_ids(detalle_ids)" context="{'lines_selected': lines_selected}">
 	                               	   <tree string="Purchase Lines" editable="top"> 
 						                    <field name="detalle_id" invisible="1"/>
 						                    <field name="pedido_id" invisible="1"/>

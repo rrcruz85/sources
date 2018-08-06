@@ -16,7 +16,7 @@ class AccountInvoiceReport(report_rml):
                     <document filename="test.pdf">
                         <template pageSize="(595.0,842.0)" title=" """ + _("Account Invoice") + """ " author="" allowSplitting="20">
                             <pageTemplate id="page1">
-                                <frame id="first" x1="47.0" y1="50.0" width="500" height="780"/>
+                                <frame id="first" x1="20.0" y1="30.0" width="560" height="835"/>
                             </pageTemplate>
                         </template>"""
 
@@ -153,17 +153,17 @@ class AccountInvoiceReport(report_rml):
 
             rml += """  <story>"""
 
-            rml += """  <spacer length="2.cm"/>"""
+            rml += """  <spacer length="1.0 cm"/>"""
 
-            rml += """  <blockTable colWidths="500.0" rowHeights="60.0" style="MainTable">
+            rml += """  <blockTable colWidths="560.0" rowHeights="60.0" style="MainTable">
                             <tr><td><para style="P14_BOLD_CENTER">INVOICE PACKING</para></td></tr>
                         </blockTable>"""
 
-            invoice_obj = pooler.get_pool(cr.dbname).get('detalle.lines')
-            invoices = invoice_obj.search(cr, uid, [('pedido_id', '=', pedido.id)])
-            invoice_number = invoice_obj.browse(cr, uid, invoices[0]).invoice_number
+            cr.execute("select supplier_invoice_number from account_invoice where pedido_cliente_id = %s",(pedido.id,))
+            record = cr.fetchone()
+            invoice_number = record[0] if record else ''
 
-            rml += """  <blockTable colWidths="300.0,30.0,170.0" rowHeights="12.0,12.0,12.0" style="LEFT_RIGHT">
+            rml += """  <blockTable colWidths="360.0,30.0,170.0" rowHeights="12.0,12.0,12.0" style="LEFT_RIGHT">
                             <tr>
                                 <td></td>
                                 <td></td>
@@ -196,7 +196,7 @@ class AccountInvoiceReport(report_rml):
             if pedido.freight_agency_id and pedido.freight_agency_id.name:
                 freight_agency = pedido.freight_agency_id.name
 
-            rml += """ <blockTable colWidths="60.0,100.0,40.0,100.0,30.0,70.0,100.0" rowHeights="10.0,10.0,10.0,12.0" style="TwoTables">
+            rml += """ <blockTable colWidths="120.0,100.0,40.0,100.0,30.0,70.0,100.0" rowHeights="10.0,10.0,10.0,12.0" style="TwoTables">
                             <tr>
                                 <td><para style="P6_LEFT">NAME:</para></td>
                                 <td><para style="P6_BOLD_LEFT">""" + ustr(pedido.partner_id.name or '') + """</para></td>
@@ -235,11 +235,11 @@ class AccountInvoiceReport(report_rml):
                             </tr>
                         </blockTable>"""
 
-            rml += """  <blockTable colWidths="500.0" rowHeights="12.0" style="LEFT_RIGHT">
+            rml += """  <blockTable colWidths="560.0" rowHeights="12.0" style="LEFT_RIGHT">
                             <tr><td><para style="P8_BOLD_LEFT">COUNTRY OF ORIGIN """ + ustr('(País de Origen): ') + """ ECUADOR</para></td></tr>
                         </blockTable>"""
 
-            rml += """<blockTable colWidths="70.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="20.0" style="CentralTable">
+            rml += """<blockTable colWidths="130.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="20.0" style="CentralTable">
                             <tr>
                                 <td><para style="P6_BOLD_CENTER_TITLE">FARMS</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">VARIETY</para></td>
@@ -255,7 +255,7 @@ class AccountInvoiceReport(report_rml):
                             </tr>
                         </blockTable>"""
 
-            rml += """<blockTable colWidths="70.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
+            rml += """<blockTable colWidths="130.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
                             <tr>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
@@ -279,9 +279,9 @@ class AccountInvoiceReport(report_rml):
                                 inner JOIN account_tax t on ptt.tax_id = t.id
                                 where ptt.prod_id = lines.product_id), 0) as taxes
                                 from (
-                                SELECT p.name as farm, v."name" as varianty, "length",
+                                SELECT p.name as farm, v."name" as varianty, dl.lengths as "length",
                                 sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
-                                sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box  else dl.qty/dl.bunch_type::FLOAT end) as bunch,
+                                sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box  else dl.bunch_per_box end) as bunch,
                                 sum(case
                                 when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
                                 when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
@@ -298,13 +298,13 @@ class AccountInvoiceReport(report_rml):
                                 pt.id as product_id,
                                 dl.group_id   
                                 from
-                                detalle_lines dl on dl.detalle_id = dl."id"
+                                detalle_lines dl
                                 inner join res_partner p on dl.supplier_id = p."id"
                                 inner join product_variant v on v."id" = dl.variant_id
                                 INNER JOIN product_template pt on pt."id" = dl.product_id
                                 LEFT JOIN res_partner pp on dl.subclient_id = pp."id"                               
                                 where dl.pedido_id = %s
-                                GROUP BY p.name, v."name", dl."length",pp."name",pt."name",pt.id,dl.group_id
+                                GROUP BY p.name, v."name", dl.lengths,pp."name",pt."name",pt.id,dl.group_id
                                 order by p.name, pp."name") lines""", (pedido.id,))
 
             lines = cr.fetchall()
@@ -343,7 +343,7 @@ class AccountInvoiceReport(report_rml):
                     supplier_tmp = supplier
 
                 rml += """
-                        <blockTable colWidths="70.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
+                        <blockTable colWidths="130.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
                             <tr>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(supplier[0:18] if first and supplier else '')) + """</para></td>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(variety[0:18] if variety else '')) + """</para></td>
@@ -376,7 +376,7 @@ class AccountInvoiceReport(report_rml):
                 total_taxes += vals[5]
             total_fb = total_hb / 2 + total_qb/4
 
-            rml += """  <blockTable colWidths="70.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
+            rml += """  <blockTable colWidths="130.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
                             <tr>
                                 <td><para style="P6_BOLD_CENTER_TITLE">Total Farm</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
@@ -392,7 +392,7 @@ class AccountInvoiceReport(report_rml):
                             </tr>
                         </blockTable>"""
 
-            rml += """  <blockTable colWidths="70.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
+            rml += """  <blockTable colWidths="130.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
                             <tr>
                                 <td><para style="P6_BOLD_CENTER_TITLE">TOTAL</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
@@ -412,10 +412,10 @@ class AccountInvoiceReport(report_rml):
             tipo_flete = pedido.partner_id.tipo_flete
             flete_value = pedido.precio_flete if tipo_flete == 'fob_f_p' else 0.0
 
-            rml += """  <blockTable colWidths="182.5,182.5,135.0" rowHeights="" style="TableX">
+            rml += """  <blockTable colWidths="242.5,182.5,135.0" rowHeights="" style="TableX">
                             <tr>
                                 <td>
-                                    <blockTable colWidths="225.0,50.0,225.0" rowHeights="8.0,8.0" style="">
+                                    <blockTable colWidths="285.0,50.0,225.0" rowHeights="8.0,8.0" style="">
                                         <tr>
                                             <td><para style="P5_RIGHT">Gross Weight</para></td>
                                             <td><para style="P5_RIGHT">""" + (datas['gross_weight'] or '') + """</para></td>
@@ -483,16 +483,16 @@ class AccountInvoiceReport(report_rml):
             companies_ids = company_obj.search(cr, uid, [])
             company = company_obj.browse(cr, uid, companies_ids[0], context)
 
-            rml += """  <blockTable colWidths="500.0" rowHeights="" style="TableY">
-                            <tr><td><para style="P10_CENTER">Think in flowers????, think about us "INFLOWERS"</para></td></tr>
+            rml += """  <blockTable colWidths="560.0" rowHeights="" style="TableY">
+                            <tr><td><para style="P10_CENTER">Think in flowers???, think about us "INFLOWERS"</para></td></tr>
                             <tr><td><para style="P6_CENTER">""" + (company.street +', ' if company.street  else '')  + (company.street2 + ', ' if company.street2 else '') + (company.city + ', ' if company.city else '')  + (company.state_id.name + ', ' if company.state_id and company.state_id.name else '')  + (company.country_id.name if  company.country_id and company.country_id.name else '') + """</para></td></tr>
                             <tr><td><para style="P6_CENTER">Phone: """ + (company.phone + ',' if company.phone else '')+ """ Mobile: 59399 821-2383</para></td></tr>
                             <tr><td><para style="P6_CENTER">Email/MSN: """ + (company.email if company.email else '') + """ Skype: Inflowers</para></td></tr>
                         </blockTable>"""
 
-            rml += """  <spacer length="0.5cm"/>"""
+            rml += """<spacer length="0.5cm"/>"""
 
-            rml += """<blockTable colWidths="110.0,30.0,35.0,30.0,300.0" rowHeights="12.0" style="TableZ">
+            rml += """<blockTable colWidths="170.0,30.0,35.0,30.0,295.0" rowHeights="12.0" style="TableZ">
                             <tr>
                                 <td><para style="P6_CENTER">FINCA</para></td>
                                 <td><para style="P6_CENTER">HALF</para></td>

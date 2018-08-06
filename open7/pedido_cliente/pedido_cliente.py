@@ -27,20 +27,20 @@ from openerp.tools.translate import _
 import time
 import math
 import re
+from twisted.plugin import fromkeys
 
 class pedido_cliente(osv.osv):
     _name = 'pedido.cliente'
     _description = 'Pedido del cliente'
 
     def _get_purchase_lines(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}
-        
+        res = {}        
         cr.execute("delete from detalle_lines where active = False")
+        lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[])
+        if lines:
+            self.pool.get('purchase.lines.wzd').unlink(cr,uid,lines)
         
         for d_id in ids:
-            lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[('pedido_id','=', d_id)])
-            if lines:
-                self.pool.get('purchase.lines.wzd').unlink(cr,uid,lines)
             cr.execute( "SELECT "+
                         "pedido_cliente.id as pedido_id,"+
                         "detalle_lines.type,"+
@@ -63,8 +63,9 @@ class pedido_cliente(osv.osv):
                         "detalle_lines.uom as uom,"+
                         "request_product_variant.line,"+                        
                         "case when detalle_lines.is_box_qty then detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box else detalle_lines.qty end as stems," +
-                        "detalle_lines.name as linenumber,"+
-                        "detalle_lines.box_id as box_id "+                        
+                        "detalle_lines.name as linenumber,"+ 
+                        "detalle_lines.box_id as box_id,"+  
+                        "detalle_lines.id as id "+          
                         "FROM "+
                         "public.detalle_lines,"+
                         "public.request_product_variant,"+
@@ -90,6 +91,9 @@ class pedido_cliente(osv.osv):
                            "v.variant_id = %s " , (d_id, record[3], record[4],))
                 result = cr.fetchone()
                 request_qty = result[0]
+                
+                if line_number != int(record[21]):
+                    self.pool.get('detalle.lines').write(cr, uid, [record[23]],{'name': str(line_number)})                    
 
                 vals = {
                     'pedido_id'     : record[0],
@@ -114,12 +118,55 @@ class pedido_cliente(osv.osv):
                     'uom'           : record[18],
                     'line'          : record[19],                     
                     'stems'         : record[20],
-                    'line_number'   : record[21] if record[21] else line_number,
-                    'box_id'        : record[22] if record[22] else False
+                    'line_number'   : line_number, 
+                    'box_id'        : record[22] if record[22] else False                                 
                 }
                 line_number += 1
                 list_ids.append(self.pool.get('purchase.lines.wzd').create(cr,uid,vals))
             res[d_id] = list_ids
+        return res
+
+    def _get_summary_lines(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}        
+        cr.execute("delete from summary_by_farm_wizard where pedido_id = %s", (ids[0],)) 
+        list_ids = []       
+        for pedido_id in ids:
+            cr.execute(""" 
+                SELECT
+                    pp."id" as farm,                                
+                    sum(case
+                    when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                    when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
+                    when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 4)) end)
+                    else 0 end) as hb,
+                    sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                    when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 4 end)
+                    when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
+                    else 0 end) as qb,   
+                    dl.group_id,
+                    sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
+                    sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price else dl.qty * dl.sale_price end) as total,
+                    (select count(ddl.group_id) from detalle_lines ddl where ddl.group_id = dl.group_id) as cant                                
+                    from
+                    detalle_lines dl                                
+                    inner join pedido_cliente p on p.id = dl.pedido_id
+                    LEFT JOIN res_partner pp on dl.supplier_id = pp."id"
+                    where dl.pedido_id = %s
+                    GROUP BY pp."id", dl.group_id 
+                    order by pp."id" """, (pedido_id,))
+            lines = cr.fetchall()
+            for record in lines:                                 
+                vals = {
+                    'pedido_id'     : pedido_id,                  
+                    'farm_id'       : record[0],
+                    'hb'            : record[1]/(record[6] if record[6] else 1),
+                    'qb'            : record[2]/(record[6] if record[6] else 1), 
+                    'box'           : record[1]/(record[6] * 2 if record[6] else 2) + record[2]/(record[6]*4 if record[6] else 4),
+                    'stems'         : record[4],
+                    'total_sale'    : record[5]                                               
+                }                
+                list_ids.append(self.pool.get('summary.by.farm.wizard').create(cr,uid,vals))
+            res[pedido_id] = list_ids
         return res
 
     def _get_info(self, cr, uid, ids, field_name, arg, context):
@@ -156,10 +203,11 @@ class pedido_cliente(osv.osv):
         'stems'                 : fields.function(_get_info, type='integer', string='Stems', multi = '_val'),
         'tipo_flete'            : fields.function(_get_info, type='char', string='Tipo Flete', multi = '_val'),
         'line_ids'              : fields.function(_get_purchase_lines, type='one2many', relation="purchase.lines.wzd", string='Purchase Lines'),
+        'summary_line_ids'      : fields.function(_get_summary_lines, type='one2many', relation="summary.by.farm.wizard", string='Report by farms'),
 
         'account_invoice_ids'   : fields.one2many('account.invoice', 'pedido_cliente_id', 'Invoices'),
         'airline_id'            : fields.many2one('pedido_cliente.airline', string='Airline'),
-        'number'                : fields.char('Flight Number'),
+        'number'                : fields.char('Flight Number', size = 16),
         'precio_flete'          : fields.float('Precio Flete', digits = (0,2)),
         'sale_request_id'       : fields.many2one('sale.request', 'Sale Request'),       
     }
@@ -213,13 +261,7 @@ class pedido_cliente(osv.osv):
         if not context:
             context = {}
         context['default_pedido_id'] = ids[0]
-        proveedores = []
-        for l in self.browse(cr, uid, ids[0]).purchase_line_ids:
-            if l.supplier_id.name not in proveedores:
-                proveedores.append(l.supplier_id.name)
-        if proveedores:
-            raise osv.except_osv('Error', "Los siguientes proveedores: "+ ','.join(proveedores) + " tienen lineas de compras sin confirmar.\nPara poder imprimir este pedido debe confirmar todas las lineas de compras de los proveedores.")
-     
+       
         return {
             'name'      : _('Print report'),
             'view_type' : 'form',
@@ -234,8 +276,28 @@ class pedido_cliente(osv.osv):
     def group_lines(self, cr, uid, ids, context=None):
         if not context:
             context = {}
+        
+        '''
+        cr.execute("select dl.id, dl.box_id,dl.name,pl.id  from detalle_lines dl left join purchase_lines_wzd pl on dl.name::int = pl.line_number " + 
+                   "where dl.pedido_id = %s and dl.box_id is not null order by dl.box_id",(ids[0],))
+        
+        records = cr.fetchall()
+        keys = set(map(lambda r: r[1], records))
+        lines = []
+        selected_lines = ''
+        for key in keys:
+            group = ','.join(map(lambda r: r[2], filter(lambda r: r[1] == key, records)))
+            r_ids = map(lambda r: (4, r[3]), filter(lambda r: r[1] == key, records))            
+            selected_lines += group
+            lines.append((0,0,{'pedido_id': ids[0], 'lines': group, 'lines_selected' : '','box':'1','detalle_ids': r_ids}))
+        
+        for l in lines:
+            l[2]['lines_selected'] = selected_lines
+        '''
         context['default_pedido_id'] = ids[0]
-       
+        #context['default_lines_selected'] = selected_lines
+        #context['default_lines_ids'] = lines
+        
         return {
             'name'      : _('Group lines per Box'),
             'view_type' : 'form',
@@ -581,9 +643,9 @@ class detalle_line(osv.osv):
         return res
 
     _columns = {
-        'pedido_id'             : fields.many2one('pedido.cliente', 'Request',ondelete='cascade'),
-        'line_id'               : fields.many2one('request.product.variant', 'Lines'),
         'name'                  : fields.char(size = 128, string= 'Line Number'),
+        'pedido_id'             : fields.many2one('pedido.cliente', 'Request',ondelete='cascade'),
+        'line_id'               : fields.many2one('request.product.variant', 'Lines'),       
         'type'                  : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Order'),
         'supplier_id'           : fields.many2one('res.partner', 'Farm', required=True, domain=[('supplier', '=', True)]),
         'product_id'            : fields.many2one('product.product', string='Product',required=True),
@@ -669,10 +731,21 @@ detalle_line_origin()
 class detalle_line_box(osv.osv):
     _name = 'detalle.lines.box'
     _description = 'Box'
+    _rec_name = 'box'   
    
     _columns = {
+        'box'       : fields.integer('Box Id'),      
+        'pedido_id' : fields.many2one('pedido.cliente', string ='Pedido'),       
         'line_ids'  : fields.one2many('detalle.lines','box_id','Lines'),
     }
+    
+    _defaults = {
+        'box' : 1,
+    }
+    
+    _sql_constraints = [
+        ('box_pedido_uniq', 'unique (box,pedido_id)', 'Ya existe una caja con el mismo id, debe especificar un id diferente !')
+    ]    
     
 detalle_line_box()
 
