@@ -23,6 +23,12 @@ class PosConfig(osv.osv):
         'journal_ids' : fields.many2many('account.journal', 'pos_config_journal_rel',
                      'pos_config_id', 'journal_id', 'Available Payment Methods',
                      domain="[('journal_user', '=', True ), ('type', 'in', ['bank', 'cash','card', 'check'])]",),
+        
+        'order_seq_start_from'  : fields.integer('Order Number Start'),
+    }
+    
+    _defaults = { 
+        'order_seq_start_from'  : 1,
     }
 
     def _check_iva_comp_value(self, cr, uid, ids, context=None):
@@ -32,10 +38,15 @@ class PosConfig(osv.osv):
     def _check_card_comition(self, cr, uid, ids, context=None):
         obj = self.browse(cr, uid, ids[0], context=context)
         return (obj.card_comition >= 0.0 and obj.card_comition <= 100)
+    
+    def _check_order_seq_start_from(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context)
+        return obj.order_seq_start_from > 0
 
     _constraints = [
         (_check_iva_comp_value, _('Error: Invalid value for the iva_compensation number. This value must be between 0 and 100.'), ['iva_compensation']),
         (_check_card_comition, _('Error: Invalid value for the card comition. This value must be between 0 and 100.'),['card_comition']),
+        (_check_order_seq_start_from, 'Order Number Start must be be higher than zero', []),
     ]
 
 class pos_session(osv.osv):

@@ -351,6 +351,7 @@ openerp.my_point_of_sale = function(instance) {
             domain: function(self){ return [['id','=', self.pos_session.config_id[0]]]; },
             loaded: function(self,configs){
                 self.config = configs[0];
+                
                 self.config.use_proxy = self.config.iface_payment_terminal ||
                                         self.config.iface_electronic_scale ||
                                         self.config.iface_print_via_proxy  ||
@@ -847,6 +848,10 @@ openerp.my_point_of_sale = function(instance) {
                 _.each(orders, function (order) {
                     self.db.remove_order(order.id);
                 });
+                
+                //updating order id
+                self.config.order_seq_start_from += 1;
+                
                 return server_ids;
             }).fail(function (error, event){
 
@@ -914,6 +919,11 @@ openerp.my_point_of_sale = function(instance) {
             this.total = 0.0;
             this.total_taxes = 0.0;
             return this;
+        },
+        
+        generateUniqueId: function() {
+        	var self = this;
+        	return self.pos.config.order_seq_start_from;
         },
 
         get_config_iva_compensation: function(){

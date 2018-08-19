@@ -46,11 +46,22 @@ class pos_config(osv.osv):
     _columns = {
         'show_all_products'     : fields.boolean('Show all products?', help='If not checked, the product list in the point of sale will be limited...'),
         'iva_compensation'      : fields.float('IVA Compensation (%)', digits=(16, 2), help="It's the value of the IVA compensation that will be apply to the products..."),
+        'order_seq_start_from'  : fields.integer('Order Number Start'),
     }
     
     _defaults = {  
-        'show_all_products'     : lambda *a: True,
+        'show_all_products'     : True,
+        'order_seq_start_from'  : 1,
     }
+    
+    def _check_order_seq_start_from(self, cr, uid, ids, context=None):
+        obj = self.browse(cr, uid, ids[0], context)
+        return obj.order_seq_start_from > 0
+    
+    _constraints = [
+        (_check_order_seq_start_from, 'Order Number Start must be be higher than zero', []),
+    ]
+    
 pos_config()
 
 class pos_order(osv.osv):
@@ -58,24 +69,19 @@ class pos_order(osv.osv):
     _inherit = "pos.order"
     _description = "Point of Sale"
     
-    def get_type_journal(self, cr, uid, journal, context=None):
-        res = 1
-        journal_obj = self.pool.get('account.journal')
-        return res
-    
     def create_from_ui(self, cr, uid, orders, context=None):
         order_ids = super(pos_order, self).create_from_ui(cr, uid, orders, context=context)
         orders_saved = self.read(cr, uid, order_ids, ['pos_reference'], context=context)
         
         for order_saved in orders_saved:
             for o in orders:
+                order = {}
                 if o['data']['name'] == order_saved['pos_reference']: 
                     order = o['data']
-                
                 vals = {
                     'card_type': order.get('card_type', False),
                     'partner_id': order.get('customer', False),
-                    'iva_compensation': order.get('iva_compensation', 0.0),
+                    'iva_compensation': order.get('iva_compensation', 0.0),                    
                 }
                 
                 super(pos_order, self).write(cr, uid, [order_saved['id']], vals, context=context)
@@ -98,7 +104,7 @@ class pos_order(osv.osv):
         return res
     
     def _amount_all_upd(self, cr, uid, ids, name, args, context=None):
-        tax_obj = self.pool.get('account.tax')
+        
         cur_obj = self.pool.get('res.currency')
         res = {}
         
@@ -127,6 +133,37 @@ class pos_order(osv.osv):
             res[order.id]['amount_total'] = cur_obj.round(cr, uid, cur, val1)
             
         return res
+    
+    _columns = {
+        'card_payment'          : fields.function(_get_type_journal, method=True, type='boolean', string='Credit Card Payment', store=False),
+        'acquirer'              : fields.many2one('res.bank', 'Acquirer'),
+        'card_type'             : fields.many2one('pos.credit.card', 'Card Type'),
+        'card_number'           : fields.char('Card Number', size=16),
+        'approval_number'       : fields.char('Approbal Number', size=9),
+        'lot_number'            : fields.char('Lot Number', size=6),
+        'reference'             : fields.char('Reference', size=6),         
+        
+        # IVA Compensation for all products in the order...
+        'iva_compensation'      : fields.float('IVA Compensation (%)', digits=(16, 2)),
+        
+        'amount_tax'            : fields.function(_amount_all_upd, string='Taxes', digits_compute=dp.get_precision('Point Of Sale'), multi='all'),
+        'amount_total'          : fields.function(_amount_all_upd, string='Total', multi='all'),
+        'amount_paid'           : fields.function(_amount_all_upd, string='Paid', states={'draft': [('readonly', False)]}, readonly=True, digits_compute=dp.get_precision('Point Of Sale'), multi='all'),
+        'amount_return'         : fields.function(_amount_all_upd, 'Returned', digits_compute=dp.get_precision('Point Of Sale'), multi='all'),
+        'amount_iva_comp'       : fields.function(_amount_all_upd, string='IVA Compensation', multi='all'),
+       
+    }
+    
+    def create(self, cr, uid, vals, context=None):        
+        seq_number = 0
+        config = self.pool.get('pos.session').browse(cr, uid, vals['session_id']).config_id
+        if vals.get('pos_reference'):
+            seq_number = int(vals['pos_reference'].split(' ')[-1].strip())
+        else:            
+            vals['pos_reference'] = 'Order ' + str(config.order_seq_start_from)
+        order_id = super(pos_order, self).create(cr, uid, vals, context=context)
+        self.pool.get('pos.config').write(cr, uid, [config.id],{'order_seq_start_from' : seq_number + 1})
+        return order_id
     
     def action_invoice(self, cr, uid, ids, context=None):
         wf_service = netsvc.LocalService("workflow")
@@ -202,26 +239,8 @@ class pos_order(osv.osv):
             'nodestroy': True,
             'target': 'current',
             'res_id': inv_ids and inv_ids[0] or False,
-        }
+        }    
     
-    _columns = {
-        'card_payment': fields.function(_get_type_journal, method=True, type='boolean', string='Credit Card Payment', store=False),
-        'acquirer': fields.many2one('res.bank', 'Acquirer'),
-        'card_type': fields.many2one('pos.credit.card', 'Card Type'),
-        'card_number': fields.char('Card Number', size=16),
-        'approval_number': fields.char('Approbal Number', size=9),
-        'lot_number': fields.char('Lot Number', size=6),
-        'reference': fields.char('Reference', size=6),
-
-        # IVA Compensation for all products in the order...
-        'iva_compensation'      : fields.float('IVA Compensation (%)', digits=(16, 2)),
-        
-        'amount_tax'            : fields.function(_amount_all_upd, string='Taxes', digits_compute=dp.get_precision('Point Of Sale'), multi='all'),
-        'amount_total'          : fields.function(_amount_all_upd, string='Total', multi='all'),
-        'amount_paid'           : fields.function(_amount_all_upd, string='Paid', states={'draft': [('readonly', False)]}, readonly=True, digits_compute=dp.get_precision('Point Of Sale'), multi='all'),
-        'amount_return'         : fields.function(_amount_all_upd, 'Returned', digits_compute=dp.get_precision('Point Of Sale'), multi='all'),
-        'amount_iva_comp'       : fields.function(_amount_all_upd, string='IVA Compensation', multi='all'),
-    }
 pos_order()
 
 class pos_order_line(osv.osv):

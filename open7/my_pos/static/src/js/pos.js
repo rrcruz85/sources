@@ -600,15 +600,14 @@ function my_pos_partner (instance) {
     var _load_server_data_ = module.PosModel.prototype.load_server_data;
     module.PosModel.prototype.load_server_data = function(){
         var self = this;
-        var load_def = _load_server_data_.call(self).done(self.load_customers_data());
-        //var load_def = _load_server_data_.call(self).done();
+        var load_def = _load_server_data_.call(self).done(self.load_customers_data());        
         return load_def;
     },
 
     module.PosModel = module.PosModel.extend({
         load_customers_data: function(){
-            var self = this;
-            var loaded = self.fetch(
+        	var self = this;
+        	var loaded = self.fetch(
                     'res.partner',
                     ['name','contact_address','zip','email','phone','mobile','ced_ruc','type_ced_ruc','id'],
                     [['customer', '=', true]])
@@ -904,7 +903,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
                         ['name','journal_ids','shop_id','journal_id',
                          'iface_self_checkout', 'iface_led', 'iface_cashdrawer',
                          'iface_payment_terminal', 'iface_electronic_scale', 'iface_barscan', 'iface_vkeyboard',
-                         'iface_print_via_proxy','iface_cashdrawer','state','sequence_id','session_ids', 'iva_compensation', 'show_all_products'],
+                         'iface_print_via_proxy','iface_cashdrawer','state','sequence_id','session_ids', 'iva_compensation', 'show_all_products','order_seq_start_from'],
                         [['id','=', self.get('pos_session').config_id[0]]]
                     );
                 }).then(function(configs){
@@ -915,6 +914,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
                     self.iface_vkeyboard           =  !!pos_config.iface_vkeyboard;
                     self.iface_self_checkout       =  !!pos_config.iface_self_checkout;
                     self.iface_cashdrawer          =  !!pos_config.iface_cashdrawer;
+                    self.order_number              =  pos_config.order_seq_start_from;
 
                     return self.fetch('sale.shop',[],[['id','=',pos_config.shop_id[0]]]);
                 }).then(function(shops){
@@ -1053,8 +1053,9 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
                     console.error('Failed to send order:',order);
                     self._flush(index+1);
                 })
-                .done(function(){
-                    //remove from db if success
+                .done(function(){                	 
+                	self.order_number += 1;
+                	//remove from db if success
                     self.db.remove_order(order.id);
                     self._flush(index);
                 });
@@ -1103,7 +1104,8 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             return this;
         },
         generateUniqueId: function() {
-            return new Date().getTime();
+            //return new Date().getTime();       	 
+        	return this.attributes.pos.order_number;
         },
         addProduct: function(product, options){
             options = options || {};

@@ -11,7 +11,7 @@ import psycopg2
 
 _logger = logging.getLogger(__name__)
 
-class PosOrder(osv.osv):
+class pos_order(osv.osv):
     _inherit = 'pos.order'
 
     def _amount_all_new(self, cr, uid, ids, name, args, context=None):
@@ -234,11 +234,11 @@ class PosOrder(osv.osv):
 
     def create_from_ui(self, cr, uid, orders, context=None):
         # Keep only new orders
-        submitted_references = [o['data']['name'] for o in orders]
-        existing_order_ids = self.search(cr, uid, [('pos_reference', 'in', submitted_references)], context=context)
-        existing_orders = self.read(cr, uid, existing_order_ids, ['pos_reference'], context=context)
-        existing_references = set([o['pos_reference'] for o in existing_orders])
-        orders_to_save = [o for o in orders if o['data']['name'] not in existing_references]
+        #submitted_references = [o['data']['name'] for o in orders]
+        #existing_order_ids = self.search(cr, uid, [('pos_reference', 'in', submitted_references)], context=context)
+        #existing_orders = self.read(cr, uid, existing_order_ids, ['pos_reference'], context=context)
+        #existing_references = set([o['pos_reference'] for o in existing_orders])
+        orders_to_save = [o for o in orders]#if o['data']['name'] not in existing_references]
 
         order_ids = []
 
@@ -267,6 +267,17 @@ class PosOrder(osv.osv):
 
         return order_ids
 
+    def create(self, cr, uid, vals, context=None):        
+        seq_number = 0
+        config = self.pool.get('pos.session').browse(cr, uid, vals['session_id']).config_id
+        if vals.get('pos_reference'):
+            seq_number = int(vals['pos_reference'].split(' ')[-1].strip())
+        else:            
+            vals['pos_reference'] = 'Order ' + str(config.order_seq_start_from)
+        order_id = super(pos_order, self).create(cr, uid, vals, context=context)
+        self.pool.get('pos.config').write(cr, uid, [config.id],{'order_seq_start_from' : seq_number + 1})
+        return order_id
+    
     def action_paid(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'paid'}, context=context)
         self.create_picking(cr, uid, ids, context=context)

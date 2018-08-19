@@ -285,6 +285,15 @@
     </t>
 	
 	<t t-extend="PosTicket">
+	    
+	    <!-- 
+		    <t t-jquery=".pos-right-align:first" t-operation="replace">			 
+				<div class="pos-right-align">
+				    <t t-esc="new Date().toString(Date.CultureInfo.formatPatterns.shortDate + ' ' + Date.CultureInfo.formatPatterns.longTime)"/>
+	                 <t t-esc="widget.currentOrder.attributes.name"/>
+	             </div>             
+			</t>
+	    -->
 		<t t-jquery=".pos-right-align:first" t-operation="after">
 			<br/>
 			<div class="client_data_x_div">
