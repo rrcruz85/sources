@@ -200,6 +200,43 @@ class puchase_lines_wzd(osv.osv_memory):
             'context': context,
         }
 
+    def confirm_purchase_line(self, cr, uid, ids, *args):
+                
+        obj = self.browse(cr,uid,ids[0])
+        
+        if obj.detalle_id.box_id:
+            raise osv.except_osv('Error', "La linea # %s ya ha sido confirmada" % (str(obj.line_number,)))
+        
+        cr.execute("select max(group_id) from detalle_lines where pedido_id = %s",(obj.detalle_id.pedido_id.id,))
+        
+        group = cr.fetchone() 
+        group_id = 1
+        if group and group[0]:
+            group_id = group[0] + 1
+       
+        self.pool.get('detalle.lines').write(cr,uid,[obj.detalle_id.id], {'group_id': group_id})
+                
+        box = cr.execute("select max(box) from detalle_lines_box where pedido_id = %s",(obj.detalle_id.pedido_id.id,))
+        box_id = 1
+        if box and box[0]:
+            box_id = box[0] + 1
+         
+        self.pool.get('detalle.lines.box').create(cr,uid, {
+            'box': box_id, 
+            'pedido_id': obj.detalle_id.pedido_id.id,
+            'line_ids': [(4,obj.detalle_id.id)]
+        })
+              
+              
+        return {
+            'name'      : _('Pedidos de Clientes'),
+            'view_type' : 'form',
+            'view_mode' : 'form',
+            'res_model' : 'pedido.cliente',
+            'type'      : 'ir.actions.act_window',
+            'res_id'    : obj.detalle_id.pedido_id.id,
+        }           
+        
 puchase_lines_wzd()
 
 class detalle_line_wzd(osv.osv_memory):

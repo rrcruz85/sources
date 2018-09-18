@@ -29,6 +29,7 @@ class group_box_wizard(osv.osv_memory):
     _columns = {
         'pedido_id'         : fields.many2one('pedido.cliente', 'Pedido'),  
         'lines_selected'    : fields.char(size=128, string='Lines'),
+        'box'               : fields.integer(string='Box Id', help = 'Box id must be unique per client request'),
         'line_ids'          : fields.one2many('group.box.line.wizard', 'group_id', 'Lines'),             
     }
     
@@ -36,12 +37,12 @@ class group_box_wizard(osv.osv_memory):
         'pedido_id'    :  lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else False,
     }
     
-    def on_chance_line_ids(self, cr, uid, ids, line_ids, context=None):
+    def on_chance_line_ids(self, cr, uid, ids, line_ids, lines_selected, context=None):
         result = {}        
         if line_ids:             
             lines = [l[2]['lines'] for l in line_ids if l[0] == 0]         
-            result['value'] = {
-                'lines_selected': ','.join(lines)
+            result['value'] = {                 
+                'lines_selected' : lines_selected + ',' + ','.join(lines)
             }
         return result
     
@@ -78,17 +79,18 @@ class group_box_line_wizard(osv.osv_memory):
         'detalle_ids'       : fields.many2many('purchase.lines.wzd', 'group_box_purchase_lines_relation', 'group_id', 'detalle_id', 'Lines'),             
     }
     
-    def on_chance_detalle_ids(self, cr, uid, ids, detalle_ids, context=None):
+    def on_chance_detalle_ids(self, cr, uid, ids, detalle_ids, lines_selected, context=None):
         result = {}        
         if detalle_ids and detalle_ids[0] :
             lines = self.pool.get('purchase.lines.wzd').read(cr, uid, detalle_ids[0][2], ['line_number'])            
             result['value'] = {
-                'lines':  ','.join([str(l['line_number']) for l in lines])
+                'lines'          : ','.join([str(l['line_number']) for l in lines]),
+                'lines_selected' : lines_selected + ',' + ','.join([str(l['line_number']) for l in lines])
             }
         return result
     
     def get_box_number(self, cr, uid, context=None):
-        return len(context['lines']) + 1 if 'lines' in context else 1                    
+        return context['box'] if 'box' in context else 1                    
         
     _defaults = {
         'box'               :  get_box_number,

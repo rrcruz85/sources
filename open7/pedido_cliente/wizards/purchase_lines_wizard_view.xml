@@ -11,7 +11,7 @@
                     <field name="detalle_id" invisible="1"/>
                     <field name="pedido_id" invisible="1"/>
                     <field name="request_qty" invisible="1"/>
-                    <field name="box_id" invisible="1"/>
+                    <field name="box_id" invisible="1"/> 
                     <field name="line_number"/>
                     <field name="line"/>
                     <field name="box"/>
@@ -35,6 +35,7 @@
                     <field name="profit" sum="Total Profit"/>
                     <field name="origin_id"/>
                     <field name="sucursal_id"/>
+                    <button name="confirm_purchase_line" string="Confirm" type="object" icon="terp-camera_test"/>
                     <button name="split_purchase_line"  context ="{'detalle_id':detalle_id}" string="Split Line" type="object" icon="gtk-justify-center"/>
                     <button name="edit_lines" string="Edit" type="object" icon="gtk-edit"/>
                     <button name="delete_lines" string="Delete" type="object" icon="gtk-close"/>

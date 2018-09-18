@@ -116,7 +116,7 @@ class generate_request_wizard(osv.osv_memory):
                             'qty'           : qty,
                             'is_box_qty'    : s.is_box_qty,
                             'bunch_type'    : s.bunch_type if s.bunch_type else 25,
-                            'bunch_per_box' : qty/(s.bunch_type if s.bunch_type else 25),
+                            'bunch_per_box' : s.bunch_per_box if s.is_box_qty else qty/(s.bunch_type if s.bunch_type else 25),
                             'uom'           : s.uom,
                             'sale_price'    : sum(sale_prices) / len(sale_prices) if sale_prices else 0,
                             'subclient_id'  : v.subclient_id.id if v.subclient_id else False,

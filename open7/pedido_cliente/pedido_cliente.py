@@ -27,7 +27,6 @@ from openerp.tools.translate import _
 import time
 import math
 import re
-from twisted.plugin import fromkeys
 
 class pedido_cliente(osv.osv):
     _name = 'pedido.cliente'
@@ -92,7 +91,7 @@ class pedido_cliente(osv.osv):
                 result = cr.fetchone()
                 request_qty = result[0]
                 
-                if line_number != int(record[21]):
+                if record[21] and line_number != int(record[21]):
                     self.pool.get('detalle.lines').write(cr, uid, [record[23]],{'name': str(line_number)})                    
 
                 vals = {
@@ -275,28 +274,28 @@ class pedido_cliente(osv.osv):
         
     def group_lines(self, cr, uid, ids, context=None):
         if not context:
-            context = {}
+            context = {}        
         
-        '''
-        cr.execute("select dl.id, dl.box_id,dl.name,pl.id  from detalle_lines dl left join purchase_lines_wzd pl on dl.name::int = pl.line_number " + 
+        cr.execute("select dl.id, dl.box_id, dl.name, pl.id  from detalle_lines dl left join purchase_lines_wzd pl on dl.name::int = pl.line_number " + 
                    "where dl.pedido_id = %s and dl.box_id is not null order by dl.box_id",(ids[0],))
         
         records = cr.fetchall()
         keys = set(map(lambda r: r[1], records))
-        lines = []
-        selected_lines = ''
-        for key in keys:
-            group = ','.join(map(lambda r: r[2], filter(lambda r: r[1] == key, records)))
-            r_ids = map(lambda r: (4, r[3]), filter(lambda r: r[1] == key, records))            
-            selected_lines += group
-            lines.append((0,0,{'pedido_id': ids[0], 'lines': group, 'lines_selected' : '','box':'1','detalle_ids': r_ids}))
+        selected_lines = []
+        for key in keys:             
+            selected_lines += map(lambda r: r[2], filter(lambda r: r[1] == key, records))
         
-        for l in lines:
-            l[2]['lines_selected'] = selected_lines
-        '''
+        cr.execute("select max(dlb.box) from detalle_lines dl inner join detalle_lines_box dlb on dl.box_id = dlb.id " + 
+                   "where dl.pedido_id = %s",(ids[0],))
+        
+        group = cr.fetchone()
+        group_id = 1
+        if group and group[0]:
+            group_id = group[0] + 1
+        
         context['default_pedido_id'] = ids[0]
-        #context['default_lines_selected'] = selected_lines
-        #context['default_lines_ids'] = lines
+        context['default_box'] = group_id
+        context['default_lines_selected'] = ','.join(selected_lines)
         
         return {
             'name'      : _('Group lines per Box'),
@@ -674,8 +673,8 @@ class detalle_line(osv.osv):
                                             'detalle.lines.length': (_get_ids, ['length'], 10),
                                         }),
         'active'                : fields.boolean('Active'),    
-        'agrupada'              : fields.boolean('Agrupada'),
-        'group_id'              : fields.integer('Group Id'),   
+        'agrupada'              : fields.boolean('Agrupada'),        
+        'group_id'              : fields.integer('Group Id'),          
         'box_id'                : fields.many2one('detalle.lines.box', 'Box'), 
     }
 
@@ -728,14 +727,14 @@ class detalle_line_origin(osv.osv):
 
 detalle_line_origin()
 
-class detalle_line_box(osv.osv):
+class detalle_lines_box(osv.osv):
     _name = 'detalle.lines.box'
     _description = 'Box'
     _rec_name = 'box'   
    
     _columns = {
         'box'       : fields.integer('Box Id'),      
-        'pedido_id' : fields.many2one('pedido.cliente', string ='Pedido'),       
+        'pedido_id' : fields.many2one('pedido.cliente', string ='Pedido', ondelete='cascade'),       
         'line_ids'  : fields.one2many('detalle.lines','box_id','Lines'),
     }
     
@@ -747,7 +746,7 @@ class detalle_line_box(osv.osv):
         ('box_pedido_uniq', 'unique (box,pedido_id)', 'Ya existe una caja con el mismo id, debe especificar un id diferente !')
     ]    
     
-detalle_line_box()
+detalle_lines_box()
 
 class pedido_cliente_airline(osv.osv):
     _name = 'pedido_cliente.airline'
