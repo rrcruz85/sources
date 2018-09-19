@@ -21,7 +21,6 @@
 ##############################################################################
 from osv import osv
 from osv import fields
-import time
 
 class summary_by_farm_wizard(osv.osv_memory):
     _name = 'summary.by.farm.wizard'
@@ -30,6 +29,7 @@ class summary_by_farm_wizard(osv.osv_memory):
     _columns = {
         'pedido_id'       : fields.many2one('pedido.cliente', 'Pedido',),
         'farm_id'         : fields.many2one('res.partner', 'Farm'),
+        'subclient_id'    : fields.many2one('res.partner', 'SubCliente'),
         'hb'              : fields.float('HB'),
         'qb'              : fields.float('QB'),
         'box'             : fields.float('FBX', help='Full Boxes'),

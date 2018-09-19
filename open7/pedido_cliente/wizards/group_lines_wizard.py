@@ -30,7 +30,8 @@ class group_box_wizard(osv.osv_memory):
         'pedido_id'         : fields.many2one('pedido.cliente', 'Pedido'),  
         'lines_selected'    : fields.char(size=128, string='Lines'),
         'box'               : fields.integer(string='Box Id', help = 'Box id must be unique per client request'),
-        'line_ids'          : fields.one2many('group.box.line.wizard', 'group_id', 'Lines'),             
+        'line_ids'          : fields.one2many('group.box.line.wizard', 'group_id', 'Lines'), 
+        'last_box'          : fields.integer(string='Last Box Id'),             
     }
     
     _defaults = {
@@ -40,9 +41,13 @@ class group_box_wizard(osv.osv_memory):
     def on_chance_line_ids(self, cr, uid, ids, line_ids, lines_selected, context=None):
         result = {}        
         if line_ids:             
-            lines = [l[2]['lines'] for l in line_ids if l[0] == 0]         
+            lines = [l[2]['lines'] for l in line_ids if l[0] == 0] 
+            added = filter(lambda r: r[0] == 0, line_ids)            
+            last_box = added[-1][2]['box'] if added else 0       
+            
             result['value'] = {                 
-                'lines_selected' : lines_selected + ',' + ','.join(lines)
+                'lines_selected' : lines_selected + ',' + ','.join(lines),
+                'last_box' : last_box + 1
             }
         return result
     
@@ -87,10 +92,13 @@ class group_box_line_wizard(osv.osv_memory):
                 'lines'          : ','.join([str(l['line_number']) for l in lines]),
                 'lines_selected' : lines_selected + ',' + ','.join([str(l['line_number']) for l in lines])
             }
+            if not context:
+                context = {}
+                
         return result
     
     def get_box_number(self, cr, uid, context=None):
-        return context['box'] if 'box' in context else 1                    
+        return context['last_box'] if 'last_box' in context and context['last_box'] else context['box'] if 'box' in context else 1                    
         
     _defaults = {
         'box'               :  get_box_number,

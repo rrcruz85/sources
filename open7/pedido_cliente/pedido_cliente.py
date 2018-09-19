@@ -132,7 +132,8 @@ class pedido_cliente(osv.osv):
         for pedido_id in ids:
             cr.execute(""" 
                 SELECT
-                    pp."id" as farm,                                
+                    dl.supplier_id,  
+                    dl.subclient_id,                              
                     sum(case
                     when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
                     when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
@@ -142,25 +143,23 @@ class pedido_cliente(osv.osv):
                     when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 4 end)
                     when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
                     else 0 end) as qb,   
-                    dl.group_id,
                     sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
-                    sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price else dl.qty * dl.sale_price end) as total,
-                    (select count(ddl.group_id) from detalle_lines ddl where ddl.group_id = dl.group_id) as cant                                
+                    sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price else dl.qty * dl.sale_price end) as total
                     from
                     detalle_lines dl                                
-                    inner join pedido_cliente p on p.id = dl.pedido_id
-                    LEFT JOIN res_partner pp on dl.supplier_id = pp."id"
+                    inner join res_partner pp on dl.subclient_id = pp."id"
                     where dl.pedido_id = %s
-                    GROUP BY pp."id", dl.group_id 
-                    order by pp."id" """, (pedido_id,))
+                    GROUP BY dl.supplier_id, dl.subclient_id  
+                    order by dl.supplier_id """, (pedido_id,))
             lines = cr.fetchall()
             for record in lines:                                 
                 vals = {
                     'pedido_id'     : pedido_id,                  
                     'farm_id'       : record[0],
-                    'hb'            : record[1]/(record[6] if record[6] else 1),
-                    'qb'            : record[2]/(record[6] if record[6] else 1), 
-                    'box'           : record[1]/(record[6] * 2 if record[6] else 2) + record[2]/(record[6]*4 if record[6] else 4),
+                    'subclient_id'  : record[1],
+                    'hb'            : record[2]/2,
+                    'qb'            : record[3]/4, 
+                    'box'           : record[2]/4 + record[3]/8,
                     'stems'         : record[4],
                     'total_sale'    : record[5]                                               
                 }                

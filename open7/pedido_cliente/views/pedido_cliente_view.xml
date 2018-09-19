@@ -121,6 +121,7 @@
 	    	        	<tree string="Farms" editable="top">
                            <field name="pedido_id" invisible="1"/>
                            <field name="farm_id"/>
+                           <field name="subclient_id"/>
                            <field name="hb" sum="Total HB"/>
                            <field name="qb" sum="Total QB"/>                           
                            <field name="box" sum="Total FB"/>

@@ -11,10 +11,11 @@
                 <form string="Group Lines by Boxes" version="7.0">
                     <sheet>
                         <group col="8">
-                            <field name="pedido_id"  invisible="1"/> 
-                            <field name="lines_selected"  invisible="1"/> 
-                            <field name="box"  invisible="1"/> 
-                            <field name="line_ids" nolabel="1" on_change="on_chance_line_ids(line_ids,lines_selected)" context="{'box':box,'lines_selected': lines_selected,'group_id': active_id, 'pedido_id': pedido_id, 'lines': line_ids}">
+                            <field name="pedido_id" invisible="1"/> 
+                            <field name="lines_selected" invisible="1"/> 
+                            <field name="box" invisible="1"/> 
+                            <field name="last_box" invisible="1"/> 
+                            <field name="line_ids" nolabel="1" on_change="on_chance_line_ids(line_ids,lines_selected,context)" context="{'box':box,'last_box':last_box,'lines_selected': lines_selected,'group_id': active_id, 'pedido_id': pedido_id, 'lines': line_ids}">
                                <tree string="Lines">
                                   <field name="box"/>  
                                	  <field name="lines"/>  
@@ -26,7 +27,7 @@
                                   <field name="lines_selected" invisible="1"/>  
                                   <field name="box" required="1"/> 
                                   <newline/>                                 
-                               	  <field name="detalle_ids" domain="[('pedido_id','=',pedido_id)]" on_change="on_chance_detalle_ids(detalle_ids,lines_selected)" context="{'lines_selected': lines_selected}">
+                               	  <field name="detalle_ids" domain="[('pedido_id','=',pedido_id)]" on_change="on_chance_detalle_ids(detalle_ids,lines_selected,context)" context="{'lines_selected': lines_selected,'lines': lines}">
 	                               	   <tree string="Purchase Lines" editable="top"> 
 						                    <field name="detalle_id" invisible="1"/>
 						                    <field name="pedido_id" invisible="1"/>
