@@ -165,7 +165,10 @@ class AccountInvoiceVarietyReport(report_rml):
 
                             <paraStyle name="P6_BOLD_CENTER_TITLE" fontName="Helvetica-Bold" fontSize="4.0" leading="4" alignment="CENTER"/>
                             <paraStyle name="P6_BOLD_JUSTIFY_TITLE" fontName="Helvetica-Bold" fontSize="4.0" leading="4" alignment="JUSTIFY"/>
-
+                            <paraStyle name="P6_BOLD_LEFT_TITLE" fontName="Helvetica-Bold" fontSize="4.0" leading="4" alignment="LEFT"/>
+                            <paraStyle name="P6_LEFT_TITLE" fontName="Helvetica" fontSize="4.0" leading="4" alignment="LEFT"/>
+                            
+                            
                             <paraStyle name="P6_BOLD_CENTER" fontName="Helvetica-Bold" fontSize="5.0" alignment="CENTER"/>
                             <paraStyle name="P6_BOLD_LEFT" fontName="Helvetica-Bold" fontSize="6.0" leading="5" alignment="LEFT"/>
                             <paraStyle name="P6_CENTER" fontName="Helvetica" fontSize="6.0" leading="5" alignment="CENTER"/>
@@ -260,20 +263,20 @@ class AccountInvoiceVarietyReport(report_rml):
                         </blockTable>"""
 
             rml += """<blockTable colWidths="560.0" rowHeights="12.0" style="LEFT_RIGHT">
-                            <tr><td><para style="P8_BOLD_LEFT">COUNTRY OF ORIGIN """ + ustr('(País de Origen): ') + """ ECUADOR</para></td></tr>
-                        </blockTable>"""
+                        <tr><td><para style="P8_BOLD_LEFT">COUNTRY OF ORIGIN """ + ustr('(País de Origen): ') + """ ECUADOR</para></td></tr>
+                      </blockTable>"""
 
-            rml += """<blockTable colWidths="145.0,55.0,20.0,20.0,40.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="12.0,12.0" style="TableHeader">
+            rml += """<blockTable colWidths="155.0,30.0,32.5,32.5,30.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="12.0,12.0" style="TableHeader">
                             <tr>
-                                <td><para style="P6_BOLD_CENTER_TITLE">VARIETY</para></td>
+                                <td><para style="P6_BOLD_LEFT_TITLE">VARIETY</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">LENGTH</para></td>
-                                <td><para style="P6_BOLD_JUSTIFY_TITLE">PIECES/PACKING</para></td>
+                                <td><para style="P6_BOLD_CENTER_TITLE">PIECES/PACKING</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">UNITS</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">STEMS</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">BUNCH</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">DESCRIPTION</para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">CLIENT</para></td>
+                                <td><para style="P6_BOLD_LEFT_TITLE">DESCRIPTION</para></td>
+                                <td><para style="P6_BOLD_LEFT_TITLE">CLIENT</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">UNIT</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">TOTAL</para></td>
                             </tr>
@@ -286,7 +289,7 @@ class AccountInvoiceVarietyReport(report_rml):
                                 <td><para style="P6_BOLD_CENTER_TITLE">TOTAL</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">TOTAL</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
-                                <td><para style="P6_BOLD_CENTER_TITLE">REMARKS</para></td>
+                                <td><para style="P6_BOLD_LEFT_TITLE">REMARKS</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">PRICE</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">PRICE</para></td>
                             </tr>
@@ -359,24 +362,24 @@ class AccountInvoiceVarietyReport(report_rml):
                 total_bunch += bunch
                 
                 rml += """
-                        <blockTable colWidths="145.0,55.0,20.0,20.0,40.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
+                        <blockTable colWidths="155.0,30.0,32.5,32.5,30.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
                             <tr>
-                                <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(variety[0:25] if variety else '')) + """</para></td>
+                                <td><para style="P6_LEFT_TITLE">""" + (ustr(variety[0:25] if variety else '')) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + (ustr(length[0:15])) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(round(line_hb,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(round(qb_cont,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(int(unit_per_hb)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(round(stems,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(round(bunch,2)) + """</para></td>
-                                <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(description[0:20] if description else '')) + """</para></td>
-                                <td><para style="P5_COURIER_JUSTIFY">""" + ustr(subclient or '') + """</para></td>
+                                <td><para style="P6_LEFT_TITLE">""" + (ustr(description[0:20] if description else '')) + """</para></td>
+                                <td><para style="P6_LEFT_TITLE">""" + ustr(subclient or '') + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(round(sale_price,2)) + """</para></td>
                                 <td><para style="P5_COURIER_CENTER">""" + str(round(total,2)) + """</para></td>
                             </tr>
                         </blockTable>"""
 
             rml += """
-                        <blockTable colWidths="145.0,55.0,20.0,20.0,40.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
+                        <blockTable colWidths="155.0,30.0,32.5,32.5,30.0,30.0,30.0,85.0,75.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
                             <tr>
                                 <td><para style="P5_COURIER_BOLD_JUSTIFY">""" + _('Total farm') + """</para></td>
                                 <td><para style="P5_COURIER_CENTER"></para></td>
