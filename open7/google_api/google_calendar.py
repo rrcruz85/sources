@@ -12,6 +12,8 @@ from oauth2client import tools
 import dateutil.parser
 import pytz
 import logging
+import os
+import base64
 
 
 logger = logging.getLogger('google_api')
@@ -163,7 +165,7 @@ class crm_meeting(osv.osv):
 
         geventids = self.read(cr, uid, ids, ['google_event_id', 'user_id'], context=context)
         for event_id in geventids:
-            if id['google_event_id'] and id['user_id']:
+            if event_id['google_event_id'] and event_id['user_id']:
 
                 instance_pool = self.pool.get('google.api.calendar')
                 instance = instance_pool.search(cr, uid, [('user_id', '=', event_id['user_id'][0])])
@@ -190,8 +192,8 @@ class crm_meeting_deleted(osv.osv):
 
     _name = 'crm.meeting.deleted'
     _columns = {
-            'google_event_id': fields.char('Google Calendar Event ID'),
-            'user_id': fields.many2one('res.users', 'User'),
+        'google_event_id': fields.char('Google Calendar Event ID'),
+        'user_id': fields.many2one('res.users', 'User'),
     }
 
 class google_api_account(osv.osv):
@@ -199,53 +201,73 @@ class google_api_account(osv.osv):
     _name = 'google.api.account'
     _columns = {
         'name': fields.char('Account', size=50, required=True),
-        'secrets_path': fields.char('Secrets path', size=100, required=True),
-        'credential_path': fields.char('Credential path', size=100, required=True),
+        'secrets_file':fields.binary('Secrets File', required=True, filters='*.json,*.JSON', help ='Must be the credential.json file generated from google api'),
+        'credential_file':fields.binary('Credential File', help ='Must be the credential.dat file generated after executing Syncronize Button'),
         'synchronize': fields.boolean('Auto synchronize'),
         'use_local_browser': fields.boolean('Use local browser', help="""
         If you can not run a local browser on the machine where OpenERP-Server is running on, please deactivate this option. For getting authorized you must start OpenERP-Server in interactive mode (on ubuntu from the location where you installed OpenERP-Server: ./openerp-server -c /etc/openerp-server.conf).
-        After clicking on 'Authorize' you willbe asked to enter a verification code.
-        """),
+        After clicking on 'Authorize' you willbe asked to enter a verification code."""),
     }
 
     _defaults = {
-        'secrets_path': 'client_secrets.json',
-        'credential_path': 'credentials.dat',
         'synchronize': True,
         'use_local_browser': True,
     }
     
-    _sql_constraints = [
-        ('secrets_path_unique', 'UNIQUE (secrets_path)', 'Path to json secret file already exists, you must select a different path!'),
-        ('credential_path_unique', 'UNIQUE (credential_path)', 'Path to json credential file already exists, you must select a different path!'),
-    ]
-
     def do_authorize(self, cr, uid, ids, context=None):
-
-        account = self.browse(cr, uid, ids[0])
-
-        FLOW = client.flow_from_clientsecrets(account.secrets_path,
+        
+        if not context:
+            context = {}
+        
+        account = self.browse(cr, uid, ids[0])        
+        path = os.path.dirname(os.path.abspath(__file__))        
+        if os.name == 'nt':
+            path += '\\data\\keys\\'
+        else:
+            path += '/data/keys/'            
+        
+        account_name = account.name.lower().replace (' ','_')
+                
+        file_secret_path =  path + account_name + '_credential.json'
+        data = account.secrets_file
+        f = open(file_secret_path,'wb')
+        f.write(data.decode('base64'))
+        f.close()
+        
+        FLOW = client.flow_from_clientsecrets(file_secret_path,
                                               scope=[
                                                      'https://www.googleapis.com/auth/calendar',
                                                      'https://www.googleapis.com/auth/calendar.readonly',
                                                      'https://www.google.com/m8/feeds',
-                                                     ],
-                                              message=tools.message_if_missing(account.secrets_path))
-
-        storage = file.Storage(account.credential_path)
-        credentials = storage.get()
-        if credentials is None or credentials.invalid:
-            parser = argparse.ArgumentParser(
-                                             description=__doc__,
-                                             formatter_class=argparse.RawDescriptionHelpFormatter,
-                                             parents=[tools.argparser])
-            if not account.use_local_browser:
-                flags = parser.parse_args(['--noauth_local_webserver'])
-            else:
-                flags = parser.parse_args([])
-            credentials = tools.run_flow(FLOW, storage, flags)
-
-        raise osv.except_osv(_('Done.'), _('Please verify if your credential file is created or updated in the path the you selected for the secret path folder.'))
+                                                    ],
+                                              message=tools.message_if_missing(file_secret_path))
+        
+        file_credential_path =  path + account_name + '_credential.dat'
+        
+        if account.credential_file:            
+            data = account.credential_file
+            f = open(file_credential_path,'wb')
+            f.write(data.decode('base64'))
+            f.close()
+        else:         
+            storage = file.Storage(file_credential_path)
+            credentials = storage.get()
+            if credentials is None or credentials.invalid:
+                parser = argparse.ArgumentParser(
+                                                 description=__doc__,
+                                                 formatter_class=argparse.RawDescriptionHelpFormatter,
+                                                 parents=[tools.argparser])
+                if not account.use_local_browser:
+                    flags = parser.parse_args(['--noauth_local_webserver'])
+                else:
+                    flags = parser.parse_args([])
+                credentials = tools.run_flow(FLOW, storage, flags)
+                
+                with open(file_credential_path, 'r') as content_file:
+                    content = content_file.read()
+                    base64String = base64.b64encode(bytes(content))
+                    self.write(cr, uid, ids,{'credential_file':base64String}) 
+        #raise osv.except_osv(_('Done.'), _('Please verify if your credential file is created or updated in the path the you selected for the secret path folder.'))
 
 class google_api_calendar(osv.osv):
 
@@ -270,9 +292,19 @@ class google_api_calendar(osv.osv):
 
         meeting_pool = self.pool.get('crm.meeting')
         del_pool = self.pool.get('crm.meeting.deleted')
+             
+        path = os.path.dirname(os.path.abspath(__file__))        
+        if os.name == 'nt':
+            path += '\\data\\keys\\'
+        else:
+            path += '/data/keys/'   
+            
+        account_name = instance.account_id.name.lower().replace (' ','_')
+                
+        file_credential_path =  path + account_name + '_credential.dat'       
 
         try:
-            storage = file.Storage(instance.account_id.credential_path)
+            storage = file.Storage(file_credential_path)
             credentials = storage.get()
             http = httplib2.Http()
             http = credentials.authorize(http)
@@ -484,7 +516,16 @@ class google_api_calendar(osv.osv):
             delids = meeting_pool.search(cr, uid, [('user_id', '=', instance.user_id.id), ('google_event_id', '=', gid)])
             meeting_pool.unlink(cr, uid, delids, context={'stop_google_calendar_sync': 'True'})
 
-        return True
+        context["calendar_default_user_id"] = uid
+        
+        return {
+            'name': 'Meetings',
+            'view_type': 'form',
+            'view_mode': 'calendar,tree,form,gantt',
+            'res_model': 'crm.meeting',
+            'type': 'ir.actions.act_window',
+            'context': context,
+        }  
 
     def synchronize_accounts(self, cr, uid, ids=False, context=None):
         """WARNING: meant for cron usage only"""

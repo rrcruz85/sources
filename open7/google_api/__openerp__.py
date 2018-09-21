@@ -20,13 +20,12 @@
 ##############################################################################
 {
     'name' : 'google_api',
-    'author' : 'solutions2use',
-    'website' : "http://www.solutions2use.com",
+    'author' : 'corecloud',
+    'website' : "http://www.corecloud.ec",
     'version' : "1.0",
     "depends" : ['base_calendar'],
     'description': """
-	OpenERP solution for synchronizing crm_meeting with google calendar
-	visit http://www.solutions2use.com/google-calendar for installation details
+	OpenERP solution for synchronizing crm_meeting with google calendar	
 	""",
     'category' : 'Google Apps',
     'data': [

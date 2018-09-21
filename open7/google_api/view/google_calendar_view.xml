@@ -30,8 +30,8 @@
                                 <field name="use_local_browser" />
                             </group>
                             <group>
-                                <field name="secrets_path" />
-                                <field name="credential_path" />
+                                <field name="secrets_file"/>
+                                <field name="credential_file"/>
                             </group>
                         </group>
                     </sheet>
@@ -45,9 +45,7 @@
             <field name="arch" type="xml">
                 <tree string="Google API Accounts">
                     <field name="name" />
-                    <field name="synchronize" />
-                    <field name="secrets_path" />
-                    <field name="credential_path" />
+                    <field name="synchronize" />                     
                 </tree>
             </field>
         </record>
@@ -110,6 +108,7 @@
                     <field name="account_id" />
                     <field name="calendar_id" />
                     <field name="user_id" />
+                    <button string="Synchronize" type="object" name="do_synchronize" icon="STOCK_REFRESH" />
                 </tree>
             </field>
         </record>
@@ -127,6 +126,15 @@
         <!-- define the menus -->
         <menuitem name="Google API" id="menu_base_google_api"
             groups="google_api.res_groups_google_api_super" sequence="70" />
+            
+        <!-- Calendar View -->
+        <menuitem id="google_api.menu_calendar" parent="google_api.menu_base_google_api"
+            name="Google Calendars" sequence="50" groups="base.group_system" />
+            
+        <menuitem id="google_api.menu_calendar_item" parent="google_api.menu_calendar"
+            name="Account Calendar" action="base_calendar.action_crm_meeting"
+            sequence="51" groups="base.group_system" />
+            
 
         <!-- Configuration menu -->
         <menuitem id="google_api.menu_config" parent="google_api.menu_base_google_api"
