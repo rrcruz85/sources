@@ -1,25 +1,4 @@
 # -*- encoding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (c) 2010 Acysos S.L. (http://acysos.com) All Rights Reserved.
-#                       Ignacio Ibeas <ignacio@acysos.com>
-#    $Id$
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
 
 from openerp.osv import osv
 from openerp.osv import fields
@@ -126,8 +105,8 @@ class pedido_cliente(osv.osv):
         return res
 
     def _get_summary_lines(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}        
-        cr.execute("delete from summary_by_farm_wizard where pedido_id = %s", (ids[0],)) 
+        res = {} 
+        
         list_ids = []       
         for pedido_id in ids:
             cr.execute(""" 
@@ -135,13 +114,13 @@ class pedido_cliente(osv.osv):
                     dl.supplier_id,  
                     dl.subclient_id,                              
                     sum(case
-                    when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                    when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty/2 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
                     when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
                     when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 4)) end)
                     else 0 end) as hb,
-                    sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                    sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty/4 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
                     when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 4 end)
-                    when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
+                    when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 8 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
                     else 0 end) as qb,   
                     sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
                     sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price else dl.qty * dl.sale_price end) as total
@@ -157,9 +136,9 @@ class pedido_cliente(osv.osv):
                     'pedido_id'     : pedido_id,                  
                     'farm_id'       : record[0],
                     'subclient_id'  : record[1],
-                    'hb'            : record[2]/2,
-                    'qb'            : record[3]/4, 
-                    'box'           : record[2]/4 + record[3]/8,
+                    'hb'            : record[2],
+                    'qb'            : record[3], 
+                    'box'           : record[2]/2 + record[3]/4,
                     'stems'         : record[4],
                     'total_sale'    : record[5]                                               
                 }                
@@ -224,6 +203,18 @@ class pedido_cliente(osv.osv):
             else:
                 res.append((record.id, record.partner_id.name))
         return res
+     
+    def fields_view_get(self, cr, uid, view_id=None, view_type='tree', context=None, toolbar=False, submenu=False):
+        if context is None:
+            context = {}
+        res = super(pedido_cliente, self).fields_view_get(cr, uid, view_id=view_id, view_type=view_type, context=context, toolbar=toolbar,submenu=False)
+        
+        if view_type == 'tree':
+            line_ids = self.pool.get('summary.by.farm.wizard').search(cr, uid,[])
+            self.pool.get('summary.by.farm.wizard').unlink(cr, uid,line_ids)
+        
+        return res
+
 
     def on_change_partner(self, cr, uid, ids, partner_id, context=None):
         val = 1
@@ -282,7 +273,7 @@ class pedido_cliente(osv.osv):
         keys = set(map(lambda r: r[1], records))
         selected_lines = []
         for key in keys:             
-            selected_lines += map(lambda r: r[2], filter(lambda r: r[1] == key, records))
+            selected_lines += map(lambda r: r[2] if r[2] else '', filter(lambda r: r[1] == key, records))
         
         cr.execute("select max(dlb.box) from detalle_lines dl inner join detalle_lines_box dlb on dl.box_id = dlb.id " + 
                    "where dl.pedido_id = %s",(ids[0],))

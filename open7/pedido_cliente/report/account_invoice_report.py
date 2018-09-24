@@ -239,7 +239,7 @@ class AccountInvoiceReport(report_rml):
                             <tr><td><para style="P8_BOLD_LEFT">COUNTRY OF ORIGIN """ + ustr('(País de Origen): ') + """ ECUADOR</para></td></tr>
                         </blockTable>"""
 
-            rml += """<blockTable colWidths="130.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="20.0" style="CentralTable">
+            rml += """<blockTable colWidths="120.0,50.0,45.0,40.0,40.0,25.0,25.0,75.0,70.0,30.0,40.0" rowHeights="20.0" style="CentralTable">
                             <tr>
                                 <td><para style="P6_BOLD_CENTER_TITLE">FARMS</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE">VARIETY</para></td>
@@ -255,7 +255,7 @@ class AccountInvoiceReport(report_rml):
                             </tr>
                         </blockTable>"""
 
-            rml += """<blockTable colWidths="130.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
+            rml += """<blockTable colWidths="120.0,50.0,45.0,40.0,40.0,25.0,25.0,75.0,70.0,30.0,40.0" rowHeights="10.0" style="AllBorders">
                             <tr>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
@@ -283,13 +283,13 @@ class AccountInvoiceReport(report_rml):
                                 sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
                                 sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box  else dl.bunch_per_box end) as bunch,
                                 sum(case
-                                when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                                when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty/2 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
                                 when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
-                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 4)) end)
+                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty /4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 4)) end)
                                 else 0 end) as hb,
-                                sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                                sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty/4 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
                                 when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 4 end)
-                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
+                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty/8 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
                                 else 0 end) as qb,
                                 pt."name" as product,
                                 avg(dl.sale_price) as unit_price,
@@ -313,14 +313,13 @@ class AccountInvoiceReport(report_rml):
             supplier_tmp = lines[0][0] if lines else ''
             
             for line in lines:
-                total_bunches = sum(map(lambda r: r[4], filter(lambda r: r[12] == line[12], lines))) if line[12] else 0
                 
                 supplier = line[0]
                 variety = line[1]
                 length = line[2]
                 stems_cant = line[3]
                 bunch_cant =  line[4]
-                hb_cont =  line[4]/total_bunches if total_bunches else line[5]
+                hb_cont =  line[5]
                 qb_cont =  line[6]
                 description =  line[7]
                 sale_price =  line[8]
@@ -343,7 +342,7 @@ class AccountInvoiceReport(report_rml):
                     supplier_tmp = supplier
 
                 rml += """
-                        <blockTable colWidths="130.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
+                        <blockTable colWidths="120.0,50.0,45.0,40.0,40.0,25.0,25.0,75.0,70.0,30.0,40.0" rowHeights="10.0" style="AllBorders">
                             <tr>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(supplier[0:18] if first and supplier else '')) + """</para></td>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(variety[0:18] if variety else '')) + """</para></td>
@@ -375,8 +374,8 @@ class AccountInvoiceReport(report_rml):
                 total_price += vals[4]
                 total_taxes += vals[5]
             total_fb = total_hb / 2 + total_qb/4
-
-            rml += """  <blockTable colWidths="130.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
+            
+            rml += """  <blockTable colWidths="120.0,50.0,45.0,40.0,40.0,25.0,25.0,75.0,70.0,30.0,40.0" rowHeights="10.0" style="AllBorders">
                             <tr>
                                 <td><para style="P6_BOLD_CENTER_TITLE">Total Farm</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
@@ -392,7 +391,7 @@ class AccountInvoiceReport(report_rml):
                             </tr>
                         </blockTable>"""
 
-            rml += """  <blockTable colWidths="130.0,70.0,55.0,30.0,30.0,20.0,20.0,75.0,70.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
+            rml += """  <blockTable colWidths="120.0,50.0,45.0,40.0,40.0,25.0,25.0,75.0,70.0,30.0,40.0" rowHeights="10.0" style="AllBorders">
                             <tr>
                                 <td><para style="P6_BOLD_CENTER_TITLE">TOTAL</para></td>
                                 <td><para style="P6_BOLD_CENTER_TITLE"></para></td>
@@ -412,10 +411,10 @@ class AccountInvoiceReport(report_rml):
             tipo_flete = pedido.partner_id.tipo_flete
             flete_value = pedido.precio_flete if tipo_flete == 'fob_f_p' else 0.0
 
-            rml += """  <blockTable colWidths="242.5,182.5,135.0" rowHeights="" style="TableX">
+            rml += """  <blockTable colWidths="240.0,180.0,140.0" rowHeights="" style="TableX">
                             <tr>
                                 <td>
-                                    <blockTable colWidths="285.0,50.0,225.0" rowHeights="8.0,8.0" style="">
+                                    <blockTable colWidths="285.0,55.0,220.0" rowHeights="8.0,8.0" style="">
                                         <tr>
                                             <td><para style="P5_RIGHT">Gross Weight</para></td>
                                             <td><para style="P5_RIGHT">""" + (datas['gross_weight'] or '') + """</para></td>
