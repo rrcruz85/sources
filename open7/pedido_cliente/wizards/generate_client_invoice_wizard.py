@@ -66,17 +66,6 @@ class invoice_client_wizard(osv.osv_memory):
             res = journal.currency and journal.currency.id or journal.company_id.currency_id.id
         return res
 
-    def _default_account_id(self, cr, uid, client_id, context=None):
-        if context is None:
-            context = {}
-        if context.get('type') in ('out_invoice', 'out_refund'):
-            prop = self.pool.get('ir.property').get(cr, uid, 'property_account_income_categ', 'product.category',
-                                                    context=context)
-        else:
-            prop = self.pool.get('ir.property').get(cr, uid, 'property_account_expense_categ', 'product.category',
-                                                    context=context)
-        return prop and prop.id or False
-
     def _get_period(self, cr, uid, context=None):
         period = time.strftime('%m/%Y')
         period_ids = self.pool.get('account.period').search(cr, uid, [('name', '=', period)])
@@ -140,7 +129,11 @@ class invoice_client_wizard(osv.osv_memory):
                     }
                     list_vals.append((0, 0, vals))
                 res['value']['line_ids'] = list_vals
-            res['value']['client_id'] =  self.pool.get('pedido.cliente').read(cr, uid, pedido_id,['partner_id'])['partner_id'][0]     
+            client = self.pool.get('pedido.cliente').browse(cr, uid, pedido_id).partner_id
+            res['value']['client_id'] = client.id
+            res['value']['fiscal_position'] = client.property_account_position and client.property_account_position.id or False  
+            res['value']['account_id'] = client.property_account_receivable and client.property_account_receivable.id or False  
+       
         return res
     
     def generate_invoice(self, cr, uid, ids, context=None):

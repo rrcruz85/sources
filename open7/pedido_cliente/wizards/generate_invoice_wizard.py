@@ -66,35 +66,17 @@ class invoice_wizard(osv.osv_memory):
             res = journal.currency and journal.currency.id or journal.company_id.currency_id.id
         return res
 
-    def _default_account_id(self, cr, uid, supplier_id,context=None):
-        if context is None:
-            context = {}
-        if context.get('type') in ('out_invoice','out_refund'):
-            prop = self.pool.get('ir.property').get(cr, uid, 'property_account_income_categ', 'product.category', context=context)
-        else:
-            prop = self.pool.get('ir.property').get(cr, uid, 'property_account_expense_categ', 'product.category', context=context)
-        return prop and prop.id or False
-
     def _get_period(self, cr, uid, context=None):
         period = time.strftime('%m/%Y')
         period_ids = self.pool.get('account.period').search(cr, uid, [('name','=',period)])
         if period_ids:
             return period_ids[0]
         return False
-
-    def _get_account_id(self, cr, uid, supplier_id, context=None):
-        if context is None:
-            context = {}
-        if context.get('type') in ('out_invoice','out_refund'):
-            prop = self.pool.get('ir.property').get(cr, uid, 'property_account_income_categ', 'product.category', context=context)
-        else:
-            prop = self.pool.get('ir.property').get(cr, uid, 'property_account_expense_categ', 'product.category', context=context)
-        return prop and prop.id or False
     
     _defaults = {
         'journal_id'    : _get_journal,
         'period_id'     : _get_period,
-        'currency_id'   : _get_currency,
+        'currency_id'   : _get_currency, 
         'company_id'    : lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'invoice.wizard', context=c),
         'user_id'       : lambda s, cr, u, c: u,
         'date_invoice'  : time.strftime('%Y-%m-%d'),
@@ -156,7 +138,11 @@ class invoice_wizard(osv.osv_memory):
                         'box'           : l.box_id.box if l.box_id else False,
                     }
                     list_vals.append((0, 0, vals))
-                res['value']['line_ids'] = list_vals                 
+                res['value']['line_ids'] = list_vals  
+            supplier = self.pool.get('res.partner').browse(cr,uid, supplier_id)    
+            res['value']['fiscal_position'] = supplier.property_account_position and supplier.property_account_position.id or False  
+            res['value']['account_id'] = supplier.property_account_payable and supplier.property_account_payable.id or False  
+                    
         return res
 
     def generate_invoice(self, cr, uid, ids, context=None):

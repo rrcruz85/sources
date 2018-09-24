@@ -1,24 +1,4 @@
 # -*- encoding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution    
-#    Copyright (C) 2004-2010 Tiny SPRL (http://tiny.be). All Rights Reserved
-#    
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see http://www.gnu.org/licenses/.
-#
-##############################################################################
 from osv import osv
 from osv import fields
 from openerp.tools.translate import _
@@ -203,11 +183,11 @@ class puchase_lines_wzd(osv.osv_memory):
     def confirm_purchase_line(self, cr, uid, ids, *args):
                 
         obj = self.browse(cr,uid,ids[0])
-        
+        pedido_id = obj.detalle_id.pedido_id.id
         if obj.detalle_id.box_id:
             raise osv.except_osv('Error', "La linea # %s ya ha sido confirmada" % (str(obj.line_number,)))
         
-        cr.execute("select max(group_id) from detalle_lines where pedido_id = %s",(obj.detalle_id.pedido_id.id,))
+        cr.execute("select max(group_id) from detalle_lines where pedido_id = %s",(pedido_id,))
         
         group = cr.fetchone() 
         group_id = 1
@@ -216,7 +196,8 @@ class puchase_lines_wzd(osv.osv_memory):
        
         self.pool.get('detalle.lines').write(cr,uid,[obj.detalle_id.id], {'group_id': group_id})
                 
-        box = cr.execute("select max(box) from detalle_lines_box where pedido_id = %s",(obj.detalle_id.pedido_id.id,))
+        cr.execute("select max(box) from detalle_lines_box where pedido_id = %s",(pedido_id,))
+        box = cr.fetchone() 
         box_id = 1
         if box and box[0]:
             box_id = box[0] + 1

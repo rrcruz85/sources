@@ -193,13 +193,18 @@ class generate_request_wizard(osv.osv_memory):
                 days['Sat'] = 6
             if p.domingo:
                 days['Sun'] = 7
-
+            fechas_pedido = []  
             for day in days.keys():
                 fecha = proximo_dia(day, p.days)
                 fechaTmp = fecha - timedelta(days= p.days)
                 existe = self.pool.get('pedido.cliente').search(cr,uid,[('sale_request_id','=', p.id), ('request_date','=',fechaTmp),('partner_id','=',p.partner_id.id),('type','=','standing_order'),('state','=','draft')], count=True)
                 if not existe:
-                    generar_pedido(fecha, p, cliente_id)
+                    fechas_pedido.append(fecha)
+                
+            if fechas_pedido:    
+                for fecha_p in sorted(fechas_pedido):
+                    generar_pedido(fecha_p, p, cliente_id)           
+            
         return {
             'name': 'Pedidos de Clientes',
             'view_type': 'form',

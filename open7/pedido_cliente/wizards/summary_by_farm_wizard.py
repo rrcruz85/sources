@@ -38,6 +38,3 @@ class summary_by_farm_wizard(osv.osv_memory):
     } 
 
 summary_by_farm_wizard()
-
-
- 

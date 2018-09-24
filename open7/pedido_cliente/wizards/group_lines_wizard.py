@@ -1,24 +1,4 @@
 # -*- encoding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution    
-#    Copyright (C) 2004-2010 Tiny SPRL (http://tiny.be). All Rights Reserved
-#    
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see http://www.gnu.org/licenses/.
-#
-##############################################################################
 from osv import osv
 from osv import fields
 
@@ -46,19 +26,20 @@ class group_box_wizard(osv.osv_memory):
             last_box = added[-1][2]['box'] if added else 0       
             
             result['value'] = {                 
-                'lines_selected' : lines_selected + ',' + ','.join(lines),
+                'lines_selected' : (lines_selected + ','  if lines_selected else '')  + ','.join(lines),
                 'last_box' : last_box + 1
             }
         return result
     
     def save(self, cr, uid, ids, context=None):
-        obj = self.browse(cr, uid, ids[0])        
+        obj = self.browse(cr, uid, ids[0])   
+        pedido_id = obj.pedido_id.id     
         for l in obj.line_ids:
             boxes = [d.box_id.id for d in l.detalle_ids if d.box_id]
             if boxes:
                 self.pool.get('detalle.lines.box').unlink(cr, uid, list(set(boxes)))
             lines = [(4, d.detalle_id.id) for d in l.detalle_ids]       
-            self.pool.get('detalle.lines.box').create(cr, uid, {'box': l.box,'pedido_id': obj.pedido_id.id,'line_ids': lines})
+            self.pool.get('detalle.lines.box').create(cr, uid, {'box': l.box,'pedido_id': pedido_id,'line_ids': lines})
          
         return {
             'name'      : 'Pedidos de Clientes',
@@ -66,7 +47,7 @@ class group_box_wizard(osv.osv_memory):
             'view_mode' : 'form,tree',
             'res_model' : 'pedido.cliente',
             'type'      : 'ir.actions.act_window',
-            'res_id'    : obj.pedido_id.id,
+            'res_id'    : pedido_id,
         }
         
 group_box_wizard()
@@ -90,11 +71,8 @@ class group_box_line_wizard(osv.osv_memory):
             lines = self.pool.get('purchase.lines.wzd').read(cr, uid, detalle_ids[0][2], ['line_number'])            
             result['value'] = {
                 'lines'          : ','.join([str(l['line_number']) for l in lines]),
-                'lines_selected' : lines_selected + ',' + ','.join([str(l['line_number']) for l in lines])
-            }
-            if not context:
-                context = {}
-                
+                'lines_selected' : (lines_selected + ','  if lines_selected  else '') + ','.join([str(l['line_number'] or '') for l in lines])
+            }     
         return result
     
     def get_box_number(self, cr, uid, context=None):
