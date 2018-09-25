@@ -27,22 +27,20 @@ class puchase_lines_wzd(osv.osv_memory):
             else:
                 res[obj.id]['total_qty_purchased'] = str(obj.purchased_qty) + ' Stems'
 
-            if obj.detalle_id.agrupada:
-                cr.execute("select  sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(obj.detalle_id.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(obj.pedido_id.id) + 
+            if obj.detalle_id.box_id:
+                cr.execute("select  sum(dl.bunch_per_box) from detalle_lines dl where dl.box_id =" + str(obj.detalle_id.box_id.id) + " and dl.active = true and dl.pedido_id = " + str(obj.pedido_id.id) + 
                            " and dl.supplier_id = " + str(obj.supplier_id.id) + " and dl.product_id = " + str(obj.product_id.id) +
-                           " group by dl.group_id, dl.pedido_id, dl.supplier_id, dl.product_id")
+                           " group by dl.box_id, dl.pedido_id, dl.supplier_id, dl.product_id")
                 record = cr.fetchone()
                 totals = record[0] if record else 0
-                qty = (float(obj.bunch_per_box)/totals) * obj.detalle_id.qty if obj.detalle_id.is_box_qty else (float(obj.bunch_per_box)/totals)  
-                res[obj.id]['qty'] = str(round(qty, 2) if totals else 0) + ' ' + obj.uom
-                full_boxes = (round(qty, 2) if totals else 0)/uom[obj.uom]
-                res[obj.id]['stimated_qty'] = full_boxes
+                qty = float(obj.bunch_per_box)/totals if totals else 0
+                res[obj.id]['qty'] = str(round(qty,2)) + ' ' + obj.uom
+                full_boxes = round(qty, 2)/uom[obj.uom]               
             else:
                 bxs_qty = obj.purchased_qty if obj.detalle_id.is_box_qty else (1 if not (obj.purchased_qty /(int(obj.bunch_type) * obj.bunch_per_box)) else (obj.purchased_qty / (int(obj.bunch_type) * obj.bunch_per_box)))
-                res[obj.id]['qty'] = str(round(float(bxs_qty), 2)) + ' ' + obj.uom
-                full_boxes = round(float(bxs_qty)/uom[obj.uom], 2)
-                res[obj.id]['stimated_qty'] = full_boxes
-                
+                res[obj.id]['qty'] = str(round(float(bxs_qty),2)) + ' ' + obj.uom
+                full_boxes = round(float(bxs_qty)/uom[obj.uom],2)
+            res[obj.id]['stimated_qty'] = full_boxes                
             res[obj.id]['box'] = obj.detalle_id.box_id.box if obj.detalle_id.box_id else False
         return res
 

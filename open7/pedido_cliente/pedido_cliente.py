@@ -113,15 +113,6 @@ class pedido_cliente(osv.osv):
                 SELECT
                     dl.supplier_id,  
                     dl.subclient_id,                              
-                    sum(case
-                    when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty/2 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
-                    when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
-                    when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 4)) end)
-                    else 0 end) as hb,
-                    sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty/4 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
-                    when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 4 end)
-                    when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 8 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
-                    else 0 end) as qb,   
                     sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
                     sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price else dl.qty * dl.sale_price end) as total
                     from
@@ -131,16 +122,27 @@ class pedido_cliente(osv.osv):
                     GROUP BY dl.supplier_id, dl.subclient_id  
                     order by dl.supplier_id """, (pedido_id,))
             lines = cr.fetchall()
-            for record in lines:                                 
+            for record in lines: 
+                
+                lines_hb = self.pool.get('purchase.lines.wzd').search(cr, uid, [('pedido_id','=', pedido_id),('supplier_id','=',record[0]),('subclient_id','=',record[1]),('uom','=','HB')])
+                total_hb = 0
+                for r in self.pool.get('purchase.lines.wzd').browse(cr, uid, lines_hb):
+                    total_hb += r.stimated_qty * 2   
+                    
+                lines_qb = self.pool.get('purchase.lines.wzd').search(cr, uid, [('pedido_id','=', pedido_id),('supplier_id','=',record[0]),('subclient_id','=',record[1]),('uom','=','QB')])
+                total_qb = 0
+                for r in self.pool.get('purchase.lines.wzd').browse(cr, uid, lines_qb):
+                    total_qb += r.stimated_qty * 2               
+                                                
                 vals = {
                     'pedido_id'     : pedido_id,                  
                     'farm_id'       : record[0],
                     'subclient_id'  : record[1],
-                    'hb'            : record[2],
-                    'qb'            : record[3], 
-                    'box'           : record[2]/2 + record[3]/4,
-                    'stems'         : record[4],
-                    'total_sale'    : record[5]                                               
+                    'hb'            : total_hb,
+                    'qb'            : total_qb, 
+                    'box'           : total_hb/2 + total_qb/4,
+                    'stems'         : record[2],
+                    'total_sale'    : record[3]                                               
                 }                
                 list_ids.append(self.pool.get('summary.by.farm.wizard').create(cr,uid,vals))
             res[pedido_id] = list_ids
@@ -214,7 +216,6 @@ class pedido_cliente(osv.osv):
             self.pool.get('summary.by.farm.wizard').unlink(cr, uid,line_ids)
         
         return res
-
 
     def on_change_partner(self, cr, uid, ids, partner_id, context=None):
         val = 1
@@ -310,7 +311,7 @@ class request_product_variant(osv.osv):
             lines = []
             purchased_ids = []
             if obj.subclient_id:
-                purchased_ids = self.pool.get('detalle.lines').search(cr,uid, [('line_id', '=',obj.id),('subclient_id', '=',obj.subclient_id.id) ])
+                purchased_ids = self.pool.get('detalle.lines').search(cr,uid, [('line_id', '=',obj.id)])
 
             if purchased_ids:
                 purchased_lines = self.pool.get('detalle.lines').browse(cr,uid, purchased_ids)
