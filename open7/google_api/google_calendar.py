@@ -275,10 +275,11 @@ class google_api_calendar(osv.osv):
     _columns = {
         'account_id': fields.many2one('google.api.account', 'Account', required=True),
         'user_id': fields.many2one('res.users', 'User', required=True),
-        'calendar_id': fields.char('Google calendar id', size=100, required=True),
+        'calendar_id': fields.char('Google calendar id', size=100, required=True, readonly = True),
     }
 
     _defaults = {
+        'calendar_id' : 'primary'
     }
 
     _sql_constraints = [
