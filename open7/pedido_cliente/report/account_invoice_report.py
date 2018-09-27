@@ -278,25 +278,24 @@ class AccountInvoiceReport(report_rml):
                                 from product_taxes_rel ptt
                                 inner JOIN account_tax t on ptt.tax_id = t.id
                                 where ptt.prod_id = lines.product_id), 0) as taxes
-                                from (
-                                SELECT p.name as farm, v."name" as varianty, dl.lengths as "length",
+                                from (                                
+                                SELECT p.name as farm, 
+                                v."name" as varianty, 
+                                dl.lengths as "length",
                                 sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
-                                sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box  else dl.bunch_per_box end) as bunch,
-                                sum(case
-                                when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty/2 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
-                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
-                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty /4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 4)) end)
-                                else 0 end) as hb,
-                                sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty/4 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
-                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 4 end)
-                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty/8 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
-                                else 0 end) as qb,
+                                sum(dl.bunch_per_box) as bunches,
                                 pt."name" as product,
                                 avg(dl.sale_price) as unit_price,
                                 sum(case when dl.is_box_qty = TRUE then (dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price)::FLOAT else (dl.qty * dl.sale_price)::FLOAT end) as total,
                                 pp."name" as subclient,
                                 pt.id as product_id,
-                                dl.group_id   
+                                dl.box_id,   
+                                case when dl.box_id is not null then                                
+                                 (select sum(dl2.bunch_per_box) from detalle_lines dl2 where dl2.box_id = dl.box_id) 
+                                else  
+                                 sum(case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                                end as total_bunches,
+                                dl.uom
                                 from
                                 detalle_lines dl
                                 inner join res_partner p on dl.supplier_id = p."id"
@@ -304,8 +303,9 @@ class AccountInvoiceReport(report_rml):
                                 INNER JOIN product_template pt on pt."id" = dl.product_id
                                 LEFT JOIN res_partner pp on dl.subclient_id = pp."id"                               
                                 where dl.pedido_id = %s
-                                GROUP BY p.name, v."name", dl.lengths,pp."name",pt."name",pt.id,dl.group_id
-                                order by p.name, pp."name") lines""", (pedido.id,))
+                                GROUP BY p.name, v."name", dl.lengths,pp."name",pt."name",pt.id,dl.box_id, dl.uom
+                                order by p.name, v."name", dl.lengths,pp."name"
+                                ) lines""", (pedido.id,))
 
             lines = cr.fetchall()
             summary = {}
@@ -319,12 +319,16 @@ class AccountInvoiceReport(report_rml):
                 length = line[2]
                 stems_cant = line[3]
                 bunch_cant =  line[4]
-                hb_cont =  line[5]
-                qb_cont =  line[6]
-                description =  line[7]
-                sale_price =  line[8]
-                total =  line[9]
-                subclient =  line[10]
+                
+                qty_tmp = round(bunch_cant/line[11], 2) if line[10] else line[11]
+                
+                hb_cont =  qty_tmp if line[12] == 'HB' else 0
+                qb_cont =  qty_tmp if line[12] == 'QB' else 0
+                
+                description =  line[5]
+                sale_price =  line[6]
+                total =  line[7]
+                subclient =  line[8]
                 taxes = line[13]
 
                 if supplier not in summary:

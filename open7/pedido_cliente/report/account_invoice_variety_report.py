@@ -295,43 +295,87 @@ class AccountInvoiceVarietyReport(report_rml):
                             </tr>
                         </blockTable>"""
 
-            cr.execute("""select *,
+            cr.execute("""select 
+                                lines.*,
                                 coalesce((select sum(case when t."type" = 'percent' then t.amount * lines.stems else t.amount end)
-                                from product_taxes_rel ptt
-                                inner JOIN account_tax t on ptt.tax_id = t.id
-                                where ptt.prod_id = lines.product_id), 0) as taxes
-                                from (
+                                from product_taxes_rel ptt inner JOIN account_tax t on ptt.tax_id = t.id where ptt.prod_id = lines.product_id), 0) as taxes
+                                from (                        
                                 SELECT
                                 v."name" as variety,
-                                dl.lengths as length,
+                                (dl.lengths) as length,
                                 round(avg(dl.bunch_type::INT)) as bunch_type,
-                                sum(case
-                                when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty/2 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
-                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty*2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
-                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty/4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 4)) end)
-                                else 0 end) as hb,
-                                sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty/4 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
-                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty*4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 4 end)
-                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty/8 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
-                                else 0 end) as qb,
                                 sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
-                                sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box  else dl.qty/dl.bunch_type::FLOAT end) as bunch,
-                                min(case when p."type" = 'standing_order' then 'Standing Order' else 'Open Market' end) as Descripcion,
+                                sum(dl.bunch_per_box) as bunches,
+                                min(case when p."type" = 'standing_order' then 'Standing Order' else 'Open Market' end) as description,
                                 pp."name" as subclient,
                                 sum(case when dl.is_box_qty = TRUE then (dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price)::FLOAT else (dl.qty * dl.sale_price)::FLOAT end)/
                                 sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as unit_price,
                                 sum(case when dl.is_box_qty = TRUE then (dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price)::FLOAT else (dl.qty * dl.sale_price)::FLOAT end) as total,
-                                min(dl.product_id) as product_id
+                                dl.product_id,
+                                dl.uom,
+                                case when dl.box_id is not null then                                
+                                 (select sum(dl2.bunch_per_box) from detalle_lines dl2 where dl2.box_id = dl.box_id) 
+                                else  
+                                 sum(case when dl.is_box_qty = TRUE then dl.qty else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
+                                end as total_bunches,
+                                dl.box_id,pp2."name"
                                 from
                                 detalle_lines dl
                                 inner join product_variant v on v."id" = dl.variant_id
                                 inner join pedido_cliente p on p.id = dl.pedido_id
+                                inner join res_partner pp2 on pp2.id = dl.supplier_id
                                 LEFT JOIN res_partner pp on dl.subclient_id = pp."id"
                                 where dl.pedido_id = %s
-                                GROUP BY v."name", dl.lengths,pp."name"
-                                order by pp."name",v."name") lines""", (pedido.id,))
+                                GROUP BY v."name", dl.lengths, pp."name", dl.product_id, dl.uom, dl.box_id,pp2."name" 
+                                order by v."name", dl.lengths, pp."name"
+                                ) lines """, (pedido.id,))
 
             lines = cr.fetchall()
+            summary_supplier = {}
+            summary = {}
+            for l in lines:
+                key = l[0] + ',' + l[1] + ',' + l[5] + ',' +l[6] + ',' + l[10] 
+                hb = 0
+                qb = 0
+                if l[10] == 'HB':
+                    hb =  l[4]/l[11] if l[12] else l[11]
+                if l[10] == 'QB':
+                    qb =  l[4]/l[11] if l[12] else l[11] 
+                    
+                if l[13] not in summary_supplier:
+                    summary_supplier[l[13]] = {
+                       'farm' : l[13], 
+                       'hb'   : hb,
+                       'qb'   : qb,
+                       'fb'   : hb/2 + qb/4
+                    }
+                else:
+                    summary_supplier[l[13]]['hb'] += hb
+                    summary_supplier[l[13]]['qb'] += qb
+                    summary_supplier[l[13]]['fb'] += hb/2 + qb/4
+                               
+                if key not in summary:
+                    summary[key] = {
+                        'variety': l[0],
+                        'length' : l[1],
+                        'hb'     : hb,
+                        'qb'     : qb,
+                        'units'  : l[2],
+                        'stems'  : l[3],
+                        'bunch'  : l[4],
+                        'desc'   : l[5],
+                        'client' : l[6],
+                        'price'  : l[7],
+                        'total'  : l[8],
+                        'taxes'  : l[14]
+                    } 
+                else:
+                    summary[key]['hb'] += float(hb)  
+                    summary[key]['qb'] += float(qb)
+                    summary[key]['stems'] += float(l[3])
+                    summary[key]['bunch'] += float(l[4])
+                    summary[key]['total'] += float(l[8])
+                    summary[key]['taxes'] += float(l[14])
 
             total_hb = 0
             total_qb = 0
@@ -340,24 +384,24 @@ class AccountInvoiceVarietyReport(report_rml):
             total_invoice = 0
             total_taxes = 0
             
-            for line in lines:                
-                variety = line[0]
-                length = line[1]
-                unit_per_hb = line[2]
-                line_hb = line[3]
-                qb_cont = line[4]
-                stems = line[5]
-                bunch = line[6]
-                description = line[7]
-                subclient = line[8]
-                sale_price = line[9]
-                total = line[10]   
+            for line in summary.values():                
+                variety = line['variety']
+                length = line['length']
+                unit_per_hb = line['units']
+                line_hb = line['hb']
+                qb_cont = line['qb']
+                stems = line['stems']
+                bunch = line['bunch']
+                description = line['desc']
+                subclient = line['client']
+                sale_price = line['price']
+                total = line['total']   
                 total_hb += line_hb             
                 total_qb += qb_cont
                 total_stems += stems
                 total_bunch += bunch
                 total_invoice += total
-                total_taxes += line[12]
+                total_taxes += line['taxes']
                  
                 rml += """
                         <blockTable colWidths="120.0,50.0,32.5,32.5,30.0,40.0,35.0,85.0,75.0,30.0,30.0" rowHeights="10.0" style="AllBorders">
@@ -485,39 +529,20 @@ class AccountInvoiceVarietyReport(report_rml):
                                 <td><para style="P6_CENTER">FULL</para></td>
                                 <td></td>
                             </tr>"""
-
-            cr.execute(""" SELECT
-                                pp.name as farm,                                
-                                sum(case
-                                when dl.uom = 'HB' then (case when dl.is_box_qty = TRUE then dl.qty/2 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
-                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 2 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 2 end)
-                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 4)) end)
-                                else 0 end) as hb,
-                                sum(case when dl.uom = 'QB' then (case when dl.is_box_qty = TRUE then dl.qty/4 else dl.qty/(dl.bunch_type::INT * dl.bunch_per_box) end)
-                                when dl.uom = 'FB' then (case when dl.is_box_qty = TRUE then dl.qty * 4 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box)) * 4 end)
-                                when dl.uom = 'OB' then (case when dl.is_box_qty = TRUE then dl.qty / 8 else (dl.qty/(dl.bunch_type::INT * dl.bunch_per_box * 2)) end)
-                                else 0 end) as qb
-                                from
-                                detalle_lines dl                                
-                                inner join pedido_cliente p on p.id = dl.pedido_id
-                                LEFT JOIN res_partner pp on dl.supplier_id = pp."id"
-                                where dl.pedido_id = %s
-                                GROUP BY pp."name"
-                                order by pp."name" """, (pedido.id,))
-            lines = cr.fetchall()
+            
             total_hb = 0
             total_qb = 0
             total_fb = 0
-            for line in lines:
-                hb = line[1]
-                qb = line[2]
-                total = line[1]/2 + line[2]/4
+            for line in summary_supplier.values():
+                hb = line['hb']
+                qb = line['qb']
+                total = line['fb']
                 total_hb += hb
                 total_qb += qb
                 total_fb += total
                 
                 rml += """<tr>"""
-                rml += """<td><para style="P6_CENTER">""" + ustr(line[0] or '') + """</para></td>"""
+                rml += """<td><para style="P6_CENTER">""" + ustr(line['farm']) + """</para></td>"""
                 rml += """<td><para style="P6_CENTER">""" + (str(round(hb, 2))) + """</para></td>"""
                 rml += """<td><para style="P6_CENTER">""" + (str(round(qb, 2))) + """</para></td>"""
                 rml += """<td><para style="P6_CENTER">""" + (str(round(total, 2))) + """</para></td>"""
