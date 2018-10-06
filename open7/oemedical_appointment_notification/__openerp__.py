@@ -19,6 +19,7 @@
 
         # Wizards...
         'wizards/send_notification_wizard_view.xml',
+        'data/scheduler.xml',
     ],
 
     "demo": [
@@ -26,11 +27,12 @@
     ],
 
     'css': [
-
+        'static/src/css/widget.css',
     ],
 
     'js': [
         'static/src/js/scripts.js',
+        'static/src/js/widget.js',
     ],
 
     'qweb': [

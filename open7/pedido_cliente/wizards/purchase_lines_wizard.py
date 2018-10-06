@@ -412,7 +412,8 @@ class split_purchase_line_wzd(osv.osv_memory):
             total += line.bunches
             stems += line.box_qty * line.bunches * line.stems_per_bunch if detalle.is_box_qty else line.bunches * line.stems_per_bunch
             
-            lines.append((0,0,{                
+            lines.append(self.pool.get('detalle.lines').create(cr, uid,{  
+                'pedido_id'     : detalle.pedido_id.id,              
                 'line_id'       : detalle.line_id.id if detalle.line_id else None,
                 'box_id'        : detalle.box_id.id if detalle.box_id else None,
                 'name'          : detalle.name,
@@ -442,8 +443,24 @@ class split_purchase_line_wzd(osv.osv_memory):
             raise osv.except_osv('Error', "La cantidad total de tallos especificados por lineas debe ser igual a " + str(total_stems))
         
         pedido_id = detalle.pedido_id.id  
-        detalle_id = detalle.id     
-        self.pool.get('pedido.cliente').write(cr, uid, [pedido_id], {'purchase_line_ids': lines})
+        detalle_id = detalle.id  
+        
+        if not detalle.box_id:
+            cr.execute("select max(dlb.box) from detalle_lines dl inner join detalle_lines_box dlb on dl.box_id = dlb.id " + 
+                   "where dl.pedido_id = %s",(detalle.pedido_id.id,))
+            group = cr.fetchone()
+            group_id = 1
+            if group and group[0]:
+                group_id = group[0] + 1
+                
+            self.pool.get('detalle.lines.box').create(cr, uid, {
+                'box'       : group_id,
+                'pedido_id' : detalle.pedido_id.id,
+                'line_ids'  : [(4,l) for l in lines]
+            })
+            
+              
+        self.pool.get('pedido.cliente').write(cr, uid, [pedido_id], {'purchase_line_ids': [(4,l) for l in lines]})
         self.pool.get('detalle.lines').write(cr, uid, [detalle_id], {'active': False})
         cr.execute("delete from summary_by_farm_wizard where pedido_id = %s", (pedido_id,)) 
         

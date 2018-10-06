@@ -39,12 +39,18 @@ class OeMedicalPatient(osv.osv):
             last_name = ''
         if slastname == False:
             slastname = ''
-            
-        res = {}
-        res = {'value': {
-                         'name' : first_name + ' ' + last_name + ' ' + slastname
-                         }
-               }
+        
+        #warning = {
+        #    'title': 'Test',
+        #    'message': 'Notification Message',
+        #}    
+        
+        res = {
+            'value':{
+                'name' : first_name + ' ' + last_name + ' ' + slastname
+            },
+            #'warning': warning
+        }
         return res
     
     def _get_age(self, cr, uid, ids, field_name, arg, context=None):

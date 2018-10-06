@@ -122,17 +122,20 @@ class pedido_cliente(osv.osv):
                     GROUP BY dl.supplier_id, dl.subclient_id  
                     order by dl.supplier_id """, (pedido_id,))
             lines = cr.fetchall()
-            for record in lines: 
-                
-                lines_hb = self.pool.get('purchase.lines.wzd').search(cr, uid, [('pedido_id','=', pedido_id),('supplier_id','=',record[0]),('subclient_id','=',record[1]),('uom','=','HB')])
+            for record in lines:                
+                l_ids = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id','=',pedido_id),('supplier_id','=',record[0]),('subclient_id','=',record[1])])
+                tmp_lines = self.pool.get('detalle.lines').read(cr, uid, l_ids, ['bunch_per_box','uom','bunch_type','box_id','is_box_qty','qty'])
                 total_hb = 0
-                for r in self.pool.get('purchase.lines.wzd').browse(cr, uid, lines_hb):
-                    total_hb += r.stimated_qty * 2   
-                    
-                lines_qb = self.pool.get('purchase.lines.wzd').search(cr, uid, [('pedido_id','=', pedido_id),('supplier_id','=',record[0]),('subclient_id','=',record[1]),('uom','=','QB')])
                 total_qb = 0
-                for r in self.pool.get('purchase.lines.wzd').browse(cr, uid, lines_qb):
-                    total_qb += r.stimated_qty * 2               
+                for l in tmp_lines:
+                    if l['box_id'] and l['box_id'][0] :
+                        filtered = filter(lambda a: a['box_id'] and a['box_id'][0] == l['box_id'][0], tmp_lines)
+                        total_group = sum(map(lambda a: a['bunch_per_box'], filtered))
+                        percent = float(l['bunch_per_box'])/total_group if total_group else 0                        
+                    else:
+                        percent = float(l['qty']/(l['bunch_per_box'] * l['bunch_type'])) if l['bunch_per_box'] * l['bunch_type'] else 0
+                    total_hb += percent if l['uom'] == 'HB' else 0
+                    total_qb += percent if l['uom'] == 'QB' else 0
                                                 
                 vals = {
                     'pedido_id'     : pedido_id,                  

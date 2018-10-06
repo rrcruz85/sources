@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <templates id="template" xml:space="preserve">
+    
     <t t-name="OeMedicalMail">
         <div id="oemedical_mail_wizard" class="">
             <div title='Enviar correo a pacientes...' class="oe_topbar_item oe_topbar_compose_full_email"
@@ -9,4 +10,32 @@
             </div>
         </div>
     </t>
+    <!--  
+    <t t-name="WarningWidget">
+       <div class="warning-widget">
+	        <div class="modal-dialog">
+	            <div class="popup popup-help">
+	                <p class="message"><t t-esc="widget.message || 'Error' " /></p>
+	                <p class="comment"><t t-esc="widget.comment || 'Message' "/></p>
+	            </div>
+	        </div>
+       </div>
+    </t>-->
+    
+    <t t-name="WarningWidget">
+	    <div class="oe_notification" t-translation="off">
+	        <div id="oe_notification_default">
+	            <a class="ui-notify-cross ui-notify-close" href="#">x</a>
+	            <h1>#{title}</h1>
+	            <p>#{text}</p>
+	        </div>
+	        <div id="oe_notification_alert" class="ui-state-error">
+	            <a class="ui-notify-cross ui-notify-close" href="#">x</a>
+	            <span style="float:left; margin:2px 5px 0 0;" class="ui-icon ui-icon-alert"></span>
+	            <h1>#{title}</h1>
+	            <p>#{text}</p>
+	        </div>
+	    </div>
+	</t>
+    
 </templates>

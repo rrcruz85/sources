@@ -142,7 +142,7 @@ class invoice_client_wizard(osv.osv_memory):
         lines_not_confirmed = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', obj.pedido_id.id),('box_id', '=', False)])
         if lines_not_confirmed:
             records = self.pool.get('detalle.lines').read(cr, uid, lines_not_confirmed, ['name'])
-            lineas = ','.join(map(lambda r: r['name'], records))
+            lineas = ','.join(map(lambda r: r['name'] or '', records))
             raise osv.except_osv('Error',"Las siguientes lineas:[" + lineas + "] no tienen un id de caja asignado")
        
         lines = []

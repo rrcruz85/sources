@@ -12,9 +12,25 @@
                         <button name="button_send_notification" states="draft,confirm" string="Send notification..."
                                 class="oe_highlight"  type="object" groups="base.group_user" context="{'appointment_id':active_id}"/>
                     </xpath>
-
+                    
                 </data>
             </field>
         </record>
+        
+        <record id="view_oemedical_patient_form_inherit" model="ir.ui.view">
+            <field name="name">oemedical.patient.form.inherit</field>
+            <field name="model">oemedical.patient</field>
+            <field name="inherit_id" ref="oemedical.view_oemedical_patient_form"/>
+            <field name="arch" type="xml">
+                <data>                    
+                    <xpath expr="//field[@name='age']" position="after">
+                        <newline/>
+                        <button name="call_notificator" string="Call Notificator"
+                                class="oe_highlight"  type="object"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+                
     </data>
 </openerp>

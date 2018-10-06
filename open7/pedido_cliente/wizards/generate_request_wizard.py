@@ -138,31 +138,32 @@ class generate_request_wizard(osv.osv_memory):
                 precio_flete = 0
                 if tipo_flete and tipo_flete == 'fob_f_p':
                     precio_flete = 0.01
+                
+                if list_details:
+                    pedido_dict = {
+                        'name': name,
+                        'partner_id': cliente_id if cliente_id else p.partner_id.id,
+                        'request_date': fecha_pedido,
+                        'state': 'draft',
+                        'type': 'standing_order',
+                        'freight_agency_id': p.freight_agency_id.id if p.freight_agency_id else None,
+                        'variant_ids': request_lines,
+                        'purchase_line_ids': list_details,
+                        'precio_flete': precio_flete,
+                        'sale_request_id': p.id,
+                    }
+                    pedido_id = self.pool.get('pedido.cliente').create(cr, uid, pedido_dict)
 
-                pedido_dict = {
-                    'name': name,
-                    'partner_id': cliente_id if cliente_id else p.partner_id.id,
-                    'request_date': fecha_pedido,
-                    'state': 'draft',
-                    'type': 'standing_order',
-                    'freight_agency_id': p.freight_agency_id.id if p.freight_agency_id else None,
-                    'variant_ids': request_lines,
-                    'purchase_line_ids': list_details,
-                    'precio_flete': precio_flete,
-                    'sale_request_id': p.id,
-                }
-                pedido_id = self.pool.get('pedido.cliente').create(cr, uid, pedido_dict)
-
-                # Actulizando las lineas de compras
-                for key in tmp_dict.keys():
-                    request = key.split(',')
-                    request_ids = self.pool.get('request.product.variant').search(cr, uid, [('pedido_id', '=', pedido_id), ('product_id', '=', int(request[0])), ('variant_id', '=', int(request[1])),('subclient_id', '=', int(request[2]) if request[2] else False),('lengths', '=', request[3])])
-                    if request_ids:
-                        for line in tmp_dict[key]:
-                            line_vals = line.split(',')
-                            purchased_ids = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', pedido_id), ('supplier_id', '=', int(line_vals[0])), ('product_id', '=', int(line_vals[1])), ('variant_id', '=',int(line_vals[2])), ('subclient_id', '=',int(line_vals[3]) if line_vals[3] else False),('lengths', '=',line_vals[4])])
-                            if purchased_ids:
-                                self.pool.get('detalle.lines').write(cr, uid, purchased_ids, {'line_id': request_ids[0]})
+                    # Actulizando las lineas de compras
+                    for key in tmp_dict.keys():
+                        request = key.split(',')
+                        request_ids = self.pool.get('request.product.variant').search(cr, uid, [('pedido_id', '=', pedido_id), ('product_id', '=', int(request[0])), ('variant_id', '=', int(request[1])),('subclient_id', '=', int(request[2]) if request[2] else False),('lengths', '=', request[3])])
+                        if request_ids:
+                            for line in tmp_dict[key]:
+                                line_vals = line.split(',')
+                                purchased_ids = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id', '=', pedido_id), ('supplier_id', '=', int(line_vals[0])), ('product_id', '=', int(line_vals[1])), ('variant_id', '=',int(line_vals[2])), ('subclient_id', '=',int(line_vals[3]) if line_vals[3] else False),('lengths', '=',line_vals[4])])
+                                if purchased_ids:
+                                    self.pool.get('detalle.lines').write(cr, uid, purchased_ids, {'line_id': request_ids[0]})
 
             return 0
 

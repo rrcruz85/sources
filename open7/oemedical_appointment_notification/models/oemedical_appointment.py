@@ -15,3 +15,12 @@ class OeMedicalAppointment(osv.Model):
             'view_type': 'form',
             'target': 'new',
         }
+        
+    def call_send_notification(self, cr, uid, context=None):
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'oemedical.send_notification_wizard',            
+            'view_mode': 'form',
+            'view_type': 'form',
+            'target': 'new',
+        }

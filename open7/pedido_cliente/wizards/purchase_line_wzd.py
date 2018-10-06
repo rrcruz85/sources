@@ -21,7 +21,6 @@
 ##############################################################################
 from osv import osv
 from osv import fields
-import math
 
 class purchase_line_wzd(osv.osv_memory):
     _name = 'purchase.line.wzd'
@@ -47,9 +46,9 @@ class purchase_line_wzd(osv.osv_memory):
         return result
 
     _columns = {
-        'pedido_id'            : fields.many2one('pedido.cliente', 'Pedido'),
-        'cliente_id'           : fields.related('pedido_id','partner_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
-        'product_variant_id'            : fields.many2one('request.product.variant', 'Variant'),
+        'pedido_id'             : fields.many2one('pedido.cliente', 'Pedido'),
+        'cliente_id'            : fields.related('pedido_id','partner_id', type ='many2one',relation = 'res.partner', string ='Cliente'),
+        'product_variant_id'    : fields.many2one('request.product.variant', 'Variant'),
         'type'                  : fields.selection([('standing_order', 'Standing Order'), ('open_market','Open Market')], 'Order'),
         'supplier_id'           : fields.many2one('res.partner', 'Farm', required=True, domain=[('supplier', '=', True)]),
         'product_id'            : fields.many2one('product.product', 'Product', required=True),
@@ -73,9 +72,9 @@ class purchase_line_wzd(osv.osv_memory):
         #'total_sale'            : fields.function(_get_quantity, type='float', string='Total', multi='compute_data'),
         #'profit'                : fields.function(_get_quantity, type='float', string='Profit', multi='compute_data'),
         'full_boxes'            : fields.function(_get_quantity, type='float', string='Full Boxes'),
-        'stimated_stems'     : fields.function(_get_info, type='integer', string='Stems'),
-        'qty_bxs'                 : fields.char(string='BXS', size = 10),
-        'supplier_ids'                 : fields.char(string='Suppliers', size = 250),       
+        'stimated_stems'        : fields.function(_get_info, type='integer', string='Stems'),
+        'qty_bxs'               : fields.char(string='BXS', size = 10),
+        'supplier_ids'          : fields.char(string='Suppliers', size = 250),       
     }
 
     def get_client(self, cr, uid, context):
