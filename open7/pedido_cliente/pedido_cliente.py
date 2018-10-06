@@ -12,11 +12,15 @@ class pedido_cliente(osv.osv):
     _description = 'Pedido del cliente'
 
     def _get_purchase_lines(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}        
-        cr.execute("delete from detalle_lines where active = False")
-        lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[])
+        res = {} 
+        
+        lines = self.pool.get('detalle.lines').search(cr,uid,[('active','=',False)])
         if lines:
-            self.pool.get('purchase.lines.wzd').unlink(cr,uid,lines)
+            self.pool.get('detalle.lines').unlink(cr,uid,lines)
+            
+        lines = self.pool.get('detalle.lines.box').search(cr,uid,[('active','=',False)])
+        if lines:
+            self.pool.get('detalle.lines.box').unlink(cr,uid,lines)
         
         for d_id in ids:
             cr.execute( "SELECT "+
@@ -105,8 +109,12 @@ class pedido_cliente(osv.osv):
         return res
 
     def _get_summary_lines(self, cr, uid, ids, field_name, arg, context=None):
-        res = {} 
-        
+        res = {}
+            
+        lines = self.pool.get('detalle.lines').search(cr,uid,[('active','=',False)])
+        if lines:
+            self.pool.get('detalle.lines').unlink(cr,uid,lines)
+            
         list_ids = []       
         for pedido_id in ids:
             cr.execute(""" 
@@ -118,7 +126,7 @@ class pedido_cliente(osv.osv):
                     from
                     detalle_lines dl                                
                     inner join res_partner pp on dl.subclient_id = pp."id"
-                    where dl.pedido_id = %s
+                    where dl.pedido_id = %s and dl.active = True
                     GROUP BY dl.supplier_id, dl.subclient_id  
                     order by dl.supplier_id """, (pedido_id,))
             lines = cr.fetchall()
@@ -217,6 +225,18 @@ class pedido_cliente(osv.osv):
         if view_type == 'tree':
             line_ids = self.pool.get('summary.by.farm.wizard').search(cr, uid,[])
             self.pool.get('summary.by.farm.wizard').unlink(cr, uid,line_ids)
+            
+            lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[])
+            if lines:
+                self.pool.get('purchase.lines.wzd').unlink(cr,uid,lines)
+        
+            lines = self.pool.get('detalle.lines').search(cr,uid,[('active','=',False)])
+            if lines:
+                self.pool.get('detalle.lines').unlink(cr,uid,lines)
+            
+            lines = self.pool.get('detalle.lines.box').search(cr,uid,[('active','=',False)])
+            if lines:
+                self.pool.get('detalle.lines.box').unlink(cr,uid,lines)
         
         return res
 
@@ -730,10 +750,12 @@ class detalle_lines_box(osv.osv):
         'box'       : fields.integer('Box Id'),      
         'pedido_id' : fields.many2one('pedido.cliente', string ='Pedido', ondelete='cascade'),       
         'line_ids'  : fields.one2many('detalle.lines','box_id','Lines'),
+        'active'    : fields.boolean('Active'), 
     }
     
     _defaults = {
-        'box' : 1,
+        'box'    : 1,
+        'active' : True
     }
     
     _sql_constraints = [

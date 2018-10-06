@@ -421,7 +421,7 @@ class split_purchase_line_wzd(osv.osv_memory):
                 'supplier_id'   : detalle.supplier_id.id,
                 'product_id'    : detalle.product_id.id,
                 'variant_id'    : line.variant_id.id if line.variant_id else None,
-                'length_ids'    : [(0,0,{'length': line.length_id.length, 'purchase_price': line.length_id.purchase_price})],
+                'length_ids'    : [(0,0,{'length': line.length_id.length, 'purchase_price': line.purchase_price})],
                 'qty'           : line.box_qty if detalle.is_box_qty else line.bunches * line.stems_per_bunch,
                 'is_box_qty'    : detalle.is_box_qty,
                 'bunch_per_box' : line.bunches,

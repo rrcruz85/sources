@@ -34,13 +34,16 @@ class group_box_wizard(osv.osv_memory):
     def save(self, cr, uid, ids, context=None):
         obj = self.browse(cr, uid, ids[0])   
         pedido_id = obj.pedido_id.id     
+        groups = []
         for l in obj.line_ids:
             boxes = [d.box_id.id for d in l.detalle_ids if d.box_id]
             if boxes:
-                self.pool.get('detalle.lines.box').unlink(cr, uid, list(set(boxes)))
-            lines = [(4, d.detalle_id.id) for d in l.detalle_ids]       
-            self.pool.get('detalle.lines.box').create(cr, uid, {'box': l.box,'pedido_id': pedido_id,'line_ids': lines})
-         
+                groups += list(set(boxes))               
+            group_id = self.pool.get('detalle.lines.box').create(cr, uid, {'box': l.box,'pedido_id': pedido_id})
+            self.pool.get('detalle.lines').write(cr, uid, [d.detalle_id.id for d in l.detalle_ids], {'box_id': group_id})
+        if groups:
+            self.pool.get('detalle.lines.box').write(cr, uid, list(set(groups)),{'active':False})
+            
         return {
             'name'      : 'Pedidos de Clientes',
             'view_type' : 'form',

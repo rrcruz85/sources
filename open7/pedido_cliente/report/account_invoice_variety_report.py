@@ -325,7 +325,7 @@ class AccountInvoiceVarietyReport(report_rml):
                                 inner join pedido_cliente p on p.id = dl.pedido_id
                                 inner join res_partner pp2 on pp2.id = dl.supplier_id
                                 LEFT JOIN res_partner pp on dl.subclient_id = pp."id"
-                                where dl.pedido_id = %s
+                                where dl.pedido_id = %s and dl.active = true
                                 GROUP BY v."name", dl.lengths, pp."name", dl.product_id, dl.uom, dl.box_id,pp2."name" 
                                 order by v."name", dl.lengths, pp."name"
                                 ) lines """, (pedido.id,))

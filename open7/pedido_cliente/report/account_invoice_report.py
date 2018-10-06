@@ -302,7 +302,7 @@ class AccountInvoiceReport(report_rml):
                                 inner join product_variant v on v."id" = dl.variant_id
                                 INNER JOIN product_template pt on pt."id" = dl.product_id
                                 LEFT JOIN res_partner pp on dl.subclient_id = pp."id"                               
-                                where dl.pedido_id = %s
+                                where dl.pedido_id = %s and dl.active = True
                                 GROUP BY p.name, v."name", dl.lengths,pp."name",pt."name",pt.id,dl.box_id, dl.uom
                                 order by p.name, v."name", dl.lengths,pp."name"
                                 ) lines""", (pedido.id,))

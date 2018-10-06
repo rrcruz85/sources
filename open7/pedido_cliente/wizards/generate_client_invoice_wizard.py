@@ -90,6 +90,7 @@ class invoice_client_wizard(osv.osv_memory):
                 uom = {'FB': 1, 'HB': 2, 'QB': 4, 'OB': 8}
                 list_vals = []
                 lines = self.pool.get('detalle.lines').browse(cr, uid, lines_confirmed)
+                l_number = 1
                 for l in lines:                
                     if l.agrupada:
                         cr.execute("select sum(dl.bunch_per_box) from detalle_lines dl where dl.group_id =" + str(l.group_id) + " and dl.active = true and dl.agrupada = true and dl.pedido_id = " + str(pedido_id) + 
@@ -105,7 +106,7 @@ class invoice_client_wizard(osv.osv_memory):
                         'pedido_id'     : pedido_id,
                         'supplier_id'   : l.supplier_id.id,
                         'detalle_id'    : l.id,
-                        'line_number'   : l.name,
+                        'line_number'   : l.name or l_number,
                         'product_id'    : l.product_id.id if l.product_id else False,
                         'variant_id'    : l.variant_id.id if l.variant_id else False,
                         'length'        : l.lengths,
@@ -128,6 +129,7 @@ class invoice_client_wizard(osv.osv_memory):
                         'box'           : l.box_id.box if l.box_id else False,
                     }
                     list_vals.append((0, 0, vals))
+                    l_number += 1
                 res['value']['line_ids'] = list_vals
             client = self.pool.get('pedido.cliente').browse(cr, uid, pedido_id).partner_id
             res['value']['client_id'] = client.id
@@ -148,6 +150,8 @@ class invoice_client_wizard(osv.osv_memory):
         lines = []
         sequence = 1            
         for l in obj.line_ids:                     
+                if not l.box_id:  
+                    raise osv.except_osv('Error',"La linea: [" + l.line_number + "] no tienen un id de caja asignada")
                 
                 account_id = l.product_id.property_account_expense.id if l.product_id.property_account_expense else False
                 if not account_id:
