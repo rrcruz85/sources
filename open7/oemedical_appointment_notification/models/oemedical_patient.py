@@ -13,14 +13,7 @@ class OeMedicalPatient(osv.osv):
         return res
     
     def call_notificator(self, cr, uid, ids, context=None):
-        context['action'] = {
-            'title': 'Test'
-        }
-        
-        return {
-            'type' : 'ir.actions.client',
-            'name' : 'Warning!!!!',
-            'tag' : 'show_warning',
-            'context' : context,
-        }
-
+        not_ids = self.pool.get('oemedical.appointment.notification').search(cr, uid,[])
+        return self.pool.get('oemedical.appointment.notification').call_patient_notification(cr, uid, not_ids, context)
+    
+OeMedicalPatient()

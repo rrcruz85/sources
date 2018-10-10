@@ -22,7 +22,6 @@
 
 from osv import osv
 from osv import fields
-from openerp.tools.translate import _
 
 class product_product(osv.osv):
     _name = 'product.product'
