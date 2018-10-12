@@ -3,13 +3,14 @@
     <data noupdate="1">
         <record id="cron_google_calendar_sync" model="ir.cron">
             <field name="name">Google Calendar Synchronization</field>
-            <field name="interval_number">16</field>
+            <field name="interval_number">15</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False"/>
             <field name="model">google.api.calendar</field>
             <field name="function">synchronize_accounts</field>
             <field name="args">()</field>
+            <field name="priority" eval="0"/>
         </record>
     </data>
 </openerp>

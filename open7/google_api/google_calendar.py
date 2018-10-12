@@ -14,7 +14,9 @@ import pytz
 import logging
 import os
 import base64
-
+import time
+from datetime import timedelta
+import datetime
 
 logger = logging.getLogger('google_api')
 
@@ -31,7 +33,27 @@ class crm_meeting(osv.osv):
         'google_event_id': False,
         'google_sequence': 0,
     }
-
+    
+    def get_credential_dat_file(self, cr, uid, userId):
+        path = os.path.dirname(os.path.abspath(__file__)) 
+        if os.name == 'nt':
+            path += '\\data\\keys\\'
+        else:
+            path += '/data/keys/'  
+            
+        instance_pool = self.pool.get('google.api.calendar')
+        instance = instance_pool.search(cr, uid, [('user_id', '=', userId)])
+        instance = instance_pool.browse(cr, uid, instance[0])          
+        account_name = instance.account_id.name.lower().replace (' ','_')
+        file_secret_path =  path + account_name + '_credential.dat'
+        
+        if not os.path.exists(file_secret_path):
+            data = instance.account_id.credential_file
+            f = open(file_secret_path,'wb')
+            f.write(data.decode('base64'))
+            f.close()
+        return file_secret_path
+    
     def create(self, cr, uid, vals, context=None):
 
         if context is None:
@@ -52,11 +74,12 @@ class crm_meeting(osv.osv):
 
         instance = instance_pool.browse(cr, uid, instance[0])
         try:
-            storage = file.Storage(instance.account_id.credential_path)
+            credential_dat_file = self.get_credential_dat_file(cr, uid, vals['user_id'])            
+            storage = file.Storage(credential_dat_file)
             credentials = storage.get()
             http = httplib2.Http()
             http = credentials.authorize(http)
-            service = discovery.build('calendar', 'v3', http=http)
+            service = discovery.build('calendar', 'v3', http=http, cache_discovery=False)
 
             start_utc = dateutil.parser.parse(vals['date'])
             end_utc = dateutil.parser.parse(vals['date_deadline'])
@@ -116,11 +139,12 @@ class crm_meeting(osv.osv):
                     if instance:
                         instance = instance_pool.browse(cr, uid, instance[0])
                         try:
-                            storage = file.Storage(instance.account_id.credential_path)
+                            credential_dat_file = self.get_credential_dat_file(cr, uid, event.user_id.id)            
+                            storage = file.Storage(credential_dat_file) 
                             credentials = storage.get()
                             http = httplib2.Http()
                             http = credentials.authorize(http)
-                            service = discovery.build('calendar', 'v3', http=http)
+                            service = discovery.build('calendar', 'v3', http=http,cache_discovery=False)
 
                             start_utc = dateutil.parser.parse(event.date)
                             end_utc = dateutil.parser.parse(event.date_deadline)
@@ -172,11 +196,12 @@ class crm_meeting(osv.osv):
                 if instance:
                     instance = instance_pool.browse(cr, uid, instance[0])
                     try:
-                        storage = file.Storage(instance.account_id.credential_path)
+                        credential_dat_file = self.get_credential_dat_file(cr, uid, event_id['user_id'][0])            
+                        storage = file.Storage(credential_dat_file)
                         credentials = storage.get()
                         http = httplib2.Http()
                         http = credentials.authorize(http)
-                        service = discovery.build('calendar', 'v3', http=http)
+                        service = discovery.build('calendar', 'v3', http=http,cache_discovery=False)
                         service.events().delete(calendarId=instance.calendar_id, eventId=event_id['google_event_id']).execute()
                     except:
                         vals = {'google_event_id': event_id['google_event_id'],
@@ -276,10 +301,14 @@ class google_api_calendar(osv.osv):
         'account_id': fields.many2one('google.api.account', 'Account', required=True),
         'user_id': fields.many2one('res.users', 'User', required=True),
         'calendar_id': fields.char('Google calendar id', size=100, required=True, readonly = True),
+        'last_update_synchronize_date': fields.datetime(string = 'Last Update Synchronization Date'),
+        'update_synchronize_date_every': fields.integer(string = 'Update Synchronize Date Every', help = "Update the Synchronization Date Every x Days set by in this field"),        
     }
 
     _defaults = {
-        'calendar_id' : 'primary'
+        'calendar_id'  : 'primary',
+        'last_update_synchronize_date' : lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'update_synchronize_date_every' : 3
     }
 
     _sql_constraints = [
@@ -290,7 +319,7 @@ class google_api_calendar(osv.osv):
     def do_synchronize(self, cr, uid, ids, context=None):
 
         instance = self.browse(cr, uid, ids[0])
-
+        limit_date = context.get('limit_date',  instance.last_update_synchronize_date or time.strftime('%Y-%m-%d %H:%M:%S'))
         meeting_pool = self.pool.get('crm.meeting')
         del_pool = self.pool.get('crm.meeting.deleted')
              
@@ -314,10 +343,10 @@ class google_api_calendar(osv.osv):
 
 
         # Construct the service object for the interacting with the Calendar API.
-        service = discovery.build('calendar', 'v3', http=http)
+        service = discovery.build('calendar', 'v3', http=http, cache_discovery=False)
 
         # build a list with all google-events-id present in crm_meeting for this user
-        google_event_ids = meeting_pool.search(cr, uid, [('user_id', '=', instance.user_id.id), ('google_event_id', '!=', False)])
+        google_event_ids = meeting_pool.search(cr, uid, [('date','>=',limit_date),('user_id', '=', instance.user_id.id), ('google_event_id', '!=', False)])
         data = meeting_pool.read(cr, uid, google_event_ids, ['google_event_id'])
         google_event_ids = []
         for item in data:
@@ -325,13 +354,16 @@ class google_api_calendar(osv.osv):
 
         # first sync events from google with crm_meeting                                                        
         page_token = None
-        while True:
-            events = service.events().list(calendarId=instance.calendar_id, pageToken=page_token).execute()
+        while True:                        
+            tmin =  datetime.datetime.strptime(limit_date, '%Y-%m-%d %H:%M:%S').isoformat('T') + "Z"
+            tmax =  datetime.datetime.strptime(time.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S').isoformat('T') + "Z"
+            
+            events = service.events().list(calendarId=instance.calendar_id, timeMin = tmin, timeMax = tmax ,pageToken=page_token).execute()
             for event in events['items']:
                 is_deleted = del_pool.search(cr, uid, [('user_id', '=', instance.user_id.id), ('google_event_id', '=', event['id'])])
                 if not is_deleted:
                     # check if google event already in openerp
-                    crm_meeting = meeting_pool.search(cr, uid, [('user_id', '=', instance.user_id.id), ('google_event_id', '=', event['id'])])
+                    crm_meeting = meeting_pool.search(cr, uid, [('date','>=',limit_date),('user_id', '=', instance.user_id.id), ('google_event_id', '=', event['id'])])
                     if crm_meeting:
                         if event.get('updated', False):
                             updated_google = dateutil.parser.parse(event['updated']).astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M:%S')
@@ -461,7 +493,7 @@ class google_api_calendar(osv.osv):
                 break
 
         # now sync new crm_meetings with google
-        new_events = meeting_pool.search(cr, uid, [('user_id', '=', instance.user_id.id), ('google_event_id', '=', False)])
+        new_events = meeting_pool.search(cr, uid, [('date','>=',limit_date),('user_id', '=', instance.user_id.id), ('google_event_id', '=', False)])
         for new_event in meeting_pool.browse(cr, uid, new_events):
             start_utc = dateutil.parser.parse(new_event.date)
             end_utc = dateutil.parser.parse(new_event.date_deadline)
@@ -514,7 +546,7 @@ class google_api_calendar(osv.osv):
 
         # now delete all events from crm_meeting which were not updated and/or created by google calendar, this ones are deleted in google calendar    
         for gid in google_event_ids:
-            delids = meeting_pool.search(cr, uid, [('user_id', '=', instance.user_id.id), ('google_event_id', '=', gid)])
+            delids = meeting_pool.search(cr, uid, [('date','>=',limit_date),('user_id', '=', instance.user_id.id), ('google_event_id', '=', gid)])
             meeting_pool.unlink(cr, uid, delids, context={'stop_google_calendar_sync': 'True'})
 
         context["calendar_default_user_id"] = uid
@@ -539,6 +571,18 @@ class google_api_calendar(osv.osv):
             instances = instance_pool.search(cr, uid, [('account_id', '=', account_id)])
             for instance_id in instances:
                 try:
-                    instance_pool.do_synchronize(cr, uid, [instance_id], context=None)
+                    calendar = instance_pool.browse(cr, uid, instance_id)
+                    if not context:
+                        context = {}
+                    context['limit_date'] = calendar.last_update_synchronize_date                    
+                    instance_pool.do_synchronize(cr, uid, [instance_id], context)
+                    
+                    delta_date = calendar.last_update_synchronize_date + timedelta(days= calendar.update_synchronize_date_every or 3)
+                    
+                    if delta_date >= datetime.datetime.now():
+                        instance_pool.write(cr, uid, instance_id, {
+                           'last_update_synchronize_date' : delta_date  
+                        })                                        
+                    
                 except:
                     logger.error('Auto synchronizing failed.')

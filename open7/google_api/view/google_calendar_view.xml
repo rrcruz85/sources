@@ -69,7 +69,7 @@
                 <search string="Search">
                     <field name="account_id" />
                     <field name="calendar_id" />
-                    <field name="user_id" />
+                    <field name="user_id" />                    
                 </search>
             </field>
         </record>
@@ -93,6 +93,9 @@
                             </group>
                             <group>
                                 <field name="user_id" />
+                                <newline/>  
+                                <field name="last_update_synchronize_date" />                              
+                                <field name="update_synchronize_date_every" />                               
                             </group>
                         </group>
                     </sheet>
@@ -107,7 +110,9 @@
                 <tree string="Google Calendars">
                     <field name="account_id" />
                     <field name="calendar_id" />
-                    <field name="user_id" />
+                    <field name="user_id" />  
+                    <field name="last_update_synchronize_date" />                 
+                    <field name="update_synchronize_date_every" />                   
                     <button string="Synchronize" type="object" name="do_synchronize" icon="STOCK_REFRESH" />
                 </tree>
             </field>
