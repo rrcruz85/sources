@@ -581,7 +581,7 @@ class google_api_calendar(osv.osv):
                     
                     if delta_date >= datetime.datetime.now():
                         instance_pool.write(cr, uid, instance_id, {
-                           'last_update_synchronize_date' : delta_date  
+                           'last_update_synchronize_date' : datetime.datetime.now()  
                         })                                        
                     
                 except:
