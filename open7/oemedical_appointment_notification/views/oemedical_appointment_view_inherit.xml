@@ -16,84 +16,52 @@
                 </data>
             </field>
         </record>
-        
-        <record id="view_oemedical_patient_form_inherit" model="ir.ui.view">
-            <field name="name">oemedical.patient.form.inherit</field>
-            <field name="model">oemedical.patient</field>
-            <field name="inherit_id" ref="oemedical.view_oemedical_patient_form"/>
+         
+        <record id="view_res_user_form_inherits" model="ir.ui.view">
+            <field name="name">res.users.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
             <field name="arch" type="xml">
                 <data>                    
-                    <xpath expr="//field[@name='age']" position="after">
-                        <newline/>
-                        <button name="call_notificator" string="Call Notificator"
-                                class="oe_highlight"  type="object"/>
+                    <xpath expr="//field[@name='active']" position="after">
+                         <newline/>
+                         <field name="receive_patient_notification"/>
+                    </xpath>
+                    
+                    <xpath expr="//page[@string='Access Rights']" position="after">
+                         <page string="Patient Notifications">
+	                         <group col="4" colspan="4"> 
+		                 	    <field name="notify_before"/>
+		                 	    <field name="unit_time"/>
+	                 	    </group>
+	                 	    <newline/>
+	                 	    <group col="4" colspan="4">                 	    
+		                 	    <field name="first_monthly"/>
+		                 	    <field name="third_monthly"/>
+		                 	    <field name="sixth_monthly"/>
+		                 	    <field name="nineth_monthly"/>
+		                 	    <field name="yearly"/>
+	                 	    </group>
+	                 	    <newline/>
+	                 	    <group col="4" colspan="4"> 
+		                 	    <field name="show_notification"/>
+		                 	    <field name="show_unit_time"/>		                 	       
+	                 	    </group>   
+                         </page>
                     </xpath>
                 </data>
             </field>
+        </record>          
+        
+        <!-- Notification --> 
+        <record model="ir.actions.client" id="action_patien_notification">
+            <field name="name">Show Operated Patients Notification</field>
+            <field name="tag">notify.patient</field>
         </record>
         
-        <!-- Notification -->
-        
-        <record id="view_oemedical_appointment_notification_tree" model="ir.ui.view">
-            <field name="name">oemedical.appointment.notification.tree</field>
-            <field name="model">oemedical.appointment.notification</field>             
-            <field name="arch" type="xml">
-                <tree string="Patient Appointment Notification">
-                 	 <field name="notify_before"/>
-                 	 <field name="unit_time"/>
-                 	 <field name="first_monthly"/>
-	                 <field name="third_monthly"/>
-	                 <field name="sixth_monthly"/>
-	                 <field name="nineth_monthly"/>
-	                 <field name="yearly"/>
-                 	 <field name="show_notification"/>
-                 	 <field name="show_unit_time"/>
-                 	 <field name="company_id"/>                 	     
-                </tree>
-            </field>
-        </record>
-        
-        <record id="view_oemedical_appointment_notification_form" model="ir.ui.view">
-            <field name="name">oemedical.appointment.notification.form</field>
-            <field name="model">oemedical.appointment.notification</field>             
-            <field name="arch" type="xml">
-                <form string="Patient Appointment Notifications"  version="7.0">
-                 	<sheet>
-                 	    <group col="4" colspan="4"> 
-	                 	    <field name="notify_before"/>
-	                 	    <field name="unit_time"/>
-                 	    </group>
-                 	    <newline/>
-                 	    <group col="4" colspan="4">                 	    
-	                 	    <field name="first_monthly"/>
-	                 	    <field name="third_monthly"/>
-	                 	    <field name="sixth_monthly"/>
-	                 	    <field name="nineth_monthly"/>
-	                 	    <field name="yearly"/>
-                 	    </group>
-                 	    <newline/>
-                 	    <group col="4" colspan="4"> 
-	                 	    <field name="show_notification"/>
-	                 	    <field name="show_unit_time"/>
-	                 	    <newline/>
-	                 	    <field name="company_id"/>   
-                 	    </group>              	     
-                 	</sheet>
-                </form>
-            </field>
-        </record>
-        
-        <record model="ir.actions.act_window" id="act_oemedical_appointment_notification_view">
-			<field name="name">Patient Appointment Notifications</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">oemedical.appointment.notification</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-		</record>
-		
-		<menuitem id="oemedical_root_patient_notification" name="Appointment Notifications"
-			parent="oemedical.oemedical_root_sub" action="act_oemedical_appointment_notification_view"
-			sequence="300" />
+		<menuitem id="oemedical_patient_notification" name="Operated Patient Notifications"
+			parent="oemedical.oemedical_appoitment_root" action="action_patien_notification"
+			sequence="30" />
         
                         
     </data>

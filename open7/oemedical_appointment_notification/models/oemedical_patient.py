@@ -12,8 +12,4 @@ class OeMedicalPatient(osv.osv):
         self.pool.get('res.partner').write(cr, uid, patient.partner_id.id, {'is_patient': True}, context=context)
         return res
     
-    def call_notificator(self, cr, uid, ids, context=None):
-        not_ids = self.pool.get('oemedical.appointment.notification').search(cr, uid,[])
-        return self.pool.get('oemedical.appointment.notification').call_patient_notification(cr, uid, not_ids, context)
-    
 OeMedicalPatient()

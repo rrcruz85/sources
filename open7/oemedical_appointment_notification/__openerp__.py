@@ -18,9 +18,7 @@
         'views/oemedical_appointment_view_inherit.xml',
 
         # Wizards...
-        'wizards/send_notification_wizard_view.xml',
-        'data/scheduler.xml',
-        'data/data.xml',
+        'wizards/send_notification_wizard_view.xml',        
     ],
 
     "demo": [

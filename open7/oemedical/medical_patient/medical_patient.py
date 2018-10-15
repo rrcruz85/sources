@@ -40,9 +40,8 @@ class OeMedicalPatient(osv.Model):
         if last_name == False:
             last_name = ''
         if slastname == False:
-            slastname = ''
-            
-        res = {}
+            slastname = ''            
+       
         res = {'value': {
                          'name' : first_name + ' ' + last_name + ' ' + slastname
                          }

@@ -97,6 +97,23 @@ openerp.my_pos = function(instance) {
         },
 	});
 	
+	module.NumpadWidget.include({
+		start: function() {
+            this.state.bind('change:mode', this.changedMode, this);
+            this.changedMode();
+            this.$el.find('button#numpad-backspace').click(_.bind(this.clickDeleteLastChar, this));
+            this.$el.find('button#numpad-minus').click(_.bind(this.clickSwitchSign, this));
+            this.$el.find('button.number-char').click(_.bind(this.clickAppendNewChar, this));
+            this.$el.find('button.mode-button').click(_.bind(this.clickChangeMode, this));
+            
+            this.$el.find('button:contains("0")').css('display','none');
+            var btn0 = '<button class="input-button number-char" style="margin-left:3px !important;">0</button>'; 
+            this.$el.find('button:contains("9")').after(btn0);
+            this.$el.find('.mode-button[data-mode="price"]').css('display','none');
+            this.$el.find('button:contains("0")').click(_.bind(this.clickAppendNewChar, this));
+        },
+	});
+	
 	module.PaymentScreenWidget.include({
 		updatePaymentSummary: function() {
 			if (globalType == false) {
