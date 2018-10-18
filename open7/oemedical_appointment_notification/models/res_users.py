@@ -98,7 +98,7 @@ class Users(osv.osv):
             notify_before_date -= dateutil.relativedelta.relativedelta(days=1)
         
         cr.execute("""
-                select pp.display_name, p.ced_ruc, pp.mobile, pp.email from oemedical_surgery s
+                select pp.display_name, p.ced_ruc, pp.mobile, pp.email from oemedical_bariatric_evaluation s
                 inner join oemedical_patient p on s.patient_id = p.id
                 inner join res_partner pp on p.partner_id = pp.id
                 where (s.date + interval '%s' """ + ('year' if month == 12 else 'month') + """) between %s and %s

@@ -11,7 +11,7 @@
     "licence": "AGPL v3",
 
     'category': 'Generic Modules/Others',
-    'depends': ['oemedical', 'web'],
+    'depends': ['oemedical','oemedical_bariatric_evaluation','web'],
 
     "data": [
         # Views...
