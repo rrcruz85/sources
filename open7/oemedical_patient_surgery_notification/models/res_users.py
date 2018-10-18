@@ -60,7 +60,7 @@ class Users(osv.osv):
             'day': dateutil.relativedelta.relativedelta(days=notify_before)             
         }      
         
-        notify_before_date = datetime.now() - interval[unit_time] 
+        notify_before_date = datetime.today().date()  - interval[unit_time] 
         patients = '<br/>'       
         if first_monthly:
             patients += self.get_patients_per_month(cr, 1, notify_before_date)
@@ -94,20 +94,20 @@ class Users(osv.osv):
     
     def get_patients_per_month(self, cr, month, notify_before_date):
         
-        if notify_before_date >= datetime.now():
+        if notify_before_date >= datetime.today().date():
             notify_before_date -= dateutil.relativedelta.relativedelta(days=1)
         
         cr.execute("""
                 select pp.display_name, p.ced_ruc, pp.mobile, pp.email from oemedical_bariatric_evaluation s
                 inner join oemedical_patient p on s.patient_id = p.id
                 inner join res_partner pp on p.partner_id = pp.id
-                where (s.date + interval '%s' """ + ('year' if month == 12 else 'month') + """) between %s and %s
-            """,((1 if month == 12 else month), notify_before_date, datetime.now()))  
+                where (s.fechaqx + interval '%s' """ + ('year' if month == 12 else 'month') + """)::date between %s and %s
+            """,((1 if month == 12 else month), notify_before_date, datetime.today().date()))  
             
         lines = cr.fetchall()
         patients = ''
         if lines:
-            patients += '<b>Operated patients ' + ('1 year ' if month == 12 else str(month) + ' months ') + 'ago:</b><ul>'
+            patients += '<u><b>Operated patients ' + ('1 year ' if month == 12 else str(month) + ' month' + (' ' if month == 1 else 's ') ) + 'ago:</b></u><ul>'
             patients += ''.join(map(lambda r: '<li>' + (r[0] or '') + ('<br/>Ced.:' + r[1] if r[1] else '') + ('<br/>Tel.:' + r[2] if r[2] else '') + ('<br/>Email:' + r[3] if r[3] else '') + '</li>' , lines))
             patients += '</ul>'
         return patients   

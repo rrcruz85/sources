@@ -2,8 +2,8 @@
 
 {
 
-    'name': 'OeMedical. Appointment Notifications',
-    'description': """To include notifications to patients...""",
+    'name': 'OeMedical. Patient Surgery Notifications',
+    'description': """To include notifications to patient's surgeries""",
     'version': '1.0',
 
     'author': "OeMEdical Team",
@@ -11,18 +11,19 @@
     "licence": "AGPL v3",
 
     'category': 'Generic Modules/Others',
-    'depends': ['oemedical','web'],
+    'depends': ['oemedical_bariatric_evaluation'],
 
     "data": [
         # Views...
-        'views/oemedical_appointment_view_inherit.xml',
-
-        # Wizards...
-        'wizards/send_notification_wizard_view.xml',        
+        'views/oemedical_patient_surgery_notification_view.xml',
     ],
 
     "demo": [
 
+    ],
+
+    'css': [
+        'static/src/css/widget.css',
     ],
 
     'js': [
