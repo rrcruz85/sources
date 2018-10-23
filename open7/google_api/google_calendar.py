@@ -17,6 +17,7 @@ import base64
 import time
 from datetime import timedelta
 import datetime
+import sys
 
 logger = logging.getLogger('google_api')
 
@@ -241,57 +242,62 @@ class google_api_account(osv.osv):
     
     def do_authorize(self, cr, uid, ids, context=None):
         
-        if not context:
-            context = {}
-        
-        account = self.browse(cr, uid, ids[0])        
-        path = os.path.dirname(os.path.abspath(__file__))        
-        if os.name == 'nt':
-            path += '\\data\\keys\\'
-        else:
-            path += '/data/keys/'            
-        
-        account_name = account.name.lower().replace (' ','_')
-                
-        file_secret_path =  path + account_name + '_credential.json'
-        data = account.secrets_file
-        f = open(file_secret_path,'wb')
-        f.write(data.decode('base64'))
-        f.close()
-        
-        FLOW = client.flow_from_clientsecrets(file_secret_path,
-                                              scope=[
-                                                     'https://www.googleapis.com/auth/calendar',
-                                                     'https://www.googleapis.com/auth/calendar.readonly',
-                                                     'https://www.google.com/m8/feeds',
-                                                    ],
-                                              message=tools.message_if_missing(file_secret_path))
-        
-        file_credential_path =  path + account_name + '_credential.dat'
-        
-        if account.credential_file:            
-            data = account.credential_file
-            f = open(file_credential_path,'wb')
-            f.write(data.decode('base64'))
-            f.close()
-        else:         
+        try:
+            if not context:
+                context = {}
+            
+            account = self.browse(cr, uid, ids[0])        
+            path = os.path.dirname(os.path.abspath(__file__))        
+            if os.name == 'nt':
+                path += '\\data\\keys\\'
+            else:
+                path += '/data/keys/'            
+            
+            account_name = account.name.lower().replace (' ','_')                    
+            file_secret_path =  path + account_name + '_credential.json'
+            
+            if not os.path.exists(file_secret_path):
+                with open(file_secret_path, 'wb') as dat_file:
+                    data = account.secrets_file
+                    dat_file.write(data.decode('base64'))
+            
+            FLOW = client.flow_from_clientsecrets(file_secret_path,
+                                                  scope=[
+                                                         'https://www.googleapis.com/auth/calendar',
+                                                         'https://www.googleapis.com/auth/calendar.readonly',
+                                                         'https://www.google.com/m8/feeds',
+                                                        ],
+                                                  message=tools.message_if_missing(file_secret_path))
+            
+            file_credential_path =  path + account_name + '_credential.dat'
+            
+            if account.credential_file and not os.path.exists(file_credential_path):            
+                data = account.credential_file
+                with open(file_credential_path, 'wb') as dat_file:
+                    dat_file.write(data.decode('base64'))
+                     
             storage = file.Storage(file_credential_path)
             credentials = storage.get()
             if credentials is None or credentials.invalid:
                 parser = argparse.ArgumentParser(
-                                                 description=__doc__,
-                                                 formatter_class=argparse.RawDescriptionHelpFormatter,
-                                                 parents=[tools.argparser])
+                            description=__doc__,
+                            formatter_class=argparse.RawDescriptionHelpFormatter,
+                            parents=[tools.argparser])
                 if not account.use_local_browser:
                     flags = parser.parse_args(['--noauth_local_webserver'])
                 else:
                     flags = parser.parse_args([])
-                credentials = tools.run_flow(FLOW, storage, flags)
                 
-                with open(file_credential_path, 'r') as content_file:
-                    content = content_file.read()
+                credentials = tools.run_flow(FLOW, storage, flags)
+                    
+                with open(file_credential_path, 'r') as dat_file:
+                    content = dat_file.read()
                     base64String = base64.b64encode(bytes(content))
                     self.write(cr, uid, ids,{'credential_file':base64String}) 
+        
+        except Exception as exc:
+            logger.error(_('Authorize failed. %s' % (exc.value,)))
+        
         #raise osv.except_osv(_('Done.'), _('Please verify if your credential file is created or updated in the path the you selected for the secret path folder.'))
 
 class google_api_calendar(osv.osv):
