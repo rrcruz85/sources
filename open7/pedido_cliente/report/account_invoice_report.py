@@ -308,10 +308,10 @@ class AccountInvoiceReport(report_rml):
                                 ) lines""", (pedido.id,))
 
             lines = cr.fetchall()
+            total_lines = len(lines)
             summary = {}
             first = True
-            supplier_tmp = lines[0][0] if lines else ''
-            
+            supplier_tmp = lines[0][0] if lines else ''             
             for line in lines:
                 
                 supplier = line[0]
@@ -341,7 +341,7 @@ class AccountInvoiceReport(report_rml):
                     summary[supplier][4] += total
                     summary[supplier][5] += taxes
 
-                if  supplier != supplier_tmp:
+                if supplier != supplier_tmp:
                     first = True
                     supplier_tmp = supplier
 
@@ -361,8 +361,8 @@ class AccountInvoiceReport(report_rml):
                                 <td><para style="P5_COURIER_CENTER">""" + str(round(total,2)) + """</para></td>
                             </tr>
                         </blockTable>"""
-
-                first = False
+                        
+                first = False                 
 
             total_stems = 0
             total_bunch = 0
@@ -414,6 +414,11 @@ class AccountInvoiceReport(report_rml):
             res_tipo_neg = pedido.partner_id.tipo_neg_id.name if pedido.partner_id.tipo_neg_id else ''
             tipo_flete = pedido.partner_id.tipo_flete
             flete_value = pedido.precio_flete if tipo_flete == 'fob_f_p' else 0.0
+            
+            newPage = False
+            if total_lines >= 59:
+                rml += """<spacer length="1.0cm"/>"""
+                newPage = True
 
             rml += """  <blockTable colWidths="240.0,180.0,140.0" rowHeights="" style="TableX">
                             <tr>
@@ -493,8 +498,11 @@ class AccountInvoiceReport(report_rml):
                             <tr><td><para style="P6_CENTER">Email/MSN: """ + (company.email if company.email else '') + """ Skype: Inflowers</para></td></tr>
                         </blockTable>"""
 
-            rml += """<spacer length="0.5cm"/>"""
-
+            if total_lines >= 46 and not newPage:
+                rml += """<spacer length="1.0cm"/>"""
+            else:
+                rml += """<spacer length="0.5cm"/>"""
+           
             rml += """<blockTable colWidths="170.0,30.0,35.0,30.0,295.0" rowHeights="12.0" style="TableZ">
                             <tr>
                                 <td><para style="P6_CENTER">FINCA</para></td>
@@ -504,6 +512,8 @@ class AccountInvoiceReport(report_rml):
                                 <td></td>
                             </tr>"""
 
+            line = 1  
+            added = False
             for key in summary.keys():
                 total_fb_tmp = summary[key][2]/2 + summary[key][3]/4
                 rml += """<tr>"""
@@ -512,6 +522,15 @@ class AccountInvoiceReport(report_rml):
                 rml += """<td><para style="P6_CENTER">""" + (str(round(summary[key][3] ,2))) + """</para></td>"""
                 rml += """<td><para style="P6_CENTER">""" + (str(round(total_fb_tmp ,2))) + """</para></td>"""
                 rml += """<td></td></tr>"""
+                
+                if line + total_lines >= 43 and not added and not newPage:
+                    added = True
+                    newPage = True
+                    rml += """ </blockTable>
+                               <spacer length="1.0cm"/>
+                               <blockTable colWidths="170.0,30.0,35.0,30.0,295.0" rowHeights="12.0" style="TableZ">
+                               """
+                line += 1
 
             rml += """<tr>
                                 <td><para style="P6_CENTER">TOTAL</para></td>
@@ -528,7 +547,9 @@ class AccountInvoiceReport(report_rml):
 
         report_type = datas.get('report_type', 'pdf')
         create_doc = self.generators[report_type]
-        pdf = create_doc(rml, title=self.title)
+        print 'report--------------------------------:'
+        print rml
+        pdf = create_doc(rml, title=self.title)       
         return pdf, report_type
 
 
