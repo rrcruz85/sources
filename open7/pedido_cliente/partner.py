@@ -317,8 +317,8 @@ class purchase_request_template(osv.osv):
         'sabado'                : fields.boolean('Sabado'),
         'domingo'               : fields.boolean('Domingo'),
 
-        'periodicidad'         : fields.function(_get_info, type='char', string='Periodicidad', multi = "vals"),
-        'products'         : fields.function(_get_info, type='char', string='Productos', multi = "vals"),
+        'periodicidad'          : fields.function(_get_info, type='char', string='Periodicidad', multi = "vals"),
+        'products'              : fields.function(_get_info, type='char', string='Productos', multi = "vals"),
     }
 	
     _defaults = {

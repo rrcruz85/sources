@@ -346,6 +346,8 @@ class AccountInvoiceReport(report_rml):
                     supplier_tmp = supplier
 
                 rml += """
+                        <condPageBreak height="0.5cm"/>
+                        
                         <blockTable colWidths="120.0,50.0,45.0,40.0,40.0,25.0,25.0,75.0,70.0,30.0,40.0" rowHeights="10.0" style="AllBorders">
                             <tr>
                                 <td><para style="P5_COURIER_JUSTIFY">""" + (ustr(supplier[0:18] if first and supplier else '')) + """</para></td>
@@ -415,10 +417,10 @@ class AccountInvoiceReport(report_rml):
             tipo_flete = pedido.partner_id.tipo_flete
             flete_value = pedido.precio_flete if tipo_flete == 'fob_f_p' else 0.0
             
-            newPage = False
-            if total_lines >= 59:
-                rml += """<spacer length="1.0cm"/>"""
-                newPage = True
+            #newPage = False
+            #if total_lines >= 59:
+            #    rml += """<spacer length="1.0cm"/>"""
+            #    newPage = True
 
             rml += """  <blockTable colWidths="240.0,180.0,140.0" rowHeights="" style="TableX">
                             <tr>
@@ -498,10 +500,10 @@ class AccountInvoiceReport(report_rml):
                             <tr><td><para style="P6_CENTER">Email/MSN: """ + (company.email if company.email else '') + """ Skype: Inflowers</para></td></tr>
                         </blockTable>"""
 
-            if total_lines >= 46 and not newPage:
-                rml += """<spacer length="1.0cm"/>"""
-            else:
-                rml += """<spacer length="0.5cm"/>"""
+            #if total_lines >= 46 and not newPage:
+            #    rml += """<spacer length="1.0cm"/>"""
+            #else:
+            #    rml += """<spacer length="0.5cm"/>"""
            
             rml += """<blockTable colWidths="170.0,30.0,35.0,30.0,295.0" rowHeights="12.0" style="TableZ">
                             <tr>
@@ -523,13 +525,13 @@ class AccountInvoiceReport(report_rml):
                 rml += """<td><para style="P6_CENTER">""" + (str(round(total_fb_tmp ,2))) + """</para></td>"""
                 rml += """<td></td></tr>"""
                 
-                if line + total_lines >= 43 and not added and not newPage:
-                    added = True
-                    newPage = True
-                    rml += """ </blockTable>
-                               <spacer length="1.0cm"/>
-                               <blockTable colWidths="170.0,30.0,35.0,30.0,295.0" rowHeights="12.0" style="TableZ">
-                               """
+                #if line + total_lines >= 43 and not added and not newPage:
+                #    added = True
+                #    newPage = True
+                #    rml += """ </blockTable>
+                #               <spacer length="1.0cm"/>
+                #               <blockTable colWidths="170.0,30.0,35.0,30.0,295.0" rowHeights="12.0" style="TableZ">
+                #               """
                 line += 1
 
             rml += """<tr>

@@ -2302,7 +2302,7 @@
             </field>
         </record>
         
-        
+        <!--  
         <record id="view_oemedical_pathology_form_inherit" model="ir.ui.view">
 			<field name="name">oemedical.pathology.form.inherit</field>
 			<field name="model">oemedical.pathology</field>
@@ -2331,6 +2331,6 @@
 			    </xpath>				
 			</field>
 		</record>        
-        
+        -->
 	</data>
 </openerp>
