@@ -14,7 +14,16 @@
             <field name="arch" type="xml">
 				<data>
 				    <xpath expr="//field[@name='list_price']" position="after">
-						 <field name="secondary_price"/>
+						 <field name="sale_price_ids" context="{'product_id':active_id}">
+						     <tree editable="bottom" string="Alternative Sale Prices">
+						         <field name ="price"/>
+						         <field name ="product_id" invisible="1"/>
+						     </tree>
+						     <form string="Alternative Sale Price">
+						         <field name ="price"/>
+						         <field name ="product_id"/>
+						     </form>
+						 </field>
 					</xpath>
 					<xpath expr="//page[@string='Accounting']" position="after">
 						<page string="TPV">

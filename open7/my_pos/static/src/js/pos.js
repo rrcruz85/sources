@@ -930,16 +930,29 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
 
                     return self.fetch(
                         'product.product',
-                        ['name', 'list_price','secondary_price','price','pos_categ_id', 'taxes_id', 'ean13',
-                         'to_weight', 'uom_id', 'uos_id', 'uos_coeff', 'mes_type', 'description_sale', 'description', 'tpv_list_ids'],
+                        ['name', 'list_price','price','pos_categ_id', 'taxes_id', 'ean13',
+                         'to_weight', 'uom_id', 'uos_id', 'uos_coeff', 'mes_type', 'description_sale', 'description',
+                         'tpv_list_ids','sale_price_ids'],
                         [['sale_ok','=',true],['available_in_pos','=',true]],
                         {pricelist: self.get('shop').pricelist_id[0]} // context for price
                     );
                     
                 }).then(function(products){
                 	
+                	_.each(products,function(product) {                		
+                		if(product.sale_price_ids.length > 0){
+	                		let alternativePrice = [];
+	                		_.each(product.sale_price_ids,function(sale_id) {	                			 
+	                			self.fetch('product.price', ['price'], [['id','=',sale_id]]).then(function(sale_obj){
+	                				alternativePrice.push(sale_obj[0]);
+	                			});
+	                        });
+	                		product.sale_price_ids = alternativePrice;
+                	    }
+                    });
+                	
                 	self.db.add_products(products);
-
+                	
                     return self.fetch(
                         'account.bank.statement',
                         ['account_id','currency','journal_id','state','name','user_id','pos_session_id'],

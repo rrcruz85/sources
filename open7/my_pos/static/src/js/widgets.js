@@ -26,7 +26,7 @@ openerp.my_pos = function(instance) {
         	     self.pos_widget.screen_selector.set_current_screen(self.scale_screen, {product: product});
             }
         	else{            	 
-            	if(product.get('secondary_price') > 0){
+            	if(product.get('sale_price_ids').length > 0){
             		
             		if($('input[name="'+ product.get('id').toString() +  '"]:checked').length == 0){
             		    alert(_t('You must select one price for the product ') + product.get('name'));	
@@ -34,19 +34,7 @@ openerp.my_pos = function(instance) {
             		}
             		else{
             			
-            			console.log('Order:');
-            			console.log(self.pos.get('selectedOrder'));
-            			console.log(self.pos.get('selectedOrder').get('orderLines'));
-            			console.log(self.pos.get('selectedOrder').get('orderLines').models);
-            			
-            			var price1Selected = $('input[id="'+ product.get('id').toString() +  '-1"]:checked').length;
-                		var productPrice = 0;
-            			if(price1Selected > 0){
-            				productPrice = product.get('price');
-                	    }else{
-                	    	productPrice = product.get('secondary_price');
-                	    }
-            			
+            			let productPrice = $('input[name="'+ product.get('id').toString() +  '"]:checked')[0].value;
             			var products = self.pos.get('selectedOrder').get('orderLines').models;
             			var productId = product.get('id');
             			for(var i = 0; i < products.length; i++){
