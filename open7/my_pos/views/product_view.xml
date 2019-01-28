@@ -13,6 +13,9 @@
             <field name="inherit_id" ref="product.product_normal_form_view" />
             <field name="arch" type="xml">
 				<data>
+				    <xpath expr="//field[@name='list_price']" position="after">
+						 <field name="secondary_price"/>
+					</xpath>
 					<xpath expr="//page[@string='Accounting']" position="after">
 						<page string="TPV">
 							<p class="oe_grey">Select the <b>TPVs</b> where the product will be available...</p>

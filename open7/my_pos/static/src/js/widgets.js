@@ -12,12 +12,57 @@ openerp.my_pos = function(instance) {
             this.weight = options.weight || 0;
             this.show_scale = options.show_scale || false;
             this.next_screen = options.next_screen || false;
-            this.click_product_action = options.click_product_action;
+            this.click_product_action = this.addProductAction; //options.click_product_action;
 
             this.pos.get('products').bind('reset', function(){
                 self.renderElement();
             });
         },
+        
+        addProductAction : function(product){
+        	var self = this;
+        	
+        	if(product.get('to_weight') && self.pos.iface_electronic_scale){
+        	     self.pos_widget.screen_selector.set_current_screen(self.scale_screen, {product: product});
+            }
+        	else{            	 
+            	if(product.get('secondary_price') > 0){
+            		
+            		if($('input[name="'+ product.get('id').toString() +  '"]:checked').length == 0){
+            		    alert(_t('You must select one price for the product ') + product.get('name'));	
+            		    //self.pos_widget.do_warn('Error','You must select one price for the product ' + product.get('name'), true);
+            		}
+            		else{
+            			
+            			console.log('Order:');
+            			console.log(self.pos.get('selectedOrder'));
+            			console.log(self.pos.get('selectedOrder').get('orderLines'));
+            			console.log(self.pos.get('selectedOrder').get('orderLines').models);
+            			
+            			var price1Selected = $('input[id="'+ product.get('id').toString() +  '-1"]:checked').length;
+                		var productPrice = 0;
+            			if(price1Selected > 0){
+            				productPrice = product.get('price');
+                	    }else{
+                	    	productPrice = product.get('secondary_price');
+                	    }
+            			
+            			var products = self.pos.get('selectedOrder').get('orderLines').models;
+            			var productId = product.get('id');
+            			for(var i = 0; i < products.length; i++){
+            				if(products[i].product.id == productId){
+            					products[i].price = productPrice;
+            				}
+            			}            			
+            			self.pos.get('selectedOrder').addProduct(product, {price: productPrice});                	    
+            		}
+            	}
+            	else{
+            		 self.pos.get('selectedOrder').addProduct(product);
+            	}
+            }          
+        },
+        
         renderElement: function() {
             var self = this;
             this._super();
@@ -64,6 +109,67 @@ openerp.my_pos = function(instance) {
             this.scrollbar.replace(this.$('.placeholder-ScrollbarWidget'));
         },
     });
+	
+	module.ProductScreenWidget = module.ScreenWidget.extend({
+        template:'ProductScreenWidget',
+
+        scale_screen: 'scale_invite',
+        client_next_screen:  'client_payment',
+
+        show_numpad:     true,
+        show_leftpane:   true,
+
+        start: function(){ //FIXME this should work as renderElement... but then the categories aren't properly set. explore why
+            var self = this;
+            this.product_categories_widget = new module.ProductCategoriesWidget(this,{});
+            this.product_categories_widget.replace($('.placeholder-ProductCategoriesWidget'));
+
+            this.product_list_widget = new module.ProductListWidget(this,{
+                click_product_action: function(product){
+                	
+                	console.log('Prod:');
+                	console.log(product);
+                	
+                    if(product.get('to_weight') && self.pos.iface_electronic_scale){
+                        self.pos_widget.screen_selector.set_current_screen(self.scale_screen, {product: product});
+                    }else{
+                        self.pos.get('selectedOrder').addProduct(product);
+                    }
+                },
+            });
+            this.product_list_widget.replace($('.placeholder-ProductListWidget'));
+        },
+
+        show: function(){
+            this._super();
+            var self = this;
+
+            this.product_categories_widget.reset_category();
+
+            this.pos_widget.order_widget.set_numpad_state(this.pos_widget.numpad.state);
+
+            if(this.pos_widget.screen_selector.current_mode === 'client'){ 
+                this.add_action_button({
+                        label: _t('Pay'),
+                        icon: '/point_of_sale/static/src/img/icons/png48/go-next.png',
+                        click: function(){  
+                            self.pos_widget.screen_selector.set_current_screen(self.client_next_screen);
+                        }
+                    });
+            }
+        },
+
+        close: function(){
+            this._super();
+            this.pos_widget.order_widget.set_numpad_state(null);
+            this.pos_widget.payment_screen.set_numpad_state(null);
+            if(this.pos.iface_vkeyboard && this.pos_widget.onscreen_keyboard){
+                this.pos_widget.onscreen_keyboard.hide();
+            }
+        },
+
+    });
+	 
 	
 	module.PaypadButtonWidget = module.PosBaseWidget.extend({
         template: 'PaypadButtonWidget',

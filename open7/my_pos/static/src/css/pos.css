@@ -409,5 +409,17 @@ table tbody tr td:nth-child(2).pos-right-align.big-textNum
     font-size: 18px; !important;
 }
 
+.point-of-sale .product .price-tag-2 {
+    position: absolute;
+    top: 30px;
+    right: 2px;
+    vertical-align: top;
+    color: white;
+    line-height: 14px;
+    background: #7f82ac;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
 
 

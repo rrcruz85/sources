@@ -449,4 +449,26 @@
 		    </div>
         </div>
     </t>
+
+    <t t-extend="ProductWidget">  
+        
+        	 <t t-jquery="span.price-tag:first" t-operation="replace">
+        	    <t t-if="widget.model.get('secondary_price') > 0">
+        	        <span class="price-tag">
+			    		<t t-esc="widget.format_currency(widget.model.get('price'))"/>
+			    		<input type="radio" t-att-id="widget.model.get('id').toString() + '-1'" t-att-name="widget.model.get('id')" t-att-value="widget.model.get('price')"/>
+			        </span>	
+			        <span class="price-tag-2">
+			    		<t t-esc="widget.format_currency(widget.model.get('secondary_price'))"/>
+			    		<input type="radio" t-att-id="widget.model.get('id').toString() + '-2'" t-att-name="widget.model.get('id')" t-att-value="widget.model.get('secondary_price')"/>
+			        </span>	
+        	    </t>
+        	    <t t-if="widget.model.get('secondary_price') &lt;= 0">
+        	       <span class="price-tag">
+			    		<t t-esc="widget.format_currency(widget.model.get('price'))"/>			    		 
+			       </span>	
+        	    </t>
+        	 </t>    
+	</t>
+    
 </templates>

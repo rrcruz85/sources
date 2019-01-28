@@ -930,13 +930,15 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
 
                     return self.fetch(
                         'product.product',
-                        ['name', 'list_price','price','pos_categ_id', 'taxes_id', 'ean13',
+                        ['name', 'list_price','secondary_price','price','pos_categ_id', 'taxes_id', 'ean13',
                          'to_weight', 'uom_id', 'uos_id', 'uos_coeff', 'mes_type', 'description_sale', 'description', 'tpv_list_ids'],
                         [['sale_ok','=',true],['available_in_pos','=',true]],
                         {pricelist: self.get('shop').pricelist_id[0]} // context for price
                     );
+                    
                 }).then(function(products){
-                    self.db.add_products(products);
+                	
+                	self.db.add_products(products);
 
                     return self.fetch(
                         'account.bank.statement',
@@ -971,6 +973,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
 
         // logs the usefull posmodel data to the console for debug purposes
         log_loaded_data: function(){
+        	
             console.log('PosModel data has been loaded:');
             console.log('PosModel: units:',this.get('units'));
             console.log('PosModel: bank_statements:',this.get('bank_statements'));
@@ -1071,7 +1074,12 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             }
 
             if(parsed_ean.type === 'price'){
-                selectedOrder.addProduct(new module.Product(product), {price:parsed_ean.value});
+            	if(product.secondary_price > 0){
+            		selectedOrder.addProduct(new module.Product(product), {price:secondary_price});
+                }
+            	else{
+            		selectedOrder.addProduct(new module.Product(product), {price:parsed_ean.value});
+            	}
             }else if(parsed_ean.type === 'weight'){
                 selectedOrder.addProduct(new module.Product(product), {quantity:parsed_ean.value, merge:false});
             }else{
@@ -1170,8 +1178,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
 		        		if (paymentline.cashregister.get('journal').type !== 'cash') {
 		        			paymentline.destroy();
 		        		}
-		            });
-		            
+		            });		            
 		            i++;
             	}
             }
