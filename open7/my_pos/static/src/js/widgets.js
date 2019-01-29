@@ -27,15 +27,18 @@ openerp.my_pos = function(instance) {
             }
         	else{            	 
             	if(product.get('sale_price_ids').length > 0){
-            		
+            		/*
             		if($('input[name="'+ product.get('id').toString() +  '"]:checked').length == 0){
             		    //alert(_t('You must select one price for the product ') + product.get('name'));	
             		    //self.pos_widget.do_warn('Error','You must select one price for the product ' + product.get('name'), true);
             		}
             		else{
-            			
+            		*/
+            		if($('input[name="'+ product.get('id').toString() +  '"]:checked').length > 0){
+                		
             			let productPrice = $('input[name="'+ product.get('id').toString() +  '"]:checked')[0].value;
-            			/*//for setting the same price 
+            			/*
+            			//for setting the same price 
             			var products = self.pos.get('selectedOrder').get('orderLines').models;
             			var productId = product.get('id');
             			for(var i = 0; i < products.length; i++){
