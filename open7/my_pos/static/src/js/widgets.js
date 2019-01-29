@@ -29,19 +29,21 @@ openerp.my_pos = function(instance) {
             	if(product.get('sale_price_ids').length > 0){
             		
             		if($('input[name="'+ product.get('id').toString() +  '"]:checked').length == 0){
-            		    alert(_t('You must select one price for the product ') + product.get('name'));	
+            		    //alert(_t('You must select one price for the product ') + product.get('name'));	
             		    //self.pos_widget.do_warn('Error','You must select one price for the product ' + product.get('name'), true);
             		}
             		else{
             			
             			let productPrice = $('input[name="'+ product.get('id').toString() +  '"]:checked')[0].value;
+            			/*//for setting the same price 
             			var products = self.pos.get('selectedOrder').get('orderLines').models;
             			var productId = product.get('id');
             			for(var i = 0; i < products.length; i++){
             				if(products[i].product.id == productId){
             					products[i].price = productPrice;
             				}
-            			}            			
+            			}      
+            			*/      			
             			self.pos.get('selectedOrder').addProduct(product, {price: productPrice});                	    
             		}
             	}
@@ -67,18 +69,50 @@ openerp.my_pos = function(instance) {
             var products = this.pos.get('products').models || [];
             if (this.pos.get('pos_config').show_all_products) {
 	            for(var i = 0, len = products.length; i < len; i++) {
-	                var product = new module.ProductWidget(self, {model: products[i], click_product_action: this.click_product_action});
+	            	
+	            	let product = null;
+		               
+	            	if(products[i].get('sale_price_ids').length > 0){
+	                	product = new module.ProductWidget(self, {model: products[i]});
+	                }
+	            	else{
+	            		product = new module.ProductWidget(self, {model: products[i], click_product_action: this.click_product_action});
+	  	            }
+	            	
 	                this.productwidgets.push(product);
 	                product.appendTo(this.$('.product-list'));
+	                
+	                let p = products[i]; 
+	                if(p.get('sale_price_ids').length > 0){	                	
+	                	               	
+	                	let productId = p.get('id');
+	                	$('input#' + productId.toString() + '-1').click(function(){	                		 
+	                		self.click_product_action(p);	                		 	                	
+	                	}); 
+	                	
+	                	for(var pos = 1; pos <= p.get('sale_price_ids').length; pos++){
+	                		$('input#' + productId.toString() + '-' + (pos + 1).toString()).click(function(){	                		 
+		                		self.click_product_action(p);	                		 	                	
+		                	}); 
+	                	}
+	                }
+	                
+	                if(p.get('sale_price_ids').length >= 3){
+	                	$('input#' + p.get('id').toString() + '-1').parent().parent().css("overflow-y", "scroll");
+	                	$('input#' + p.get('id').toString() + '-' + (p.get('sale_price_ids').length + 1).toString()).parent().css("margin-bottom", "10px");
+	                }
 	            }
             }
             else {
             	for(var i = 0, len = products.length; i < len; i++) {
-	            	//this.pos.db.get_product_by_id(products[i].id)
 	            	if (products[i].get('tpv_list_ids').indexOf(this.pos.get('pos_config').id) > -1) {
 		                var product = new module.ProductWidget(self, {model: products[i], click_product_action: this.click_product_action});
 		                this.productwidgets.push(product);
 		                product.appendTo(this.$('.product-list'));
+		                
+		                if(products[i].get('sale_price_ids').length >= 3){
+		                 	$('input#' + products[i].get('id').toString() + '-1').parent().parent().css("overflow-y", "scroll");
+		 	            }
 	            	}
 	            }
             }
@@ -98,6 +132,7 @@ openerp.my_pos = function(instance) {
         },
     });
 	
+	/*
 	module.ProductScreenWidget = module.ScreenWidget.extend({
         template:'ProductScreenWidget',
 
@@ -113,12 +148,9 @@ openerp.my_pos = function(instance) {
             this.product_categories_widget.replace($('.placeholder-ProductCategoriesWidget'));
 
             this.product_list_widget = new module.ProductListWidget(this,{
-                click_product_action: function(product){
+                click_product_action: function(product){               	
                 	
-                	console.log('Prod:');
-                	console.log(product);
-                	
-                    if(product.get('to_weight') && self.pos.iface_electronic_scale){
+                	if(product.get('to_weight') && self.pos.iface_electronic_scale){
                         self.pos_widget.screen_selector.set_current_screen(self.scale_screen, {product: product});
                     }else{
                         self.pos.get('selectedOrder').addProduct(product);
@@ -157,7 +189,7 @@ openerp.my_pos = function(instance) {
         },
 
     });
-	 
+	*/
 	
 	module.PaypadButtonWidget = module.PosBaseWidget.extend({
         template: 'PaypadButtonWidget',

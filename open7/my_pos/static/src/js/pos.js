@@ -941,13 +941,14 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
                 	
                 	_.each(products,function(product) {                		
                 		if(product.sale_price_ids.length > 0){
-	                		let alternativePrice = [];
+	                		let alternativePrices = [];
 	                		_.each(product.sale_price_ids,function(sale_id) {	                			 
 	                			self.fetch('product.price', ['price'], [['id','=',sale_id]]).then(function(sale_obj){
-	                				alternativePrice.push(sale_obj[0]);
+	                				alternativePrices.push(sale_obj[0]);
 	                			});
 	                        });
-	                		product.sale_price_ids = alternativePrice;
+	                		//alternativePrices.sort((p1, p2) => parseFloat(p1.price) - parseFloat(p2.price));
+	                		product.sale_price_ids = alternativePrices;
                 	    }
                     });
                 	
@@ -1087,12 +1088,14 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             }
 
             if(parsed_ean.type === 'price'){
+            	/*
             	if(product.secondary_price > 0){
             		selectedOrder.addProduct(new module.Product(product), {price:secondary_price});
                 }
             	else{
-            		selectedOrder.addProduct(new module.Product(product), {price:parsed_ean.value});
-            	}
+            	*/
+            	selectedOrder.addProduct(new module.Product(product), {price:parsed_ean.value});
+            	//}
             }else if(parsed_ean.type === 'weight'){
                 selectedOrder.addProduct(new module.Product(product), {quantity:parsed_ean.value, merge:false});
             }else{
