@@ -15,20 +15,72 @@ class account_invoice(osv.osv):
         res = {}
         for invoice in self.browse(cr, uid, ids, context=context):
             res[invoice.id] = {
-                'amount_untaxed'    : 0.0,
-                'amount_tax'        : 0.0,
-                'amount_total'      : 0.0,
-                'amount_iva_comp'   : 0.0,
+                'amount_iva_comp': 0.0,
+                'amount_vat': 0.0,
+                'amount_untaxed': 0.0, 
+                'amount_tax': 0.0,
+                'amount_tax_retention': 0.0,
+                'amount_tax_ret_ir': 0.0,
+                'taxed_ret_ir': 0.0, 
+                'amount_tax_ret_vatb': 0.0,
+                'amount_tax_ret_vatsrv': 0.00,
+                'taxed_ret_vatb': 0.0,
+                'taxed_ret_vatsrv': 0.00,
+                'amount_vat_cero': 0.0,
+                'amount_novat': 0.0, 
+                'amount_noret_ir': 0.0,
+                'amount_total': 0.0,
+                'amount_pay': 0.0,
+                'invoice_discount': 0,
+                'amount_discounted': 0.0,
+                'amount_ice': 0.0,
+                'amount_compensa': 0.0,
+                'payment_form': 0.0,
             }
             
+            #Total General
+            not_discounted = 0
             for line in invoice.invoice_line:
                 res[invoice.id]['amount_untaxed'] += line.price_subtotal
                 res[invoice.id]['amount_iva_comp'] += line.iva_compensation
-            
+                if res[invoice.id]['amount_untaxed'] == 0:
+                    res[invoice.id]['invoice_discount'] = 0
+                if (line.quantity * line.price_unit) - line.price_subtotal > 0.00:
+                    res[invoice.id]['amount_discounted'] += (line.quantity * line.price_unit) - line.price_subtotal
+                    
             for line in invoice.tax_line:
-                res[invoice.id]['amount_tax'] += line.amount
-            
-            res[invoice.id]['amount_total'] = res[invoice.id]['amount_tax'] + res[invoice.id]['amount_untaxed']
+                if line.tax_group == 'vat':
+                    #res[invoice.id]['amount_tax'] += line.amount
+                    res[invoice.id]['amount_tax'] += line.base * float(invoice.iva_percent) / 100
+                    res[invoice.id]['amount_vat'] += line.base
+                elif line.tax_group == 'vat0':
+                    res[invoice.id]['amount_vat_cero'] += line.base
+                elif line.tax_group == 'novat':
+                    res[invoice.id]['amount_novat'] += line.base
+                elif line.tax_group == 'no_ret_ir':
+                    res[invoice.id]['amount_noret_ir'] += line.base
+                elif line.tax_group in ['ret_vat_b', 'ret_vat_srv', 'ret_ir']:
+                    res[invoice.id]['amount_tax_retention'] += line.amount
+                    if line.tax_group == 'ret_vat_b':#in ['ret_vat_b', 'ret_vat_srv']:
+                        res[invoice.id]['amount_tax_ret_vatb'] += line.base
+                        res[invoice.id]['taxed_ret_vatb'] += line.amount
+                    elif line.tax_group == 'ret_vat_srv':
+                        res[invoice.id]['amount_tax_ret_vatsrv'] += line.base
+                        res[invoice.id]['taxed_ret_vatsrv'] += line.amount                        
+                    elif line.tax_group == 'ret_ir':
+                        if line.tax_code_id.code == '604':
+                            res[invoice.id]['amount_compensa'] += abs(line.amount)
+                        res[invoice.id]['amount_tax_ret_ir'] += line.base
+                        res[invoice.id]['taxed_ret_ir'] += line.amount
+                elif line.tax_group == 'ice':
+                    res[invoice.id]['amount_ice'] += line.amount
+            #if res[invoice.id]['amount_vat'] == 0 and res[invoice.id]['amount_vat_cero'] == 0:
+            #    res[invoice.id]['amount_vat'] = res[invoice.id]['amount_untaxed']
+
+            res[invoice.id]['amount_total'] = res[invoice.id]['amount_tax'] + res[invoice.id]['amount_untaxed'] \
+                                            + res[invoice.id]['amount_tax_retention'] + res[invoice.id]['amount_ice']
+            res[invoice.id]['amount_pay']  = res[invoice.id]['amount_tax'] + res[invoice.id]['amount_untaxed']
+
         return res
     
     def _get_invoice_tax(self, cr, uid, ids, context=None):
@@ -95,6 +147,7 @@ class account_invoice_line(osv.osv):
     }
 account_invoice_line()
 
+"""
 class account_invoice_tax(osv.osv):
     _inherit = "account.invoice.tax"
     
@@ -154,3 +207,4 @@ class account_invoice_tax(osv.osv):
         return tax_grouped
 
 account_invoice_tax()
+"""

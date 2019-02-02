@@ -2,17 +2,19 @@
 from openerp.osv import fields, osv
 import openerp.addons.decimal_precision as dp
 
+
 class product(osv.Model):
     _inherit = 'product.product'
     
     _columns = {
         # To select the TPVs list where the product will
         # be available...
-        'tpv_list_ids'          : fields.many2many('pos.config', 'my_pos_product_pos_config_rel', 'product_id', 'tpv_id', string='TPVs where the product will be available...', limit=20),
-		'sale_price_ids'      : fields.one2many('product.price', 'product_id', 'Alternative Sale Prices'),
+        'tpv_list_ids'     : fields.many2many('pos.config', 'my_pos_product_pos_config_rel', 'product_id', 'tpv_id', string='TPVs where the product will be available...', limit=20),
+        'sale_price_ids'   : fields.one2many('product.price', 'product_id', 'Alternative Sale Prices'),
     }
 
 product()
+
 
 class product_price(osv.Model):
     _name = 'product.price'
@@ -40,6 +42,7 @@ class product_price(osv.Model):
     }
     
 product_price()
+
 
 class pos_config(osv.Model):
     _inherit = 'pos.config' 

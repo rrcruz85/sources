@@ -135,65 +135,6 @@ openerp.my_pos = function(instance) {
         },
     });
 	
-	/*
-	module.ProductScreenWidget = module.ScreenWidget.extend({
-        template:'ProductScreenWidget',
-
-        scale_screen: 'scale_invite',
-        client_next_screen:  'client_payment',
-
-        show_numpad:     true,
-        show_leftpane:   true,
-
-        start: function(){ //FIXME this should work as renderElement... but then the categories aren't properly set. explore why
-            var self = this;
-            this.product_categories_widget = new module.ProductCategoriesWidget(this,{});
-            this.product_categories_widget.replace($('.placeholder-ProductCategoriesWidget'));
-
-            this.product_list_widget = new module.ProductListWidget(this,{
-                click_product_action: function(product){               	
-                	
-                	if(product.get('to_weight') && self.pos.iface_electronic_scale){
-                        self.pos_widget.screen_selector.set_current_screen(self.scale_screen, {product: product});
-                    }else{
-                        self.pos.get('selectedOrder').addProduct(product);
-                    }
-                },
-            });
-            this.product_list_widget.replace($('.placeholder-ProductListWidget'));
-        },
-
-        show: function(){
-            this._super();
-            var self = this;
-
-            this.product_categories_widget.reset_category();
-
-            this.pos_widget.order_widget.set_numpad_state(this.pos_widget.numpad.state);
-
-            if(this.pos_widget.screen_selector.current_mode === 'client'){ 
-                this.add_action_button({
-                        label: _t('Pay'),
-                        icon: '/point_of_sale/static/src/img/icons/png48/go-next.png',
-                        click: function(){  
-                            self.pos_widget.screen_selector.set_current_screen(self.client_next_screen);
-                        }
-                    });
-            }
-        },
-
-        close: function(){
-            this._super();
-            this.pos_widget.order_widget.set_numpad_state(null);
-            this.pos_widget.payment_screen.set_numpad_state(null);
-            if(this.pos.iface_vkeyboard && this.pos_widget.onscreen_keyboard){
-                this.pos_widget.onscreen_keyboard.hide();
-            }
-        },
-
-    });
-	*/
-	
 	module.PaypadButtonWidget = module.PosBaseWidget.extend({
         template: 'PaypadButtonWidget',
         init: function(parent, options){

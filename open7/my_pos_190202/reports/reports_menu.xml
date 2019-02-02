@@ -4,7 +4,7 @@
 		<report auto="False"
             	id="my_pos_account_invoices"
 	            model="account.invoice"
-	            name="my_pos.account.invoice"
+	            name="my_pos_190202.account.invoice"
 	            rml="my_pos_190202/reports/account_invoice_report.rml"
 	            string="Invoices"
 	            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"

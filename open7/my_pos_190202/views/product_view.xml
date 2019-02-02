@@ -13,7 +13,7 @@
             <field name="inherit_id" ref="product.product_normal_form_view" />
             <field name="arch" type="xml">
 				<data>
-				     <xpath expr="//field[@name='list_price']" position="after">
+				    <xpath expr="//field[@name='list_price']" position="after">
 						 <field name="sale_price_ids" context="{'product_id':active_id}">
 						     <tree editable="bottom" string="Alternative Sale Prices">
 						         <field name ="price"/>

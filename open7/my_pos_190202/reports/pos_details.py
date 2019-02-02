@@ -20,12 +20,11 @@
 ##############################################################################
 import datetime
 import pytz
-import time
 from openerp import tools
 from openerp.report import report_sxw
-from point_of_sale.report import pos_details
+from openerp.addons.point_of_sale.report import pos_details
+from openerp.netsvc import Service
 
-from netsvc import Service
 del Service._services['report.pos.details']
 
 class new_pos_details(pos_details.pos_details):
@@ -224,6 +223,6 @@ class new_pos_details(pos_details.pos_details):
     def __init__(self, cr, uid, name, context=None):
         super(new_pos_details, self).__init__(cr, uid, name, context)
 
-report_sxw.report_sxw('report.pos.details.190909', 'pos.order', 'my_pos_190202/reports/pos_details.rml', parser=new_pos_details, header='internal')
+report_sxw.report_sxw('report.pos.details.190202', 'pos.order', 'my_pos_190202/reports/pos_details.rml', parser=new_pos_details, header='internal')
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

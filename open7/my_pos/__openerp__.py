@@ -12,7 +12,7 @@
     'data': [
         'data/account_journal_data.xml',
         'data/pos_credit_card_data.xml',
-        'views/res_partner_view.xml',
+        #'views/res_partner_view.xml',
         'views/product_view.xml',
         'views/pos_view.xml',
         'views/account_invoice_view.xml',        

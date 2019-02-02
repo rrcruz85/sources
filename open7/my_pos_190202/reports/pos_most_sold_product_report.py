@@ -112,7 +112,7 @@ class MostSoldProductReport(report_rml):
             list_to_delete = []
 
             if user.company_id.logo_web:
-                img_logo_path = modules.get_module_path('my_pos_190202')
+                img_logo_path = modules.get_module_path('my_pos')
                 img_logo_path += '/static/src/img/'
                 img_logo_path = os.path.normpath(img_logo_path)
 

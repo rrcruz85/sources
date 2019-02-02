@@ -1,5 +1,5 @@
 
-openerp.my_pos = function(instance) {
+openerp.my_pos_190202 = function(instance) {
 	var QWeb = instance.web.qweb, _t = instance.web._t;
 	
 	module.ProductListWidget = module.ScreenWidget.extend({
@@ -18,18 +18,15 @@ openerp.my_pos = function(instance) {
                 self.renderElement();
             });
         },
-		
-		addProductAction : function(product){
+        
+        addProductAction : function(product){
         	var self = this;
-        	console.log('Clicked Product:');
-        	console.log(product);
         	
         	if(product.get('to_weight') && self.pos.iface_electronic_scale){
         	     self.pos_widget.screen_selector.set_current_screen(self.scale_screen, {product: product});
             }
         	else{            	 
             	if(product.get('sale_price_ids').length > 0){
-            		console.log('Si 1');
             		/*
             		if($('input[name="'+ product.get('id').toString() +  '"]:checked').length == 0){
             		    //alert(_t('You must select one price for the product ') + product.get('name'));	
@@ -38,8 +35,7 @@ openerp.my_pos = function(instance) {
             		else{
             		*/
             		if($('input[name="'+ product.get('id').toString() +  '"]:checked').length > 0){
-            			console.log('Si 2');
-            			
+                		
             			let productPrice = $('input[name="'+ product.get('id').toString() +  '"]:checked')[0].value;
             			/*
             			//for setting the same price 
@@ -59,7 +55,7 @@ openerp.my_pos = function(instance) {
             	}
             }          
         },
-		
+        
         renderElement: function() {
             var self = this;
             this._super();
@@ -75,16 +71,14 @@ openerp.my_pos = function(instance) {
             
             var products = this.pos.get('products').models || [];
             if (this.pos.get('pos_config').show_all_products) {
-	            for(var i = 0, len = products.length; i < len; i++) {				    
-					
-					let product = null;
+	            for(var i = 0, len = products.length; i < len; i++) {
+	            	
+	            	let product = null;
 		               
 	            	if(products[i].get('sale_price_ids').length > 0){
-	            		console.log('Product1:');	            		  
 	                	product = new module.ProductWidget(self, {model: products[i]});
 	                }
 	            	else{
-	            		console.log('Product2:');
 	            		product = new module.ProductWidget(self, {model: products[i], click_product_action: this.click_product_action});
 	  	            }
 	            	
@@ -92,11 +86,8 @@ openerp.my_pos = function(instance) {
 	                product.appendTo(this.$('.product-list'));
 	                
 	                let p = products[i]; 
-	               
-	                //console.log(p);
-	                
-	                if(p.get('sale_price_ids').length > 0){	  
-	                	              	
+	                if(p.get('sale_price_ids').length > 0){	                	
+	                	               	
 	                	let productId = p.get('id');
 	                	$('input#' + productId.toString() + '-1').click(function(){	                		 
 	                		self.click_product_action(p);	                		 	                	
@@ -117,20 +108,12 @@ openerp.my_pos = function(instance) {
             }
             else {
             	for(var i = 0, len = products.length; i < len; i++) {
-	            	//this.pos.db.get_product_by_id(products[i].id)
 	            	if (products[i].get('tpv_list_ids').indexOf(this.pos.get('pos_config').id) > -1) {
 		                var product = new module.ProductWidget(self, {model: products[i], click_product_action: this.click_product_action});
 		                this.productwidgets.push(product);
 		                product.appendTo(this.$('.product-list'));
-						
-						if(products[i].get('sale_price_ids').length >= 3){
-							
-							console.log('Product2:');
-							/*
-			                console.log(products[i]);
-			                console.log($('input#' + products[i].get('id').toString() + '-1').parent().parent());
-			                */
-							
+		                
+		                if(products[i].get('sale_price_ids').length >= 3){
 		                 	$('input#' + products[i].get('id').toString() + '-1').parent().parent().css("overflow-y", "scroll");
 		 	            }
 	            	}

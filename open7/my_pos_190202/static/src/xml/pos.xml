@@ -449,8 +449,8 @@
 		    </div>
         </div>
     </t>
-	
-	<t t-extend="ProductWidget">  
+
+    <t t-extend="ProductWidget">  
         
         	 <t t-jquery="span.price-tag:first" t-operation="replace">
         	    <t t-if="widget.model.get('sale_price_ids').length &gt; 0">
@@ -474,5 +474,5 @@
         	    </t>
         	 </t>    
 	</t>
-	
+    
 </templates>
