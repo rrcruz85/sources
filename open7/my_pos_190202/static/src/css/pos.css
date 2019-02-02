@@ -1,0 +1,413 @@
+.point-of-sale #topheader {
+    height: 65px;
+}
+
+.point-of-sale #content {
+    top: 65px;
+}
+
+/*
+    Define: PosOrderHeaderWidget CSS
+*/
+.point-of-sale #topheader #rightheader #pos_order_header{
+    height: 32px;
+    border-top: 1px solid #373737;
+}
+
+/*
+    Define: New class for further content
+*/
+.point-of-sale #rightheader .extra-label{
+    float:left;
+    color:#DDD;
+/*    border-right: 1px solid #373737;*/
+    height:100%;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    text-align:center;
+}
+
+.point-of-sale #rightheader .extra-label .extra-text{
+    font-size:15px;
+    font-style:italic;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+}
+
+.point-of-sale #rightheader #customer-name{
+    width:200px;
+}
+.point-of-sale #rightheader #remove-customer-button{
+    width:80px;
+}
+
+/*  ********* Customer PopUp  ********* */
+.point-of-sale .modal-dialog .popup-select-customer{
+    margin-left:0;
+    margin-top:0;
+    left:5%;
+    width: 90%;
+    top:5%;
+    height:90%;
+}
+.point-of-sale .modal-dialog .popup-select-customer .customer-header{
+    height:65px;
+}
+
+.point-of-sale .modal-dialog .popup-select-customer #customer-title{
+/*    text-align:left;*/
+}
+.point-of-sale .modal-dialog .popup-select-customer .customer-searchbox{
+    float:left;
+    top: 20px;
+    position: absolute;
+    left: 10px;
+}
+.point-of-sale .modal-dialog .popup-select-customer #customer-cancel{
+    top: 0px;
+    position: absolute;
+    right: 10px;
+}
+/*  ********* Customer List  ********* */
+
+.point-of-sale .customer-list {
+    padding:10px !important;
+}
+
+.point-of-sale .customer-list-container {
+    position:absolute;
+    top:70px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+}
+
+.point-of-sale .customer-list-scroller{
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+            box-sizing: border-box;
+    width:100%;
+    height:100%;
+    overflow: hidden;
+}
+
+/*  ********* Customer Scrollbar  ********* */
+/*    Fix incorrect display of buttons.*/
+/*    TODO: found why it is necessary and remove top,bottom and left values*/
+.point-of-sale .customer-list-container .scrollbar .up-button{
+    top: -10px;
+    left: -5px;
+}
+.point-of-sale .customer-list-container .scrollbar .down-button {
+    left: -5px;
+    bottom: -5px;
+}
+
+/*  ********* Customer Item ********* */
+
+.point-of-sale .customer {
+    position:relative;
+    vertical-align: top;
+    display: inline-block;
+    font-size: 11px;
+    margin: 5px !important;
+    width: 200px;
+    height:110px;
+    background:#fff;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    overflow: hidden;
+    -webkit-box-shadow: 0px 2px 0px #dad8e4, 0px 1px 8px #636480;
+       -moz-box-shadow: 0px 2px 0px #dad8e4, 0px 1px 8px #636480;
+            box-shadow: 0px 2px 0px #dad8e4, 0px 1px 8px #636480;
+}
+
+.point-of-sale .customer .customer-name,
+        .point-of-sale .customer .customer-id,
+        .point-of-sale .customer .customer-email,
+        .point-of-sale .customer .customer-address,
+        .point-of-sale .customer .customer-phone,
+        .point-of-sale .customer .customer-mobile{
+    position: absolute;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+            box-sizing: border-box;
+
+    text-align:left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: -webkit-linear-gradient(-90deg,rgba(255,255,255,0),rgba(255,255,255,1), rgba(255,255,255,1));
+    background:    -moz-linear-gradient(-90deg,rgba(255,255,255,0),rgba(255,255,255,1), rgba(255,255,255,1));
+    background:     -ms-linear-gradient(-90deg,rgba(255,255,255,0),rgba(255,255,255,1), rgba(255,255,255,1));
+    padding: 3px;
+}
+.point-of-sale .customer .customer-name{
+    font-size: 13px;
+    width:100%;
+    top:0px;
+    height: 20px;
+}
+.point-of-sale .customer .customer-id{
+    width:100%;
+    top:16px;
+    height: 16px;
+}
+.point-of-sale .customer .customer-email{
+    width:100%;
+    top:28px;
+    height: 16px;
+}
+.point-of-sale .customer .customer-img {
+    position: absolute;
+    top: 48px;
+    left: 0px;
+    width: 64px;
+    height: 64px;
+    background: white;
+    text-align: center;
+}
+.point-of-sale .customer .customer-address{
+    width:135px;
+    top:44px;
+    left: 65px;
+    height: 32px;
+}
+.point-of-sale .customer .customer-phone{
+    width:135px;
+    top:76px;
+    left: 65px;
+    height: 16px;
+}
+.point-of-sale .customer .customer-mobile{
+    width:135px;
+    top:92px;
+    left: 65px;
+    height: 16px;
+}
+
+.div_field_x {
+	margin-top: 10px;
+}
+
+.elm_field {
+	float: right;
+	width: 60%;
+}
+
+.client_data_div {
+	font-size: small;
+}
+
+.point-of-sale .pos-payment-container {
+    text-align: left;
+    min-width: 500px;
+    margin-top: 20px;
+    padding: 40px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    box-shadow: 0px 1px 0px white,0px -1px 0px white, 0px 4px 0px #DFDFDF, 0px 10px 30px rgba(0, 0, 0, 0.21);
+}
+
+.point-of-sale .pos-payment-container table {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.point-of-sale .pos-payment-container .header {
+    margin-top: 0px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.point-of-sale button, .point-of-sale a.button {
+    display: inline-block;
+    cursor: pointer;
+    padding: 4px 3px;
+    font-size: 11px;
+    border: 1px solid #cacaca;
+    border-radius: 4px;
+    background: #e2e2e2;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#e2e2e2));
+    background: -moz-linear-gradient(#f0f0f0, #e2e2e2);
+    background: -ms-linear-gradient(#f0f0f0, #e2e2e2);
+    background: linear-gradient(#f0f0f0, #e2e2e2);
+}
+
+.point-of-sale .order .summary .line .subentry {
+    font-size: 10px;
+    font-weight: normal;
+    text-align: right;
+}
+
+.point-of-sale .order .summary .line .iva_subentry {
+	font-size: 10px;
+    font-weight: normal;
+    text-align: right;
+}
+
+.xcv {
+	top: 0px;
+	position: absolute;
+	right: 130px;
+}
+
+.form-key {
+	border-right: 1px solid rgb(167, 151, 151);
+	width: 115px;
+	font-size: medium;
+	vertical-align: middle;
+}
+
+.form-value {
+	padding-left: 10px !important;
+	width: 77%;
+}
+
+.id-number {
+	width: 64%;
+}
+
+.txt {
+	width: 90%;
+}
+
+.form-obligado {
+	padding-left: 5px;
+}
+
+#error-formclient {
+	font-size: small;
+	text-align: left;
+	padding-top: 30px;
+}
+
+.form-button {
+    padding: 10px 20px 10px 20px;
+    text-align: center;
+}
+
+.form-line {
+    padding: 2px 2px 2px 8px;
+    border-bottom: 1px solid #cacaca;
+}
+
+.edit_btn {
+	float: right;
+	z-index: 1;
+	position: inherit;
+	font-size: smaller;
+	color: rgb(124, 123, 173);
+	text-decoration: none !important;
+}
+
+#titre-formclient {
+	padding-bottom: 20px;
+}
+
+.div_card_data {
+	 
+}
+
+.point-of-sale .pos-payment-container {
+    text-align: left;
+    min-width: 500px;
+    margin-top: 20px;
+    padding: 40px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    box-shadow: 0px 1px 0px white,0px -1px 0px white, 0px 4px 0px #DFDFDF, 0px 10px 30px rgba(0, 0, 0, 0.21);
+    overflow-y: auto;
+	max-height: 350px;
+}
+
+.point-of-sale .pos-sale-ticket {
+    text-align: left;
+    width: 300px;
+    background-color: white;
+    margin: 20px;
+    padding: 15px;
+    padding-bottom: 30px;
+    display: inline-block;
+    font-family: "Inconsolata";
+    border-radius: 2px;
+    box-shadow: 0px 1px 0px white, 0px 3px 0px #C1B9D6, 0px 8px 16px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+	max-height: 370px;
+}
+
+.cust-table-head tr {
+	height: 30px;
+}
+
+.cust-table-head {
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgb(0, 0, 0);
+}
+
+.reservation_table td {
+	vertical-align: middle;
+}
+
+.table_header {
+	text-align: center;
+	min-width:100px;
+	vertical-align: middle;
+	height: 40px;
+	background: #cfcfcf;
+}
+
+#label_search_customer{
+    font-size: 14px !important;
+}
+
+#label_search_customer_by_id{
+    font-size: 14px !important;
+}
+
+.btn{
+    height: 20px !important;
+    line-height: 25px !important;
+    margin: 1px 1px 1px 2px !important;
+    width: 20px !important;
+    font-size: 12px !important;
+}
+
+.customer-list-container{
+   top: 100px !important;
+}
+
+.customer-searchbox {
+    top: 60px !important;
+}
+
+#search_customer_by_id{
+    width: 90px !important;
+}
+
+/*Estilo de la bacera del ticket donde sale la fecha y el numero de la orden */
+div.pos-sale-ticket div.pos-right-align {
+    font-size: 15px;
+}
+
+/*Estido de la celda donde sale el numero de unidades*/
+table tbody tr td:nth-child(2).pos-right-align.big-textNum
+{
+    font-size: 14px; !important;
+}
+
+/*Estilo de los numeros*/
+.big-textNum {
+    font-size: 18px; !important;
+}
+
+/*Estilo del resto de los valores numericos*/
+.point-of-sale .pos-right-align {
+    text-align: right; !important;
+    font-size: 18px; !important;
+}
+
+
+
