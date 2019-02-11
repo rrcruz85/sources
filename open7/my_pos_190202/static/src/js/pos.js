@@ -943,12 +943,12 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
                 		if(product.sale_price_ids.length > 0){
 	                		let alternativePrices = [];
 	                		_.each(product.sale_price_ids,function(sale_id) {	                			 
-	                			self.fetch('product.price', ['price'], [['id','=',sale_id]]).then(function(sale_obj){
+	                			self.fetch('product.price', ['name','price'], [['id','=',sale_id]]).then(function(sale_obj){
 	                				alternativePrices.push(sale_obj[0]);
 	                			});
 	                        });
 	                		//alternativePrices.sort((p1, p2) => parseFloat(p1.price) - parseFloat(p2.price));
-	                		product.sale_price_ids = alternativePrices;
+	                		product.sale_price_ids = alternativePrices; 
                 	    }
                     });
                 	

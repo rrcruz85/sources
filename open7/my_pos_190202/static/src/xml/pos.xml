@@ -454,17 +454,18 @@
         
         	 <t t-jquery="span.price-tag:first" t-operation="replace">
         	    <t t-if="widget.model.get('sale_price_ids').length &gt; 0">
-        	        <span class="price-tag">
+        	        <span class="tooltip price-tag">
+        	            <span class="tooltiptext">BBBBBBBBBBBBB dfsdfsdfsdfsfdsfdsfsf</span>
 			    		<t t-esc="widget.format_currency(widget.model.get('price'))"/>
 			    		<input type="radio" t-att-id="widget.model.get('id').toString() + '-1'" t-att-name="widget.model.get('id')" t-att-value="widget.model.get('price')"/>
 			        </span>	
 			        <t t-set="cont" t-value="2"/>
-			        <t t-set="topValue" t-value="'top:' + ((cont - 1) * 30).toString() + 'px !important'"/>
+			        <t t-set="topValue" t-value="'top:' + ((cont - 1) * 30).toString() + 'px !important;text-align:right;'"/>
 			        <span class="price-tag" t-foreach="widget.model.get('sale_price_ids')" t-as="p" t-att-style="topValue">
-			    		<t t-esc="widget.format_currency(p.price)"/>
+			    		<t t-esc="'(' + p.name + ') ' + widget.format_currency(p.price)"/>
 			    		<input type="radio" t-att-id="widget.model.get('id').toString() + '-' + cont.toString()" t-att-name="widget.model.get('id')" t-att-value="p.price"/>
 			            <t t-set="cont" t-value="cont + 1"/>
-			            <t t-set="topValue" t-value="'top:' + ((cont - 1) * 30).toString() + 'px !important'"/>			        
+			            <t t-set="topValue" t-value="'top:' + ((cont - 1) * 30).toString() + 'px !important;text-align:right;'"/>			        
 			        </span>	
         	    </t>        	           	    
         	    <t t-if="widget.model.get('sale_price_ids').length == 0">
