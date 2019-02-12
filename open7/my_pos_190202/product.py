@@ -21,26 +21,21 @@ class product_price(osv.Model):
     _description = 'Product Prices'
     _rec_name = 'price'
     _columns = {
-        'name'         : fields.char('Name', size = 8, required=True, help='Promotion Name'),
+        'name'         : fields.char('Name', size = 7, required=True, help='Promotion Name'),
         'price'        : fields.float('Sale Price', digits_compute = dp.get_precision('Product Price'), help='Alternative Sale Price'),
         'product_id'   : fields.many2one('product.product', 'Product', required=True),
     }
-    
-    def _check_name_length(self, cr, uid, ids, context=None):
-        obj = self.browse(cr, uid, ids[0], context=context)
-        return obj.name and len(obj.name) > 7  
     
     def _check_price(self, cr, uid, ids, context=None):
         obj = self.browse(cr, uid, ids[0], context=context)
         return obj.price > 0  
         
     _constraints = [
-        (_check_name_length, 'La longitud del nombre del precio no puede exceder los 7 caracteres.', []),
         (_check_price, 'El precio del producto debe ser mayor que cero.', []),
     ]
     
     _sql_constraints = [
-        #('name_product_uniq', 'unique(name, product_id)', 'No se pueden repetir los nombres de los precios por producto'),
+        ('name_product_uniq', 'unique(name, product_id)', 'No se pueden repetir los nombres de los precios por producto'),
         ('price_product_uniq', 'unique(price, product_id)', 'No se pueden repetir los precios por producto'),
     ]
     

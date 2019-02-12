@@ -13,7 +13,7 @@
 	            </div>
 	            
 	            <div style="position: absolute; top: 36px; left: 410px; cursor: pointer;">
-	            	<img id="btn-addcust" src="my_pos/static/src/img/add_client.png"/>
+	            	<img id="btn-addcust" src="my_pos_190202/static/src/img/add_client.png"/>
 		            <!-- <span class="placeholder-AddCustomerButton">
 		            	<img class="company_img" src="my_pos/static/src/img/add_client.png"/>
 		            </span> -->
@@ -452,28 +452,39 @@
 
     <t t-extend="ProductWidget">  
         
-        	 <t t-jquery="span.price-tag:first" t-operation="replace">
-        	    <t t-if="widget.model.get('sale_price_ids').length &gt; 0">
-        	        <span class="tooltip price-tag">
-        	            <span class="tooltiptext">BBBBBBBBBBBBB dfsdfsdfsdfsfdsfdsfsf</span>
-			    		<t t-esc="widget.format_currency(widget.model.get('price'))"/>
-			    		<input type="radio" t-att-id="widget.model.get('id').toString() + '-1'" t-att-name="widget.model.get('id')" t-att-value="widget.model.get('price')"/>
-			        </span>	
-			        <t t-set="cont" t-value="2"/>
-			        <t t-set="topValue" t-value="'top:' + ((cont - 1) * 30).toString() + 'px !important;text-align:right;'"/>
-			        <span class="price-tag" t-foreach="widget.model.get('sale_price_ids')" t-as="p" t-att-style="topValue">
-			    		<t t-esc="'(' + p.name + ') ' + widget.format_currency(p.price)"/>
-			    		<input type="radio" t-att-id="widget.model.get('id').toString() + '-' + cont.toString()" t-att-name="widget.model.get('id')" t-att-value="p.price"/>
-			            <t t-set="cont" t-value="cont + 1"/>
-			            <t t-set="topValue" t-value="'top:' + ((cont - 1) * 30).toString() + 'px !important;text-align:right;'"/>			        
-			        </span>	
-        	    </t>        	           	    
-        	    <t t-if="widget.model.get('sale_price_ids').length == 0">
-        	       <span class="price-tag">
-			    		<t t-esc="widget.format_currency(widget.model.get('price'))"/>			    		 
-			       </span>	
-        	    </t>
-        	 </t>    
+    	<t t-jquery="span.price-tag:first" t-operation="replace">
+        	<t t-if="widget.model.get('sale_price_ids').length &gt; 0">
+        		<span class="price-tag" style="font-size:9px !important;">        	             
+        	    	<t t-esc="widget.format_currency(widget.model.get('price'))"/>
+			    	<input type="radio" t-att-id="widget.model.get('id').toString() + '-1'" t-att-name="widget.model.get('id')" t-att-value="widget.model.get('price')"/>
+			    </span>	
+				<t t-set="cont" t-value="2"/>
+				<t t-set="topValue" t-value="'top:' + ((cont - 1) * 30).toString() + 'px !important;font-size:9px !important;'"/>
+			    <span class="price-tag" t-foreach="widget.model.get('sale_price_ids')" t-as="p" t-att-style="topValue">
+			    	<t t-esc="'(' + p.name + ') ' + widget.format_currency(p.price)"/>
+			    	<input type="radio" t-att-id="widget.model.get('id').toString() + '-' + cont.toString()" t-att-name="widget.model.get('id')" t-att-value="p.price"/>
+			        <t t-set="cont" t-value="cont + 1"/>
+			        <t t-set="topValue" t-value="'top:' + ((cont - 1) * 30).toString() + 'px !important;font-size:9px !important;'"/>			        
+			    </span>	
+        	</t>        	           	    
+        	<t t-if="widget.model.get('sale_price_ids').length == 0">
+        		<span class="price-tag">
+			    	<t t-esc="widget.format_currency(widget.model.get('price'))"/>			    		 
+			    </span>	
+        	</t>
+        </t>    
 	</t>
+	
+	<!--  
+	<t t-extend="OrderlineWidget">  
+        
+    	<t t-jquery="span.product-name" t-operation="replace">        	     	           	    
+        	<span class="product-name">
+                <t t-esc="widget.model.get_product().get('name') + widget.model.get_product().get('name_price')"/>
+            </span>     
+        </t>    
+	</t>
+	 -->
+	 
     
 </templates>
