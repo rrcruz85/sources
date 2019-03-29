@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template" xml:space="preserve">
+    
+    <t t-name="AppointmentNotification">
+	    <div class="oe_notification" t-translation="off">
+	    	         
+	        <div id="oe_notification_default">
+	            <a class="ui-notify-cross ui-notify-close" href="#">x</a>
+	            <h1>#{title}</h1>
+	            <p>#{text}</p>
+	        </div>
+	         
+	        <div id="oe_notification_alert" class="ui-state-error">
+	            <a class="ui-notify-cross ui-notify-close" href="#">x</a>
+	            <span style="float:left; margin:2px 5px 0 0;" class="ui-icon ui-icon-alert"></span>
+	            <h1>#{title}</h1>	             
+	            <p>#{text}</p>	             
+	        </div>       
+	      	        	        
+	    </div>
+    </t> 
+    
+</templates>
