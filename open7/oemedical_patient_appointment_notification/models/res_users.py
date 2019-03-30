@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from openerp.osv import osv, fields
 from datetime import datetime
-import dateutil.relativedelta
 
 APPOINTMENT_STATES = [
     ('draft','Draft'),
@@ -35,24 +34,27 @@ class Users(osv.osv):
         obj = self.browse(cr, uid,ids[0])
 
         if obj.enable_appointment_notification and len(obj.appointment_status_ids) > 0:
-            filters = [('appointment_date','>=', datetime.now()),('state', 'in', map(lambda s : s.appointment_state, obj.appointment_status_ids))] 
+            
+            filters = [('appointment_date','>=', str(datetime.now().date())), ('state', 'in', map(lambda s : s.appointment_state, obj.appointment_status_ids))] 
             appointment_ids = self.pool.get('oemedical.appointment').search(cr, uid, filters)
             
             def filter_fnc(state):
                 return filter(lambda r : r[0] == state , APPOINTMENT_STATES)[0][1]
 
             def split_string(string, length):
-                return [string[y-length:y] for y in range(length, length(string) + length , length)]
-
-            records = map(lambda x: (filter_fnc(x.state), x.patient_id.patient_id.name, x.comments), self.pool.get('oemedical.appointment').browse(cr, uid, appointment_ids)) 
+                return [string[y-length:y] for y in range(length, len(string) + length , length)] if string and len(string) > 0 else []
+            
+            records = map(lambda x: (filter_fnc(x.state), x.patient_id.name, str(datetime.strptime(x.appointment_date,"%Y-%m-%d %H:%M:%S").date()) + ' ' + x.appointment_hour + ':' + x.appointment_minute, x.comments), 
+                        self.pool.get('oemedical.appointment').browse(cr, uid, appointment_ids)) 
 
             res = dict.fromkeys(map(lambda x: x[0], records), [])
     
             notification = '<ul>'            
             for k in res.keys():
-                notification += '<li><u>' + k + ':</u>' 
-                notification +=  '<br/>'.join(list(map(lambda x: x[1] + '<br/>'.join(split_string(x[2], 30)), filter(lambda x: x[0] == k, records)))) + '</li>'
-            notification = '</ul>'
+                notification += '<li><u>' + k + ':</u><br/>' 
+                notification +=  '<br/>'.join(list(map(lambda x: '&#10148; Patient: <u>' + x[1] + '</u> [' + x[2] +']<br/>' + '<br/>'.join(split_string(x[3], 40)), 
+                                    filter(lambda x: x[0] == k, records)))) + '</li>'
+            notification += '</ul>'
             
         
         if notification:
