@@ -7,7 +7,7 @@ APPOINTMENT_STATES = [
     ('draft','Draft'),
     ('confirm', 'Confirm'),
     ('waiting', 'Waiting'),
-    ('in_consultation', 'In consultation'),
+    ('in_consultation', 'In Consultation'),
     ('done', 'Done'),
     ('canceled', 'Canceled')
 ]
@@ -34,9 +34,13 @@ class Users(osv.osv):
         notification = ''
         obj = self.browse(cr, uid,ids[0])
 
-        if obj.enable_appointment_notification and len(obj.appointment_status_ids) > 0:
+        if obj.enable_appointment_notification:
             
-            filters = [('appointment_date','>=', str(datetime.now().date())), ('state', 'in', map(lambda s : s.appointment_state, obj.appointment_status_ids))] 
+            filters = [('appointment_date','>=', str(datetime.now().date()))] 
+          
+            if len(obj.appointment_status_ids) > 0:
+                filters.append(('state', 'in', map(lambda s : s.appointment_state, obj.appointment_status_ids))) 
+            
             appointment_ids = self.pool.get('oemedical.appointment').search(cr, uid, filters)
             
             def filter_fnc(state):
@@ -50,11 +54,12 @@ class Users(osv.osv):
 
             res = dict.fromkeys(map(lambda x: x[0], records), [])
     
+            patient = _('Patient')
+            
             notification = '<ul id="notifList">'            
             for k in res.keys():
-                notification += '<li><u>' + k + ':</u><br/>' 
-                notification +=  '<br/>'.join(list(map(lambda x: '&#10148; Patient: <u id="' + str(x[1]) + '">' + x[2] + '</u> [' + x[3] +']<br/>' + '<br/>'.join(split_string(x[4], 40)), 
-                                    filter(lambda x: x[0] == k, records)))) + '</li>'
+                notification += '<li><u>' + _(k) + ':</u><br/>' 
+                notification +=  '<br/>'.join(list(map(lambda x: '&#10148; ' + patient +': <u style="cursor:pointer" onclick="showAppointment(' + str(x[1]) +')" id="' + str(x[1]) + '">' + x[2] + '</u> [' + x[3] +']<br/>' + '<br/>'.join(split_string(x[4], 40)), filter(lambda x: x[0] == k, records)))) + '</li>'
             notification += '</ul>'
             
         

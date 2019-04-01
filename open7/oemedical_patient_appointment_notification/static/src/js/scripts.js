@@ -70,30 +70,7 @@ openerp.oemedical_patient_appointment_notification = function(instance) {
 		}
 	};
 	
-	instance.web.client_actions.add("notify.appointment", "instance.web.action_notify_appointment"); 
-	
-	instance.loading_appointmet_config = function(){
-		var self = this;
-		
-		if(!instance.session.uid){
-			return;
-		}
-		
-		if(!instance.user_appointment_conf){			 
-			 
-			new instance.web.Model("res.users").call("read",[[result.uid],['enable_appointment_notification','show_every_appointment_notification','show_unit_time_appointment_notification']])
-			.then(function(resp) {
-				 
-				if(resp && resp.length > 0){
-					instance.user_appointment_conf = {
-						enable_notification : resp[0].enable_appointment_notification,
-						show_every : resp[0].show_every_appointment_notification,
-						show_unit_time : resp[0].show_unit_time_appointment_notification
-					}					
-				} 
-			});			
-	    }	
-	};
+	instance.web.client_actions.add("notify.appointment", "instance.web.action_notify_appointment");
 	
 	instance.web.Session.include({
 	    
@@ -101,9 +78,20 @@ openerp.oemedical_patient_appointment_notification = function(instance) {
 	        var self = this;
 	        return this.rpc("/web/session/get_session_info", {}).done(function(result) {
 				
-				if(!instance.user_appointment_conf){
-					instance.loading_appointmet_config();
-				}
+	        	if(result.uid && !instance.user_appointment_conf){
+	        		
+	        		new instance.web.Model("res.users").call("read",[[result.uid],['enable_appointment_notification','show_every_appointment_notification','show_unit_time_appointment_notification']])
+	    			.then(function(resp) {
+	    				
+	    				if(resp && resp.length > 0){
+	    					instance.user_appointment_conf = {
+	    						enable_notification : resp[0].enable_appointment_notification,
+	    						show_every : resp[0].show_every_appointment_notification,
+	    						show_unit_time : resp[0].show_unit_time_appointment_notification
+	    					} 
+	    				} 
+	    			});		
+	            }
 	        	
 	            _.extend(self, result);
 	        });
@@ -219,5 +207,23 @@ openerp.oemedical_patient_appointment_notification = function(instance) {
             return this._super(view_type, no_store, view_options); 
         },
     });
+	
+	showAppointment = function(id){
+		
+		$('div.ui-state-error.ui-notify-message.ui-notify-message-style').css('display','none');
+		
+		var action = {
+                type: 'ir.actions.act_window',
+                res_model: 'oemedical.appointment',
+                view_mode: 'form',
+                res_id: id,
+                view_type: 'form',
+                views: [[false, 'form']],
+                target: 'current',
+                context: {},
+        };
+        
+		instance.client.action_manager.do_action(action);
+	}; 
 };
 
