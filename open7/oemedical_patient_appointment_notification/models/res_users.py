@@ -64,7 +64,7 @@ class Users(osv.osv):
                 'tag'     : 'notify.appointment',  
                 'context' : context,
                 'params'  : {
-                               'title'  : _('Appointment Notifications'),
+                               'title'  : _('Appointment Notes'),
                                'text'   : notification,
                                'sticky' : True                                      
                             }

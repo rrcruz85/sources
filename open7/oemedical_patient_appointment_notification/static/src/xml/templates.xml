@@ -25,7 +25,7 @@
         
         <t t-jquery="div.oe_calendar_filter" t-operation="before">
         	<div class="btn-appointment-notif">
-                <span style="vertical-align: middle;">Show Appointment States</span>
+                <span style="vertical-align: middle;">Show Appointment Notes</span>
             </div>   
         </t>    
 	</t>

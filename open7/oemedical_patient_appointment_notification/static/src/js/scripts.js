@@ -53,7 +53,7 @@ openerp.oemedical_patient_appointment_notification = function(instance) {
 						instance.client.do_warn(result.params.title, result.params.text, true);
 					}
 					else{
-						instance.client.do_notify(_t('Appointment Notifications'), _t('No appointment were found after or in the current date.'), true);
+						instance.client.do_notify(_t('Appointment Notes'), _t('No appointment notes were found after or in the current date.'), true);
 					}
 		    	});
 		}
