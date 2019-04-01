@@ -19,6 +19,15 @@
 	        </div>       
 	      	        	        
 	    </div>
-    </t> 
+    </t>
     
+    <t t-extend="CalendarView.sidebar">  
+        
+        <t t-jquery="div.oe_calendar_filter" t-operation="before">
+        	<div class="btn-appointment-notif">
+                <span style="vertical-align: middle;">Show Appointment States</span>
+            </div>   
+        </t>    
+	</t>
+        
 </templates>

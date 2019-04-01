@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from openerp.osv import osv, fields
 from datetime import datetime
+from openerp.tools.translate import _
 
 APPOINTMENT_STATES = [
     ('draft','Draft'),
     ('confirm', 'Confirm'),
-    ('waiting', 'Wating'),
+    ('waiting', 'Waiting'),
     ('in_consultation', 'In consultation'),
     ('done', 'Done'),
     ('canceled', 'Canceled')
@@ -44,15 +45,15 @@ class Users(osv.osv):
             def split_string(string, length):
                 return [string[y-length:y] for y in range(length, len(string) + length , length)] if string and len(string) > 0 else []
             
-            records = map(lambda x: (filter_fnc(x.state), x.patient_id.name, str(datetime.strptime(x.appointment_date,"%Y-%m-%d %H:%M:%S").date()) + ' ' + x.appointment_hour + ':' + x.appointment_minute, x.comments), 
+            records = map(lambda x: (filter_fnc(x.state), x.id, x.patient_id.name, str(datetime.strptime(x.appointment_date,"%Y-%m-%d %H:%M:%S").date()) + ' ' + x.appointment_hour + ':' + x.appointment_minute, x.comments), 
                         self.pool.get('oemedical.appointment').browse(cr, uid, appointment_ids)) 
 
             res = dict.fromkeys(map(lambda x: x[0], records), [])
     
-            notification = '<ul>'            
+            notification = '<ul id="notifList">'            
             for k in res.keys():
                 notification += '<li><u>' + k + ':</u><br/>' 
-                notification +=  '<br/>'.join(list(map(lambda x: '&#10148; Patient: <u>' + x[1] + '</u> [' + x[2] +']<br/>' + '<br/>'.join(split_string(x[3], 40)), 
+                notification +=  '<br/>'.join(list(map(lambda x: '&#10148; Patient: <u id="' + str(x[1]) + '">' + x[2] + '</u> [' + x[3] +']<br/>' + '<br/>'.join(split_string(x[4], 40)), 
                                     filter(lambda x: x[0] == k, records)))) + '</li>'
             notification += '</ul>'
             
@@ -63,7 +64,7 @@ class Users(osv.osv):
                 'tag'     : 'notify.appointment',  
                 'context' : context,
                 'params'  : {
-                               'title'  : 'Appointment Notifications',
+                               'title'  : _('Appointment Notifications'),
                                'text'   : notification,
                                'sticky' : True                                      
                             }

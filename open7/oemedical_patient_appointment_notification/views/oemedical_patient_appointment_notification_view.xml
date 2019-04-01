@@ -13,9 +13,11 @@
                          <page string="Appointment Notifications">
 	                        <group col="4" colspan="4"> 
 		                 	    <field name="enable_appointment_notification"/>
-                                <newline/>
+		                 	    <!-- 
+                                <newline/>                              
 		                 	    <field name="show_every_appointment_notification" required="1"/>
 		                 	    <field name="show_unit_time_appointment_notification" required="1"/>
+		                 	     -->
 		                 	    <separator colspan="4" string="Appointment States"/>
 		                 	    <field name="appointment_status_ids" nolabel="1" colspan="4" context="{'user_id': active_id}">
                                     <tree editable="top" string="States">
