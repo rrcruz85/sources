@@ -74,7 +74,7 @@ Gestion de pedidos de mercaderia
 
     ],
     'js': [
-        'static/src/js/scripts.js',
+
     ],
     'qweb': [
 

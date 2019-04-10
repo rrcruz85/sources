@@ -23,47 +23,54 @@ class pedido_cliente(osv.osv):
             self.pool.get('detalle.lines.box').unlink(cr,uid,lines)
         
         for d_id in ids:
-            cr.execute( "SELECT "+
-                        "pedido_cliente.id as pedido_id,"+
-                        "detalle_lines.type,"+
-                        "detalle_lines.supplier_id,"+
-                        "detalle_lines.product_id,"+
-                        "detalle_lines.variant_id,"+
-                        "detalle_lines.lengths as lenght,"+
-                        "detalle_lines.qty as purchased_qty,"+
-                        "detalle_lines.purchase_price::varchar purchase_price,"+
-                        "detalle_lines.sale_price::varchar sale_price,"+
-                        "case when detalle_lines.is_box_qty then detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box * detalle_lines.purchase_price else detalle_lines.qty * detalle_lines.purchase_price end as farm_total,"+
-                        "case when detalle_lines.is_box_qty then detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box * detalle_lines.sale_price else detalle_lines.qty * detalle_lines.sale_price end as total,"+
-                        "case when detalle_lines.is_box_qty then (detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box) * (detalle_lines.sale_price - detalle_lines.purchase_price) else detalle_lines.qty * (detalle_lines.sale_price - detalle_lines.purchase_price) end as profit,"+
-                        "detalle_lines.origin as origin_id,"+
-                        "detalle_lines.sucursal_id as sucursal_id,"+
-                        "detalle_lines.subclient_id as subclient_id,"+
-                        "detalle_lines.id as detalle_id,"+
-                        "detalle_lines.bunch_type as bunch_type,"+
-                        "detalle_lines.bunch_per_box as bunch_per_box,"+
-                        "detalle_lines.uom as uom,"+
-                        "request_product_variant.line,"+                        
-                        "case when detalle_lines.is_box_qty then detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box else detalle_lines.qty end as stems," +
-                        "detalle_lines.name as linenumber,"+ 
-                        "detalle_lines.box_id as box_id,"+  
-                        "detalle_lines.id as id "+          
-                        "FROM "+
-                        "public.detalle_lines,"+
-                        "public.request_product_variant,"+
-                        "public.pedido_cliente "+
-                        "WHERE "+
-                        "detalle_lines.active = True AND "+
-                        "detalle_lines.pedido_id = pedido_cliente.id "+
-                        "AND detalle_lines.line_id = request_product_variant.id "+
-                        "AND pedido_cliente.id = %s " +
-                        "order by " +
-                        "request_product_variant.line ", (d_id,))
-
+            """
+            cr.execute( SELECT pedido_cliente.id as pedido_id,
+                        detalle_lines.type,
+                        detalle_lines.supplier_id,
+                        detalle_lines.product_id,
+                        detalle_lines.variant_id,
+                        detalle_lines.lengths as lenght,
+                        detalle_lines.qty as purchased_qty,
+                        detalle_lines.purchase_price::varchar purchase_price,
+                        detalle_lines.sale_price::varchar sale_price,
+                        case when detalle_lines.is_box_qty and detalle_lines.qty >= 1.00 then detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box * detalle_lines.purchase_price 
+                        when detalle_lines.is_box_qty and detalle_lines.qty < 1 then detalle_lines.bunch_type::int * detalle_lines.bunch_per_box * detalle_lines.purchase_price else detalle_lines.qty * detalle_lines.purchase_price end as farm_total,
+                        case when detalle_lines.is_box_qty and detalle_lines.qty >= 1.00 then detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box * detalle_lines.sale_price 
+                        when detalle_lines.is_box_qty and detalle_lines.qty < 1.00 then detalle_lines.bunch_type::int * detalle_lines.bunch_per_box * detalle_lines.sale_price else detalle_lines.qty * detalle_lines.sale_price end as total,
+                        case when detalle_lines.is_box_qty and detalle_lines.qty >= 1.00 then (detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box) * (detalle_lines.sale_price - detalle_lines.purchase_price) 
+                        when detalle_lines.is_box_qty and detalle_lines.qty < 1.00 then (detalle_lines.bunch_type::int * detalle_lines.bunch_per_box) * (detalle_lines.sale_price - detalle_lines.purchase_price) else detalle_lines.qty * (detalle_lines.sale_price - detalle_lines.purchase_price) end as profit,
+                        detalle_lines.origin as origin_id,
+                        detalle_lines.sucursal_id as sucursal_id,
+                        detalle_lines.subclient_id as subclient_id,
+                        detalle_lines.id as detalle_id,
+                        detalle_lines.bunch_type as bunch_type,
+                        detalle_lines.bunch_per_box as bunch_per_box,
+                        detalle_lines.uom as uom,
+                        request_product_variant.line,
+                        case when detalle_lines.is_box_qty and detalle_lines.qty >= 1.00 then detalle_lines.qty * detalle_lines.bunch_type::int * detalle_lines.bunch_per_box 
+                        when detalle_lines.is_box_qty and detalle_lines.qty > 1.00 then detalle_lines.bunch_type::int * detalle_lines.bunch_per_box else detalle_lines.qty end as stems,
+                        detalle_lines.name as linenumber, 
+                        detalle_lines.box_id as box_id,  
+                        detalle_lines.id as id           
+                        FROM 
+                        public.detalle_lines,
+                        public.request_product_variant,
+                        public.pedido_cliente 
+                        WHERE 
+                        detalle_lines.active = true AND 
+                        detalle_lines.pedido_id = pedido_cliente.id 
+                        AND detalle_lines.line_id = request_product_variant.id 
+                        AND pedido_cliente.id = %s 
+                        order by 
+                        detalle_lines.name , (d_id,))
+            """
+            cr.execute( "SELECT * from detalle_lines_pedido where pedido_id = %s", (d_id,))
             result = cr.fetchall()
             list_ids = []
             line_number = 1
             for record in result:
+                if record[23] in (5380,5388,5413,5417,5426,5429,5446,5374):
+                    print record
                 cr.execute("SELECT " +
                            "sum((case when is_box_qty then box_qty * bunch_type::int * bunch_per_box else tale_qty end))" +
                            "from PUBLIC.request_product_variant as v " +
@@ -71,8 +78,8 @@ class pedido_cliente(osv.osv):
                            "v.pedido_id = %s and " +
                            "v.product_id = %s and " +
                            "v.variant_id = %s " , (d_id, record[3], record[4],))
-                result = cr.fetchone()
-                request_qty = result[0]
+                result1 = cr.fetchone()
+                request_qty = result1[0]
                 
                 if record[21] and line_number != int(record[21]):
                     self.pool.get('detalle.lines').write(cr, uid, [record[23]],{'name': str(line_number)})                    
@@ -110,27 +117,31 @@ class pedido_cliente(osv.osv):
 
     def _get_summary_lines(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-            
+
         lines = self.pool.get('detalle.lines').search(cr,uid,[('active','=',False)])
         if lines:
             self.pool.get('detalle.lines').unlink(cr,uid,lines)
-            
-        list_ids = []       
+
+        list_ids = []
         for pedido_id in ids:
-            cr.execute(""" 
+            cr.execute("""
                 SELECT
-                    dl.supplier_id,  
-                    dl.subclient_id,                              
-                    sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
-                    sum(case when dl.is_box_qty = TRUE then dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price else dl.qty * dl.sale_price end) as total
+                    dl.supplier_id,
+                    dl.subclient_id,
+                    sum(case when dl.is_box_qty = TRUE and dl.qty < 1 then dl.bunch_per_box * dl.bunch_type::int  
+                    when dl.is_box_qty = TRUE and dl.qty >= 1.00 then dl.qty * dl.bunch_per_box * dl.bunch_type::int 
+                    when dl.is_box_qty = FALSE and dl.qty < 1.00 then dl.bunch_per_box * dl.bunch_type::int else dl.qty end) as stems,
+                    sum(case when dl.is_box_qty = TRUE and dl.qty < 1 then dl.bunch_per_box * dl.bunch_type::int * dl.sale_price 
+                    when dl.is_box_qty = TRUE and dl.qty >= 1.00 then dl.qty * dl.bunch_per_box * dl.bunch_type::int * dl.sale_price 
+                    when dl.is_box_qty = FALSE and dl.qty < 1.00 then dl.bunch_per_box * dl.bunch_type::int * dl.sale_price else dl.qty * dl.sale_price end) as total
                     from
-                    detalle_lines dl                                
+                    detalle_lines dl
                     inner join res_partner pp on dl.subclient_id = pp."id"
                     where dl.pedido_id = %s and dl.active = True
-                    GROUP BY dl.supplier_id, dl.subclient_id  
+                    GROUP BY dl.supplier_id, dl.subclient_id
                     order by dl.supplier_id """, (pedido_id,))
             lines = cr.fetchall()
-            for record in lines:                
+            for record in lines:
                 l_ids = self.pool.get('detalle.lines').search(cr, uid, [('pedido_id','=',pedido_id),('supplier_id','=',record[0]),('subclient_id','=',record[1])])
                 tmp_lines = self.pool.get('detalle.lines').read(cr, uid, l_ids, ['bunch_per_box','uom','bunch_type','box_id','is_box_qty','qty'])
                 total_hb = 0
@@ -139,22 +150,28 @@ class pedido_cliente(osv.osv):
                     if l['box_id'] and l['box_id'][0] :
                         filtered = filter(lambda a: a['box_id'] and a['box_id'][0] == l['box_id'][0], tmp_lines)
                         total_group = sum(map(lambda a: a['bunch_per_box'], filtered))
-                        percent = float(l['bunch_per_box'])/total_group if total_group else 0                        
+                        if l['is_box_qty']:
+                            percent = l['qty']
+                        else:
+                            percent = float(l['bunch_per_box'])/total_group if total_group else 0
                     else:
-                        percent = float(l['qty']/(l['bunch_per_box'] * l['bunch_type'])) if l['bunch_per_box'] * l['bunch_type'] else 0
+                        if l['is_box_qty']:
+                            percent = l['qty']
+                        else:
+                            percent = float(l['qty']/(l['bunch_per_box'] * l['bunch_type'])) if l['bunch_per_box'] * l['bunch_type'] else 0
                     total_hb += percent if l['uom'] == 'HB' else 0
                     total_qb += percent if l['uom'] == 'QB' else 0
-                                                
+
                 vals = {
-                    'pedido_id'     : pedido_id,                  
+                    'pedido_id'     : pedido_id,
                     'farm_id'       : record[0],
                     'subclient_id'  : record[1],
                     'hb'            : total_hb,
-                    'qb'            : total_qb, 
+                    'qb'            : total_qb,
                     'box'           : total_hb/2 + total_qb/4,
                     'stems'         : record[2],
-                    'total_sale'    : record[3]                                               
-                }                
+                    'total_sale'    : record[3]
+                }
                 list_ids.append(self.pool.get('summary.by.farm.wizard').create(cr,uid,vals))
             res[pedido_id] = list_ids
         return res
@@ -199,9 +216,9 @@ class pedido_cliente(osv.osv):
         'airline_id'            : fields.many2one('pedido_cliente.airline', string='Airline'),
         'number'                : fields.char('Flight Number', size = 16),
         'precio_flete'          : fields.float('Precio Flete', digits = (0,2)),
-        'sale_request_id'       : fields.many2one('sale.request', 'Sale Request'),       
+        'sale_request_id'       : fields.many2one('sale.request', 'Sale Request'),
     }
-   
+
     def name_get(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -216,28 +233,28 @@ class pedido_cliente(osv.osv):
             else:
                 res.append((record.id, record.partner_id.name))
         return res
-     
+
     def fields_view_get(self, cr, uid, view_id=None, view_type='tree', context=None, toolbar=False, submenu=False):
         if context is None:
             context = {}
         res = super(pedido_cliente, self).fields_view_get(cr, uid, view_id=view_id, view_type=view_type, context=context, toolbar=toolbar,submenu=False)
-        
+
         if view_type == 'tree':
             line_ids = self.pool.get('summary.by.farm.wizard').search(cr, uid,[])
             self.pool.get('summary.by.farm.wizard').unlink(cr, uid,line_ids)
-            
+
             lines = self.pool.get('purchase.lines.wzd').search(cr,uid,[])
             if lines:
                 self.pool.get('purchase.lines.wzd').unlink(cr,uid,lines)
-        
+
             lines = self.pool.get('detalle.lines').search(cr,uid,[('active','=',False)])
             if lines:
                 self.pool.get('detalle.lines').unlink(cr,uid,lines)
-            
+
             lines = self.pool.get('detalle.lines.box').search(cr,uid,[('active','=',False)])
             if lines:
                 self.pool.get('detalle.lines.box').unlink(cr,uid,lines)
-        
+
         return res
 
     def on_change_partner(self, cr, uid, ids, partner_id, context=None):
@@ -252,7 +269,7 @@ class pedido_cliente(osv.osv):
         'state'        : 'draft',
         'name'         : 1,
         'request_date' : time.strftime('%Y-%m-%d'),
-        'type'         : 'open_market'        
+        'type'         : 'open_market'
     }
 
     def _check_tipo_flete(self, cr, uid, ids, context=None):
@@ -274,7 +291,7 @@ class pedido_cliente(osv.osv):
         if not context:
             context = {}
         context['default_pedido_id'] = ids[0]
-       
+
         return {
             'name'      : _('Print report'),
             'view_type' : 'form',
@@ -285,39 +302,39 @@ class pedido_cliente(osv.osv):
             'view_id'   : '',
             'context'   : context
         }
-        
+
     def group_lines(self, cr, uid, ids, context=None):
         if not context:
-            context = {}        
-        
-        cr.execute("select dl.id, dl.box_id, dl.name, pl.id  from detalle_lines dl left join purchase_lines_wzd pl on dl.name::int = pl.line_number " + 
+            context = {}
+
+        cr.execute("select dl.id, dl.box_id, dl.name, pl.id  from detalle_lines dl left join purchase_lines_wzd pl on dl.name::int = pl.line_number " +
                    "where dl.pedido_id = %s and dl.box_id is not null order by dl.box_id",(ids[0],))
-        
+
         records = cr.fetchall()
         keys = set(map(lambda r: r[1], records))
         selected_lines = []
-        for key in keys:             
+        for key in keys:
             selected_lines += map(lambda r: r[2] if r[2] else '', filter(lambda r: r[1] == key, records))
-        
-        cr.execute("select max(dlb.box) from detalle_lines dl inner join detalle_lines_box dlb on dl.box_id = dlb.id " + 
+
+        cr.execute("select max(dlb.box) from detalle_lines dl inner join detalle_lines_box dlb on dl.box_id = dlb.id " +
                    "where dl.pedido_id = %s",(ids[0],))
-        
+
         group = cr.fetchone()
         group_id = 1
         if group and group[0]:
             group_id = group[0] + 1
-        
+
         context['default_pedido_id'] = ids[0]
         context['default_box'] = group_id
         context['default_lines_selected'] = ','.join(selected_lines)
-        
+
         return {
             'name'      : _('Group lines per Box'),
             'view_type' : 'form',
             "view_mode" : 'form',
             'res_model' : 'group.box.wizard',
             'type'      : 'ir.actions.act_window',
-            'target'    : 'new',           
+            'target'    : 'new',
             'context'   : context
         }
 
@@ -338,7 +355,9 @@ class request_product_variant(osv.osv):
 
             if purchased_ids:
                 purchased_lines = self.pool.get('detalle.lines').browse(cr,uid, purchased_ids)
-                lines = [p.qty * int(p.bunch_type) * p.bunch_per_box if p.is_box_qty else p.qty  for p in purchased_lines]
+                lines = [p.qty * int(p.bunch_type) * p.bunch_per_box if p.is_box_qty and p.qty >= 1.00 
+                         else int(p.bunch_type) * p.bunch_per_box if p.is_box_qty and p.qty < 1.00
+                         else int(p.bunch_type) * p.bunch_per_box if not p.is_box_qty and p.qty < 1.00 else p.qty for p in purchased_lines]
 
             purchased_qty = sum(lines) if lines else 0
             request_qty = obj.box_qty * obj.bunch_per_box * int(obj.bunch_type) if obj.is_box_qty else obj.tale_qty
@@ -437,13 +456,13 @@ class request_product_variant(osv.osv):
 
     _defaults = {
         'bunch_per_box'    :  10,
-        'type'             : 'open_market',
-        'bunch_type'       :  25,
+        'type'              : 'open_market',
+        'bunch_type'   :  25,
 		'uom'              :  'HB',
-        'product_id'       :  lambda self, cr, uid, context : context['product_id'] if context and 'product_id' in context else None,
-        'pedido_id'        :  lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else None,
-        'line'             : get_default_line_number,
-        'cliente_id'       :  get_client,
+        'product_id'     :  lambda self, cr, uid, context : context['product_id'] if context and 'product_id' in context else None,
+        'pedido_id'      :  lambda self, cr, uid, context : context['pedido_id'] if context and 'pedido_id' in context else None,
+        'line'               : get_default_line_number,
+        'cliente_id'   :  get_client,
     }
 
     def on_change_variant(self, cr, uid, ids, variant_id, context=None):
@@ -527,7 +546,7 @@ class request_product_variant(osv.osv):
 
         vals = self._get_info(cr,uid, ids, '', [])
         lengths = [(0,0,{'length': l.length, 'purchase_price': 0})for l in obj.length_ids]
-       
+
         #Buscando Proveedores
         farm_ids = []
         l_ids = self.pool.get('purchase.request.template').search(cr,uid,[('client_id','=',obj.pedido_id.partner_id.id)])
@@ -608,7 +627,10 @@ request_product_variant_length()
 class detalle_line(osv.osv):
     _name = 'detalle.lines'
     _description = 'Lineas de compras'
-    
+
+#    def create(self, cr, uid, vals, context=None):
+#        super(detalle_line, self).create(cr, uid, vals, context=context)
+
     def name_get(self, cr, uid, ids, context=None):
         if context is None:
             context = {}

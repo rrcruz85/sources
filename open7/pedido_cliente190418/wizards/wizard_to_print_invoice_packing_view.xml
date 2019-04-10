@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+		<!-- ======================================================================================
+		WIZARD TO PRINT REPORTS
+		Model: pedido_cliente.wizard_to_print_report
+		=========================================================================================== -->
+		
+		<!-- FORM VIEW -->
+		<record id="pedido_cliente_wizard_to_print_report_view_form" model="ir.ui.view">
+            <field name="name">pedido_cliente_wizard_to_print_report_view_form</field>
+            <field name="model">pedido_cliente.wizard_to_print_report</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+            	<form string="Wizard to print..." version="7.0">
+            		<sheet>
+						<group>
+						    <field name="report"/>
+                        </group>
+
+                        <group>
+	            			<field name="make_by"/>
+	            			<field name="served_by"/>
+	            			<field name="gross_weight"/>
+							<field name="pedido_id" invisible="1"/>
+	            		</group>
+	            		
+	            		<footer>
+                        	<button name="action_print" string="Imprimir..." type="object" class="oe_highlight"/>
+	            		</footer>
+            		</sheet>
+            	</form>
+            </field>
+        </record>
+	</data>
+</openerp>

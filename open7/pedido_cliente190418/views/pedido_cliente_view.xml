@@ -111,7 +111,7 @@
                             <field name="full_boxes"/>
                         </form>
                     </field>
-                    <newline/>                    
+                    <newline/>
                     <h2>Purchased Lines</h2>
                     <button name="group_lines" string="Group Lines per Box" type="object" class="oe_link"/>
 	    	        <field name="line_ids"/>

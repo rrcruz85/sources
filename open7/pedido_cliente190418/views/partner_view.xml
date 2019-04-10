@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+        Partner
+        model: res.partner
+        -->
+        
+        <!-- FORM VIEW -->
+        <record id="pedido_cliente_partner_view_form" model="ir.ui.view">
+            <field name="name">pedido_cliente_partner_view_form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+            	<data>
+	                <xpath expr="//page[@string='Contacts']" position="before">
+	                    <field name="id" invisible="1"/>
+                        <newline/>
+                        <page string='Plantillas de Compras'  attrs="{'invisible': ['|',('supplier', '=', False),('customer', '=', True)]}">
+                            <field name='purchase_template_ids'   context="{'partner_id':active_id}">
+                                <tree>
+                                    <field name="client_id" />
+                                    <field name="periodicidad"/>
+                                    <field name="products"/>
+                                    <field name="sucursal_id"/>
+                                </tree>
+                                <form>
+                                    <h2>Generar todos los</h2>
+                                    <group colspan="8" col="8">
+                                        <field name="lunes"/>
+                                        <field name="martes"/>
+                                        <field name="miercoles"/>
+                                        <field name="jueves"/>
+                                        <newline/>
+                                        <field name="viernes"/>
+                                        <field name="sabado"/>
+                                        <field name="domingo"/>
+                                    </group>
+                                    <newline/>
+                                    <h2>Información del pedido</h2>
+                                    <group colspan="8" col="6">
+                                        <field name="client_id" required="1" domain="[('customer','=',True)]"/>
+                                         <newline/>
+                                        <field name="variant_ids"  context="{'template_id': active_id,'cliente_id': client_id}">
+                                            <tree>
+                                                <field name="product_id"/>
+                                                <field name="variant_id"/>
+                                                <field name="lenghts"/>
+                                                <field name="str_purchase_price"/>
+                                                <field name="request_qty"/>
+                                                <field name="is_box_qty"/>
+                                                <field name="bunch_per_box"/>
+                                                <field name="bunch_type"/>
+                                                <field name="uom"/>
+                                                <field name="bxs_qty"/>
+                                                <field name="full_boxes"/>
+                                                <field name="subclient_id"/>
+                                            </tree>
+                                            <form>
+                                                <field name="cliente_id" invisible="1"/>
+                                                <field name="product_id" required="1"/>
+                                                <newline/>
+                                                <field name="variant_id" required="1"  domain="[('product_id', '=', product_id)]"/>
+                                                <newline/>
+                                                <field name="length_ids" context="{ 'variant_id': variant_id}">
+                                                    <tree string="Length" editable="bottom">
+                                                        <field name="variant_id" invisible="1"/>
+                                                        <field name="length" required="1"/>
+                                                        <field name="purchase_price"/>
+                                                    </tree>
+                                                    <form string="Length">
+                                                        <field name="variant_id" invisible="1"/>
+                                                        <field name="length"/>
+                                                        <field name="purchase_price"/>
+                                                    </form>
+                                                </field>
+                                                <newline/>
+                                                <field name="is_box_qty"
+                                                       on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                                                <newline/>
+                                                <field name="box_qty"
+                                                       attrs="{'invisible': [('is_box_qty', '=', False)]}"
+                                                       on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                                                <field name="tale_qty"
+                                                       attrs="{'invisible': [('is_box_qty', '=', True)]}"
+                                                       on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                                                <field name="bunch_per_box" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                                                <field name="uom" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                                                <field name="bunch_type" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+                                                <newline/>
+                                                <field name="stimated_stems" attrs="{'invisible': [('is_box_qty', '=', False)]}"/>
+                                                <newline/>
+                                                <field name="bxs_qty"/>
+                                                <newline/>
+                                                <field name="full_boxes"/>
+                                                <newline/>
+                                                <field name="subclient_id" domain="[('customer','=', True)]" context="{'default_supplier': False, 'default_customer': True,'subcliente_de': cliente_id}"/>
+                                            </form>
+                                        </field>
+                                        <newline/>
+                                        <field name="sucursal_id"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string='Plantilla de Ventas'  attrs="{'invisible': [('customer', '=', False),('supplier', '=', True)]}">
+                            <field name='sale_request_ids' context="{'partner_id':active_id}">
+	                            <tree>
+                                    <field name="periodicidad"/>
+                                    <field name="products"/>
+                                    <field name="freight_agency_id"/>
+                                    <field name="days"/>
+                                </tree>
+                                <form>
+                                    <field name ="partner_id" invisible="1"/>
+                                    <h2>Generar todos los</h2>
+                                    <group colspan="8" col="8">
+                                         <field name="lunes"/>
+                                         <field name="martes"/>
+                                         <field name="miercoles"/>
+                                         <field name="jueves"/>
+                                         <newline/>
+                                         <field name="viernes"/>
+                                         <field name="sabado"/>
+                                         <field name="domingo"/>
+                                    </group>
+                                    <newline/>
+                                    <h2>Información de la venta</h2>
+                                    <group colspan="8" col="6">
+                                         <field name="variant_ids" context="{'template_id': active_id, 'cliente_id': partner_id}">
+										    <tree>
+                                                <field name="product_id"/>
+												<field name="variant_id" />
+                                                <field name="lenghts" />
+                                                <field name="str_sale_price"/>
+                                                <field name="qty" />
+                                                <field name="is_box_qty" />
+                                                <field name="bunch_per_box" />
+                                                <field name="bunch_type" />
+                                                <field name="uom" />
+                                                <field name="bxs_qty" />
+                                                <field name="full_boxes" />
+                                                <field name="subclient_id"/>
+											</tree>
+											<form>
+                                                <field name="cliente_id" invisible="1"/>
+                                                <field name="product_id" required="1"/>
+												<field name="variant_id" required="1" domain="[('product_id', '=', product_id)]"/>
+                                                <newline/>
+                                                <field name="length_ids" context="{ 'variant_id': variant_id}">
+                                                    <tree string="Length" editable="bottom">
+                                                        <field name="variant_id" invisible="1"/>
+                                                        <field name="length" required="1"/>
+                                                        <field name="sale_price" />
+                                                    </tree>
+                                                    <form string="Length">
+                                                        <field name="variant_id" invisible="1"/>
+                                                        <field name="length"/>
+                                                        <field name="sale_price" />
+                                                    </form>
+                                                </field>
+                                                <newline/>
+												<field name="is_box_qty" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+												<newline/>
+												<field name="box_qty" attrs="{'invisible': [('is_box_qty', '=', False)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+												<field name="tale_qty" attrs="{'invisible': [('is_box_qty', '=', True)]}" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+												<field name="bunch_per_box" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+												<field name="uom" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+												<field name="bunch_type" required="1" on_change="on_change_vals(is_box_qty,box_qty,tale_qty,bunch_per_box,bunch_type,uom)"/>
+												 <newline/>
+												<field name="stimated_stems" attrs="{'invisible': [('is_box_qty', '=', False)]}"/>
+                                                <newline/>
+                                                <field name="bxs_qty" />
+                                                <newline/>
+                                                <field name="full_boxes"/>
+                                                <newline/>
+                                                <field name="subclient_id" domain="[('customer','=', True)]" context="{'default_supplier': False, 'default_customer': True,'subcliente_de': cliente_id}"/>
+                                         	</form>
+										 </field>
+                                         <newline/>
+                                        <field name="days"/>
+                                        <newline/>
+                                        <field name="freight_agency_id"/>
+                                    </group>
+	                            </form>
+	                        </field>
+	                    </page>
+                        <page string='SubClientes'  attrs="{'invisible': ['|',('customer', '=', False),('supplier', '=', True)]}">
+                            <field name='sub_client_ids' string="Subclientes" domain="[('customer','=', True)]" context="{'default_customer': True, 'default_supplier':False,'cliente_id': active_id}"/>
+	                    </page>
+	                </xpath>
+                    <xpath expr="//field[@name='date']" position="after">
+                        <newline/>
+                        <field name="tipo_neg_id"/>
+                        <newline/>
+                        <field name="tipo_flete"/>
+                    </xpath>
+	            </data>
+            </field>
+        </record>
+
+        <record id="res_partner_tipo_negociacion_view_form" model="ir.ui.view">
+            <field name="name">res.partner.tipo.negociacion.view.form</field>
+            <field name="model">res.partner.tipo.negociacion</field>
+            <field name="arch" type="xml">
+                <form string="Tipo de Negociacion" version="7.0">
+                    <sheet>
+                        <group>
+                            <field name="codigo"/>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="res_partner_tipo_negociacion_view_tree" model="ir.ui.view">
+            <field name="name">res.partner.tipo.negociacion.view.tree</field>
+            <field name="model">res.partner.tipo.negociacion</field>
+            <field name="arch" type="xml">
+                <tree string="Tipo de Negociacion" version="7.0">
+                    <field name="codigo"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>
