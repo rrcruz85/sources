@@ -19,8 +19,8 @@
 #    along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from osv import osv
-from osv import fields
+from openerp.osv import osv
+from openerp.osv import fields
 
 class res_partner(osv.osv):
     _inherit = 'res.partner'
@@ -216,7 +216,7 @@ class sale_request_product_variant(osv.osv):
         'full_boxes'            : fields.function(_get_info, type='float', string='Full Boxes', multi = '_data'),
         'bxs_qty'               : fields.function(_get_info, type='char', string='BXS', multi = '_data'),
     }
-	
+    
     def on_change_vals(self, cr, uid, ids, is_box_qty, box_qty, tale_qty, bunch_per_box, bunch_type, uom, context=None):
         res = {'value':{'stimated_stems':0,'stimated_boxs':0, 'full_boxes':0}}
         uom_dict = {'FB':1,'HB':2,'QB':4,'OB':8}
@@ -320,7 +320,7 @@ class purchase_request_template(osv.osv):
         'periodicidad'          : fields.function(_get_info, type='char', string='Periodicidad', multi = "vals"),
         'products'              : fields.function(_get_info, type='char', string='Productos', multi = "vals"),
     }
-	
+    
     _defaults = {
         'partner_id'    :  lambda self, cr, uid, context : context['partner_id'] if context and 'partner_id' in context else None,
     }
@@ -383,7 +383,7 @@ class purchase_request_product_variant(osv.osv):
         'full_boxes'            : fields.function(_get_info, type='float', string='Full Boxes', multi = '_data'),
         'bxs_qty'               : fields.function(_get_info, type='char', string='BXS', multi = '_data'),
     }
-	
+    
     def on_change_vals(self, cr, uid, ids, is_box_qty, box_qty, tale_qty, bunch_per_box, bunch_type, uom, context=None):
         res = {'value':{'stimated_stems':0,'stimated_boxs':0,'full_boxes':0}}
         uom_dict = {'FB':1,'HB':2,'QB':4,'OB':8}
