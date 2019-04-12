@@ -94,6 +94,7 @@ openerp.oemedical_patient_appointment_notification = function(instance) {
 	            }
 	        	
 	            _.extend(self, result);
+	            
 	        });
 	    },
 		

@@ -39,7 +39,7 @@ class Users(osv.osv):
             filters = [('appointment_date','>=', str(datetime.now().date()))] 
           
             if len(obj.appointment_status_ids) > 0:
-                filters.append(('state', 'in', map(lambda s : s.appointment_state, obj.appointment_status_ids))) 
+                filters.append(('state', 'in', map(lambda s : s.appointment_state or '', obj.appointment_status_ids))) 
             
             appointment_ids = self.pool.get('oemedical.appointment').search(cr, uid, filters)
             
@@ -49,7 +49,17 @@ class Users(osv.osv):
             def split_string(string, length):
                 return [string[y-length:y] for y in range(length, len(string) + length , length)] if string and len(string) > 0 else []
             
-            records = map(lambda x: (filter_fnc(x.state), x.id, x.patient_id.name, str(datetime.strptime(x.appointment_date,"%Y-%m-%d %H:%M:%S").date()) + ' ' + x.appointment_hour + ':' + x.appointment_minute, x.comments), 
+            def str_hour(day, minute, seconds):
+                tmp_date = ''
+                if day:
+                    tmp_date += str(datetime.strptime(day,"%Y-%m-%d %H:%M:%S").date())
+                    if minute:
+                        tmp_date += ' ' + minute
+                    if minute and seconds:
+                        tmp_date += ':' + seconds                
+                return tmp_date    
+            
+            records = map(lambda x: (filter_fnc(x.state), x.id, x.patient_id.name or '',  str_hour(x.appointment_date, x.appointment_hour, x.appointment_minute), x.comments or ''), 
                         self.pool.get('oemedical.appointment').browse(cr, uid, appointment_ids)) 
 
             res = dict.fromkeys(map(lambda x: x[0], records), [])

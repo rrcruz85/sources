@@ -198,8 +198,11 @@ class OeMedicalAppointment(osv.Model):
                 new_minute = hour.appointment_minute
             else:
                 new_minute = vals['appointment_minute']
-            new_date = new_day + ' ' + new_hour + ':' + new_minute + ':00'
-            vals['appointment_date'] = new_date
+                
+            if new_day:
+                new_date = (' ' + new_hour if new_hour else '') + (':' + new_minute + ':00' if new_minute else (':00' if new_hour else '')) 
+                vals['appointment_date'] = new_date
+                
             return super(OeMedicalAppointment, self).write(cr, uid, ids[0], vals, context)
 
     

@@ -2,6 +2,9 @@
 openerp.oemedical_patient_surgery_notification = function(instance) {
     var _t = instance.web._t, _lt = instance.web._lt;
 	var QWeb = instance.web.qweb;
+	
+	instance.user = null;
+	instance.user_appointment_conf = null;
     
     instance.web.PatientNotification =  instance.web.Widget.extend({
 	    template: 'PatientNotification',
@@ -48,7 +51,7 @@ openerp.oemedical_patient_surgery_notification = function(instance) {
 					instance.client.do_warn(result.params.title, result.params.text, true);
 				}
 				else{
-					instance.client.do_notify(_t('Patient Surgery Notification'), _('No patients were found in the current date.'), true);
+					instance.client.do_notify(_t('Patient Surgery Notification'), _t('No patients were found in the current date.'), true);
 				}
 	         });	
 		}
@@ -58,8 +61,6 @@ openerp.oemedical_patient_surgery_notification = function(instance) {
 	};
 	
 	instance.web.client_actions.add("notify.patient", "instance.web.action_notify_patient"); 
-	 
-	instance.user = null;
 	
 	function notifier(){
 		var self = this;
@@ -81,8 +82,6 @@ openerp.oemedical_patient_surgery_notification = function(instance) {
 			return;
 		}
 		
-		console.log('Executing :' + (new Date()).toLocaleTimeString());
-		
 		new instance.web.Model("res.users").call("call_patient_notification",[[instance.session.uid],new instance.web.CompoundContext()])
 		.then(function(result) {				 
 			if(result != null && result != ''){
@@ -94,6 +93,7 @@ openerp.oemedical_patient_surgery_notification = function(instance) {
          });			
 	};
 	
+	
 	instance.web.Session.include({
 	    init: function() {
 		   this._super.apply(this, arguments);
@@ -101,11 +101,11 @@ openerp.oemedical_patient_surgery_notification = function(instance) {
 		   this.qweb_mutex = new $.Mutex();
 		   this.timerFunction = null;
 		},
-		
+		 
 		session_reload: function () {
 	        var self = this;
 	        return this.rpc("/web/session/get_session_info", {}).done(function(result) {
-	            
+	        	
 	        	if(instance.user != null){
 		            if(self.timerFunction){
 		            	clearInterval(self.timerFunction);
@@ -127,11 +127,27 @@ openerp.oemedical_patient_surgery_notification = function(instance) {
 		            
 		            self.timerFunction = setInterval(notifier, defaultInterval);  
 	            }
+	            
 	        	
-	            _.extend(self, result);
+	            var rr = _.extend(self, result);
+	            
+                if(result.uid && !instance.user_appointment_conf && rr.module_list.includes('oemedical_patient_appointment_notification')){
+	        		
+	        		new instance.web.Model("res.users").call("read",[[result.uid],['enable_appointment_notification','show_every_appointment_notification','show_unit_time_appointment_notification']])
+	    			.then(function(resp) {
+	    				
+	    				if(resp && resp.length > 0){
+	    					instance.user_appointment_conf = {
+	    						enable_notification : resp[0].enable_appointment_notification,
+	    						show_every : resp[0].show_every_appointment_notification,
+	    						show_unit_time : resp[0].show_unit_time_appointment_notification
+	    					} 
+	    				} 
+	    			});		
+	            }	            
 	        });
 	    },
-		
+		 
 		session_authenticate: function(db, login, password, _volatile) {			 
 	        var self = this;
 	        var base_location = document.location.protocol + '//' + document.location.host;
@@ -170,7 +186,23 @@ openerp.oemedical_patient_surgery_notification = function(instance) {
         		    } 
         	    });        	    
                 
-	            _.extend(self, result);
+	            var rr = _.extend(self, result);
+	            
+	            if(rr.module_list.includes('oemedical_patient_appointment_notification')){
+	        		
+	        		new instance.web.Model("res.users").call("read",[[result.uid],['enable_appointment_notification','show_every_appointment_notification','show_unit_time_appointment_notification']])
+	    			.then(function(resp) {
+	    				
+	    				if(resp && resp.length > 0){
+	    					instance.user_appointment_conf = {
+	    						enable_notification : resp[0].enable_appointment_notification,
+	    						show_every : resp[0].show_every_appointment_notification,
+	    						show_unit_time : resp[0].show_unit_time_appointment_notification
+	    					} 
+	    				} 
+	    			});		
+	            }
+	            
 	            if (!_volatile) {
 	                self.set_cookie('session_id', self.session_id);
 	            }	    
@@ -211,12 +243,14 @@ openerp.oemedical_patient_surgery_notification = function(instance) {
 			}
 			 	
 			instance.user = null;
+			instance.user_appointment_conf = null;
 	        
 			this.set_cookie('session_id', '');
 	        $.bbq.removeState();
 	        return this.rpc("/web/session/destroy", {});
 	    },
-	});
-		
+	    
+	     
+	});	
 };
 
