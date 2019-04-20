@@ -146,27 +146,27 @@ class purchase_lines_wzd(osv.osv_memory):
                             farm_ids.append(str(ll.variant_id.template_id.partner_id.id))
 
         context = {
-            'default_detalle_id': obj.detalle_id.id,           
-            'default_cliente_id': obj.detalle_id.pedido_id.partner_id.id,
-            'default_supplier_id': detalle.supplier_id.id if detalle.supplier_id else None,
-            'default_type': detalle.type,
-            'default_product_id': detalle.product_id.id,
-            'default_variant_id': detalle.variant_id.id,
-            'default_length_ids': lengths,
-            'default_is_box_qty': detalle.is_box_qty,
-            'default_box_qty': detalle.qty if detalle.is_box_qty else 0,
-            'default_tale_qty': detalle.qty if not detalle.is_box_qty else 0,
+            'default_detalle_id'    : obj.detalle_id.id,           
+            'default_cliente_id'    : obj.detalle_id.pedido_id.partner_id.id,
+            'default_supplier_id'   : detalle.supplier_id.id if detalle.supplier_id else None,
+            'default_type'          : detalle.type,
+            'default_product_id'    : detalle.product_id.id,
+            'default_variant_id'    : detalle.variant_id.id,
+            'default_length_ids'    : lengths,
+            'default_is_box_qty'    : detalle.is_box_qty,
+            'default_box_qty'       : detalle.qty if detalle.is_box_qty else 0,
+            'default_tale_qty'      : detalle.qty if not detalle.is_box_qty else 0,
 
-            'default_bunch_type': detalle.bunch_type,
-            'default_bunch_per_box': detalle.bunch_per_box,
-            'default_uom': detalle.uom,
+            'default_bunch_type'    : detalle.bunch_type,
+            'default_bunch_per_box' : detalle.bunch_per_box,
+            'default_uom'           : detalle.uom,
 
             'default_purchase_price': detalle.purchase_price,
-            'default_sale_price': detalle.sale_price,
-            'default_origin': detalle.origin.id if detalle.origin else False,
-            'default_subclient_id': detalle.subclient_id.id if detalle.subclient_id else False,
-            'default_sucursal_id': detalle.sucursal_id.id if detalle.sucursal_id else False,
-            'default_supplier_ids': ','.join(farm_ids)
+            'default_sale_price'    : detalle.sale_price,
+            'default_origin'        : detalle.origin.id if detalle.origin else False,
+            'default_subclient_id'  : detalle.subclient_id.id if detalle.subclient_id else False,
+            'default_sucursal_id'   : detalle.sucursal_id.id if detalle.sucursal_id else False,
+            'default_supplier_ids'  : ','.join(farm_ids)
         }
         return {
             'name': _("Purchase Line"),
@@ -308,7 +308,7 @@ class detalle_line_wzd(osv.osv_memory):
                 name = detalle.product_id.name_template + ' ' + detalle.variant_id.name + '-'.join(lengths)
                 raise osv.except_osv('Error', "La cantidad del producto " + name + " no puede ser 0")
 
-            purchase_prices  = [l.purchase_price for l in detalle .length_ids]
+            purchase_prices  = [l.purchase_price for l in detalle.length_ids]
             purchase_price = sum(purchase_prices)/len(purchase_prices) if purchase_prices else 0
 
             if purchase_price <= 0:
@@ -320,6 +320,16 @@ class detalle_line_wzd(osv.osv_memory):
 
             l_ids = [l.id for l in detalle.detalle_id.length_ids]
             self.pool.get('detalle.lines.length').unlink(cr, uid, l_ids)
+            length_prices = [(l.length, l.purchase_price) for l in detalle.length_ids]
+            
+            request_ids = self.pool.get('purchase.request.template').search(cr, uid, [('partner_id','=', detalle.detalle_id.supplier_id.id),('client_id', '=', detalle.detalle_id.pedido_id.partner_id.id)])
+            request_variant_ids = self.pool.get('purchase.request.product.variant').search(cr, uid, [('template_id','in', request_ids),('product_id','=', detalle.product_id.id),('variant_id', '=', detalle.variant_id.id)])
+            for v in self.pool.get('purchase.request.product.variant').browse(cr, uid, request_variant_ids):
+                p_lenghts = [ll.length for ll in v.length_ids]
+                new_lengths = [ll for ll in lengths if ll not in p_lenghts] 
+                new_elements = [{'variant_id': v.id,'length': ll, 'purchase_price': filter(lambda e: e[0] == ll, length_prices)[0][1]} for ll in new_lengths]             
+                for ll in new_elements:
+                    self.pool.get('purchase.request.product.variant.length').create(cr, uid, ll)
 
             lengths =  [(0,0,{'length': l.length,'purchase_price':l.purchase_price}) for l in detalle.length_ids]
 
@@ -378,10 +388,10 @@ class detalle_line_length_wzd(osv.osv_memory):
         'detalle_id'       : fields.many2one('detalle.line.wzd', 'Details'),
         'length'           : fields.char(string='Length', size = 128, required=True),
         'purchase_price'   : fields.float(string='Purchase Price'),
-     }
+    }
 
     _defaults = {
-         'detalle_id'     :  lambda self, cr, uid, context : context['detalle_id'] if context and 'detalle_id' in context else None,
+        'detalle_id'     :  lambda self, cr, uid, context : context['detalle_id'] if context and 'detalle_id' in context else None,
     }
 
 detalle_line_length_wzd()
@@ -527,13 +537,13 @@ class split_purchase_line_detail_wzd(osv.osv_memory):
         if not context:
             context = {}
         if detalle_id and supplier_id and product_id and variant_id:           
-            detalle = self.pool.get('detalle.lines').browse(cr, uid, detalle_id)   
+            detalle = self.pool.get('detalle.lines').browse(cr, uid, detalle_id) 
             request_ids = self.pool.get('purchase.request.template').search(cr, uid, [('partner_id','=', supplier_id),('client_id', '=', detalle.pedido_id.partner_id.id)])
             request_variant_ids = self.pool.get('purchase.request.product.variant').search(cr, uid, [('template_id','in', request_ids),('product_id','=', product_id),('variant_id', '=', variant_id)])
             request_variant_length_ids = self.pool.get('purchase.request.product.variant.length').search(cr, uid, [('variant_id','in', request_variant_ids)])
             if request_variant_length_ids:
                 res['domain']  =   {'length_id': [('id','in',request_variant_length_ids)]}
-                res['value']['length_id'] = request_variant_length_ids[0]                          
+                res['value']['length_id'] = request_variant_length_ids[0]                              
         return res            
     
     def onchange_length_id(self, cr, uid, ids, length_id, context=None):

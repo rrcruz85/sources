@@ -19,8 +19,8 @@
 #    along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from osv import osv
-from osv import fields
+from openerp.osv import osv
+from openerp.osv import fields
 
 class purchase_line_wzd(osv.osv_memory):
     _name = 'purchase.line.wzd'
