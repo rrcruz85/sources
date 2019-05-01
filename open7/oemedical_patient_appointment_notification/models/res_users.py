@@ -36,7 +36,7 @@ class Users(osv.osv):
 
         if obj.enable_appointment_notification:
             
-            filters = [('appointment_date','=', str(datetime.now().date()))] 
+            filters = [('appointment_day','=', str(datetime.now().date()))] 
           
             if len(obj.appointment_status_ids) > 0:
                 filters.append(('state', 'in', map(lambda s : s.appointment_state or '', obj.appointment_status_ids))) 
