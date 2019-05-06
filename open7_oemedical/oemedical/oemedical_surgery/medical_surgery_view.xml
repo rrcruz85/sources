@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<openerp>
+        <data>
+
+
+<!-- Surgery -->
+
+	<record model="ir.ui.view" id="medical_surgery_view">
+		<field name="name">Surgery</field>
+		<field name="model">oemedical.surgery</field>
+		<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Surgery">
+					<field name="name"/>
+					<field name="patient_id"/>
+					<field name="description" required="1"/>
+					<newline/>
+					<field name="pathology"/>
+					<field name="classification"/>
+					<newline/>
+					<field name="date"/>					 
+					<field name="surgeon"/>
+					<newline/>
+					<field name="extra_info" colspan='4'/>
+				</form>
+			</field>
+	</record>
+
+
+		<record model="ir.ui.view" id="medical_surgery_tree">
+			<field name="name">Surgery Lists</field>
+			<field name="model">oemedical.surgery</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string='Surgery'>
+					<field name="name"/>
+					<field name="patient_id"/>
+					<field name="description"/>
+					<field name="pathology"/>
+					<field name="classification"/>
+					<field name="date"/>
+				</tree>
+			</field>
+		</record>
+
+
+
+
+
+<!-- Include the Surgery page into the Patient History
+
+		<record model="ir.ui.view" id="oemedical_patient_view_inherit">
+			<field name="name">Patient</field>
+			<field name="model">oemedical.patient</field>
+            <field name="inherit_id" ref="oemedical.view_oemedical_patient_form" />
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+			    <xpath expr="//page[@string='General Information']" position="after">
+			    	<page string="Surgeries">
+					     <field name="surgery" colspan="4" nolabel="1"/>
+				    </page>
+			    </xpath>
+			</field>
+		</record>
+
+		 -->
+	</data>
+</openerp>
+

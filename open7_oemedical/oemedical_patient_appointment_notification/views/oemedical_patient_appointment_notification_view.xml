@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+         
+        <record id="view_res_user_form_inherits" model="ir.ui.view">
+            <field name="name">res.users.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <data> 
+                    <xpath expr="//page[@string='Access Rights']" position="after">
+                         <page string="Appointment Notifications">
+	                        <group col="4" colspan="4"> 
+		                 	    <field name="enable_appointment_notification"/>
+		                 	    <!-- 
+                                <newline/>                              
+		                 	    <field name="show_every_appointment_notification" required="1"/>
+		                 	    <field name="show_unit_time_appointment_notification" required="1"/>
+		                 	     -->
+		                 	    <separator colspan="4" string="Appointment States"/>
+		                 	    <field name="appointment_status_ids" nolabel="1" colspan="4" context="{'user_id': active_id}">
+                                    <tree editable="top" string="States">
+                                        <field name="appointment_state"/>                                                                            
+                                    </tree>                                     
+                                </field>		                 	    
+	                 	    </group>
+                         </page>
+                    </xpath>
+                </data>
+            </field>
+        </record>          
+                        
+    </data>
+</openerp>

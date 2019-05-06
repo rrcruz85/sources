@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<openerp>
+	<data>
+		<record id="view_oemedical_bariatric_evolution_tree" model="ir.ui.view">
+			<field name="name">oemedical.bariatric.evolution.tree</field>
+			<field name="model">oemedical.bariatric.evolution</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Evolucion">
+					<field name="cir_date" />
+					<field name="cir_tip" />
+					<field name="evo_date" />
+					<field name="doctor" />
+					<!--field name="directions" /-->
+					<!--field name="eva_value" /-->
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_oemedical_bariatric_evolution_form" model="ir.ui.view">
+			<field name="name">oemedical.bariatric.evolution.form</field>
+			<field name="model">oemedical.bariatric.evolution</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<form string="Evolucion Bariatrica" version="7.0">
+				<sheet>
+					<!--div class="oe_right oe_button_box" name="buttons">
+                        <button type="object"
+                            name="evolution_print"
+                            string="Imprimir"/>
+                    </div-->
+					<group>
+						<field name="evaluation_id" invisible="1"/>
+						<field name="doctor" />
+                		<field name="evo_date" />
+		                <field name="cir_date" />
+                		<field name="cir_tmp" />
+                		<field name="cir_tip" />
+                		<field name="pes_ini" />
+                		<field name="imc_ini" />
+                	</group>
+                	<group string="EVOLUCION">
+	                	<field name="evo_die" />
+    	            	<field name="evo_liq" />
+        	        	<field name="evo_eje" />
+            	    	<field name="evo_dep" />
+                		<field name="evo_vom" />
+                		<field name="evo_med" />
+                		<field name="evo_peso_hoy" />
+                		<field name="evo_imc_hoy" />
+                		<field name="evo_pes_perd" />
+                		<field name="evo_imc_perd" />
+                		<field name="evo_exceso_pes" />
+                		<field name="evo_perc_pep" />
+                	</group>
+                	<group>
+                		<field name="evo_hta" />
+                		<field name="evo_hdr" />
+                		<field name="evo_hmd" />
+                		<field name="evo_hdc" /> 
+                		<field name="evo_dm" />
+                		<field name="evo_ddr" />
+                		<field name="evo_dmd" />
+                		<field name="evo_ddc" />
+                		<field name="evo_dlp" />
+                		<field name="evo_ldr" />
+                		<field name="evo_lmd" />
+                		<field name="evo_ldc" />
+                		<field name="evo_apn" />
+                		<field name="evo_adr" />
+              	 		<field name="evo_amd" />
+                		<field name="evo_adc" /> 
+                		<field name="evo_ost" />
+                		<field name="evo_odr" />
+                		<field name="evo_omd" />
+                		<field name="evo_odc" />
+                		<field name="evo_sop" />
+                		<field name="evo_sdr" />
+                		<field name="evo_smd" />
+                		<field name="evo_sdc" />
+                		<field name="evo_hg" />
+                		<field name="evo_cole" />
+                		<field name="evo_compli" />
+                		<field name="evo_compli_cual" />
+                		<field name="evo_compli_tto" />
+                		<field name="evo_coment" />
+                		<field name="evo_pres_1" />
+                		<field name="evo_pres_2" />
+                		<field name="evo_pres_3" />
+                		<field name="evo_pres_4" />
+                		<field name="evo_pres_5" />
+                		<field name="evo_pres_6" />
+                		<field name="evo_pres_7" />
+                		<field name="evo_pres_exam" />
+                		<field name="evo_pres_nutri" />
+                		<field name="evo_pres_psico" />
+                		<field name="evo_pres_otro" />
+                		<field name="evo_exam_ctl_1" />
+                		<field name="evo_exam_ctl_2" />
+                		<field name="evo_exam_ctl_3" />
+                		<field name="evo_exam_ctl_4" />
+                		<field name="evo_exam_ctl_5" />
+                		<field name="evo_exam_ctl_6" />
+                		<field name="evo_exam_ctl_7" />
+                		<field name="evo_exam_ctl_8" />
+                		<field name="evo_exam_ctl_9" />
+                		<field name="evo_exam_ctl_10" />
+                		<field name="evo_exam_ctl_11" />
+                		<field name="evo_exam_ctl_12" />
+                		<field name="evo_exam_ctl_13" />
+                		<field name="evo_exam_ctl_14" />
+                		<field name="evo_exam_ctl_15" />
+                		<field name="evo_exam_ctl_16" />
+                		<field name="evo_exam_ctl_17" />
+                		<field name="evo_exam_ctl_18" />
+                		<field name="evo_exam_ctl_19" />
+                		<field name="evo_exam_ctl_20" />
+                		<field name="evo_exam_ctl_21" />
+                		<field name="evo_exam_ctl_22" />
+                		<field name="evo_exam_ctl_23" />
+                		<field name="evo_exam_ctl_24" />
+                		<field name="evo_exam_ctl_25" />
+                		<field name="evo_exam_ctl_26" />
+                		<field name="evo_exam_ctl_27" />
+                		<field name="evo_exam_ctl_28" />
+					</group>
+					
+				</sheet>
+				</form>
+			</field>
+		</record>
+		
+	    <!--record id="view_oemedical_patient_dental_graph" model="ir.ui.view">
+    	     <field name="name">oemedical.patient.dental.graph</field>
+        	 <field name="model">oemedical.patient.dental</field>
+        	 <field name="type">graph</field>
+         	<field name="arch" type="xml">
+            	<graph string="Patient dental Graph" type="line">
+                	<field name="patient_id" group="False"/>
+                	<field name="date_str"/>
+                	<field name="eva_value"  group="False"/>
+            	</graph>
+			</field>
+		</record-->
+
+		<record id="view_oemedical_bariatric_evolution_search" model="ir.ui.view">
+			<field name="name">oemedical.bariatric.evolution.search</field>
+			<field name="model">oemedical.bariatric.evolution</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<search string="Bariatric Evolution">
+					<field name="cir_tip" />
+					<field name="cir_date" />
+					<field name="evo_date" />
+					<!--field name="eva_value" /-->
+					<!--field name="directions" /-->
+					<newline />
+					<group expand="0" string="Group By...">
+						<filter string="Tipo cirugia:" domain="[]"
+							context="{'group_by':'cir_tip'}" />
+						<filter string="Doctor" domain="[]"
+							context="{'group_by':'doctor'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		
+<!--act_window domain="[('patient_id', '=', active_id)]" id="act_bariatric_evaluation_history" name="Historia Bariatrica" res_model="oemedical.bariatric.evaluation" src_model="oemedical.patient"/-->
+
+		<!--record id="view_oemedical_bariatric_evaluation_inherit" model="ir.ui.view">
+			<field name="name">oemedical.bariatric.evaluation.inherit</field>
+			<field name="model">oemedical.patient</field>
+			<field name="priority" eval="8" />
+			<field name="inherit_id" ref="oemedical.view_oemedical_patient_form"/>
+			<field name="arch" type="xml">
+				<notebook position="inside">
+                        <page string="Evaluación Bariatrica">
+                            <field name="bar_eval" context="{'patient_id': active_id}"/>
+                        </page>
+				</notebook>
+			</field>
+		</record-->
+
+		<record model="ir.actions.act_window" id="act_open_oemedical_bariatric_evolution_view">
+			<field name="name">Evoluacion Bariatrica</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">oemedical.bariatric.evolution</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<!--field name="view_id" ref="view_oemedical_patient_dental_graph"/-->
+			<field name="search_view_id" ref="view_oemedical_bariatric_evolution_search" />
+			<field name="domain">[]</field>
+			<field name="context">{}</field>
+		</record>
+
+	</data>
+</openerp>

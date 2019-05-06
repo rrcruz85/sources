@@ -1,0 +1,35 @@
+RDEP, consideraciones
+
+Primero, incorporar campo para nombre y apellido del empleado. Aumentar en hr_employee. El campo name se llena con la suma de los dos campos.
+
+1. Casos para Impuesto a la Renta:
+01 no eres discapacitado
+02 trabajador con discapacidad (se debe registrar el % de discapacidad, entero sin decimales, p. ej: 40, deber ser 1-100)
+03 sustituto de discapacitado
+04 empleado tiene conyuge, union libre o hijo(a) y se encuentra bajo su cuidado y/o responsabilidad
+Crear un campo de tipo funcion (char, en la ficha del empleado) que determina este codigo de discapacidad, en base a los datos del empeado (relacionados con la discapacidad) y de las cargas familiares.
+En la ficha del empleado aumentar: campo boolean para marcar si tiene o no discapacidad, un campo para el porcentaje de discapacidad, tipo de capacidad y numero dado por el CONADIS. Si tiene discapacidad, pone automaticamente el 02 en el campo para calculo del impuesto a la renta (que puede estar oculto). Ademas, la funcion revisa las cargas familiares para determinar si tiene familiares con discapacidad y marcar 04 en la ficha del empleado. Si no cumple ni 02 ni 04, se coloca 01.
+
+2. Se debe almacenar para cada empleado lo que le descontaron en la empresa anterior del Impuesto a la Renta.
+- sueldo (valor del contrato)
+- sobre sueldo
+- participacion utilidades
+- decimo tercero y cuarto
+- fondos de reserva
+- valor retenido
+
+Modificar el flujo (en este modulo ec_hr_payroll) para que el calculo del IR considere estos datos y que tome las exoneraciones por discapacidad o tercera edad (calcular la edad del empleado), para la tercera edad el valor de la exoneracion es el doble de la fraccion basica desgravada (para 2015 es 10800*2). El valor de exoneracion se suma al monto proyectado de gastos personales.
+
+3. Se debe calcular la edad del empleado y marcar un campo true o false para determinar si es o no tercera edad. Crear un campo tipo funcion para esta verificacion. El campo fecha de nacimiento debe ser requerido.
+
+4. Para hacer efectiva la exoneracion en el IR por discapacidad, considerar:
+- el codigo deber ser 02
+- el % deber ser mayor al 40%
+- calculo de rangos: entre 40-49 se descuenta 60% el doble de la fraccion basica desgravada (21600 en 2015, 60% de 21600); del 50-74 el 70% del doble de la fraccion; 75-84 el 80%; 85-100 el 100%. El monto calculado se suma a la proyeccion de gastos (como en la tercera edad).
+
+5. Estos calculos se deben implementar en la regla salarial del IR (codigo python). Aumentar una configuracion como la tabla del IR para registrar los % de descapacidad y de tercera edad. Consulto el objeto y aplica o no el descuento en el calculo del IR.
+
+6. Se debe crear un rol para los decimos (tercero y cuarto) que considere la region (que es otro objeto de configuracion, que dice la fecha de pago de cada region); el RDEP lee ese rol para generar el XML.
+
+7. Las utilidades deben calcularse con una regla salarial, que considera cuando se pagan las utilidades. Considerar el total de dias trabajados por cada empleado en el anio tengan o no contrato (en la ficha del empleado); las cargas familiares para todos tengan o no contrato, deben ser menores a 18 anios, registrar la fecha de nacimiento de la carga (considerar descapacitados a su cargo y el conyuge); repartir el monto de utilidades entre los empeados y sus cargas. Se guarda en una tabla aparte, y se toma en el rol cuando existe este registro y cuando el mes coincide con el periodo de pago de utilidades.
+Este valor se considera para el calculo del IR.

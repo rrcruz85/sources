@@ -1,0 +1,27 @@
+div.ui-state-error.ui-notify-message.ui-notify-message-style{
+	height: 300px !important;
+	overflow-y: auto !important; 
+	width: 325px !important; 
+}
+
+div.ui-state-error.ui-notify-message.ui-notify-message-style a.ui-notify-cross.ui-notify-close{
+	font-size: 20px !important;	 
+}
+
+.btn-appointment-notif {
+    padding-top: 0px;  
+    width: 200px;
+    left: 3px;
+    text-decoration: none;
+    color: #4c4c4c;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+    font-family: Tahoma;
+    font-size: 10pt;
+    background-color: #C2D5FC;
+    border-radius: 3px;
+    height: 25px;
+    text-align: center;
+    margin-top: 4px;
+    vertical-align: middle;
+    cursor: pointer;    
+}

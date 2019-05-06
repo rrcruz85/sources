@@ -1,0 +1,158 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* oemedical_patient_appointment_notification
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20170329\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-01 15:09+0000\n"
+"PO-Revision-Date: 2019-04-01 10:27-0500\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: es\n"
+"X-Generator: Poedit 2.2\n"
+
+#. module: oemedical_patient_appointment_notification
+#: selection:oemedical.appointment.notification.status,appointment_state:0
+#: code:addons/oemedical_patient_appointment_notification/models/res_users.py:61
+#, python-format
+msgid "Confirm"
+msgstr "Por Confirmar"
+
+#. module: oemedical_patient_appointment_notification
+#: field:res.users,enable_appointment_notification:0
+msgid "Enable Notifications"
+msgstr "Habilitar Notificaciones"
+
+#. module: oemedical_patient_appointment_notification
+#: field:res.users,show_unit_time_appointment_notification:0
+msgid "Unit Time"
+msgstr "Unidad de Tiempo"
+
+#. module: oemedical_patient_appointment_notification
+#: field:oemedical.appointment.notification.status,appointment_state:0
+msgid "State"
+msgstr "Estado"
+
+#. module: oemedical_patient_appointment_notification
+#: selection:oemedical.appointment.notification.status,appointment_state:0
+#: code:addons/oemedical_patient_appointment_notification/models/res_users.py:61
+#, python-format
+msgid "Draft"
+msgstr "Creada"
+
+#. module: oemedical_patient_appointment_notification
+#: view:res.users:0
+msgid "Appointment Notifications"
+msgstr "Notificaciones de Citas Médicas"
+
+#. module: oemedical_patient_appointment_notification
+#: model:ir.model,name:oemedical_patient_appointment_notification.model_res_users
+msgid "Users"
+msgstr "Usuarios"
+
+#. module: oemedical_patient_appointment_notification
+#. openerp-web
+#: code:addons/oemedical_patient_appointment_notification/static/src/js/scripts.js:56
+#, python-format
+msgid "No appointment notes were found after or in the current date."
+msgstr "Ninguna cita médica fue encontrada para el día de hoy o posterior a la fecha de hoy."
+
+#. module: oemedical_patient_appointment_notification
+#: selection:res.users,show_unit_time_appointment_notification:0
+msgid "Hours"
+msgstr "Horas"
+
+#. module: oemedical_patient_appointment_notification
+#: field:oemedical.appointment.notification.status,user_id:0
+msgid "User"
+msgstr "Usuario"
+
+#. module: oemedical_patient_appointment_notification
+#: field:res.users,show_every_appointment_notification:0
+msgid "Show Every"
+msgstr "Mostrar Cada"
+
+#. module: oemedical_patient_appointment_notification
+#: view:res.users:0
+msgid "Appointment States"
+msgstr "Estados de la cita médica"
+
+#. module: oemedical_patient_appointment_notification
+#: help:res.users,show_every_appointment_notification:0
+msgid "Show the notification every times set by this field, e.g: 5 minutes"
+msgstr "Mostrar las notificaciones cada cierto periodo de tiempo, por ejemplo: 5 minutos"
+
+#. module: oemedical_patient_appointment_notification
+#: selection:oemedical.appointment.notification.status,appointment_state:0
+#: code:addons/oemedical_patient_appointment_notification/models/res_users.py:61
+#, python-format
+msgid "In Consultation"
+msgstr "En Consulta"
+
+#. module: oemedical_patient_appointment_notification
+#: selection:res.users,show_unit_time_appointment_notification:0
+msgid "Minutes"
+msgstr "Minutos"
+
+#. module: oemedical_patient_appointment_notification
+#: model:ir.model,name:oemedical_patient_appointment_notification.model_oemedical_appointment_notification_status
+msgid "oemedical.appointment.notification.status"
+msgstr "Estados de las Citas Médicas"
+
+#. module: oemedical_patient_appointment_notification
+#. openerp-web
+#: code:addons/oemedical_patient_appointment_notification/static/src/xml/templates.xml:28
+#, python-format
+msgid "Show Appointment Notes"
+msgstr "Mostrar Notas de Citas Médicas"
+
+#. module: oemedical_patient_appointment_notification
+#: selection:oemedical.appointment.notification.status,appointment_state:0
+#: code:addons/oemedical_patient_appointment_notification/models/res_users.py:61
+#, python-format
+msgid "Waiting"
+msgstr "En Espera"
+
+#. module: oemedical_patient_appointment_notification
+#: view:res.users:0 field:res.users,appointment_status_ids:0
+msgid "States"
+msgstr "Estados"
+
+#. module: oemedical_patient_appointment_notification
+#: selection:oemedical.appointment.notification.status,appointment_state:0
+#: code:addons/oemedical_patient_appointment_notification/models/res_users.py:61
+#, python-format
+msgid "Canceled"
+msgstr "Cancelada"
+
+#. module: oemedical_patient_appointment_notification
+#: sql_constraint:oemedical.appointment.notification.status:0
+msgid "The state must be unique !"
+msgstr "El estado debe ser único!"
+
+#. module: oemedical_patient_appointment_notification
+#: selection:oemedical.appointment.notification.status,appointment_state:0
+#: code:addons/oemedical_patient_appointment_notification/models/res_users.py:61
+#, python-format
+msgid "Done"
+msgstr "Terminada"
+
+#. module: oemedical_patient_appointment_notification
+#. openerp-web
+#: code:addons/oemedical_patient_appointment_notification/models/res_users.py:72
+#: code:addons/oemedical_patient_appointment_notification/static/src/js/scripts.js:56
+#, python-format
+msgid "Appointment Notes"
+msgstr "Notas de las Citas Médicas"
+
+#. module: oemedical_patient_appointment_notification
+#: code:addons/oemedical_patient_appointment_notification/models/res_users.py:57
+#, python-format
+msgid "Patient"
+msgstr "Paciente"

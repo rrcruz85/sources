@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template" xml:space="preserve">
+    
+    <t t-name="OeMedicalMail">
+        <div id="oemedical_mail_wizard" class="">
+            <div title='Enviar correo a pacientes...' class="oe_topbar_item oe_topbar_compose_full_email"
+                 style="margin: -27px 160px; -moz-box-shadow: 0px 0px 7px rgba(0, 133, 255, 0.3) inset;-webkit-box-shadow: 0px 0px 7px rgb(65, 63, 63) inset;border-radius: 3px;margin-top: 0px;height: 27px;">
+                <button class="oe_e" style="margin: -8px 0px;">%</button>
+            </div>
+        </div>
+    </t> 
+    
+</templates>
