@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="pic" model="res.country.state">
+            <field name="name">Pichincha</field>
+            <field name="code">PIC</field>
+            <field name="country_id" ref="base.ec"/>
+        </record>
+
+        <record id="gyq" model="res.country.state">
+            <field name="name">Guayaquil</field>
+            <field name="code">GYQ</field>
+            <field name="country_id" ref="base.ec"/>
+        </record>
+
+        <record id="cnc" model="res.country.state">
+            <field name="name">Cuenca</field>
+            <field name="code">CNC</field>
+            <field name="country_id" ref="base.ec"/>
+        </record>
+         
+    </data>
+</openerp>

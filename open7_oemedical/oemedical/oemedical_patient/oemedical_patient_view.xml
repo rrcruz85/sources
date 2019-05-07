@@ -7,10 +7,12 @@
  			<field name="priority" eval="8" /> 
  			<field name="arch" type="xml"> 
  				<tree string="Oemedical Patient"> 
- 					<field name="name" /> 					 
+ 					<field name="name" /> 
+					<field name="type_ced_ruc" /> 					 
  					<field name="ced_ruc" />  					 
  					<field name="age" />
  					<field name="sex" /> 
+					<field name="mobile" /> 
  				</tree> 
  			</field> 
  		</record> 
@@ -51,7 +53,7 @@
 							<div style="width: 100%%;display: inline"> 					     
 								<div style="width: 40%%;display: inline; vertical-align: middle">
 									<label for="dob"/> 
-									<field name="dob" required ="1" style="width: 14%%;vertical-align: middle"/> 
+									<field name="dob" required ="1" on_change="onchange_dob(dob)" style="width: 14%%;vertical-align: middle"/> 
 									<label for="age"/> 
 									<field name="age" style="width: 10%%;vertical-align: middle"/>
 								</div>								 				 									
@@ -68,21 +70,22 @@
 										<field name="street2"/>
 										<div class="address_format">
 											<field name="city" placeholder="City" style="width: 48%%"/>
-											<field name="state_id" class="oe_no_button" placeholder="State" style="width: 50%%" options='{"no_open": True}' on_change="onchange_state(state_id)"/>
+											<field name="state_id" class="oe_no_button" domain="[('country_id','=',country_id)]" placeholder="State"
+											 style="width: 50%%" options='{"no_open": True}' context="{'country_id': country_id}"/>
 										</div>
-										<field name="country_id" placeholder="Country" required="1" class="oe_no_button" options='{"no_open": True}'/>
+										<field name="country_id" placeholder="Country" required="1" readonly="1" class="oe_no_button" options='{"no_open": True}'/>
 									    <field name="zip" placeholder="ZIP" style="width: 30%%"/>
 									</div>									 
                                 </group>								
                                 <group>
-                                    <field name="phone" placeholder="e.g. +593.2.3149120"/>
+                                    <field name="phone" placeholder="e.g. 02.3149120"/>
                                     <field name="mobile" required="1" placeholder="e.g. 0955443322"/>                                    
                                     <field name="email" required="1" widget="email"/>
                                 </group>
 								<newline/>								
                                 <group string="Emergency Person's Conctact">
                                     <field name="contacto"/>
-                                    <field name="telefono" placeholder="e.g. +593.2.3149120"/>
+                                    <field name="telefono" placeholder="e.g. 02.3149120"/>
                                     <field name="celular" placeholder="e.g. 0955443322"/>
                                 </group>
 							  </group> 
@@ -111,8 +114,9 @@
                                             <a type="open"><field name="name"/></a>                                           
                                         </h3>
                                         <ul>
-                                        	<li t-if="record.age.raw_value"><b>Age:</b> <field name="age"/></li>    
-                                            <li t-if="record.ced_ruc.raw_value"><b>CC:</b> <field name="ced_ruc"/></li>
+										    <li t-if="record.ced_ruc.raw_value"><b>CC:</b> <field name="ced_ruc"/></li>
+										    <li t-if="record.mobile.raw_value"><b>Mobile:</b> <field name="mobile"/></li>
+                                        	<li t-if="record.age.raw_value"><b>Age:</b> <field name="age"/></li> 
                                         </ul>
                                     </div>
                                 </div>
@@ -130,7 +134,7 @@
  			<field name="arch" type="xml"> 
  				<search string="Patients"> 
  					<field name="name" /> 
-					<field name="last_name" /> 
+					<field name="last_name" />					
 					<field name="ced_ruc" /> 
  					<newline /> 
  					<group expand="0" string="Group By...">  

@@ -52,4 +52,9 @@
             </li>
     </t> 
 
+	<t t-extend="WebClient">
+	    <t t-jquery="table.oe_webclient tr td div.oe_footer" t-operation="replace">				 
+	    </t>
+	</t>
+
 </templates>
