@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="view_oemedical_physician_specialty_tree" model="ir.ui.view">
+			<field name="name">oemedical.physician.specialty.tree</field>
+			<field name="model">oemedical.physician.specialty</field>		 
+			<field name="arch" type="xml">
+				<tree string="Physician Specialties">
+					<field name="physician_id" />
+					<field name="specialty_id" />
+					<field name="institution_id" />
+					<field name="is_primary" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_oemedical_physician_specialty_form" model="ir.ui.view">
+			<field name="name">oemedical.physician.specialty.form</field>
+			<field name="model">oemedical.physician.specialty</field>			
+			<field name="arch" type="xml">
+				<form string="Physician Specialty">
+                    <group colspan="4" col="8">
+					    <field name="physician_id" colspan="2"/>
+					    <field name="specialty_id" colspan="2"/>					     
+					    <field name="institution_id" />				
+					    <field name="date_start" />
+						<field name="date_end" />
+						<newline/>
+						<field name="is_primary" />
+						<field name="is_currently_performed" />
+						<field name="degree" />
+						<field name="other_degree" />
+                    </group>
+					<newline/>
+                    <group colspan="4" col="8" string="Extra Information">
+    					<field name="extra_info" colspan="4" nolabel="1"/>						 
+                    </group>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_oemedical_physician_specialty_search" model="ir.ui.view">
+			<field name="name">oemedical.physician.specialty.search</field>
+			<field name="model">oemedical.physician.specialty</field>			 
+			<field name="arch" type="xml">
+				<search string="Physician Specialties">					 
+					<field name="physician_id" />
+					<field name="specialty_id" />
+					<field name="institution_id" />					 
+					<newline />
+					<group expand="0" string="Group By...">
+						<filter string="Specialty" domain="[]"	context="{'group_by':'specialty_id'}" />						 
+					</group>
+				</search>
+			</field>
+		</record>
+
+        <!--  
+		<record model="ir.actions.act_window" id="act_open_oemedical_physician_view">
+			<field name="name">Physician Specialties</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">oemedical.physician.specialty</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="search_view_id" ref="view_oemedical_physician_search" />
+			<field name="domain">[]</field>
+			<field name="context">{}</field>
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_physician_view_form">
+			<field name="act_window_id" ref="act_open_oemedical_physician_view" />
+			<field name="sequence" eval="20" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_oemedical_physician_form" />
+		</record>
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_physician_view_tree">
+			<field name="act_window_id" ref="act_open_oemedical_physician_view" />
+			<field name="sequence" eval="10" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_oemedical_physician_tree" />
+		</record>
+		-->
+
+	</data>
+</openerp>

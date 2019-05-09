@@ -1,44 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-		<menuitem id="oemedical_root" name="Medical EMR" sequence="10" />
+		<menuitem id="oemedical_root" name="Medical" sequence="10" />
 
 <!--Menu Patient-->
 
-		<menuitem id="oemedical_patient_root" name="Patient" parent="oemedical_root"
+		<menuitem id="oemedical_patient_root" name="Patients" parent="oemedical_root"
 			sequence="10" />
 			
-		<menuitem id="oemedical_patient" name=" Patient"
+		<menuitem id="oemedical_patient" name="Patients"
 			parent="oemedical_patient_root" sequence="10"
 			action="act_open_oemedical_patient_view" />
 
-		<!--menuitem id="oemedical_family" name=" Family" parent="oemedical_patient_root"
-			sequence="20" action="act_open_oemedical_family_view" /-->
+<!--Menu Doctors-->
+        <menuitem name="Health Professionals" id="oemedical_physician_root"
+            parent="oemedical_root" sequence="20" />
 
-		<!--menuitem id="oemedical_patient_physio" name="Fisioterapia"
-			parent="oemedical_patient_root" sequence="35"
-			action="act_open_oemedical_patient_physio_view" /-->
-
-		<menuitem id="oemedical_patient_evaluation" name="Evaluación"
-			parent="oemedical_patient_root" sequence="20"
-			action="act_open_oemedical_patient_evaluation_view" />
-			
-		<!--menuitem id="oemedical_patient_evolution" name="Evolución"
-			parent="oemedical_patient_root" sequence="30"
-			action="act_open_oemedical_patient_evolution_view" /-->
-
-		<!--menuitem id="oemedical_patient_ophthalmic" name="Oftálmica"
-			parent="oemedical_patient_root" sequence="40"
-			action="act_open_oemedical_patient_ophthalmic_view" /-->
-
-		<!--menuitem id="oemedical_patient_diagnostic"
-			parent="oemedical_patient_root" sequence="50"
-			action="act_open_oemedical_diagnostic_hypothesis_view" /-->
+		<menuitem id="oemedical_physician" name="Physicians" parent="oemedical_physician_root"
+			sequence="10" action="act_open_oemedical_physician_view" />
 
 <!--Appointment-->
 
 		<menuitem id="oemedical_appoitment_root" name="Appoitment"
-			parent="oemedical_root" sequence="20" />
+			parent="oemedical_root" sequence="30" />
 
 		<menuitem id="oemedical_appointment" name=" Appointment"
 			parent="oemedical_appoitment_root" sequence="10"
@@ -47,13 +31,13 @@
 <!--Prescriptions-->
 
 		<menuitem id="oemedical_prescription_root" name="Prescription"
-			parent="oemedical_root" sequence="30" />
+			parent="oemedical_root" sequence="40" />
 
 		<menuitem id="oemedical_prescription_order" name="Prescription Order"
 			parent="oemedical_prescription_root" sequence="10"
 			action="act_open_oemedical_prescription_order_view" />
 
-<!--       Laboratory    -->
+<!--     Laboratory    -->
 
 		<!--menuitem id="oemedical_laboratory_root" name="Laboratory"
 			parent="oemedical_root" sequence="40" />
@@ -80,18 +64,32 @@
 		<menuitem id="oemedical_root_sub" name="Configuration"
 			parent="oemedical_root" sequence="100" />
 
+<!-- Medical Specialty  ( Config/specialty) ) --> 
+
+        <menuitem id="oemedical_specialty_root" name="Medical Specialties"
+            parent="oemedical_root_sub" sequence="10"/>
+       
+		<menuitem id="oemedical_specialty" name="Specialties"
+            parent="oemedical_specialty_root" sequence="10" 
+            action="act_open_oemedical_specialty_view" />  
+
+		<menuitem id="oemedical_specialty_structure" name="Specialties Structure"
+            parent="oemedical_specialty_root" sequence="20" 
+            action="act_open_oemedical_specialty_structure_view" />
+
 <!--       Laboratory       -->
 		<!--menuitem name="Laboratory" id="oemedical_conf_laboratory" 
             parent="oemedical_root_sub" sequence="3"/>
 		<menuitem action="oemedical_action_lab_unit" id="oemedical_labtest_unit" parent="oemedical_conf_laboratory"/>
 		<menuitem action="oemedical_action_form_test" id="oemedical_conf_test" parent="oemedical_conf_laboratory" /-->
 
-<!-- Diseases -->
+<!-- Diseases 
 
 		<menuitem id="oemedical_root_disease" name="Disease"
 			parent="oemedical_root_sub" sequence="10" />
+			-->
 
-<!--  Menu of Pathology-->
+<!--  Menu of Pathology
 
 		<menuitem id="oemedical_pathology_category" name=" Pathology Category"	
             parent="oemedical_root_disease" sequence="10"	
@@ -103,7 +101,7 @@
 
 		<menuitem id="oemedical_pathology_group" name=" Pathology Group" 
             parent="oemedical_root_disease" sequence="20"
-            action="act_open_oemedical_pathology_group_view" />
+            action="act_open_oemedical_pathology_group_view" />-->
 
 		<!--menuitem id="oemedical_root_disease_cat" name="Categories"
 			parent="oemedical_root_disease" sequence="100" />
@@ -112,22 +110,20 @@
 			parent="oemedical_root_disease_cat" sequence="10"
 			action="act_open_oemedical_disease_group_members_view" /-->
 
-<!-- Misc -->
+<!-- Misc 
 
 		<menuitem id="oemedical_root_misc" name="Misc"
 			parent="oemedical_root_sub" sequence="200" />
+			-->
 
-<!-- Occupation  ( Config/misc/Occupation) )--> 
+<!-- Occupation  ( Config/misc/Occupation) )
 
 		<menuitem id="oemedical_occupation" name=" Occupation"
 			parent="oemedical_root_misc" sequence="20"
 			action="act_open_oemedical_occupation_view" />
+			--> 
 
-<!-- Medical Specialty  ( Config/misc/specialty) )--> 
 
-		<menuitem id="oemedical_specialty" name=" Medical Specialty"
-            parent="oemedical_root_misc" sequence="10" 
-            action="act_open_oemedical_specialty_view" />
 
 <!-- Ethnicity  ( Config/misc/Ethnicity) )--> 
 
@@ -139,7 +135,7 @@
 
 
 
-<!--Medicaments-->
+<!--Medicaments
 
 		<menuitem id="oemedical_medicament_root" name="Medicaments"
 			parent="oemedical_root_sub" sequence="50" />
@@ -168,11 +164,11 @@
 
 		<menuitem id="oemedical_medicament_category" name=" Medicament Category"
 			parent="oemedical_medicament_root" sequence="100"
-			action="act_open_oemedical_medicament_category_view" />
+			action="act_open_oemedical_medicament_category_view" />-->
 
-<!--Hospital Centers-->
+<!--Hospital Centers
 
-		<!--menuitem id="oemedical_health_center_root" name="Health Center"
+		menuitem id="oemedical_health_center_root" name="Health Center"
 			parent="oemedical_root_sub" sequence="10" />
 
 		<menuitem id="oemedical_hospital_building" name=" Hospital Building"
@@ -203,17 +199,10 @@
 			parent="oemedical_health_center_root" sequence="70"
 			action="act_open_oemedical_operational_sector_view" /-->
 
-
-<!--    Physician Conf    -->
-
-        <menuitem name="Health Professionals" id="oemedical_conf_physicians"
-            parent="oemedical_root_sub" sequence="20" />
-
-		<menuitem id="oemedical_physician" name=" Physician" parent="oemedical_conf_physicians"
-			sequence="10" action="act_open_oemedical_physician_view" />
+			 
 
 
-<!--    Insurance     -->
+<!--    Insurance    
 
         <menuitem name="Insurances" id="oemedical_conf_insurances"
             parent="oemedical_root_misc" sequence="20" />
@@ -224,7 +213,7 @@
 
 		<menuitem id="oemedical_insurance_plan" name=" Insurance Plan"
 			parent="oemedical_conf_insurances" sequence="20"
-			action="act_open_oemedical_insurance_plan_view" />
+			action="act_open_oemedical_insurance_plan_view" /> -->
 
 
 
@@ -232,12 +221,14 @@
 		<!--menuitem id="oemedical_diagnostic_hypothesis" name=" Diagnostic Hypothesis"
 			parent="oemedical_root_sub" sequence="10"
 			action="act_open_oemedical_diagnostic_hypothesis_view" /-->
+			<!--
 		<menuitem id="oemedical_predure" name=" Procedure" parent="oemedical_root_sub"
 			sequence="10" action="act_open_oemedical_procedure_view" />
 
 		<menuitem id="oemedical_vaccination" name=" Vaccination"
 			parent="oemedical_root_sub" sequence="10"
 			action="act_open_oemedical_vaccination_view" />
+			-->
 
 
 	</data>

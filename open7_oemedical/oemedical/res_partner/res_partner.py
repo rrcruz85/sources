@@ -1,24 +1,4 @@
 # -*- coding: utf-8 -*-
-#/#############################################################################
-#
-#    Tech-Receptives Solutions Pvt. Ltd.
-#    Copyright (C) 2004-TODAY Tech-Receptives(<http://www.techreceptives.com>)
-#    Special Credit and Thanks to Thymbra Latinoamericana S.A.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#/#############################################################################
 from osv import osv
 from osv import fields
 
@@ -26,9 +6,6 @@ class ResPartner(osv.Model):
     _inherit = 'res.partner'
     
     _columns = {
-                #'insurance_plan_ids': fields.one2many('oemedical.insurance.plan',
-                #                                       'relation_id',
-                #                                       string='Insurance Plans', ),
                 'is_insurance_company': fields.boolean(string='Insurance Company',
                                                        help='Check if the party is an Insurance Company'),
                 'relationship': fields.char(size=256, string='Relationship'),
@@ -52,10 +29,8 @@ class ResPartner(osv.Model):
                 'is_person': fields.boolean(string='Person', help='Check if the party is a person.'),
                 'is_school': fields.boolean(string='School'),
                 'is_pharmacy': fields.boolean(string='Pharmacy', help='Check if the party is a Pharmacy'),
-                'ref': fields.char(size=256, string='SSN', help='Patient Social Security Number or equivalent'),
-                #'insurance': fields.one2many('oemedical.insurance', 'relation_id',
-                #                               string='Insurance', ),
-                }
+                'ref': fields.char(size=256, string='SSN', help='Patient Social Security Number or equivalent'),               
+    }
 
 ResPartner()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

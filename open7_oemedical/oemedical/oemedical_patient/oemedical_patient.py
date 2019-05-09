@@ -71,12 +71,6 @@ class OeMedicalPatient(osv.osv):
             last_name = ''
         if slastname == False:
             slastname = ''
-        
-        #warning = {
-        #    'title': 'Test',
-        #    'message': 'Notification Message',
-        #}    
-        
         res = {
             'value':{
                 'name' : first_name + ' ' + last_name + ' ' + slastname
@@ -120,7 +114,7 @@ class OeMedicalPatient(osv.osv):
         return res
     
     _columns = {
-        'partner_id': fields.many2one('res.partner', 'Related Partner', required=True,
+        'partner_id': fields.many2one('res.partner', 'Related Partner', required=True, domain =[('is_doctor', '=', True)],
                                       ondelete='cascade', help='Partner-related data of the patient'),
         'first_name': fields.char(size=256, string='Name', required=True),
         'last_name': fields.char(size=256, string='Last Name', required=True),
@@ -160,7 +154,10 @@ class OeMedicalPatient(osv.osv):
                                     help='Mark if the patient has died'),        
         'vaccinations': fields.one2many('oemedical.vaccination', 'patient_id', 'Vaccinations', ),
         'dob': fields.date(string='BirthDate'),
-        'age': fields.function(_get_age, type='integer', string='Age'),
+        'age': fields.function(_get_age, type='integer', string='Age', 
+            store={
+                'oemedical.patient': (lambda self, cr, uid, ids, c={}: ids, ['dob'], 10),                         
+            }),
         'marital_status': fields.selection([('s', 'Single'), ('m', 'Married'),
                                             ('w', 'Widowed'),
                                             ('d', 'Divorced'),
@@ -186,13 +183,13 @@ class OeMedicalPatient(osv.osv):
         'fec_fme': fields.date(string='Fecha de finalización de membresía :'),
         'loc_nac': fields.char(string='Lugar de Nacimiento :', size=70),
         
-        # Información de contacto
-        'contacto': fields.char('Persona de contacto', size=200),
-        'telefono': fields.char('Teléfono familiar / Contacto', size=64),
-        'celular': fields.char('Celular familiar / Contacto', size=64),
+        # Emergency contact
+        'emergency_person': fields.char('Full Names', size=200),
+        'emergency_phone': fields.char('Phone', size=64),
+        'emergency_mobile': fields.char('Mobile', size=200),        
 
-        'ced_ruc': fields.char('Nro. Identificación', size=15, required=False, readonly=False),
-        'tipo_persona': fields.char('Tipo Persona', size=15, required=False, readonly=False),
+        'ced_ruc': fields.char('Nro. Identificación', size=15, help='Formatos correctos:\nCédula: 10 dígitos\nRuc: 13 dígitos (debe terminar en 001)\nPasaporte: Sólo letras o dígitos'),
+        'tipo_persona': fields.char('Tipo Persona', size=15),
         'type_ced_ruc': fields.selection(
             [('ruc', 'Ruc'), ('cedula', 'Cédula'), ('pasaporte', 'Pasaporte')],
             string='Tipo identificación', select=True, readonly=False),
@@ -212,8 +209,7 @@ class OeMedicalPatient(osv.osv):
     _defaults = {
         'ref': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'),
         'tipo_persona': '6',
-        'type_ced_ruc': 'cedula',
-        'is_patient'  : True,
+        'type_ced_ruc': 'cedula',        
         'city'        : 'Quito',
         'country_id'  : _get_default_country,
         'state_id'    : _get_default_state
@@ -223,7 +219,7 @@ class OeMedicalPatient(osv.osv):
         partners = self.browse(cr, uid, ids)
         for partner in partners:             
             if partner.type_ced_ruc == 'pasaporte':
-                return True
+                return re.match(r'^[a-zA-Z0-9]+$', partner.ced_ruc)
             if partner.ced_ruc == '9999999999999':
                 return True             
             if partner.type_ced_ruc == 'ruc' and partner.tipo_persona == '9':
@@ -261,7 +257,7 @@ class OeMedicalPatient(osv.osv):
 
     def _check_mobile_contact_number(self, cr, uid, ids, context=None):        
         for obj in self.browse(cr, uid, ids, context=context):
-            if obj.celular and not re.match(r'^[0-9]{9,10}$', obj.celular):
+            if obj.emergency_mobile and not re.match(r'^[0-9]{9,10}$', obj.emergency_mobile):
                 return False
         return True
 
@@ -273,7 +269,7 @@ class OeMedicalPatient(osv.osv):
     
     def _check_contact_phone_number(self, cr, uid, ids, context=None):        
         for obj in self.browse(cr, uid, ids, context=context):
-            if obj.telefono and not re.match(r'^[0-9]{7,9}$', obj.telefono):
+            if obj.emergency_phone and not re.match(r'^[0-9]{7,9}$', obj.emergency_phone):
                 return False
         return True
     
@@ -291,23 +287,34 @@ class OeMedicalPatient(osv.osv):
                 return False
         return True
     
+    def _check_emergency_fullname(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.emergency_person and not re.match(r'^[a-zA-Z]+\D*([a-zA-Z]\D*)*$', obj.emergency_person):
+                return False
+        return True
+
     _constraints = [
-        (_check_ced_ruc, 'La cédula o el ruc esta incorrecto', ['ced_ruc']),
+        (_check_ced_ruc, 'El número de cédula, ruc o pasaporte esta incorrecto', ['ced_ruc']),
         (_check_full_name, 'El nombre esta incorrecto', ['first_name']),
         (_check_last_name, 'El primer apellido esta incorrecto', ['last_name']),
         (_check_slast_name, 'El segundo apellido esta incorrecto', ['slastname']),
         (_check_mobile_number, 'El número móvil esta incorrecto', ['mobile']),
-        (_check_mobile_contact_number, 'El número móvil de la persona de contacto esta incorrecto', ['celular']),
+        (_check_mobile_contact_number, 'El número móvil de la persona de contacto esta incorrecto', ['emergency_mobile']),
         (_check_phone_number, 'El número de teléfono esta incorrecto', ['phone']),
-        (_check_contact_phone_number, 'El número de teléfono de la persona de contacto esta incorrecto', ['telefono']),
+        (_check_contact_phone_number, 'El número de teléfono de la persona de contacto esta incorrecto', ['emergency_phone']),
         (_check_email, 'El correo electrónico esta incorrecto', ['email']),
-        (_check_age, 'La edad del paciente no puede ser cero', ['age'])
+        (_check_age, 'La edad del paciente no puede ser cero', ['age']),
+        (_check_emergency_fullname, 'Los nombres y apellidos de la persona de contacto estan incorrectos', ['emergency_person'])
     ]
     
     def create(self, cr, uid, vals, context=None):
-        #sequence = unicode (self.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'))
-        #vals['identification_code'] = sequence
+        vals['is_patient'] = True
         return super(OeMedicalPatient, self).create(cr, uid, vals, context=context)
+
+    def unlink(self, cr, uid, ids, context=None):
+        partners = [r.partner_id.id for r in self.browse(cr,uid, ids)]
+        self.pool.get('res.partner').write(cr, uid, partners, {'active': False});
+        result = super(OeMedicalPatient, self).unlink(cr, uid, ids, context=context)
     
 OeMedicalPatient()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

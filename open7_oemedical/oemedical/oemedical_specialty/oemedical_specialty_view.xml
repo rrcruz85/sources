@@ -1,56 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+		 
 		<record id="view_oemedical_specialty_tree" model="ir.ui.view">
 			<field name="name">oemedical.specialty.tree</field>
-			<field name="model">oemedical.specialty</field>
-			<field name="priority" eval="8" />
+			<field name="model">oemedical.specialty</field>			
 			<field name="arch" type="xml">
-				<tree string="Oemedical Specialty">
+				<tree string="Specialties">
 					<field name="code" />
 					<field name="name" />
+					<field name="parent_id" />				 
 				</tree>
 			</field>
-		</record>
+		</record>  
+
+		<record id="view_oemedical_specialty_structure_tree" model="ir.ui.view">
+            <field name="name">oemedical.specialty.tree</field>
+            <field name="model">oemedical.specialty</field>
+            <field name="field_parent">child_ids</field>
+            <field name="arch" type="xml">
+                <tree string="Specialties Structure">				    
+                    <field name="name"/>                     
+                </tree>
+            </field>
+        </record>
 
 		<record id="view_oemedical_specialty_form" model="ir.ui.view">
 			<field name="name">oemedical.specialty.form</field>
 			<field name="model">oemedical.specialty</field>
-			<field name="priority" eval="8" />
 			<field name="arch" type="xml">
-				<form string="Oemedical Specialty">
-					<field name="code" />
-					<field name="name" />
+				<form string="Specialty">
+				    <group colspan="4">
+						<field name="code" required="1"/>
+						<field name="name" required="1" />
+						<field name="parent_id" />
+						<newline/>
+						<field name="description" />
+					</group>
 				</form>
 			</field>
 		</record>
 
 		<record id="view_oemedical_specialty_search" model="ir.ui.view">
 			<field name="name">oemedical.specialty.search</field>
-			<field name="model">oemedical.specialty</field>
-			<field name="priority" eval="8" />
+			<field name="model">oemedical.specialty</field>			 
 			<field name="arch" type="xml">
-				<search string="Oemedical Specialty">
+				<search string="Specialties">
 					<field name="code" />
 					<field name="name" />
+					<field name="parent_id" />
 					<newline />
 					<group expand="0" string="Group By...">
-						<filter string="Code" domain="[]" context="{'group_by':'code'}" />
 						<filter string="Specialty" domain="[]" context="{'group_by':'name'}" />
+						<filter string="Parent Specialty" domain="[]" context="{'group_by':'parent_id'}" />
 					</group>
 				</search>
 			</field>
 		</record>
 
-		<record model="ir.actions.act_window" id="act_open_oemedical_specialty_view">
-			<field name="name">Specialty</field>
+		<record id="act_open_oemedical_specialty_view" model="ir.actions.act_window">
+			<field name="name">Specialties</field>
 			<field name="type">ir.actions.act_window</field>
 			<field name="res_model">oemedical.specialty</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="search_view_id" ref="view_oemedical_specialty_search" />
-			<field name="domain">[]</field>
-			<field name="context">{}</field>
+			<field name="search_view_id" ref="view_oemedical_specialty_search" />				 		 
+		</record>
+
+		<record id="act_open_oemedical_specialty_structure_view" model="ir.actions.act_window">
+            <field name="name">Specialties Structure</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">oemedical.specialty</field>
+            <field name="domain">[('parent_id','=',False)]</field>		 
+            <field name="view_type">tree</field>
+			<field name="view_mode">tree,form</field>			 
+        </record> 
+
+		<record id="act_open_oemedical_specialty_form_view" model="ir.actions.act_window">
+            <field name="name">Specialty</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">oemedical.specialty</field>           
+            <field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>					
+        </record>    
+
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_specialty_structure">
+			<field name="act_window_id" ref="act_open_oemedical_specialty_structure_view" />
+			<field name="sequence" eval="0" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_oemedical_specialty_structure_tree" />
+		</record>			
+        
+		<record model="ir.actions.act_window.view" id="act_open_oemedical_specialty_view_tree">
+			<field name="act_window_id" ref="act_open_oemedical_specialty_view" />
+			<field name="sequence" eval="10" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_oemedical_specialty_tree" />
 		</record>
 
 		<record model="ir.actions.act_window.view" id="act_open_oemedical_specialty_view_form">
@@ -59,13 +105,14 @@
 			<field name="view_mode">form</field>
 			<field name="view_id" ref="view_oemedical_specialty_form" />
 		</record>
-
-		<record model="ir.actions.act_window.view" id="act_open_oemedical_specialty_view_tree">
-			<field name="act_window_id" ref="act_open_oemedical_specialty_view" />
-			<field name="sequence" eval="10" />
-			<field name="view_mode">tree</field>
-			<field name="view_id" ref="view_oemedical_specialty_tree" />
-		</record>
+        <!--
+		<record id="ir_open_specialty" model="ir.values">
+            <field eval="'tree_but_open'" name="key2"/>
+            <field eval="'oemedical.specialty'" name="model"/>			 	 
+            <field name="name">Specialty</field>
+            <field eval="'ir.actions.act_window,%d'%act_open_oemedical_specialty_form_view" name="value"/>
+        </record>
+		-->
 
 	</data>
 </openerp>

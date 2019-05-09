@@ -97,6 +97,7 @@ OeMedical at a glance:
         'oemedical_signs_and_symptoms/oemedical_signs_and_symptoms_view.xml',
         'product_product/product_product_view.xml',
         'oemedical_physician/oemedical_physician_view.xml',
+        'oemedical_physician/oemedical_physician_specialty_view.xml',
         'oemedical_directions/oemedical_directions_view.xml',
         'oemedical_insurance/oemedical_insurance_view.xml',
         'res_partner/res_partner_view.xml',
