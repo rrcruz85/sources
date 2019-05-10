@@ -56,6 +56,8 @@
 									<field name="dob" required ="1" on_change="onchange_dob(dob)" style="width: 14%%;vertical-align: middle"/> 
 									<label for="age"/> 
 									<field name="age" style="width: 10%%;vertical-align: middle"/>
+									<label for="doctor_id"/> 
+									<field name="doctor_id" required ="1" style="width: 25%%;vertical-align: middle"/>
 								</div>								 				 									
 							</div>							 					 					 
                         </div>
@@ -86,6 +88,19 @@
 									</group>
 									<newline/>
 								</group> 
+                                <group string="Academic Information">                           
+									 								
+									<group>
+										<field name="graduated_institution_id" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_form', 'default_is_institution': True, 'default_customer': False, 'default_supplier': False, 'default_employee': False}" />
+										<field name="graduated_title"/> 
+										<field name="graduated_date"/> 	
+										<field name="academic_degree_id"/>									                                   
+									</group>
+									<group>
+										<field name="registered_institution_id" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_form', 'default_is_institution': True, 'default_customer': False, 'default_supplier': False, 'default_employee': False}"/>
+										<field name="registered_date"/> 	                                   
+									</group>									 
+								</group> 
 								<group string="Specialties">                            
 									<field name="specialty_ids" nolabel="1" context="{'physician_id': active_id}">
 									    <tree string="Physician Specialties">											 
@@ -106,7 +121,7 @@
 												    </div>
 													<div style="width: 75%%;display: inline; vertical-align: middle;margin-top:25px">
 														<label for="institution_id"/>
-														<field name="institution_id" required ="1" style="width: 75%%; vertical-align: middle"/>														 
+														<field name="institution_id" required ="1" style="width: 75%%; vertical-align: middle" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_form', 'default_is_institution': True, 'default_customer': False, 'default_supplier': False, 'default_employee': False}"/>														 
 												    </div>													 
 												</div>	
 												<div style="width: 100%%">                                                   
@@ -133,7 +148,15 @@
 										</form>
 									</field>
 								</group> 														
-							</page>        				
+							</page>  
+							<page string = "Work Information"> 
+							    <group>
+								      <field name="is_currently_working"/>
+									  <field name="work_institution_id" attrs="{'required':[('is_currently_working','=',True)]}"  context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_form','default_is_company': True, 'default_is_work': True, 'default_is_institution': False, 'default_customer': False, 'default_supplier': False, 'default_employee': False}"/> 
+									  <field name="work_since_date" attrs="{'required':[('is_currently_working','=',True)]}"/> 
+									  <field name="function" attrs="{'required':[('is_currently_working','=',True)]}"/>	
+								</group>
+							</page>     				
          				</notebook>
  					</sheet>
 				</form>
@@ -171,7 +194,6 @@
             </field>
         </record>
 
-
 		<record id="view_oemedical_physician_search" model="ir.ui.view">
 			<field name="name">oemedical.physician.search</field>
 			<field name="model">oemedical.physician</field>			 
@@ -182,10 +204,18 @@
 					<field name="mobile" />
 					<field name="email" />
 					<field name="specialty_id" />
+					<field name="doctor_id" />				 
+					<field name="nationality_id" />
+					<field name="academic_degree_id" />
+					<field name="work_institution_id" />
 					<field name="specialty_year_experience"/>
+					<field name="registered_institution_id"/>					 				
 					<newline />
 					<group expand="0" string="Group By...">
 						<filter string="Specialty" domain="[]"	context="{'group_by':'specialty_id'}" />
+						<filter string="Registered Institution" domain="[]"	context="{'group_by':'registered_institution_id'}" />
+						<filter string="Academic Degree" domain="[]" context="{'group_by':'academic_degree_id'}" />
+						<filter string="Work Institution" domain="[]" context="{'group_by':'work_institution_id'}" />					
 					</group>
 				</search>
 			</field>
@@ -201,22 +231,5 @@
 			<field name="domain">[]</field>
 			<field name="context">{}</field>
 		</record>
-
-        <!--
-		<record model="ir.actions.act_window.view" id="act_open_oemedical_physician_view_form">
-			<field name="act_window_id" ref="act_open_oemedical_physician_view" />
-			<field name="sequence" eval="20" />
-			<field name="view_mode">form</field>
-			<field name="view_id" ref="view_oemedical_physician_form" />
-		</record>
-
-		<record model="ir.actions.act_window.view" id="act_open_oemedical_physician_view_tree">
-			<field name="act_window_id" ref="act_open_oemedical_physician_view" />
-			<field name="sequence" eval="10" />
-			<field name="view_mode">tree</field>
-			<field name="view_id" ref="view_oemedical_physician_tree" />
-		</record>
-		-->
-
 	</data>
 </openerp>

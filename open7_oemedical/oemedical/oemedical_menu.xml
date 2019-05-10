@@ -21,10 +21,10 @@
 
 <!--Appointment-->
 
-		<menuitem id="oemedical_appoitment_root" name="Appoitment"
+		<menuitem id="oemedical_appoitment_root" name="Appoitments"
 			parent="oemedical_root" sequence="30" />
 
-		<menuitem id="oemedical_appointment" name=" Appointment"
+		<menuitem id="oemedical_appointment" name=" Appointments"
 			parent="oemedical_appoitment_root" sequence="10"
 			action="act_open_oemedical_appointment_view" />
 

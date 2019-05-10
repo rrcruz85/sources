@@ -54,7 +54,6 @@ class OeMedicalPhysician(osv.Model):
         'last_name': fields.char(size=256, string='Last Name', required=True),
         'slastname': fields.char(size=256, string='Second LastName', required=True),       
         'specialty_ids': fields.one2many('oemedical.physician.specialty', 'physician_id', string='Specialties'),
-        'institution_id': fields.many2one('res.partner', string='Institution', domain=[('is_institution', '=', True)], help='Instituion where she/he works' ),
         'nationality_id': fields.many2one('res.country', string='Nationality'),
         'specialty_id': fields.function(_get_primary_specialty,  type='many2one', relation="oemedical.specialty", string='Specialty', multi="specialty",
                 store={
@@ -78,6 +77,18 @@ class OeMedicalPhysician(osv.Model):
             store={
                 'oemedical.physician': (lambda self, cr, uid, ids, c={}: ids, ['dob'], 10),                         
             }),
+        'is_currently_working': fields.boolean(string='Is Currently Working'),
+        'work_institution_id': fields.many2one('res.partner', string='Work Institution', domain=['|',('is_institution', '=', True),('is_work', '=', True)], help='Institution where she/he works' ),
+        'work_since_date': fields.date(string='Work Date'),
+
+        'graduated_institution_id': fields.many2one('res.partner', string='Graduated Institution', domain=['|',('is_institution', '=', True), ('is_school', '=', True)], help='Institution where she/he gratuated' ),
+        'graduated_title': fields.char(string='Graduated Title', size = 256),
+        'graduated_date': fields.date(string='Graduated Date'),
+        'academic_degree_id': fields.many2one('res.partner.category', string='Academic Degree'),
+        
+        'doctor_id': fields.char(string='Medical Record Id', size = 32, help="The id of the doctor registered in the MS, Cenescyt or Equivalent"),
+        'registered_institution_id': fields.many2one('res.partner', string='Registered Institution', domain=['|',('is_institution', '=', True), ('is_school', '=', True)], help='Institution where she/he registered her/his title as a doctor' ),
+        'registered_date': fields.date(string='Registration Date', help="Date on which the doctor was registered"),
     }
 
     def _get_default_country(self, cr, uid, context=None):
@@ -196,6 +207,7 @@ class OeMedicalPhysician(osv.Model):
 
     def create(self, cr, uid, vals, context=None):             
         vals['is_doctor'] = True
+        vals['is_company'] = False
         return super(OeMedicalPhysician, self).create(cr, uid, vals, context=context)
     
     def unlink(self, cr, uid, ids, context=None):

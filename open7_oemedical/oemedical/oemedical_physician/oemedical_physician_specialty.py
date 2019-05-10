@@ -10,7 +10,7 @@ class OeMedicalPhysicianSpecialty(osv.Model):
     _columns = {
         'physician_id': fields.many2one('oemedical.physician', string='Health Professional',required=True),
         'specialty_id': fields.many2one('oemedical.specialty', string='Specialty',required=True),
-        'institution_id': fields.many2one('res.partner', string='Institution',required=True, domain=[('is_institution', '=', True)]),         
+        'institution_id': fields.many2one('res.partner', string='Institution',required=True, domain=['|',('is_institution', '=', True),('is_school', '=', True)]),         
         'date_start': fields.date(string='Date Start',required=True),     
         'date_end': fields.date(string='Date End',required=True),       
         'is_primary': fields.boolean(string='Is Primary'), 

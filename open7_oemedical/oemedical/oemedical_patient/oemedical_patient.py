@@ -61,33 +61,8 @@ class OeMedicalPatient(osv.osv):
     _inherits={
         'res.partner': 'partner_id',
     }
-
     _name='oemedical.patient'
-    
-    def onchange_name(self, cr, uid, ids, first_name, last_name, slastname, context=None):
-        if first_name == False:
-            first_name = ''
-        if last_name == False:
-            last_name = ''
-        if slastname == False:
-            slastname = ''
-        res = {
-            'value':{
-                'name' : first_name + ' ' + last_name + ' ' + slastname
-            }             
-        }
-        return res
-    
-    def onchange_dob(self, cr, uid, ids, dob, context=None):
-        res = {}
-        age = 0
-        if dob:
-            delta = relativedelta(datetime.now(), datetime.strptime(str(dob), '%Y-%m-%d'))
-            res['value'] = {
-                'age' : delta.years
-            }
-        return res   
-
+   
     def _get_age(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         age = 0
@@ -306,9 +281,34 @@ class OeMedicalPatient(osv.osv):
         (_check_age, 'La edad del paciente no puede ser cero', ['age']),
         (_check_emergency_fullname, 'Los nombres y apellidos de la persona de contacto estan incorrectos', ['emergency_person'])
     ]
+
+    def onchange_name(self, cr, uid, ids, first_name, last_name, slastname, context=None):
+        if first_name == False:
+            first_name = ''
+        if last_name == False:
+            last_name = ''
+        if slastname == False:
+            slastname = ''
+        res = {
+            'value':{
+                'name' : first_name + ' ' + last_name + ' ' + slastname
+            }             
+        }
+        return res
+    
+    def onchange_dob(self, cr, uid, ids, dob, context=None):
+        res = {}
+        age = 0
+        if dob:
+            delta = relativedelta(datetime.now(), datetime.strptime(str(dob), '%Y-%m-%d'))
+            res['value'] = {
+                'age' : delta.years
+            }
+        return res
     
     def create(self, cr, uid, vals, context=None):
         vals['is_patient'] = True
+        vals['is_company'] = False
         return super(OeMedicalPatient, self).create(cr, uid, vals, context=context)
 
     def unlink(self, cr, uid, ids, context=None):

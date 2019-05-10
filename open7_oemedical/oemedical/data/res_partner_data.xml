@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="snc" model="res.partner">
+            <field name="name">Senescyt</field>
+            <field name="is_company">False</field>
+            <field name="customer">False</field>
+            <field name="supplier">False</field>
+            <field name="employee">False</field>
+            <field name="is_institution">True</field>
+            <field name="active">True</field>
+            <field name="country_id" ref="base.ec"/>
+        </record>
+
+        <record id="snc" model="res.partner.category">
+            <field name="name">Maestria</field>
+            <field name="active">True</field>            
+        </record>
+
+         <record id="snc" model="res.partner.category">
+            <field name="name">Doctorado</field>
+            <field name="active">True</field>            
+        </record>
+
+    </data>
+</openerp>
