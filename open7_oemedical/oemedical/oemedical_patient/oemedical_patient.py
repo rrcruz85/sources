@@ -168,6 +168,7 @@ class OeMedicalPatient(osv.osv):
         'type_ced_ruc': fields.selection(
             [('ruc', 'Ruc'), ('cedula', 'Cédula'), ('pasaporte', 'Pasaporte')],
             string='Tipo identificación', select=True, readonly=False),
+        'nationality_id': fields.many2one('res.country', string='Nationality'),
     }
 
     def _get_default_country(self, cr, uid, context=None):
@@ -181,13 +182,17 @@ class OeMedicalPatient(osv.osv):
              return res and res[0] or False
         return False
 
+    def _get_ch_number(self, cr, uid, context=None):
+        return unicode(self.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'))
+
     _defaults = {
         'ref': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'),
         'tipo_persona': '6',
         'type_ced_ruc': 'cedula',        
         'city'        : 'Quito',
         'country_id'  : _get_default_country,
-        'state_id'    : _get_default_state
+        'state_id'    : _get_default_state,
+        'ref'         : _get_ch_number
     }
 
     def _check_ced_ruc(self, cr, uid, ids, context=None):
@@ -308,7 +313,7 @@ class OeMedicalPatient(osv.osv):
     
     def create(self, cr, uid, vals, context=None):
         vals['is_patient'] = True
-        vals['is_company'] = False
+        vals['is_company'] = False       
         return super(OeMedicalPatient, self).create(cr, uid, vals, context=context)
 
     def unlink(self, cr, uid, ids, context=None):

@@ -8,10 +8,12 @@
  				<tree string="Patients"> 
  					<field name="name" /> 
 					<field name="type_ced_ruc" /> 					 
- 					<field name="ced_ruc" />  					 
+ 					<field name="ced_ruc" />  
+					<field name="ref" string = "Clinic History"/>						 
  					<field name="age" />
  					<field name="sex" /> 
 					<field name="mobile" /> 
+					<field name="email" />
  				</tree> 
  			</field> 
  		</record> 
@@ -55,6 +57,8 @@
 									<field name="dob" required ="1" on_change="onchange_dob(dob)" style="width: 14%%;vertical-align: middle"/> 
 									<label for="age"/> 
 									<field name="age" style="width: 10%%;vertical-align: middle"/>
+									<label for="ref"/> 
+									<field string="Clinic History Number" name="ref" style="width: 20%%;vertical-align: middle"/>
 								</div>								 				 									
 							</div>
 							 					 
@@ -74,6 +78,9 @@
 										</div>
 										<field name="country_id" placeholder="Country" required="1" readonly="1" class="oe_no_button" options='{"no_open": True}'/>
 									    <field name="zip" placeholder="ZIP" style="width: 30%%"/>
+										<br/>
+										<field name="nationality_id" class="oe_no_button" placeholder="Nationality"
+											 style="width: 50%%" options='{"no_open": True}'/>
 									</div>									 
                                 </group>								
                                 <group>
@@ -114,6 +121,7 @@
                                         </h3>
                                         <ul>
 										    <li t-if="record.ced_ruc.raw_value"><b>Id:</b> <field name="ced_ruc"/></li>
+											<li t-if="record.ref.raw_value"><b>CH:</b> <field name="ref"/></li>											
 										    <li t-if="record.mobile.raw_value"><b>Mobile:</b> <field name="mobile"/></li>
                                         	<li t-if="record.age.raw_value"><b>Age:</b> <field name="age"/></li> 
                                         </ul>
@@ -133,13 +141,16 @@
  				<search string="Patients"> 
  					<field name="name" /> 
 					<field name="ced_ruc" /> 
-					<field name="mobile" />					 
+					<field name="mobile" />
+					<field name="ref"/>	
+					<field name="sex"/>
+					<field name="email" />					 
  				</search> 
  			</field> 
  		</record> 
 
  		<record model="ir.actions.act_window" id="act_open_oemedical_patient_view"> 
- 			<field name="name">Patient</field> 
+ 			<field name="name">Patients</field> 
  			<field name="type">ir.actions.act_window</field> 
  			<field name="res_model">oemedical.patient</field> 
  			<field name="view_type">form</field> 

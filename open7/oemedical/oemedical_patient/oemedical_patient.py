@@ -24,7 +24,6 @@ from osv import fields
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 
-
 class OeMedicalPatient(osv.osv):
     _inherits={
         'res.partner': 'partner_id',

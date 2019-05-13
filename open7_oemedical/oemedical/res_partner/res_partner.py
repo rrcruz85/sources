@@ -29,7 +29,7 @@ class ResPartner(osv.Model):
                 'is_person': fields.boolean(string='Person', help='Check if the party is a person.'),
                 'is_school': fields.boolean(string='School'),
                 'is_pharmacy': fields.boolean(string='Pharmacy', help='Check if the party is a Pharmacy'),
-                'ref': fields.char(size=256, string='SSN', help='Patient Social Security Number or equivalent'),               
+                'ref': fields.char(size=256, string='Clinic History Number', help='Patient Clinic History Number'),               
     }
 
 ResPartner()

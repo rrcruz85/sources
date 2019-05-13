@@ -5,7 +5,7 @@
 			<field name="name">oemedical.appointment.tree</field>
 			<field name="model">oemedical.appointment</field>			 
 			<field name="arch" type="xml">
-				<tree string="Appointments" colors="red:state=='canceled';green:state=='done';blue:state == 'draft'; yellow:state == 'confirm'; gray:state in ('waiting', 'in_consultation')">
+				<tree string="Appointments" colors="red:state=='canceled';green:state in ('in_consultation', 'done');blue:state == 'draft'; brown:state == 'confirm'; gray:state == 'waiting'">
 					<field name="appointment_time" invisible="1"/> 
 					<field name="start_date" /> 
 					<field name="start_time" widget="float_time"/> 
@@ -14,6 +14,12 @@
 					<field name="doctor_id" />
 					<field name="type" />
 					<field name="state" />
+					<button name="button_back" icon="gtk-go-back" states="confirm,waiting,in_consultation,done,canceled" string="Back"  type="object"/>
+                    <button name="button_confirm" icon="STOCK_YES" states="draft" string="Confirm" class="oe_highlight"  type="object" />
+                    <button name="button_waiting" icon="kanban-pause" states="confirm" string="Waiting" class="oe_highlight"  type="object"/>
+                    <button name="button_in_consultation" icon="gtk-execute" states="waiting" string="In Consultation" class="oe_highlight"  type="object" />
+                    <button name="button_done" icon="terp-camera_test" states="in_consultation" string="Done" class="oe_highlight"  type="object" />
+                    <button name="button_cancel" icon="terp-gtk-stop" states="confirm, in_consultation" string="Cancel"  type="object" />        
 				</tree>
 			</field>
 		</record>
@@ -37,14 +43,14 @@
                             <page string="General Information">
                                 <group col="4" colspan="4">
 					                <field name="patient_id" />
-									<field name="specialty_id"/>
-									<field name="doctor_id" domain="[('specialty_id','=', specialty_id)]"/>
+									<field name="specialty_id" on_change="onchange_specialty_id(specialty_id)"/>
+									<field name="doctor_id" on_change="onchange_patient_doctor(patient_id, doctor_id)"/>
 									<field name="type"/>								 
 					                <field name="start_date" />
 									<newline/>
 					                <field name="start_time" widget="float_time" />	
 									<newline/>										    
-									<field name="end_date" attrs="{'invisible':[('state','!=','done')]}"  />
+									<field name="end_date" attrs="{'invisible':[('state','!=','done')],'readonly':[('state','==','done')]}"  />
 									<field name="stimated_duration" />									 								
                                 </group>
                                 <group col="4" colspan="4" string="Comments">
