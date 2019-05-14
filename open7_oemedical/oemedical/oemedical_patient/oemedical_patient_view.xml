@@ -60,44 +60,58 @@
 									<label for="ref"/> 
 									<field string="Clinic History Number" name="ref" style="width: 20%%;vertical-align: middle"/>
 								</div>								 				 									
-							</div>
-							 					 
+							</div>							 					 
                         </div>
 						<notebook> 
-                        <page string="Contact Information"> 
-                            <group string="Primary Information">                            
-                                <group>
-									<label for="street" string="Address"/>
-									<div>
-										<field name="street" placeholder="Street..."/>
-										<field name="street2"/>
-										<div class="address_format">
-											<field name="city" placeholder="City" style="width: 48%%"/>
-											<field name="state_id" class="oe_no_button" domain="[('country_id','=',country_id)]" placeholder="State"
-											 style="width: 50%%" options='{"no_open": True}' context="{'country_id': country_id}"/>
-										</div>
-										<field name="country_id" placeholder="Country" required="1" readonly="1" class="oe_no_button" options='{"no_open": True}'/>
-									    <field name="zip" placeholder="ZIP" style="width: 30%%"/>
-										<br/>
-										<field name="nationality_id" class="oe_no_button" placeholder="Nationality"
-											 style="width: 50%%" options='{"no_open": True}'/>
-									</div>									 
-                                </group>								
-                                <group>
-                                    <field name="phone" placeholder="e.g. 02.3149120"/>
-                                    <field name="mobile" required="1" placeholder="e.g. 0955443322"/>                                    
-                                    <field name="email" required="1" widget="email"/>
-                                </group>
-								<newline/>								
-                                <group string="Emergency Person's Conctact">
-                                    <field name="emergency_person"/>
-                                    <field name="emergency_phone" placeholder="e.g. 02.3149120"/>
-                                    <field name="emergency_mobile" placeholder="e.g. 0955443322"/>
-                                </group>
-							  </group> 
-                                                     
-         				</page>        				
-         			</notebook> 
+	                        <page string="Contact Information"> 
+	                            <group string="Primary Information">                            
+	                                <group>
+										<label for="street" string="Address"/>
+										<div>
+											<field name="street" placeholder="Street..."/>
+											<field name="street2"/>
+											<div class="address_format">
+												<field name="city" placeholder="City" style="width: 48%%"/>
+												<field name="state_id" class="oe_no_button" domain="[('country_id','=',country_id)]" placeholder="State"
+												 style="width: 50%%" options='{"no_open": True}' context="{'country_id': country_id}"/>
+											</div>
+											<field name="country_id" placeholder="Country" required="1" readonly="1" class="oe_no_button" options='{"no_open": True}'/>
+										    <field name="zip" placeholder="ZIP" style="width: 30%%"/>
+											<br/>
+											<field name="nationality_id" class="oe_no_button" placeholder="Nationality"
+												 style="width: 50%%" options='{"no_open": True}'/>
+										</div>									 
+	                                </group>								
+	                                <group>
+	                                    <field name="phone" placeholder="e.g. 02.3149120"/>
+	                                    <field name="mobile" required="1" placeholder="e.g. 0955443322"/>                                    
+	                                    <field name="email" required="1" widget="email"/>
+	                                </group>
+									<newline/>								
+	                                <group string="Emergency Person's Conctact">
+	                                    <field name="emergency_person"/>
+	                                    <field name="emergency_phone" placeholder="e.g. 02.3149120"/>
+	                                    <field name="emergency_mobile" placeholder="e.g. 0955443322"/>
+	                                </group>
+								  </group>               
+	         				</page>     
+	         				<page string="Medical Information">
+	         				    <group>
+	         				        <field name="cardiopatia"/>
+	         				        <field name="diabetes"/>
+	         				        <field name="enf_car"/>	 
+	         				        <field name="hipertension"/>	         				  
+	         				        <field name="cancer"/>	         				  
+	         				        <field name="tuberculosis"/>	         				  
+	         				        <field name="enf_men"/>	         				  
+	         				        <field name="enf_inf"/>	         				  
+	         				        <field name="mal_for"/>	         				  
+	         				        <field name="otra"/>	         				  
+	         				        <field name="otr_des"/>	         				  
+	         				           				  
+	         				    </group>
+	         				</page>   				
+         				</notebook> 
  				</sheet> 
  				</form> 
  			</field> 

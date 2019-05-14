@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from osv import osv
-from osv import fields
+from openerp.osv import osv
+from openerp.osv import fields
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 import re
@@ -57,6 +57,7 @@ def _check_ruc(ced_ruc, position):
         return True
     else:
         return False
+
 class OeMedicalPatient(osv.osv):
     _inherits={
         'res.partner': 'partner_id',
@@ -70,13 +71,7 @@ class OeMedicalPatient(osv.osv):
         for record in self.browse(cr, uid, ids, context=context):
             if (record.dob):
                 dob = datetime.strptime(str(record.dob), '%Y-%m-%d')
-                if record.deceased:
-                    dod = datetime.strptime(record.dod, '%Y-%m-%d %H:%M:%S')
-                    delta = relativedelta(dod, dob)
-                    deceased = ' (deceased)'
-                else:
-                    delta = relativedelta(now, dob)
-                    deceased = ''
+                delta = relativedelta(now, dob)
                 years_months_days = delta.years # + 'y ' \ + str(delta.months) + 'm ' \ + str(delta.days) + 'd' + deceased
             else:
                 years_months_days = 0
@@ -178,8 +173,8 @@ class OeMedicalPatient(osv.osv):
     def _get_default_state(self, cr, uid, context=None):
         result = self.pool.get('res.country').search(cr, uid, [('code', '=', 'EC')])
         if result and result[0]:
-             res = self.pool.get('res.country.state').search(cr, uid, [('country_id', '=', result[0]),('code', '=', 'PIC')])
-             return res and res[0] or False
+            res = self.pool.get('res.country.state').search(cr, uid, [('country_id', '=', result[0]),('code', '=', 'PIC')])
+            return res and res[0] or False
         return False
 
     def _get_ch_number(self, cr, uid, context=None):
@@ -303,7 +298,6 @@ class OeMedicalPatient(osv.osv):
     
     def onchange_dob(self, cr, uid, ids, dob, context=None):
         res = {}
-        age = 0
         if dob:
             delta = relativedelta(datetime.now(), datetime.strptime(str(dob), '%Y-%m-%d'))
             res['value'] = {
@@ -319,7 +313,7 @@ class OeMedicalPatient(osv.osv):
     def unlink(self, cr, uid, ids, context=None):
         partners = [r.partner_id.id for r in self.browse(cr,uid, ids)]
         self.pool.get('res.partner').write(cr, uid, partners, {'active': False});
-        result = super(OeMedicalPatient, self).unlink(cr, uid, ids, context=context)
+        return super(OeMedicalPatient, self).unlink(cr, uid, ids, context=context)
     
 OeMedicalPatient()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
