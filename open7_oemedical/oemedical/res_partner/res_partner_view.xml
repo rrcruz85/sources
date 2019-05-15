@@ -79,5 +79,66 @@
             </field>
         </record>
 
+        <record id="view_res_partner_oemedical_inherit_person_form" model="ir.ui.view">
+            <field name="name">res.partner.form.person.inherit</field>
+            <field name="model">res.partner</field>           
+            <field name="arch" type="xml">
+                <form string="Person" version="7.0">
+                    <sheet>                    
+                        <div style="width: 100%%">
+                            <field name="image" style="height: 140px" widget='image' class="oe_left oe_avatar"/>
+							<div> 
+                                 <h1> 
+								    <field name="name" invisible="1"/> 									 								
+		                            <field name="first_name" default_focus="1" placeholder="Names" style="width: 40%%" required="1" /> 
+		                            <field name="last_name" placeholder="Last Name" style="width: 22.5%%" required="1" /> 
+		                            <field name="slastname" placeholder="S Last Name" style="width: 22.5%%" required="1" /> 
+	                            </h1> 								 
+                            </div>
+                            <br/>
+							<div style="width: 100%%;display: inline">					     
+								<div style="width: 15%%;display: inline; vertical-align: middle">
+									<label for="type_ced_ruc"/>
+									<field name="type_ced_ruc" required ="1" style="width: 10%%; vertical-align: middle"/>
+								</div>
+								<div style="width: 25%%;display: inline; vertical-align: middle">
+									<label for="ced_ruc"/>
+									<field name="ced_ruc" required ="1" style="width: 25%%; vertical-align: middle"/>
+								</div>                                 
+							</div>		                 
+                        </div>
+                        <group>
+                            <group> 
+                                <label for="street" string="Address"/>
+                                <div>                                
+                                    <field name="street" placeholder="Street..." />
+                                    <field name="street2" />
+                                    <div class="address_format">
+                                        <field name="city" placeholder="City" style="width: 40%%" />
+                                        <field name="state_id" class="oe_no_button" placeholder="State" style="width: 37%%" options='{"no_open": True}' on_change="onchange_state(state_id)"/>
+                                        <field name="zip" placeholder="ZIP" style="width: 20%%" />
+                                    </div>
+                                    <field name="country_id" required="1" placeholder="Country" class="oe_no_button" options='{"no_open": True}'/>
+                                </div>
+                                <field name="website" widget="url" placeholder="e.g. www.openerp.com"/>
+                            </group>
+                            <group>                           
+                                <field name="phone" placeholder="e.g. +32.81.81.37.00"/>
+                                <field name="mobile"/>
+                                <field name="fax"/>
+                                <field name="email" widget="email"/>                            
+                            </group>
+                        </group>
+
+                        <notebook colspan="4">                        
+                            <page string="Comments">
+                                <field name="comment" placeholder="Put an internal note..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
     </data>
 </openerp>

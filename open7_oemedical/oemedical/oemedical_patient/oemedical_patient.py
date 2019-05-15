@@ -86,10 +86,7 @@ class OeMedicalPatient(osv.osv):
     _columns = {
         'partner_id': fields.many2one('res.partner', 'Related Partner', required=True, domain =[('is_doctor', '=', True)],
                                       ondelete='cascade', help='Partner-related data of the patient'),
-        'first_name': fields.char(size=256, string='Name', required=True),
-        'last_name': fields.char(size=256, string='Last Name', required=True),
-        'slastname': fields.char(size=256, string='Second Lastname'),       
-        'photo': fields.binary(string='Picture'),
+        'ref': fields.char(size=256, string='Clinic History Number', help='Patient Clinic History Number'),
         'sex': fields.selection([('m', 'Male'), ('f', 'Female'), ], string='Gender', required=True),
         'blood_type': fields.selection([
             ('A', 'A'),
@@ -103,21 +100,21 @@ class OeMedicalPatient(osv.osv):
         'primary_care_doctor': fields.many2one('oemedical.physician', 'Primary Care Doctor',
                                                help='Current primary care / family doctor'),
         'childbearing_age': fields.boolean('Potential for Childbearing'),        
-        'evaluations': fields.one2many('oemedical.patient.evaluation', 'patient_id', string='Evaluations', ),        
+        'evaluations': fields.one2many('oemedical.patient.evaluation', 'patient_id', string='Evaluations'),        
         'critical_info': fields.text(string='Important disease, allergy or procedures information',
                                      help='Write any important information on the patient\'s disease, surgeries, allergies, ...'),
         'app_info': fields.text(string='Antecedentes Patológicos Personales',
                                 help='Enfermedades y padecimientos que haya tenido el paciente, ...'),
-        'cardiopatia': fields.boolean(string='1. Cardiopatía'),
-        'diabetes': fields.boolean(string='2. Diabetes'),
-        'enf_car': fields.boolean(string='3. Enfermedad Cardiovascular'),
-        'hipertension': fields.boolean(string='4. Hipertensión'),
-        'cancer': fields.boolean(string='5. Cancer'),
-        'tuberculosis': fields.boolean(string='6. Tuberculosis'),
-        'enf_men': fields.boolean(string='7. Enfermedad Mental'),
-        'enf_inf': fields.boolean(string='8. Enfermedad Infecciosa'),
-        'mal_for': fields.boolean(string='9. Mal Formación'),
-        'otra': fields.boolean(string='10. Otra'),
+        'cardiopatia': fields.boolean(string='Cardiopatía'),
+        'diabetes': fields.boolean(string='Diabetes'),
+        'enf_car': fields.boolean(string='Enfermedad Cardiovascular'),
+        'hipertension': fields.boolean(string='Hipertensión'),
+        'cancer': fields.boolean(string='Cancer'),
+        'tuberculosis': fields.boolean(string='Tuberculosis'),
+        'enf_men': fields.boolean(string='Enfermedad Mental'),
+        'enf_inf': fields.boolean(string='Enfermedad Infecciosa'),
+        'mal_for': fields.boolean(string='Mal Formación'),
+        'otra': fields.boolean(string='Otra'),
         'otr_des': fields.text(string='Descripción de otros antescedentes'),
         'apf_info': fields.text(string='Antecedentes Patológicos Familiares'),
         'diseases': fields.one2many('oemedical.patient.disease', 'patient_id', string='Diseases',
@@ -146,7 +143,7 @@ class OeMedicalPatient(osv.osv):
         'occupation': fields.many2one('oemedical.occupation', string='Occupation'),
         'aqu_info': fields.text(string='Antecedentes Quirúrgicos'),
         'tipo': fields.selection([('a', 'A'), ('b', 'B'), ('c', 'C')], 'Tipo'),
-        'referido_por': fields.char(string='Médico referente', size=60),
+        'referido_por': fields.many2one('res.partner', string='Refererido Por'),        
         'membresia': fields.selection([('a', 'Anual'), ('s', 'Semestral'), ('t', 'Trimestral'), ('m', 'Mensual')],
                                       'Tipo de membresia :'),
         'fec_ime': fields.date(string='Fecha de inicio de membresia :'),
@@ -156,13 +153,8 @@ class OeMedicalPatient(osv.osv):
         # Emergency contact
         'emergency_person': fields.char('Full Names', size=200),
         'emergency_phone': fields.char('Phone', size=64),
-        'emergency_mobile': fields.char('Mobile', size=200),        
+        'emergency_mobile': fields.char('Mobile', size=200),
 
-        'ced_ruc': fields.char('Nro. Identificación', size=15, help='Formatos correctos:\nCédula: 10 dígitos\nRuc: 13 dígitos (debe terminar en 001)\nPasaporte: Sólo letras o dígitos'),
-        'tipo_persona': fields.char('Tipo Persona', size=15),
-        'type_ced_ruc': fields.selection(
-            [('ruc', 'Ruc'), ('cedula', 'Cédula'), ('pasaporte', 'Pasaporte')],
-            string='Tipo identificación', select=True, readonly=False),
         'nationality_id': fields.many2one('res.country', string='Nationality'),
     }
 
@@ -181,13 +173,10 @@ class OeMedicalPatient(osv.osv):
         return unicode(self.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'))
 
     _defaults = {
-        'ref': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'),
-        'tipo_persona': '6',
-        'type_ced_ruc': 'cedula',        
+        'ref': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'),               
         'city'        : 'Quito',
         'country_id'  : _get_default_country,
-        'state_id'    : _get_default_state,
-        'ref'         : _get_ch_number
+        'state_id'    : _get_default_state,        
     }
 
     def _check_ced_ruc(self, cr, uid, ids, context=None):
@@ -307,6 +296,7 @@ class OeMedicalPatient(osv.osv):
     
     def create(self, cr, uid, vals, context=None):
         vals['is_patient'] = True
+        vals['is_person'] = True
         vals['is_company'] = False       
         return super(OeMedicalPatient, self).create(cr, uid, vals, context=context)
 

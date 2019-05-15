@@ -23,11 +23,11 @@
  			<field name="model">oemedical.patient</field> 
  			<field name="priority" eval="8" /> 
  			<field name="arch" type="xml"> 
- 			 <form string="Patient" version="7.0"> 
+ 			 	<form string="Patient" version="7.0"> 
                     <sheet> 
                         <div style="width: 100%%">
-                            <field name="photo" style="height: 140px" widget='image' class="oe_left oe_avatar"/> 
-                            <div> 
+                            <field name="image" style="height: 140px" widget='image' class="oe_left oe_avatar"/>
+							<div> 
                                  <h1> 
 								    <field name="name" invisible="1"/> 
 		                            <field name="first_name" default_focus="1" placeholder="Names" style="width: 40%%" required="1" on_change="onchange_name(first_name, last_name, slastname, context)" /> 
@@ -58,7 +58,7 @@
 									<label for="age"/> 
 									<field name="age" style="width: 10%%;vertical-align: middle"/>
 									<label for="ref"/> 
-									<field string="Clinic History Number" name="ref" style="width: 20%%;vertical-align: middle"/>
+									<field string="Clinic History Number" required="1" name="ref" style="width: 20%%;vertical-align: middle"/>
 								</div>								 				 									
 							</div>							 					 
                         </div>
@@ -77,9 +77,8 @@
 											</div>
 											<field name="country_id" placeholder="Country" required="1" readonly="1" class="oe_no_button" options='{"no_open": True}'/>
 										    <field name="zip" placeholder="ZIP" style="width: 30%%"/>
-											<br/>
-											<field name="nationality_id" class="oe_no_button" placeholder="Nationality"
-												 style="width: 50%%" options='{"no_open": True}'/>
+											<br/>											 
+											<field name="nationality_id" placeholder="Nationality" class="oe_no_button" options='{"no_open": True,"no_quick_create":True,"no_create_edit": True}'/>
 										</div>									 
 	                                </group>								
 	                                <group>
@@ -88,31 +87,63 @@
 	                                    <field name="email" required="1" widget="email"/>
 	                                </group>
 									<newline/>								
-	                                <group string="Emergency Person's Conctact">
+	                                <group string="Emergency Person's Contact">
 	                                    <field name="emergency_person"/>
 	                                    <field name="emergency_phone" placeholder="e.g. 02.3149120"/>
 	                                    <field name="emergency_mobile" placeholder="e.g. 0955443322"/>
 	                                </group>
+									<newline/>
+									<group>
+										<field name="referido_por" domain="[('is_patient','=', True),('id','!=', active_id)]" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_person_form','default_is_company': False, 'default_is_work': False, 'default_is_institution': False, 'default_customer': False, 'default_supplier': False, 'default_employee': False, 'default_is_person': True}"/>	
+									</group>								
+	                                <group string="General Information" colspan="4">
+	                                    <field name="general_info" nolabel="1"/>	                                     
+	                                </group>
 								  </group>               
 	         				</page>     
-	         				<page string="Medical Information">
-	         				    <group>
-	         				        <field name="cardiopatia"/>
-	         				        <field name="diabetes"/>
-	         				        <field name="enf_car"/>	 
-	         				        <field name="hipertension"/>	         				  
-	         				        <field name="cancer"/>	         				  
-	         				        <field name="tuberculosis"/>	         				  
-	         				        <field name="enf_men"/>	         				  
-	         				        <field name="enf_inf"/>	         				  
-	         				        <field name="mal_for"/>	         				  
-	         				        <field name="otra"/>	         				  
-	         				        <field name="otr_des"/>	         				  
-	         				           				  
-	         				    </group>
+	         				<page string="Medical Information"> 
+							    <div style="width: 100%%;display: inline; vertical-align: middle">
+								    <label for="blood_type"/>
+								    <field name="blood_type" style="width: 20%%;vertical-align: middle"/>
+									<label for="rh"/>	
+									<field name="rh" style="width: 20%%"/>	
+									<label for="marital_status"/>
+									<field name="marital_status" style="width: 20%%"/>
+									<br/><br/>
+									<label for="primary_care_doctor"/>
+									<field name="primary_care_doctor" style="width: 30%%; vertical-align: middle"/>
+								</div>
+								<br/>                                							     
+							    <group string="Antecedentes Patológicos Personales" colspan="4">									      
+									<field name="app_info" nolabel="1"/>									 
+								</group> 
+								<group string="Antecedentes Quirúrgicos" colspan="4">									      
+									<field name="aqu_info" nolabel="1"/>									 
+								</group>
+								<group string="Enfermedades o padecimientos" colspan="4">
+								    <group>									      
+										<field name="cardiopatia"/>
+										<field name="diabetes"/>
+										<field name="enf_car"/>	 
+										<field name="hipertension"/>											         				  
+										<field name="otra"/>
+									</group>									
+									<group>												          				  
+										<field name="cancer"/>	         				  
+										<field name="tuberculosis"/>	         				  
+										<field name="enf_men"/>	         				  
+										<field name="enf_inf"/>
+										<field name="mal_for"/>
+									</group>									 	
+								</group>
+								<label for="otr_des" attrs="{'invisible':[('otra','=',False)]}"/>
+								<field name="otr_des" nolabel="1" colspan="4" attrs="{'invisible':[('otra','=',False)]}"/>								 
+								<group string="Important disease, allergy or procedures information" colspan="4">									      
+									<field name="critical_info" nolabel="1"/>									 
+								</group> 				         
 	         				</page>   				
          				</notebook> 
- 				</sheet> 
+ 					</sheet> 
  				</form> 
  			</field> 
  		</record> 
@@ -128,14 +159,14 @@
                         <t t-name="kanban-box">
                             <div class="oe_kanban_content">
                                 <div class="oe_kanban_vignette oe_semantic_html_override">
-                                    <a type="open"><img t-att-src="kanban_image('oemedical.patient', 'photo', record.id.value)" width="150" height="110" class="oe_employee_picture"/></a>
+                                    <a type="open"><img t-att-src="kanban_image('oemedical.patient', 'image', record.id.value)" width="90" height="90" class="oe_employee_picture"/></a>
                                     <div class="oe_kanban_details">
-                                        <h3>
+                                        <h4>
                                             <a type="open"><field name="name"/></a>                                           
-                                        </h3>
+                                        </h4>
                                         <ul>
 										    <li t-if="record.ced_ruc.raw_value"><b>Id:</b> <field name="ced_ruc"/></li>
-											<li t-if="record.ref.raw_value"><b>CH:</b> <field name="ref"/></li>											
+											<li t-if="record.ref.raw_value"><b>HC:</b> <field name="ref"/></li>											
 										    <li t-if="record.mobile.raw_value"><b>Mobile:</b> <field name="mobile"/></li>
                                         	<li t-if="record.age.raw_value"><b>Age:</b> <field name="age"/></li> 
                                         </ul>
@@ -171,7 +202,7 @@
  			<field name="view_mode">kanban,tree,form</field> 
  			<field name="search_view_id" ref="view_oemedical_patient_search" /> 
  			<field name="domain">[]</field> 
- 			<field name="context">{}</field> 
+ 			<field name="context">{'default_is_patient': True, 'default_is_person': True}</field> 
  		</record> 
 
 		<record model="ir.actions.act_window.view" id="act_open_oemedical_patient_view_kanban"> 

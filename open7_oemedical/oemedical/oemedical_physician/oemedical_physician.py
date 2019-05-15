@@ -49,10 +49,7 @@ class OeMedicalPhysician(osv.Model):
 
     _columns = {
         'physician_id': fields.many2one('res.partner', string='Health Professional',required=True , help='Physician', 
-            ondelete='cascade', domain=[('is_doctor', '=', True)]),
-        'first_name': fields.char(size=256, string='First Name', required=True),
-        'last_name': fields.char(size=256, string='Last Name', required=True),
-        'slastname': fields.char(size=256, string='Second LastName', required=True),       
+            ondelete='cascade', domain=[('is_doctor', '=', True)]),               
         'specialty_ids': fields.one2many('oemedical.physician.specialty', 'physician_id', string='Specialties'),
         'nationality_id': fields.many2one('res.country', string='Nationality'),
         'specialty_id': fields.function(_get_primary_specialty,  type='many2one', relation="oemedical.specialty", string='Specialty', multi="specialty",
@@ -67,10 +64,6 @@ class OeMedicalPhysician(osv.Model):
                 }),
         'info': fields.text(string='Extra info'),
 
-        'ced_ruc': fields.char('Nro. Identificación', size=15, help='Formatos correctos:\nCédula: 10 dígitos\nRuc: 13 dígitos (debe terminar en 001)\nPasaporte: Sólo letras o dígitos'),
-        'tipo_persona': fields.char('Tipo Persona', size=15),
-        'type_ced_ruc': fields.selection([('ruc', 'Ruc'), ('cedula', 'Cédula'), ('pasaporte', 'Pasaporte')],
-            string='Tipo identificación', select=True, readonly=False),
         'sex': fields.selection([('m', 'Male'), ('f', 'Female'), ], string='Gender', required=True),
         'dob': fields.date(string='BirthDate'),
         'age': fields.function(_get_age, type='integer', string='Age', 
@@ -102,9 +95,7 @@ class OeMedicalPhysician(osv.Model):
              return res and res[0] or False
         return False
 
-    _defaults = {
-        'tipo_persona': '6',
-        'type_ced_ruc': 'cedula',        
+    _defaults = {               
         'city'        : 'Quito',
         'country_id'  : _get_default_country,
         'state_id'    : _get_default_state
@@ -207,6 +198,7 @@ class OeMedicalPhysician(osv.Model):
 
     def create(self, cr, uid, vals, context=None):             
         vals['is_doctor'] = True
+        vals['is_person'] = True
         vals['is_company'] = False
         return super(OeMedicalPhysician, self).create(cr, uid, vals, context=context)
     

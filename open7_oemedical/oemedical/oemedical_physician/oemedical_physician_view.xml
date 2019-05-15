@@ -175,14 +175,15 @@
                         <t t-name="kanban-box">
                             <div class="oe_kanban_content">
                                 <div class="oe_kanban_vignette oe_semantic_html_override">
-                                    <a type="open"><img t-att-src="kanban_image('oemedical.physician', 'image', record.id.value)" width="150" height="110" class="oe_employee_picture"/></a>
+                                    <a type="open"><img t-att-src="kanban_image('oemedical.physician', 'image', record.id.value)" width="90" height="90" class="oe_employee_picture"/></a>
                                     <div class="oe_kanban_details">
-                                        <h3>
+                                        <h4>
                                             <a type="open"><field name="name"/></a>                                           
-                                        </h3>
+                                        </h4>
                                         <ul>
 										    <li t-if="record.ced_ruc.raw_value"><b>Id:</b> <field name="ced_ruc"/></li>
-										    <li t-if="record.mobile.raw_value"><b>Mobile:</b> <field name="mobile"/></li>
+										    <li t-if="record.doctor_id.raw_value"><b>Doctor Id:</b> <field name="doctor_id"/></li>
+											<li t-if="record.mobile.raw_value"><b>Mobile:</b> <field name="mobile"/></li>
                                         	<li t-if="record.specialty_id.raw_value"><b>Esp:</b><field name="specialty_id"/></li> 
                                         </ul>
                                     </div>
@@ -228,8 +229,8 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">kanban,tree,form</field>
 			<field name="search_view_id" ref="view_oemedical_physician_search" />
-			<field name="domain">[]</field>
-			<field name="context">{}</field>
+			<field name="domain">[]</field>			 
+			<field name="context">{'default_is_doctor': True, 'default_is_person': True}</field> 
 		</record>
 	</data>
 </openerp>
