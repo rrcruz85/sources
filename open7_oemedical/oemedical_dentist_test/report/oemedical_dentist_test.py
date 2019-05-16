@@ -3828,7 +3828,7 @@ class oemedical_dentist_test_report(report_rml):
                                     <td></td><td></td>
                                     <td><para style="P220">ODONTOLOGO</para></td>
                                     <td><para style="P220_CENTER">""" + (tools.ustr(dentist_test.doctor.physician_id.name) if dentist_test.doctor and dentist_test.doctor.physician_id and dentist_test.doctor.physician_id.name else '') + """</para></td>
-                                    <td><para style="P220_CENTER">""" + (dentist_test.doctor.code if dentist_test.doctor and dentist_test.doctor.code else '') + """</para></td>
+                                    <td><para style="P220_CENTER">""" + (dentist_test.doctor.doctor_id if dentist_test.doctor and dentist_test.doctor.doctor_id else '') + """</para></td>
                                     
                                     <td><para style="P220">FIRMA</para></td>
                                     <td></td>

@@ -29,7 +29,8 @@
                             <field name="image" style="height: 140px" widget='image' class="oe_left oe_avatar"/>
 							<div> 
                                  <h1> 
-								    <field name="name" invisible="1"/> 
+								    <field name="id" invisible="1"/> 
+									<field name="name" invisible="1"/> 
 		                            <field name="first_name" default_focus="1" placeholder="Names" style="width: 40%%" required="1" on_change="onchange_name(first_name, last_name, slastname, context)" /> 
 		                            <field name="last_name" placeholder="Last Name" style="width: 22.5%%" required="1" on_change="onchange_name(first_name, last_name, slastname, context)" /> 
 		                            <field name="slastname" placeholder="S Last Name" style="width: 22.5%%" required="1" on_change="onchange_name(first_name, last_name, slastname, context)" /> 
@@ -94,7 +95,7 @@
 	                                </group>
 									<newline/>
 									<group>
-										<field name="referido_por" domain="[('is_patient','=', True),('id','!=', active_id)]" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_person_form','default_is_company': False, 'default_is_work': False, 'default_is_institution': False, 'default_customer': False, 'default_supplier': False, 'default_employee': False, 'default_is_person': True}"/>	
+										<field name="referido_por" domain="[('is_person','=', True),('id','!=', id)]" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_person_form','default_is_company': False, 'default_is_work': False, 'default_is_institution': False, 'default_customer': False, 'default_supplier': False, 'default_employee': False, 'default_is_person': True}"/>	
 									</group>								
 	                                <group string="General Information" colspan="4">
 	                                    <field name="general_info" nolabel="1"/>	                                     

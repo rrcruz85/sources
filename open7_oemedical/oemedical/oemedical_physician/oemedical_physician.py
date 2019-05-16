@@ -3,9 +3,7 @@ from osv import osv
 from osv import fields
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
-import re
-from ..oemedical_patient import oemedical_patient
-
+ 
 class OeMedicalPhysician(osv.Model):
     _name = 'oemedical.physician'
 
@@ -100,59 +98,7 @@ class OeMedicalPhysician(osv.Model):
         'country_id'  : _get_default_country,
         'state_id'    : _get_default_state
     }
-
-    def _check_ced_ruc(self, cr, uid, ids, context=None):
-        partners = self.browse(cr, uid, ids)
-        for partner in partners:             
-            if partner.type_ced_ruc == 'pasaporte':
-                return re.match(r'^[a-zA-Z0-9]+$', partner.ced_ruc)
-            if partner.ced_ruc == '9999999999999':
-                return True             
-            if partner.type_ced_ruc == 'ruc' and partner.tipo_persona == '9':
-                return oemedical_patient._check_ruc(partner.ced_ruc, partner.property_account_position.name)
-            else:
-                if partner.ced_ruc[:2] == '51':
-                    return True
-                else:
-                    return oemedical_patient._check_cedula(partner.ced_ruc)
-        return True
-
-    def _check_full_name(self, cr, uid, ids, context=None):
-        for obj in self.browse(cr, uid, ids, context=context):
-            if not re.match(r'^[a-zA-Z]+\D*[a-zA-Z]*$', obj.first_name):
-                return False
-        return True
-
-    def _check_last_name(self, cr, uid, ids, context=None):    
-        for obj in self.browse(cr, uid, ids, context=context):
-            if not re.match(r'^[a-zA-Z]+$', obj.last_name):
-                return False
-        return True
-
-    def _check_slast_name(self, cr, uid, ids, context=None):        
-        for obj in self.browse(cr, uid, ids, context=context):
-            if not re.match(r'^[a-zA-Z]+$', obj.slastname):
-                return False
-        return True
     
-    def _check_mobile_number(self, cr, uid, ids, context=None):        
-        for obj in self.browse(cr, uid, ids, context=context):
-            if not re.match(r'^[0-9]{9,10}$', obj.mobile):
-                return False
-        return True
-
-    def _check_phone_number(self, cr, uid, ids, context=None):        
-        for obj in self.browse(cr, uid, ids, context=context):
-            if obj.phone and not re.match(r'^[0-9]{7,9}$', obj.phone):
-                return False
-        return True
-    
-    def _check_email(self, cr, uid, ids, context=None):        
-        for obj in self.browse(cr, uid, ids, context=context):
-            if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', obj.email):
-                return False
-        return True
-
     def _check_age(self, cr, uid, ids, context=None):        
         for obj in self.browse(cr, uid, ids, context=context):            
             dob = datetime.strptime(str(obj.dob), '%Y-%m-%d')
@@ -161,16 +107,9 @@ class OeMedicalPhysician(osv.Model):
                 return False
         return True
 
-    _constraints = [
-        (_check_ced_ruc, 'El número de cédula, ruc o pasaporte esta incorrecto', ['ced_ruc']),
-        (_check_full_name, 'El nombre esta incorrecto', ['first_name']),
-        (_check_last_name, 'El primer apellido esta incorrecto', ['last_name']),
-        (_check_slast_name, 'El segundo apellido esta incorrecto', ['slastname']),
-        (_check_mobile_number, 'El número móvil esta incorrecto', ['mobile']),
-        (_check_phone_number, 'El número de teléfono esta incorrecto', ['phone']),
-        (_check_email, 'El correo electrónico esta incorrecto', ['email']),
-        (_check_age, 'La edad del paciente no puede ser cero', ['age']),
-    ]    
+    _constraints = [        
+        (_check_age, 'La edad del doctor no puede ser cero', ['age']),
+    ] 
 
     def onchange_name(self, cr, uid, ids, first_name, last_name, slastname, context=None):
         if first_name == False:
@@ -184,7 +123,7 @@ class OeMedicalPhysician(osv.Model):
                 'name' : first_name + ' ' + last_name + ' ' + slastname
             }             
         }
-        return res
+        return res   
 
     def onchange_dob(self, cr, uid, ids, dob, context=None):
         res = {}

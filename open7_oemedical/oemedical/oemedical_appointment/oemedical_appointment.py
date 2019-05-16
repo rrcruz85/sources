@@ -44,7 +44,7 @@ class OeMedicalAppointment(osv.Model):
         'doctor_id': fields.many2one('oemedical.physician',  string='Doctor', required=True), 
         'end_date': fields.datetime(string='End DateTime'),        
         'stimated_duration': fields.integer('Stimated Duration', help="Stimated Time in minutes [15-120] that the appointment last"),                
-        'comments': fields.text(string='Comments'),       
+        'motive': fields.text(string='Motive'),       
         'state': fields.selection([('draft', 'Draft'),('confirm', 'Confirm'),
             ('waiting', 'Wating'),('in_consultation', 'In consultation'),
             ('done', 'Done'),('canceled', 'Canceled')], string='State'),
