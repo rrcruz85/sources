@@ -30,7 +30,7 @@ class OeMedicalAppointment(osv.Model):
     _columns = {
         'patient_id': fields.many2one('oemedical.patient', string='Patient', required=True, select=True),
         'specialty_id': fields.many2one('oemedical.specialty', string='Specialty'),
-        'type': fields.selection([('c', 'Control Normal'),('cp', 'Control Periodico'),('u', 'Urgencia')], string='Type', required=True),
+        'type': fields.selection([('c', 'Control Normal'),('1c', 'Primer Control'),('2c', 'Segundo Control'),('cp', 'Control Periodico'),('u', 'Urgencia')], string='Type', required=True),
         'appointment_time': fields.function(_get_appointment_time, type='datetime', string='Appointment DateTime', 
             store={
                 'oemedical.appointment': (lambda self, cr, uid, ids, c={}: ids, ['start_date','start_time'], 10),                         
@@ -49,6 +49,35 @@ class OeMedicalAppointment(osv.Model):
             ('waiting', 'Wating'),('in_consultation', 'In consultation'),
             ('done', 'Done'),('canceled', 'Canceled')], string='State'),
         'history_ids' : fields.one2many('oemedical.appointment.history','appointment_id','History lines', states={'start':[('readonly',True)]}),
+        'is_planned'  : fields.boolean('Cita programada?'),
+
+        'info_diagnosis': fields.text(string='Enfermedad Actual'),
+
+        # Signos vitales y mediciones...
+        'pat_info': fields.char(size=256, string='Presion arterial'),
+        'ppm_info': fields.integer('Frecuencia cardiaca'),
+        'ppr_info': fields.integer('Frecuencia respiratoria'),
+        'tem_info': fields.float('Temperatura bucal', digits=(2,2)),
+        'tem2_info': fields.float('Temperatura axilar', digits=(2,2)),
+        'pes_info': fields.float('Peso (Kg)', digits=(3,2)),
+        'size_info': fields.float('Talla (m)', digits=(3,2)), 
+
+        'cardiopatia': fields.related('patient_id', 'cardiopatia', type='boolean', string='Cardiopatía'),  
+        'diabetes': fields.related('patient_id', 'diabetes', type='boolean', string='Diabetes'),
+        'enf_car': fields.related('patient_id', 'enf_car', type='boolean', string='Enfermedad Cardiovascular'),
+        'hipertension': fields.related('patient_id', 'hipertension', type='boolean', string='Hipertensión'),
+        'cancer': fields.related('patient_id', 'cancer', type='boolean', string='Cancer'),
+        'tuberculosis': fields.related('patient_id', 'tuberculosis', type='boolean', string='Tuberculosis'),
+        'enf_men': fields.related('patient_id', 'enf_men', type='boolean', string='Enfermedad Mental'),
+        'enf_inf': fields.related('patient_id', 'enf_inf', type='boolean', string='Enfermedad Infecciosa'),
+        'mal_for': fields.related('patient_id', 'mal_for', type='boolean', string='Mal Formación'),
+        'antibotic_allergic' : fields.related('patient_id', 'antibotic_allergic', type='boolean', string='Alergia a antibioticos'),
+        'anesthesia_allergic' : fields.related('patient_id', 'anesthesia_allergic', type='boolean',string='Alergia a anestesia'),
+        'hemorrhage' : fields.related('patient_id', 'hemorrhage', type='boolean', string='Hemorragia'),
+        'vih_sida' : fields.related('patient_id', 'vih_sida', type='boolean', string='VIH/SIDA'),        
+        'asma' : fields.related('patient_id', 'asma', type='boolean', string='Asma'),
+        'other': fields.related('patient_id', 'other', type='boolean', string='Otra'),
+        'others_antecedents': fields.related('patient_id', 'others_antecedents', type='text', string='Descripción de otros antescedentes'),        
     }
    
     _defaults = {         
@@ -100,14 +129,35 @@ class OeMedicalAppointment(osv.Model):
 
     def onchange_patient_doctor(self, cr, uid, ids, patient_id, doctor_id, context=None):
         res = {}
-        if patient_id and doctor_id: 
-            recordIds = self.search(cr,uid, [('patient_id', '=', patient_id),('doctor_id', '=', doctor_id)], order = "appointment_stimated_endtime")
-            if recordIds and recordIds[-1]: 
-                end_datetime = datetime.strptime(self.browse(cr, uid, recordIds[-1]).appointment_stimated_endtime, '%Y-%m-%d %H:%M:%S')      
-                end_datetime = end_datetime + timedelta(minutes = 5)
-                hour = end_datetime.hour
-                minutes = round(float(end_datetime.minute)/60, 2)              
-                res['value'] = {'start_date': str(end_datetime.date()), 'start_time': hour + minutes}
+        if patient_id:
+            res['value'] = {}
+            patient = self.pool.get('oemedical.patient').browse(cr, uid, patient_id)
+            res['value']['cardiopatia'] = patient.cardiopatia
+            res['value']['diabetes'] = patient.diabetes
+            res['value']['enf_car'] = patient.enf_car
+            res['value']['hipertension'] = patient.hipertension
+            res['value']['cancer'] = patient.cancer
+            res['value']['tuberculosis'] = patient.tuberculosis
+            res['value']['enf_men'] = patient.enf_men
+            res['value']['enf_inf'] = patient.enf_inf
+            res['value']['mal_for'] = patient.mal_for
+            res['value']['antibotic_allergic'] = patient.antibotic_allergic
+            res['value']['anesthesia_allergic'] = patient.anesthesia_allergic
+            res['value']['hemorrhage'] = patient.hemorrhage
+            res['value']['vih_sida'] = patient.vih_sida
+            res['value']['asma'] = patient.asma
+            res['value']['other'] = patient.other
+            res['value']['others_antecedents'] = patient.others_antecedents
+
+            if doctor_id:
+                recordIds = self.search(cr,uid, [('patient_id', '=', patient_id),('doctor_id', '=', doctor_id)], order = "appointment_stimated_endtime")
+                if recordIds and recordIds[-1]: 
+                    end_datetime = datetime.strptime(self.browse(cr, uid, recordIds[-1]).appointment_stimated_endtime, '%Y-%m-%d %H:%M:%S')      
+                    end_datetime = end_datetime + timedelta(minutes = 5)
+                    hour = end_datetime.hour
+                    minutes = round(float(end_datetime.minute)/60, 2)              
+                    res['value']['start_date'] = str(end_datetime.date())
+                    res['value']['start_time'] = hour + minutes
         return res
 
     def onchange_specialty_id(self, cr, uid, ids, specialty_id, context=None):

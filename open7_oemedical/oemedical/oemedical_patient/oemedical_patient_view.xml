@@ -114,20 +114,23 @@
 									<label for="primary_care_doctor"/>
 									<field name="primary_care_doctor" style="width: 30%%; vertical-align: middle"/>
 								</div>
-								<br/>                                							     
-							    <group string="Antecedentes Patológicos Personales" colspan="4">									      
+								<br/> 
+								<group string="Antecedentes Patológicos Personales y Familiares" colspan="4">									      
 									<field name="app_info" nolabel="1"/>									 
 								</group> 
 								<group string="Antecedentes Quirúrgicos" colspan="4">									      
 									<field name="aqu_info" nolabel="1"/>									 
-								</group>
+								</group> 
 								<group string="Enfermedades o padecimientos" colspan="4">
 								    <group>									      
 										<field name="cardiopatia"/>
 										<field name="diabetes"/>
 										<field name="enf_car"/>	 
-										<field name="hipertension"/>											         				  
-										<field name="otra"/>
+										<field name="hipertension"/>	
+										<field name="antibotic_allergic"/>	 
+										<field name="anesthesia_allergic"/>	
+										<field name="hemorrhage"/>										         				  
+										<field name="other"/>
 									</group>									
 									<group>												          				  
 										<field name="cancer"/>	         				  
@@ -135,11 +138,13 @@
 										<field name="enf_men"/>	         				  
 										<field name="enf_inf"/>
 										<field name="mal_for"/>
+										<field name="vih_sida"/>	 
+										<field name="asma"/>
 									</group>									 	
 								</group>
-								<label for="otr_des" attrs="{'invisible':[('otra','=',False)]}"/>
-								<field name="otr_des" nolabel="1" colspan="4" attrs="{'invisible':[('otra','=',False)]}"/>								 
-								<group string="Important disease, allergy or procedures information" colspan="4">									      
+								<label for="others_antecedents" attrs="{'invisible':[('other','=',False)]}"/>
+								<field name="others_antecedents" nolabel="1" colspan="4" attrs="{'invisible':[('other','=',False)]}"/>								 
+								<group string="Important disease or allergy information" colspan="4">									      
 									<field name="critical_info" nolabel="1"/>									 
 								</group> 				         
 	         				</page>   				

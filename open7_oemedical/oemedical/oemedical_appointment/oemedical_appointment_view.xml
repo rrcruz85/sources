@@ -43,18 +43,58 @@
 					        <field name="patient_id" />
 							<field name="specialty_id" on_change="onchange_specialty_id(specialty_id)"/>
 							<field name="doctor_id" on_change="onchange_patient_doctor(patient_id, doctor_id)"/>
-							<field name="type"/>								 
-					        <field name="start_date" />
+							<field name="type"/>
+							<field name="start_date" />
+							<field name="is_planned" />	
 							<newline/>
-					        <field name="start_time" widget="float_time" />	
+					        <field name="start_time" widget="float_time" />							
 							<newline/>										    
 							<field name="end_date" attrs="{'invisible':[('state','!=','done')],'readonly':[('state','==','done')]}"  />
 							<field name="stimated_duration" />									 								
                         </group>                                                
                         <notebook>
-                            <page string="General Information">                                
-                                <group col="4" string="Motive">
+                            <page string="Patient Information">  
+							    <group col="8" string="Signos vitales y mediciones" attrs="{'invisible':[('state','in',('draft','confirm','canceled'))]}">
+	                        		<group col="4">
+	                        			<field name="pat_info" col="1" colspan="4"/>
+		                                <field name="ppm_info" col="1" colspan="4"/>
+		                                <field name="ppr_info" col="1" colspan="4"/>
+	                        		</group>	                        		
+		                            <group col="2">
+		                                <field name="tem_info" col="1" colspan="2"/>
+		                                <field name="tem2_info" col="1" colspan="2"/>
+		                                <field name="pes_info" col="1" colspan="2"/>
+		                                <field name="size_info" col="1" colspan="2"/>
+		                            </group>
+	                            </group>                             
+                                <group col="4" string="Motive Of the Appointment">
 					                <field name="motive" colspan="4" nolabel="1"/>
+                                </group>								
+								<group string="Enfermedades o padecimientos" colspan="4">
+								    <group>									      
+										<field name="cardiopatia"/>
+										<field name="diabetes"/>
+										<field name="enf_car"/>	 
+										<field name="hipertension"/>	
+										<field name="antibotic_allergic"/>	 
+										<field name="anesthesia_allergic"/>	
+										<field name="hemorrhage"/>										         				  
+										<field name="other"/>
+									</group>									
+									<group>												          				  
+										<field name="cancer"/>	         				  
+										<field name="tuberculosis"/>	         				  
+										<field name="enf_men"/>	         				  
+										<field name="enf_inf"/>
+										<field name="mal_for"/>
+										<field name="vih_sida"/>	 
+										<field name="asma"/>
+									</group>									 	
+								</group>
+								<label for="others_antecedents" attrs="{'invisible':[('other','=',False)]}"/>
+								<field name="others_antecedents" nolabel="1" colspan="4" attrs="{'invisible':[('other','=',False)]}"/>								 
+								<group col="4" string="Enfermedad Actual">
+					                <field name="info_diagnosis" colspan="4" nolabel="1"/>
                                 </group>
                             </page>
                             <page string="History">
