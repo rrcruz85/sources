@@ -1,0 +1,50 @@
+
+.draggable, #t1, #t2, #t3, #t4, #t5{
+    cursor: pointer; 
+    font-weight: bold; 
+    font-size: 22px; 
+    font-family: sans-serif; 
+}
+
+.draggable { 
+    width: 25px; 
+    height: 25px;           
+    float: left;
+    text-align: center;
+}
+
+#droppable { 
+    width: 180px; 
+    height: 180px; 
+    background-color: white;
+} 
+
+.container{
+    display: flex;
+    flex-direction: column;     
+    justify-content: left;
+}
+
+#symbols{
+    display: flex;
+    flex-direction: column;  
+    margin-top: 15px;
+}
+
+#colorSelector{
+    margin-top: 15px;
+}
+
+
+#tt1, #tt2, #tt3, #tt4, #tt5 {     
+    font-weight: bold; 
+    font-size: 22px; 
+    font-family: sans-serif; 
+}
+
+#draggableOO{
+    font-weight: bold; 
+    font-size: 18px; 
+    font-family: sans-serif; 
+    width: 35px; 
+}
