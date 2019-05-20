@@ -3,11 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>jQuery UI Droppable - Default functionality</title>
-  <link rel="stylesheet" href="jquery.ui/css/smoothness/jquery-ui-1.9.1.custom.min.css"> 
-  <script src="jquery/jquery-1.8.3.js"></script>
-  <script src="jquery.ui/js/jquery-ui-1.9.1.custom.js"></script>
-  <script src="d3/d3.min.js"></script>
+  <title>Test</title>
+   
   
   
 </head>
@@ -16,30 +13,25 @@
   <div class="container">        
       
         <div id="cc18">
-            <svg id="theMap" width="100%" height="100%" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet">
-
-                <circle cx="400" cy="400" r="300" fill="#660" stroke="black"/>
-                <g id="arcs" transform="translate(400 400) rotate(-225) scale(1 -1)">
-                     
-                    <path d="M 0 0 L 300 0 A 300 300 0 0 0 300 0 L 0 0" fill="#ff0" opacity="0.5"/>
-                    <path d="M 0 0 L 300 0 A 300 300 0 0 0 299.4080185284815 -18.837155858794013 L 0 0" fill="#ff0" opacity="0.5"/>
-
-                   
-                </g>
-                <circle cx="400" cy="400" r="100" fill="#fff" stroke="black"/>
-              
-              </svg>
-              
-          
-        </div>
-        
-         
-         
-        
-
-         
-     
-    
+          <svg class="small" viewBox="0 0 200 200" preserveAspectRatio="xMidYMin meet">
+            <circle id="toaap" cx="100" cy="100" r="100" stroke="black" stroke-width="3" fill="red" />
+            <filter id="dropshadow" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> <!-- stdDeviation is how much to blur -->
+              <feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
+              <feMerge> 
+                <feMergeNode/> <!-- this contains the offset blurred image -->
+                <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+              </feMerge>
+            </filter>
+             <g transform="translate(100,100)" stroke="#000" stroke-width="2">
+            <path d="M0 0-70 70A99 99 0 0 1-70-70Z" fill="#f00"/>
+            <path d="M0 0-70-70A99 99 0 0 1 70-70Z" fill="#080"/>
+            <path d="M0 0 70-70A99 99 0 0 1 70 70Z" fill="#dd0"/>
+            <path d="M0 0 70 70A99 99 0 0 1-70 70Z" fill="#04e"/>
+          </g>
+          <circle id="top" cx="100" cy="100" r="30" stroke="black" stroke-width="3" fill="red" />
+        </svg>
+      </div>
    
   </div>
 
