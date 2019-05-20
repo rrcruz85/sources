@@ -471,7 +471,38 @@ $(function(){
 
     $("#btnClear").click(function(){
       resetAll();
-    });   
+    });
+    
+    $(".exportImageButton").on("click", function() {
+      var svg = document.getElementById("pieza18");
+      var rect = document.getElementById("mainFrame")
+      //rect.setAttribute("fill", "green")
+      var svgData = new XMLSerializer().serializeToString(svg);
+      var canvas = document.createElement("canvas");
+      var svgSize = svg.getBoundingClientRect();
+      canvas.width = svgSize.width * 3;
+      canvas.height = svgSize.height * 3;
+      canvas.style.width = svgSize.width;
+      canvas.style.height = svgSize.height;
+      var ctx = canvas.getContext("2d");
+      ctx.scale(3, 3);
+      var img = document.createElement("img");
+      img.setAttribute("src", "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData))));
+      //rect.setAttribute("fill", "red")
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+        var canvasdata = canvas.toDataURL("image/png", 1);
+    
+        var pngimg = '<img src="' + canvasdata + '">';
+        d3.select("#pngdataurl").html(pngimg);
+    
+        var a = document.createElement("a");
+        a.download = "download_img" + ".png";
+        a.href = canvasdata;
+        document.body.appendChild(a);
+        a.click();
+      };
+    })
         
 });	
 

@@ -1,4 +1,3 @@
-
 .draggable, #t1, #t2, #t3, #t4, #t5{
     cursor: pointer; 
     font-weight: bold; 
@@ -19,12 +18,6 @@
     background-color: white;
 } 
 
-.container{
-    display: flex;
-    flex-direction: column;     
-    justify-content: left;
-}
-
 #symbols{
     display: flex;
     flex-direction: column;  
@@ -34,7 +27,6 @@
 #colorSelector{
     margin-top: 15px;
 }
-
 
 #tt1, #tt2, #tt3, #tt4, #tt5 {     
     font-weight: bold; 
@@ -47,4 +39,60 @@
     font-size: 18px; 
     font-family: sans-serif; 
     width: 35px; 
+}
+
+#droppable,#pieza18,#mainFrame{
+    background-size: 120px 120px;
+}
+
+.container{
+    display: flex;
+    flex-direction: nowrap;  
+    text-align: center; 
+}
+
+.container span{
+    font-weight: bold;
+}
+
+div.spacing{
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+}
+
+.font{
+    width: 60px;
+    height: 60px;
+    border: 2px solid black
+}
+
+.column{
+    display: flex;
+    flex-direction: column;
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 40px;
+}
+
+.container-middle-left{
+    display: flex;
+    flex-direction: nowrap;  
+    text-align: center; 
+    margin-left: 120px;
+}
+
+.container-middle-right{
+    display: flex;
+    flex-direction: nowrap;  
+    text-align: center; 
+    margin-left: 240px;
+}
+
+
+.container-middle-left span,.container-middle-right span{
+    font-weight: bold;
 }

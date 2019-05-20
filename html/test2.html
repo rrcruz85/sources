@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Droppable - Default functionality</title>
+  <link rel="stylesheet" href="jquery.ui/css/smoothness/jquery-ui-1.9.1.custom.min.css">
+  <link rel="stylesheet" href="test.css">    
+   
+  <script src="jquery/jquery-1.8.3.js"></script>
+  <script src="jquery.ui/js/jquery-ui-1.9.1.custom.js"></script>
+  <script src="d3/d3.min.js"></script>
+  <script src="test2.js"></script> 
+  
+</head>
+<body>
+
+  <div class="container">
+
+    <div id="p18-droppable" width="60" height="60">
+      <span>18</span> 
+      <svg id="p18" width="60" height="60" style="float:left;display: inline-flex;">
+
+        <rect id="p18-mainframe" x="0" y="0" width="60" height="60" stroke="black" fill="transparent" stroke-width="3"/>   
+
+        <rect x="20" y="20" width="20" height="20" stroke="black" fill="transparent" stroke-width="2"/>          
+               
+        <line x1="0" x2="20" y1="0" y2="20" stroke="black" stroke-width="2"/>
+
+        <line x1="40" x2="60" y1="20" y2="0" stroke="black" stroke-width="2"/>
+
+        <line x1="0" x2="20" y1="60" y2="40" stroke="black" stroke-width="2"/>
+
+        <line x1="40" x2="60" y1="40" y2="60" stroke="black" stroke-width="2"/>
+
+        <polyline id="p18-c1" style="display:none" points="0 0,20 20,20 40,0 60,0 0" fill="transparent" stroke="black" stroke-width="2"/>
+
+        <polyline id="p18-c2" style="display:none" points="0 0,20 20,40 20,60 0,0 0" fill="transparent" stroke="black" stroke-width="2"/>
+
+        <polyline id="p18-c3" style="display:none" points="60 0,40 20,40 40,60 60,60 0" fill="transparent" stroke="black" stroke-width="2"/>
+
+        <polyline id="p18-c4" style="display:none" points="0 60,20 40,40 40,60 60,0 60" fill="transparent" stroke="black" stroke-width="2"/>
+
+        <polyline id="p18-c5" style="display:none" points="20 20,40 20,40 40,20 40,20 20" fill="transparent" stroke="black"/>
+        
+        <!--Texts-->
+        <text id="p18-t1" style="display:none" x="4" y="35" style="font-weight: bold">O</text>
+         
+        <text id="p18-t2" style="display:none" x="24" y="15" style="font-weight: bold">O</text>
+
+        <text id="p18-t3" style="display:none" x="43" y="35" style="font-weight: bold">O</text>
+        
+        <text id="p18-t4" style="display:none" x="24" y="55" style="font-weight: bold">O</text>
+        
+        <text id="p18-t5" style="display:none" x="24" y="35" style="font-weight: bold">O</text>
+       
+        <!--Cross 1-->
+        <line id="p18-x1-1" x1="5" x2="15" y1="25" y2="35" stroke="black" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+
+        <line id="p18-x1-2" x1="5" x2="15" y1="35" y2="25" stroke="black" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+         
+        <!--circle id="p18-x1-c1" cx="10" cy="30" r="2" fill="black"/ -->
+                  
+        <!-- Cross 2 -->
+        <line id="p18-x2-1" x1="25" x2="35" y1="5" y2="15" stroke="black" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+
+        <line id="p18-x2-2" x1="25" x2="35" y1="15" y2="5" stroke="black" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+
+        <!--circle id="p18-x2-c2" cx="30" cy="10" r="2" fill="black"/ -->
+        
+        <!--Cross 3--> 
+        <line id="p18-x3-1" x1="45" x2="55" y1="25" y2="35" stroke="black" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+
+        <line id="p18-x3-2" x1="45" x2="55" y1="35" y2="25" stroke="black" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+
+        <!--circle id="p18-x3-c3" cx="50" cy="30" r="2" fill="black"/-->
+        
+        <!--Cross 4-->
+        <line id="p18-x4-1" x1="25" x2="35" y1="45" y2="55" stroke="black" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+
+        <line id="p18-x4-2" x1="25" x2="35" y1="55" y2="45" stroke="black" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+
+        <!--circle id="p18-x4-c4" cx="30" cy="50" r="2" fill="black"/-->
+
+        <!--Cross 5-->
+        <line id="p18-x5-1" x1="25" x2="35" y1="25" y2="35" stroke="black" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+
+        <line id="p18-x5-2" x1="25" x2="35" y1="35" y2="25" stroke="black" stroke-width="1" stroke-dasharray="2,2" fill="none"/>
+         
+        <!--circle id="p18-x5-c5" cx="30" cy="30" r="2" fill="black"/ -->
+
+        <!--Caries-->
+        <rect id="p18-cc1" style="display:none" x="4" y="23" width="13" height="13" stroke="red" fill="red" stroke-width="1"/>
+
+        <text id="p18-tt1" style="display:none" x="4" y="35" style="font-weight: bold">O</text>
+         
+        <rect id="p18-cc2" style="display:none" x="24" y="4" width="13" height="13" stroke="red" fill="red" stroke-width="1"/> 
+        
+        <text id="p18-tt2" style="display:none" x="24" y="16" style="font-weight: bold">O</text>        
+
+        <rect id="p18-cc3" style="display:none" x="43" y="23" width="13" height="13" stroke="red" fill="red" stroke-width="1"/> 
+
+        <text id="p18-tt3" style="display:none" x="43" y="35" style="font-weight: bold">O</text>
+        
+        <rect id="p18-cc4" style="display:none" x="24" y="43" width="13" height="13" stroke="red" fill="red" stroke-width="1"/>
+        
+        <text id="p18-tt4" style="display:none" x="24" y="55" style="font-weight: bold">O</text>
+        
+        <rect id="p18-cc5" style="display:none" x="24" y="23" width="13" height="13" stroke="red" fill="red" stroke-width="1"/>
+
+        <text id="p18-tt5" style="display:none" x="24" y="35" style="font-weight: bold">O</text>
+
+        <!--Corona-->              
+        <text id="p18-tc1" style="display:none" x="0" y="55" style="font-weight: bold;font-size: 75px">C</text>
+           
+        <!--Extraccion-->
+        <line id="p18-ext1" style="display:none" x1="0" x2="60" y1="0" y2="60" stroke="red" stroke-width="8" fill="none"/>
+
+        <line id="p18-ext2" style="display:none" x1="0" x2="60" y1="60" y2="0" stroke="red" stroke-width="8" fill="none"/>
+         
+        <!--Pipe-->
+        <line id="p18-pipe" style="display:none" x1="30" x2="30" y1="0" y2="60" stroke="red" stroke-width="10" fill="none"/>
+       
+        <!--Protesis Fija-->
+        <line id="p18-pf1" style="display:none" x1="0" x2="60" y1="20" y2="20" stroke="red" stroke-width="8" fill="none"/>
+
+        <line id="p18-pf2" style="display:none" x1="0" x2="60" y1="40" y2="40" stroke="red" stroke-width="8" fill="none"/>
+ 
+      </svg>
+    </div>     
+    
+    <!--
+    <div style="width:200px !important;margin-left: 20px">
+        
+        <div id="colorSelector" style="display: inline-flex">
+          <span style="font-weight: bold">Color:</span>
+          <input id="red" type="radio" name="color" value="red"><span style="color: red;font-weight: bold">Red</span><br>
+          <input id="blue" type="radio" name="color" value="blue" checked="true"><span style="color: blue;font-weight: bold">Blue</span><br>
+        </div>
+         
+        <div id="symbols"> 
+            <div><span style="font-weight: bold;font-size: 22px; font-family: sans-serif">Symbols:</span></div>
+          
+            <div><input id="protTotal" type="radio" name="pt" value="pt"><span style="font-weight: bold">Prótesis Total?</span></div>
+            <div><span id="draggableO" class="draggable">O</span><span>:Carie</span></div>
+            <div><span id="draggableC" class="draggable">C</span><span>:Corona</span></div>
+            <div><span id="draggableF" class="draggable">F</span><span>:Retos Radio.</span></div>
+            <div><span id="draggableA" class="draggable">A</span><span>:Ausente</span></div>
+            <div><span id="draggableOO" class="draggable">O-O</span><span>:Prótesis fija</span></div>          
+            <div><span id="draggableK" class="draggable">K</span><span>:Calza</span></div>
+            <div><span id="draggableBSlash" class="draggable">/</span><span>:Restauración</span></div>
+            <div><span id="draggableAster" class="draggable">*</span><span>:Sellante</span></div>
+            <div><span id="draggableX" class="draggable">X</span><span>:Extracción</span></div>
+            <div><span id="draggablePipe" class="draggable">|</span><span>:Trat. Endodon.</span></div>        
+            <button id="btnClear">Clear Selection</button>          
+        </div>
+    </div>
+    -->
+    
+    <br/>
+    <button class="exportImageButton">export</button> 
+    <canvas width="60px" height="60px" />
+  
+  </div>
+
+
+</body>
+</html>

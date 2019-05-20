@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Droppable - Default functionality</title>
+  <link rel="stylesheet" href="jquery.ui/css/smoothness/jquery-ui-1.9.1.custom.min.css">
+  <link rel="stylesheet" href="test.css"> 
+  <script src="jquery/jquery-1.8.3.js"></script>
+  <script src="jquery.ui/js/jquery-ui-1.9.1.custom.js"></script>
+  <script src="d3/d3.min.js"></script>
+  <script src="test4.js"></script> 
+  
+</head>
+<body>
+
+  <div class="container">        
+      
+        <div id="cc18">
+
+          <svg id="main-circle" width="60" height="60">
+          
+            <circle id="c1" cx="30" cy="30" r="29" fill="transparent" stroke="black" stroke-width="2" />
+          
+            <circle id="c2" cx="30" cy="30" r="12" fill="transparent" stroke="black" stroke-width="2" />
+          
+            <line id="l1" x1="0" x2="60" y1="0" y2="60" stroke="black" stroke-width="2" fill="none" />
+          
+            <line id="l2" x1="0" x2="60" y1="60" y2="0" stroke="black" stroke-width="2" fill="none" />
+          
+            <!--Hidden Rest-->
+            <line id="l3" x1="0" x2="8.8" y1="0" y2="8.8" stroke="white" stroke-width="3" fill="none" />
+          
+            <line id="l4" x1="51.5" x2="60" y1="9" y2="0" stroke="white" stroke-width="3" fill="none" />
+          
+            <line id="l5" x1="0" x2="8.7" y1="60" y2="51.1" stroke="white" stroke-width="3" fill="none" />
+          
+            <line id="l6" x1="60" x2="51.3" y1="60" y2="51.2" stroke="white" stroke-width="3" fill="none" />
+          
+            <circle id="c3" cx="30" cy="30" r="11" stroke-width="2" fill="white" />
+          
+            <!--Cross 1-->
+            <line id="p18-x1-1" x1="5" x2="15" y1="25" y2="35" stroke="black" stroke-width="1" stroke-dasharray="2,2"
+              fill="none" />
+          
+            <line id="p18-x1-2" x1="5" x2="15" y1="35" y2="25" stroke="black" stroke-width="1" stroke-dasharray="2,2"
+              fill="none" />
+          
+            <!-- Cross 2 -->
+            <line id="p18-x2-1" x1="25" x2="35" y1="5" y2="15" stroke="black" stroke-width="1" stroke-dasharray="2,2"
+              fill="none" />
+          
+            <line id="p18-x2-2" x1="25" x2="35" y1="15" y2="5" stroke="black" stroke-width="1" stroke-dasharray="2,2"
+              fill="none" />
+          
+            <!--Cross 3-->
+            <line id="p18-x3-1" x1="45" x2="55" y1="25" y2="35" stroke="black" stroke-width="1" stroke-dasharray="2,2"
+              fill="none" />
+          
+            <line id="p18-x3-2" x1="45" x2="55" y1="35" y2="25" stroke="black" stroke-width="1" stroke-dasharray="2,2"
+              fill="none" />
+          
+            <!--Cross 4-->
+            <line id="p18-x4-1" x1="25" x2="35" y1="45" y2="55" stroke="black" stroke-width="1" stroke-dasharray="2,2"
+              fill="none" />
+          
+            <line id="p18-x4-2" x1="25" x2="35" y1="55" y2="45" stroke="black" stroke-width="1" stroke-dasharray="2,2"
+              fill="none" />
+          
+            <!--Cross 5-->
+            <line id="p18-x5-1" x1="25" x2="35" y1="25" y2="35" stroke="black" stroke-width="1" stroke-dasharray="2,2"
+              fill="none" />
+          
+            <line id="p18-x5-2" x1="25" x2="35" y1="35" y2="25" stroke="black" stroke-width="1" stroke-dasharray="2,2"
+              fill="none" />
+
+             <!--Texts-->
+             <text id="p18-t1" style="display:none" x="4" y="35" style="font-weight: bold; font-family: sans-serif">O</text>
+          
+             <text id="p18-t2" style="display:none" x="24" y="15" style="font-weight: bold">O</text>
+           
+             <text id="p18-t3" style="display:none" x="43" y="35" style="font-weight: bold">O</text>
+           
+             <text id="p18-t4" style="display:none" x="24" y="55" style="font-weight: bold">O</text>
+           
+             <text id="p18-t5" style="display:none" x="24" y="35" style="font-weight: bold">O</text>
+
+             <!--path d="M 9.2 10.5 A 30 30, 0, 0, 0, 9.2 49.5 L 30 30 m 9.2 20.5 z" fill="green"/ -->    
+             
+             <path d="M 9.2 10.5 
+                      A 30 30, 0, 0, 0, 9.2 49.5 
+                      L 20.3 21.7 
+                      A 30 30, 0, 0, 0, 9.2 49.5                   
+                      m 9.2 20.5 z" fill="green"/>     
+
+          </svg>
+        </div>
+        
+         
+        <div>
+            <!--
+            <svg class="small" viewBox="0 0 200 200" preserveAspectRatio="xMidYMin meet">
+                <use xlink:href="#viewBoxBorder"/>
+                <filter id="dropshadow" height="130%">
+                  <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>  
+                  <feOffset dx="2" dy="2" result="offsetblur"/> 
+                  <feMerge> 
+                    <feMergeNode/> 
+                    <feMergeNode in="SourceGraphic"/>  
+                  </feMerge>
+                </filter>
+                <g transform="translate(100,100)" stroke="#000" stroke-width="2" style="filter:url(#dropshadow)">
+                    <path d="M0 0-70 70A99 99 0 0 1-70-70Z" fill="#f00"/>
+                    <path d="M0 0-70-70A99 99 0 0 1 70-70Z" fill="#080"/>
+                    <path d="M0 0 70-70A99 99 0 0 1 70 70Z" fill="#dd0"/>
+                    <path d="M0 0 70 70A99 99 0 0 1-70 70Z" fill="#04e"/>
+                </g>
+                <circle id="top" cx="100" cy="100" r="30" stroke="black" stroke-width="3" fill="red" />
+            </svg>
+          -->
+
+
+        </div>
+        
+
+        <div style="width:200px !important;margin-left: 20px">
+        
+          <div id="colorSelector" style="display: inline-flex">
+            <span style="font-weight: bold">Color:</span>
+            <input id="red" type="radio" name="color" value="red"><span style="color: red;font-weight: bold">Red</span><br>
+            <input id="blue" type="radio" name="color" value="blue" checked="true"><span style="color: blue;font-weight: bold">Blue</span><br>
+          </div>
+           
+          <div id="symbols"> 
+              <div><span style="font-weight: bold;font-size: 22px; font-family: sans-serif">Symbols:</span></div>
+            
+              <div><input id="protTotal" type="radio" name="pt" value="pt"><span style="font-weight: bold">Prótesis Total?</span></div>
+              <div><span id="draggableO" class="draggable">O</span><span>:Carie</span></div>
+              <div><span id="draggableC" class="draggable">C</span><span>:Corona</span></div>
+              <div><span id="draggableF" class="draggable">F</span><span>:Retos Radio.</span></div>
+              <div><span id="draggableA" class="draggable">A</span><span>:Ausente</span></div>
+              <div><span id="draggableOO" class="draggable">O-O</span><span>:Prótesis fija</span></div>          
+              <div><span id="draggableK" class="draggable">K</span><span>:Calza</span></div>
+              <div><span id="draggableBSlash" class="draggable">/</span><span>:Restauración</span></div>
+              <div><span id="draggableAster" class="draggable">*</span><span>:Sellante</span></div>
+              <div><span id="draggableX" class="draggable">X</span><span>:Extracción</span></div>
+              <div><span id="draggablePipe" class="draggable">|</span><span>:Trat. Endodon.</span></div>        
+              <button id="btnClear">Clear Selection</button>          
+          </div>
+      </div>
+     
+    
+   
+  </div>
+
+
+</body>
+</html>

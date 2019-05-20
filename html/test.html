@@ -9,15 +9,15 @@
    
   <script src="jquery/jquery-1.8.3.js"></script>
   <script src="jquery.ui/js/jquery-ui-1.9.1.custom.js"></script>
-  <script src="test.js"></script>
+  <script src="d3/d3.min.js"></script>
+  <script src="test.js"></script> 
   
 </head>
 <body>
 
   <div class="container">
-
+     
     <div id="droppable" width="180" height="180">
-
       <svg id="pieza18" width="180" height="180" style="float:left;display: inline-flex;">
 
         <rect id="mainFrame" x="0" y="0" width="180" height="180" stroke="black" fill="transparent" stroke-width="3"/>   
@@ -127,7 +127,9 @@
 
 
       </svg>
-    </div> 
+    </div>     
+     
+    <br/>
     
     <div style="width:300px !important;margin-left: 30px">
         
@@ -155,7 +157,11 @@
           
           <button id="btnClear">Clear Selection</button>          
         </div>
-    </div> 
+    </div>
+    
+    <br/><br/><br/>
+    <button class="exportImageButton">export</button> 
+    <canvas width="180px" height="180px" />
   
   </div>
 
