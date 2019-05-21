@@ -17,15 +17,21 @@ $(function(){
     $("#draggablePipe").draggable();
     $("#draggableOO").draggable();
 
-    var clearAll = function(){
-      $('#p18-c1').css("display","none");
-      $('#p18-c2').css("display","none");
-      $('#p18-c3').css("display","none");
-      $('#p18-c4').css("display","none");
-      $('#p18-c5').css("display","none");
-      $('#p18-ext1').css("display","none");
-      $('#p18-ext2').css("display","none");
-      $('#p18-pipe').css("display","none");     
+    var toogleCross = function(zone, show){
+      var style = show ? 'inline' : 'none';
+
+      $('#p18-x' + zone + '-1').css("display", style);
+      $('#p18-x' + zone + '-2').css("display", style);
+      $('#p18-x' + zone + '-c' + zone).css("display", style);
+    }
+
+    var clearAll = function(show){
+       
+      $('#ool1').css("display","none");
+      $('#ool2').css("display","none");
+      $('#lext1').css("display","none");
+      $('#lext2').css("display","none");
+      $('#pipe1').css("display","none");     
       
       $("#p18-t1").html("");
       $("#p18-t2").html("");
@@ -33,123 +39,180 @@ $(function(){
       $("#p18-t4").html("");
       $("#p18-t5").html("");
 
-      $('#p18-x1-1').css("display", "none");
-      $('#p18-x1-2').css("display", "none");
-      $('#p18-x1-c1').css("display", "none");
+      toogleCross('1', show);
+      toogleCross('2', show);
+      toogleCross('3', show);
+      toogleCross('4', show);
+      toogleCross('5', show);
 
-      $('#p18-x2-1').css("display", "none");
-      $('#p18-x2-2').css("display", "none");
-      $('#p18-x2-c2').css("display", "none");
-
-      $('#p18-x3-1').css("display", "none");
-      $('#p18-x3-2').css("display", "none");
-      $('#p18-x3-c3').css("display", "none");
-
-      $('#p18-x4-1').css("display", "none");
-      $('#p18-x4-2').css("display", "none");
-      $('#p18-x4-c4').css("display", "none");
-
-      $('#p18-x5-1').css("display", "none");
-      $('#p18-x5-2').css("display", "none");
-      $('#p18-x5-c5').css("display", "none");
-
-      $('#p18-mainframe').attr("stroke-width", 3);
-      $('#p18-mainframe').attr("stroke", "black");
-
-      $('#p18-cc1').css('display','none');
-      $('#p18-tt1').css('display','none');
-
-      $('#p18-cc2').css('display','none');
-      $('#p18-tt2').css('display','none');
-
-      $('#p18-cc3').css('display','none');
-      $('#p18-tt3').css('display','none');
-
-      $('#p18-cc4').css('display','none');
-      $('#p18-tt4').css('display','none');
-
-      $('#p18-cc5').css('display','none');
-      $('#p18-tt5').css('display','none');
+      $('#p18-t1').css("display","none"); 
+      $('#p18-t2').css("display","none"); 
+      $('#p18-t3').css("display","none"); 
+      $('#p18-t4').css("display","none"); 
+      $('#p18-t5').css("display","none");
       
-      $('#p18-pf1').css('display','none');      
-      $('#p18-pf2').css('display','none');
+      $('#s1').css("display","none"); 
+      $('#s2').css("display","none"); 
+      $('#s3').css("display","none"); 
+      $('#s4').css("display","none");
+      $('#c4').css("display","none");
+      $('#p18-x6-1').css("display","none");
+      $('#p18-x6-2').css("display","none");
+     
+      $('#cc1').css("display","none");
+      $('#cc2').css("display","none");
+      $('#cc3').css("display","none");
+      $('#cc4').css("display","none");
+      $('#cc5').css("display","none");
+
+      $('#lext1').css("display","none");
+      $('#lext2').css("display","none");
+
+      $('#c1').attr("stroke-width", 2);
+      $('#c1').attr("stroke", "black");      
       
+    }    
+
+    var showCarie = function (zone) {
+     
+      $('#p18-t' + zone).css("display", "none");     
+      toogleCross(zone, false);
+
+      if(zone == '5'){  
+        $('#c4').attr("fill", "white");      
+        $('#c4').css("display", "inline");
+        $('#p18-x6-1').css("display", "none");
+        $('#p18-x6-2').css("display", "none");
+      }
+      else{
+        $('#s' + zone).css("display", "none");
+      }
+
+      $('#cc' + zone).attr("fill", selectedColor);       
+      $('#cc' + zone).css("display", "inline");
     }
 
-    var resetAll = function(){
-      $('#p18-c1').css("display","none");
-      $('#p18-c2').css("display","none");
-      $('#p18-c3').css("display","none");
-      $('#p18-c4').css("display","none");
-      $('#p18-c5').css("display","none");
-      $('#p18-ext1').css("display","none");
-      $('#p18-ext2').css("display","none");
+    var showCorona = function () {
 
-      $("#p18-t1").html("");
-      $("#p18-t2").html("");
-      $("#p18-t3").html("");
-      $("#p18-t4").html("");
-      $("#p18-t5").html("");
-      
-      $('#p18-x1-1').css("display", "inline");
-      $('#p18-x1-2').css("display", "inline");
-      $('#p18-x1-c1').css("display", "inline");
+      clearAll(false);
+      existSpecialSymbol = true;
 
-      $('#p18-x2-1').css("display", "inline");
-      $('#p18-x2-2').css("display", "inline");
-      $('#p18-x2-c2').css("display", "inline");
+      $('#p18-t1').attr("fill", selectedColor);
+      $('#p18-t1').attr("x", 3);
+      $('#p18-t1').attr("y", 58);
 
-      $('#p18-x3-1').css("display", "inline");
-      $('#p18-x3-2').css("display", "inline");
-      $('#p18-x3-c3').css("display", "inline");
+      $('#p18-t1').html('C');
+      $('#p18-t1').css({
+        'font-family': 'sans-serif',
+        'font-weight': 'bold',
+        'font-size': '75px',
+        'display': 'inline'
+      });
 
-      $('#p18-x4-1').css("display", "inline");
-      $('#p18-x4-2').css("display", "inline");
-      $('#p18-x4-c4').css("display", "inline");
-
-      $('#p18-x5-1').css("display", "inline");
-      $('#p18-x5-2').css("display", "inline");
-      $('#p18-x5-c5').css("display", "inline");
-
-      $('#p18-tc1').css("display", "none");
-      $('#p18-pipe').css("display", "none");
-      $('#p18-mainframe').attr("stroke-width", 3);
-      $('#p18-mainframe').attr("stroke", "black");
-
-      $('#p18-cc1').css('display','none');
-      $('#p18-tt1').css('display','none');
-
-      $('#p18-cc2').css('display','none');
-      $('#p18-tt2').css('display','none');
-
-      $('#p18-cc3').css('display','none');
-      $('#p18-tt3').css('display','none');
-
-      $('#p18-cc4').css('display','none');
-      $('#p18-tt4').css('display','none');
-
-      $('#p18-cc5').css('display','none');
-      $('#p18-tt5').css('display','none');
-      
-      $('#p18-pf1').css('display','none');      
-      $('#p18-pf2').css('display','none');
+      $("#draggableC").css({
+        left: 0,
+        top: 0
+      });
     }
 
-    var showCarie = function (elementId) {
-      $(elementId).attr("fill", selectedColor);
-      $(elementId).attr("stroke-width", 8);
-      $(elementId).attr("stroke", selectedColor);
-      $(elementId).html("O");
-      $(elementId).css("display", "inline");
+    var showExtraccion = function () {
+
+      clearAll(false);
+      existSpecialSymbol = true;
+     
+      $('#lext1').attr("stroke", selectedColor);
+      $('#lext1').css('display','inline');
+      
+      $('#lext2').attr("stroke", selectedColor);
+      $('#lext2').css('display','inline');      
+
+      $("#draggableX").css({
+        left: 0,
+        top: 0
+      });
+    }
+
+    var showPipe = function () {
+
+      clearAll(false);
+      existSpecialSymbol = true;
+    
+      $('#pipe1').attr("stroke", selectedColor);
+      $('#pipe1').css('display','inline');      
+
+      $("#draggablePipe").css({
+        left: 0,
+        top: 0
+      });
+    }
+
+    var showOO = function () {
+
+      clearAll(false);
+      existSpecialSymbol = true;
+      
+      $('#ool1').css('display','inline'); 
+      $('#ool2').css('display','inline');     
+
+      $("#draggableOO").css({
+        left: 0,
+        top: 0
+      });
+    }
+
+    var showCalza = function(zone){
+
+      toogleCross(zone, false);
+      $('#p18-t' + zone).css("display", "none");
+      $('#cc' + zone).css("display", "none");
+
+      if(zone == '5')
+      {
+        $('#c4').attr("fill", selectedColor);        
+        $('#p18-x6-1').css("display", "none");
+        $('#p18-x6-2').css("display", "none");
+      }
+      else
+      { 
+        $('#p18-x6-1').css("display", "inline");
+        $('#p18-x6-2').css("display", "inline");
+        $('#c4').attr("fill", "white");  
+        $('#s' + zone).attr("fill", selectedColor);
+        $('#s' + zone).css("display", "inline");        
+      }
+      $('#c4').css("display", "inline");
+             
+    }
+
+    var showSymbol = function(zone, symbol){
+      toogleCross(zone, false);
+      
+      if(zone == '5'){ 
+            
+        $('#c4').css("display", "none");
+        $('#p18-x6-1').css("display", "none");
+        $('#p18-x6-2').css("display", "none");
+      }
+      else{
+        $('#s' + zone).css("display", "none");
+      }
+
+      $('#cc' + zone).css("display", "none");
+
+      $('#p18-t' + zone).attr("fill", selectedColor);   
+      $('#p18-t' + zone).html(symbol);    
+      $('#p18-t' + zone).css({
+        'font-family': 'sans-serif',
+        'font-weight': 'bold',
+        "display":"inline"
+      });       
     }
     
     $("#protTotal").click(function(){
-      clearAll();
-      existSpecialSymbol = true; 
+      clearAll(false);
+      existSpecialSymbol = true;       
        
-      $('#p18-mainframe').attr("stroke-width", 10);
-      $('#p18-mainframe').attr("stroke", selectedColor);
-      
+      $('#c1').attr("stroke", selectedColor);      
     });
     
     $("#cc18").droppable({
@@ -157,103 +220,24 @@ $(function(){
         
         $("#protTotal").prop("checked",false);
          
-        let currentSymbol = ui.helper[0].innerHTML;
-       
-       
-        if(currentSymbol == 'C'){            
-
-          clearAll();
-          existSpecialSymbol = true;
-
-          $('#p18-t1').attr("fill", selectedColor);
-          $('#p18-t1').attr("x",0);
-          $('#p18-t1').attr("y",58);
-          $('#p18-t1').html(currentSymbol);
-          $('#p18-t1').css({
-            'font-family' : 'sans-serif',
-            'font-weight' : 'bold', 
-            'font-size': '75px',
-            'display':'inline'
-          });          
-
-          $("#draggableC").css({
-            left: 0,
-            top: 0
-          });    
-
+        let currentSymbol = ui.helper[0].innerHTML;       
+                 
+        if(currentSymbol == 'C'){ 
+          showCorona();
           return;
-        }
-
-        /*
+        }       
         else if(currentSymbol == 'X'){  
-          
-          clearAll();
-          $('#p18-tc1').css('display','none');
-
-          existSpecialSymbol = true;
-         
-          $('#p18-ext1').attr("stroke", selectedColor);
-          $('#p18-ext1').css('display','inline');
-
-          $('#p18-ext2').attr("stroke", selectedColor);
-          $('#p18-ext2').css('display','inline');
-
-          $("#draggableX").css({
-            left: 0,
-            top: 0
-          });    
-
-
+          showExtraccion();
           return;
-        }
+        }            
         else if(currentSymbol == '|'){  
-          
-          clearAll();
-          $('#p18-tc1').css('display','none');
-          $('#p18-ext1').css('display','none');
-          $('#p18-ext2').css('display','none');
-
-          existSpecialSymbol = true;
-         
-          $('#p18-pipe').attr("stroke", selectedColor);
-          $('#p18-pipe').css('display','inline');
-
-          $("#draggablePipe").css({
-            left: 0,
-            top: 0
-          });  
-
+          showPipe();
           return;
-        }
-        else if(currentSymbol == 'O-O'){  
-          
-          clearAll();
-          $('#p18-tc1').css('display','none');
-          $('#p18-ext1').css('display','none');
-          $('#p18-ext2').css('display','none');
-          $('#p18-pipe').css('display','none');
-
-          existSpecialSymbol = true;
-         
-          $('#p18-pf1').attr("stroke", selectedColor);
-          $('#p18-pf1').css('display','inline');
-
-          $('#p18-pf2').attr("stroke", selectedColor);
-          $('#p18-pf2').css('display','inline');
-
-          $("#draggableOO").css({
-            left: 0,
-            top: 0
-          });  
-
+        }         
+        else if(currentSymbol == 'O-O'){
+          showOO();
           return;
-        }
-        
-        if(existSpecialSymbol){
-          existSpecialSymbol = false;
-          resetAll();           
-        }
-        */
+        }         
 
         let pos_x = event.pageX;
         let pos_y = event.pageY;
@@ -289,157 +273,86 @@ $(function(){
            y_pos = 3;
         } 
 
-        console.log('(' + x_pos.toString() + ',' + y_pos.toString() + ')');
+        //console.log('(' + x_pos.toString() + ',' + y_pos.toString() + ')');
+
+        if(existSpecialSymbol){
+          existSpecialSymbol = false;
+          clearAll(true);           
+        }  
                
         if(y_pos == 2 && x_pos == 1){  
           if(currentSymbol == 'K')
           {
-            $('#p18-c1').attr("fill", selectedColor);
-            $('#p18-c1').css('display','inline');
-            $('#p18-t1').attr("fill","black");
-            $('#p18-cc1').css('display','none');
-            $('#p18-tt1').css('display','none');
-            $('#p18-t1').css('display','inline');
-            $('#p18-t1').html("K");
+            showCalza('1');
           }
           else if(currentSymbol == 'O')
           {
-            showCarie('#p18-t1');
+            showCarie('1');
           }
           else
           {
-            $('#p18-c1').css('display','none');
-            $('#p18-t1').attr("fill",selectedColor);
-            $('#p18-cc1').css('display','none');
-            $('#p18-tt1').css('display','none');
-            $("#p18-t1").html(currentSymbol);
-            $('#p18-t1').css("display","inline");
+            showSymbol('1', currentSymbol);
           }
-          
-          $('#p18-x1-1').css("display", "none");
-          $('#p18-x1-2').css("display", "none");
-          $('#p18-x1-c1').css("display", "none");
-
         }     
         else if(y_pos == 1){   
 
           if(currentSymbol == 'K')
           {
-            $('#p18-c2').attr("fill", selectedColor);
-            $('#p18-c2').css('display','inline');
-            $('#p18-t2').attr("fill","black");
-            $('#p18-cc2').css('display','none');
-            $('#p18-tt2').css('display','none');
-            $('#p18-t2').css('display','inline');
-            $('#p18-t2').html("K");
+            showCalza('2');
           }
           else if(currentSymbol == 'O')
           {
-            showCarie('#p18-t2');            
+            showCarie('2');            
           }           
           else
           {
-            $('#p18-c2').css('display','none');
-            $('#p18-t2').attr("fill",selectedColor);
-            $('#p18-cc2').css('display','none');
-            $('#p18-tt2').css('display','none');
-            $("#p18-t2").html(currentSymbol);
-            $('#p18-t2').css("display","inline");
-          }
-          
-          $('#p18-x2-1').css("display", "none");
-          $('#p18-x2-2').css("display", "none");
-          $('#p18-x2-c2').css("display", "none");          
+            showSymbol('2', currentSymbol);
+          }        
         }        
         else if(y_pos == 2 && x_pos == 3){           
            
           if(currentSymbol == 'K')
           {
-            $('#p18-c3').attr("fill", selectedColor);
-            $('#p18-c3').css('display','inline');
-            $('#p18-t3').attr("fill","black");
-            $('#p18-t3').css('display','inline');
-            $('#p18-t3').html("K");
-            $('#p18-cc3').css('display','none');
-            $('#p18-tt3').css('display','none');            
+            showCalza('3');            
           }
           else if(currentSymbol == 'O')
           {
-            showCarie('#p18-t3');
+            showCarie('3');
           }
           else
           {
-            $('#p18-c3').css('display','none');           
-            $('#p18-cc3').css('display','none');
-            $('#p18-tt3').css('display','none');
-            $('#p18-t3').attr("fill",selectedColor);
-            $("#p18-t3").html(currentSymbol);
-            $('#p18-t3').css("display","inline");
-          }
- 
-          $('#p18-x3-1').css("display", "none");
-          $('#p18-x3-2').css("display", "none");
-          $('#p18-x3-c3').css("display", "none");                    
+            showSymbol('3', currentSymbol);
+          }                  
         }
         else if(y_pos == 3){    
            
           if(currentSymbol == 'K')
           {
-            $('#p18-c4').attr("fill", selectedColor);
-            $('#p18-c4').css('display','inline');
-            $('#p18-t4').attr("fill","black");
-            $('#p18-cc4').css('display','none');
-            $('#p18-tt4').css('display','none');
-            $('#p18-t4').css('display','inline');
-            $('#p18-t4').html("K");
+            showCalza('4');
           }
           else if(currentSymbol == 'O')
           {
-            showCarie('#p18-t4');
+            showCarie('4');
           }
           else
           {
-            $('#p18-c4').css('display','none');
-            $('#p18-t4').attr("fill",selectedColor);
-            $('#p18-cc4').css('display','none');
-            $('#p18-tt4').css('display','none');
-            $("#p18-t4").html(currentSymbol);
-            $('#p18-t4').css("display","inline");            
-          }
-          
-          $('#p18-x4-1').css("display", "none");
-          $('#p18-x4-2').css("display", "none");
-          $('#p18-x4-c4').css("display", "none");                   
+            showSymbol('4', currentSymbol);           
+          }                
         }
-        else if(y_pos == 2 && x_pos == 2){   
+        else if(y_pos == 2 && x_pos == 2){  
           
           if(currentSymbol == 'K')
           {
-            $('#p18-c5').attr("fill", selectedColor);
-            $('#p18-c5').css('display','inline');
-            $('#p18-t5').attr("fill","black");
-            $('#p18-cc5').css('display','none');
-            $('#p18-tt5').css('display','none');
-            $('#p18-t5').css('display','inline');
-            $('#p18-t5').html("K");
+            showCalza('5');
           }
           else if(currentSymbol == 'O')
           {
-            showCarie('#p18-t5');
+            showCarie('5');
           }
           else
           {  
-            $('#p18-c5').css('display','none');
-            $('#p18-t5').attr("fill",selectedColor);
-            $('#p18-cc5').css('display','none');
-            $('#p18-tt5').css('display','none');
-            $("#p18-t5").html(currentSymbol);
-            $('#p18-t5').css("display","inline");
-          }
- 
-          $('#p18-x5-1').css("display", "none");
-          $('#p18-x5-2').css("display", "none");
-          $('#p18-x5-c5').css("display", "none");                  
+            showSymbol('5', currentSymbol);
+          }                  
         }
          
         $("#" + ui.helper[0].id).css({
@@ -473,7 +386,7 @@ $(function(){
     });     
 
     $("#btnClear").click(function(){
-      resetAll();
+      clearAll(true);
     });
     
     $(".exportImageButton").on("click", function() {
@@ -505,7 +418,7 @@ $(function(){
         document.body.appendChild(a);
         a.click();
       };
-    })
+    });
         
 });	
 
