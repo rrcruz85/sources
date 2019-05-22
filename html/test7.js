@@ -1,15 +1,17 @@
 $(function(){
-   
+      
+
+    console.log('Main Element Children:');
+    let children = $('#p18-main-circle').children();
+    console.log(children);
+    for(let i = 0; i < children.length; i++){
+       
+    }
+
+
     let existSpecialSymbol = false;
     let selectedColor = 'blue';
-    
-    var p18u = false;
-    var p19u = false;
-    var p20u = false;
-    var p21u = false;
-    var p22u = false;
-    
-    $("#draggablePT").draggable();
+
     $("#draggableO").draggable();
     $("#draggableC").draggable();
     $("#draggableF").draggable();
@@ -213,34 +215,24 @@ $(function(){
       });       
     }
     
-    var showProtesisTotal = function(id)
-    {
-      clearAll(id, false);
-      existSpecialSymbol = true;
-    
-      $('#' + id + '-c1').attr("stroke", selectedColor);        
-
-      $("#draggablePT").css({
-        left: 0,
-        top: 0
-      });
-    }
+    $("#protTotal").click(function(){
+      clearAll(false);
+      existSpecialSymbol = true;       
+       
+      $('#c1').attr("stroke", selectedColor);      
+    });
 
     var droppableFunction = function(id, event, ui){
       
       let imgPos = $('#' + id + '-main-circle').position();        
       let width = $('#' + id + '-main-circle').width()/3; 
       let height = $('#' + id + '-main-circle').height()/3;   
-    
-      let currentSymbol = ui.helper[0].innerHTML;
-      
-      drawBridge(id, currentSymbol);
-      
-      if(currentSymbol == 'PT'){ 
-        showProtesisTotal(id);
-        return;
-      }
-      else if(currentSymbol == 'C'){ 
+
+      $("#protTotal").prop("checked",false);
+         
+      let currentSymbol = ui.helper[0].innerHTML;       
+               
+      if(currentSymbol == 'C'){ 
         showCorona(id);
         return;
       }       
@@ -253,7 +245,7 @@ $(function(){
         return;
       }         
       else if(currentSymbol == 'O-O'){
-        showOO(id);        
+        showOO(id);
         return;
       }         
 
@@ -376,63 +368,19 @@ $(function(){
          top: 0
       });
     }
-
-    var drawBridge = function(id, currentSymbol){
-      switch (id) {
-        case 'p18':
-          {
-            p18u = currentSymbol == 'O-O';
-            break;
-          }
-        case 'p19':
-          {
-            p19u = currentSymbol == 'O-O';
-            break;
-          }
-        case 'p20':
-          {
-            p20u = currentSymbol == 'O-O';
-            break;
-          }
-
-        case 'p21':
-          {
-            p21u = currentSymbol == 'O-O';
-            break;
-          }
-        case 'p22':
-          {
-            p22u = currentSymbol == 'O-O';
-            break;
-          }
-      }
-
-      let init = 18;
-      let end = 18;
-
-      if(p18u && p19u && p20u && p21u && p22u){
-        end = 22;
-      }
-      else if(p18u && p19u && p20u && p21u){
-        end = 21;
-      }
-      else if(p18u && p19u && p20u){
-        end = 20;
-      }
-      else if(p18u && p19u){
-        end = 19;
-      }
-
-      if(init != end)
-      {
-         $('#p18-u').css('display', 'inline');
-         $('#p' + end.toString() + '-u').css('display', 'inline');        
-         let lineWidth = $('#p' + end.toString() + '-u').attr('x1');
-         $('#lu1').attr('x2', parseInt(lineWidth) + 4);
-         $('#lu1').css('display', 'inline');
-      }
-    }
     
+    $("#p18").droppable({
+      drop: function( event, ui ) {         
+        droppableFunction('p18', event, ui);      
+      }      
+    });
+
+    $("#p19").droppable({
+      drop: function( event, ui ) {        
+        droppableFunction('p19', event, ui);     
+      }      
+    });
+
     $("#red").click(function(){
       if($("#red").prop("checked")){         
         selectedColor = 'red';
@@ -444,46 +392,8 @@ $(function(){
         selectedColor = 'blue';
       }  
     });     
-   
-    $("#p18").droppable({
-      drop: function( event, ui ) {         
-        droppableFunction('p18', event, ui); 
-      }      
-    });
 
-    $("#p19").droppable({
-      drop: function( event, ui ) {        
-        droppableFunction('p19', event, ui);     
-      }      
-    });
-
-    $("#p20").droppable({
-      drop: function( event, ui ) {        
-        droppableFunction('p20', event, ui);     
-      }      
-    });
-
-    $("#p21").droppable({
-      drop: function( event, ui ) {        
-        droppableFunction('p21', event, ui);     
-      }      
-    });
-
-    $("#p22").droppable({
-      drop: function( event, ui ) {        
-        droppableFunction('p22', event, ui);     
-      }      
-    });
-
-    /*
-      $("#protTotal").click(function(){
-      clearAll(false);
-      existSpecialSymbol = true;       
-       
-      $('#c1').attr("stroke", selectedColor);      
-    });
-
-     $("#btnClear").click(function(){
+    $("#btnClear").click(function(){
       clearAll(true);
     });
     
@@ -517,8 +427,6 @@ $(function(){
         a.click();
       };
     });
-    */
-
         
 });	
 

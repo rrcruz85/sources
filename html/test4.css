@@ -5,7 +5,7 @@
     font-family: sans-serif; 
 }
 
-.draggable { 
+.draggable{ 
     width: 25px; 
     height: 25px;           
     float: left;
@@ -41,23 +41,10 @@
     width: 35px; 
 }
 
-#droppable,#pieza18,#mainFrame{
-    background-size: 120px 120px;
-}
-
-.container{
-    display: flex;
-    flex-direction: row;  
-}
-
-.container span{
+div.row div span{
     font-weight: bold;
-}
-
-div.spacing{
-    width: 60px;
-    height: 60px;
-    margin: 5px;
+    vertical-align: middle;
+    text-align: center;
 }
 
 .font{
@@ -76,20 +63,14 @@ div.spacing{
     flex-direction: row;    
 }
 
-.container-middle-left{
-    display: flex;
-    flex-direction: nowrap;  
-    text-align: center; 
-    margin-left: 120px;
+.spacing{
+    width: 10px;
 }
 
-.container-middle-right{
-    display: flex;
-    flex-direction: nowrap;  
-    text-align: center; 
-    margin-left: 240px;
+.separator{
+    margin-top: 18.4px;
 }
 
-.container-middle-left span,.container-middle-right span{
-    font-weight: bold;
+.hidden{
+    display: none;
 }
