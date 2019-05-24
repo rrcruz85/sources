@@ -5,7 +5,7 @@
     font-family: sans-serif; 
 }
 
-.draggable{ 
+.draggable { 
     width: 25px; 
     height: 25px;           
     float: left;
@@ -41,10 +41,25 @@
     width: 35px; 
 }
 
-div.row div span{
+#droppable,#pieza18,#mainFrame{
+    background-size: 120px 120px;
+}
+
+.container{
+    display: flex;
+    flex-direction: row;  
+}
+
+.container span{
     font-weight: bold;
-    vertical-align: middle;
     text-align: center;
+    vertical-align: middle;
+}
+
+div.spacing{
+    width: 60px;
+    height: 60px;
+    margin: 5px;
 }
 
 .font{
@@ -63,23 +78,20 @@ div.row div span{
     flex-direction: row;    
 }
 
-.spacing{
-    width: 10px;
+.container-middle-left{
+    display: flex;
+    flex-direction: nowrap;  
+    text-align: center; 
+    margin-left: 120px;
 }
 
-.separator{
-    margin-top: 18.35px;
+.container-middle-right{
+    display: flex;
+    flex-direction: nowrap;  
+    text-align: center; 
+    margin-left: 240px;
 }
 
-.hidden{
-    display: none;
-}
-
-.font-bold{
+.container-middle-left span,.container-middle-right span{
     font-weight: bold;
-}
-
-.corona-style{
-    font-size: 80px;
-    font-family: sans-serif;
 }
