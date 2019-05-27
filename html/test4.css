@@ -41,7 +41,7 @@
     width: 35px; 
 }
 
-div.row div span{
+div.row div span, div.row-center div span{
     font-weight: bold;
     vertical-align: middle;
     text-align: center;
@@ -63,6 +63,12 @@ div.row div span{
     flex-direction: row;    
 }
 
+.row-center{
+    display: flex;
+    flex-direction: row; 
+    justify-content: center;   
+}
+
 .spacing{
     width: 10px;
 }
@@ -77,6 +83,11 @@ div.row div span{
 
 .font-bold{
     font-weight: bold;
+}
+
+.font-size{
+    font-size: 16px;
+    font-family: sans-serif;
 }
 
 .corona-style{
