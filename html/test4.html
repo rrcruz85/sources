@@ -6291,7 +6291,7 @@
             <line id="p36-u" class="hidden" x1="1013" x2="1013" y1="0" y2="10" stroke="red" stroke-width="8" fill="none" />
             <line id="p37-u" class="hidden" x1="1083" x2="1083" y1="0" y2="10" stroke="red" stroke-width="8" fill="none" />
             <line id="p38-u" class="hidden" x1="1153" x2="1153" y1="0" y2="10" stroke="red" stroke-width="8" fill="none" />
-                
+        
             <line id="r4lu1" class="hidden" x1="8" x2="86" y1="10" y2="10" stroke="red" stroke-width="8" fill="none" />
             <line id="r4lu2" class="hidden" x1="78" x2="156" y1="10" y2="10" stroke="red" stroke-width="8" fill="none" />
             <line id="r4lu3" class="hidden" x1="148" x2="226" y1="10" y2="10" stroke="red" stroke-width="8" fill="none" />
@@ -6310,40 +6310,36 @@
         
           </svg>
         </div>
-
-        <div class="row" style="width:200px !important;margin-left: 20px">           
-          <div class="column"> 
-           
-            <div class="row" id="colorSelector" style="display: inline-flex">
-              <span style="font-weight: bold">Color:</span>
-              <input id="red" type="radio" name="color" value="red"><span style="color: red;font-weight: bold">Red</span><br>
-              <input id="blue" type="radio" name="color" value="blue" checked="true"><span style="color: blue;font-weight: bold">Blue</span><br>
-            </div>
-            
-            <div class="row" id="symbols"> 
-                <div><span style="font-weight: bold;font-size: 22px; font-family: sans-serif">Symbols:</span></div>
-              
-                <div><span id="draggablePT" class="draggable">PT</span><span>:Prótesis Total</span></div>
-                <div><span id="draggableO" class="draggable">O</span><span>:Carie</span></div>
-                <div><span id="draggableC" class="draggable">C</span><span>:Corona</span></div>
-                <div><span id="draggableF" class="draggable">F</span><span>:Retos Radio.</span></div>
-                <div><span id="draggableA" class="draggable">A</span><span>:Ausente</span></div>
-                <div><span id="draggableOO" class="draggable">O-O</span><span>:Prótesis fija</span></div>          
-                <div><span id="draggableK" class="draggable">K</span><span>:Calza</span></div>
-                <div><span id="draggableBSlash" class="draggable">/</span><span>:Restauración</span></div>
-                <div><span id="draggableAster" class="draggable">*</span><span>:Sellante</span></div>
-                <div><span id="draggableX" class="draggable">X</span><span>:Extracción</span></div>
-                <div><span id="draggablePipe" class="draggable">|</span><span>:Trat. Endodon.</span></div>   
-                
-                <!--
-                <div><input id="protTotal" type="radio" name="pt" value="pt"><span style="font-weight: bold">Prótesis Total?</span></div>
-                <div><img id="draggableErase" src="icon/icons8-erase-48.png"/></div>       
-                <button id="btnClear">Clear Selection</button>  
-                -->        
-            </div>
-          </div>
         
-        </div>    
+        <div class="row-center">
+        
+          <div class="row-center" id="colorSelector">
+            <span style="font-weight: bold;font-size: 22px; font-family: sans-serif">Color:</span>
+            <input id="red" type="radio" name="color" value="red">
+              <span style="color: red;font-weight: bold;font-size: 22px; font-family: sans-serif">Red</span><br>
+            <input id="blue" type="radio" name="color" value="blue" checked="true"><span
+              style="color: blue;font-weight: bold;font-size: 22px; font-family: sans-serif">Blue</span><br>
+          </div>
+          <div style="width: 100px"></div>
+          <div><span style="font-weight: bold;font-size: 22px; font-family: sans-serif">Symbols:</span></div>
+          <div class="solid-border"><span id="draggablePT" class="draggable">PT</span></div>
+          <div class="solid-border"><span id="draggableO" class="draggable">O</span></div>
+          <div class="solid-border"><span id="draggableC" class="draggable">C</span></div>
+          <div class="solid-border"><span id="draggableF" class="draggable">F</span></div>
+          <div class="solid-border"><span id="draggableA" class="draggable">A</span></div>
+          <div class="solid-border"><span id="draggableOO" class="draggable">O-O</span></div>
+          <div class="solid-border"><span id="draggableK" class="draggable">K</span></div>
+          <div class="solid-border"><span id="draggableBSlash" class="draggable">/</span></div>
+          <div class="solid-border"><span id="draggableAster" class="draggable">*</span></div>
+          <div class="solid-border"><span id="draggableX" class="draggable">X</span></div>
+          <div class="solid-border"><span id="draggablePipe" class="draggable">|</span></div>
+        </div>
+        
+        <!--
+                        <div><input id="protTotal" type="radio" name="pt" value="pt"><span style="font-weight: bold">Prótesis Total?</span></div>
+                        <div><img id="draggableErase" src="icon/icons8-erase-48.png"/></div>       
+                        <button id="btnClear">Clear Selection</button>  
+                        -->
     
    
   </div>

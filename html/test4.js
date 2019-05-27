@@ -1,17 +1,53 @@
 $(function(){
    
-    $("#draggablePT").draggable();
-    $("#draggableO").draggable();
-    $("#draggableC").draggable();
-    $("#draggableF").draggable();
-    $("#draggableA").draggable();
-    $("#draggableK").draggable();
-    $("#draggableBSlash").draggable();  
-    $("#draggableAster").draggable(); 
-    $("#draggableX").draggable();
-    $("#draggablePipe").draggable();
-    $("#draggableOO").draggable();
-    $("#draggableErase").draggable();
+    $("#draggablePT").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#draggableO").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#draggableC").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#draggableF").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#draggableA").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#draggableK").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#draggableBSlash").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });  
+    $("#draggableAster").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    }); 
+    $("#draggableX").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#draggablePipe").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#draggableOO").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#draggableErase").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
 
     let selectedColor = 'red';
 
@@ -497,6 +533,15 @@ $(function(){
       return [];
     }
 
+    var getPiecePosition = function(id){
+      let pieceRow = getPieceRow(id);
+      for(let i=0; i < pieceRow.length; i++){
+        if(pieceRow[i].id == id){
+          return i;
+        }
+      }
+    }
+
     var getPieceRowNumber = function(id){
       for(let i = 0; i < piecesRow1.length; i++){
         if(piecesRow1[i].id == id){
@@ -707,7 +752,8 @@ $(function(){
         $('#' + id + '-lext2').css("display","none");
 
         $('#' + id + '-c1').attr("stroke-width", 2);
-        $('#' + id + '-c1').attr("stroke", "black"); 
+        $('#' + id + '-c1').attr("stroke", "black");        
+        $('#' + id + '-c1').attr("r", 29); 
         
         $('#' + id + '-t1').css({
           'font-family': 'sans-serif',
@@ -877,14 +923,16 @@ $(function(){
 
     var showProtesisTotal = function(id, rowId)
     {
-      clearAll(id, false);       
-   
+      clearAll(id, false);    
+      
       if(rowId == 1 || rowId ==4){
         $('#' + id + '-mainFrame').attr("stroke", selectedColor);
-        $('#' + id + '-mainFrame').attr("stroke-width", 6);
+        $('#' + id + '-mainFrame').attr("stroke-width", 10);
       }
       else{
         $('#' + id + '-c1').attr("stroke", selectedColor); 
+        $('#' + id + '-c1').attr("stroke-width", 8);
+        $('#' + id + '-c1').attr("r", 26);
       }
 
       $("#draggablePT").css({
@@ -1124,7 +1172,22 @@ $(function(){
       }             
     }
 
-    var drawBridge = function(rowId){
+    var drawBridge = function(rowId, id){
+        
+      let piecePosInit = getPiecePosition(id);
+      let row = getPieceRow(id);
+      let piecePos = piecePosInit;
+      if(piecePos > 0 && row[piecePosInit].specialSymbol == 'PT'){
+        while(row[piecePos - 1].specialSymbol == 'PT'){
+          piecePos --;
+        }
+      }      
+      if(piecePos > 0 && row[piecePosInit].specialSymbol == 'PT' && row[piecePos - 1].specialSymbol && row[piecePos - 1].specialSymbol == 'O-O'){
+        
+        $('#r'+ rowId +'sep' + piecePos.toString()).attr('stroke', selectedColor);
+        $('#r'+ rowId + 'sep' + piecePos.toString()).css('display', 'inline');
+        return;
+      }
 
       if(rowId == 1){
         $('#p18-u').css('display', 'none');
@@ -1387,7 +1450,7 @@ $(function(){
       }   
       
       if(isSpecialSymbol(currentSymbol)){
-        drawBridge(rowId);
+        drawBridge(rowId, id);
         return;
       }
 

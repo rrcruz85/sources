@@ -41,6 +41,12 @@
     width: 35px; 
 }
 
+.center-text{
+    font-weight: bold;
+    vertical-align: middle;
+    text-align: center;
+}
+
 div.row div span, div.row-center div span{
     font-weight: bold;
     vertical-align: middle;
@@ -93,4 +99,8 @@ div.row div span, div.row-center div span{
 .corona-style{
     font-size: 80px;
     font-family: sans-serif;
+}
+
+.solid-border{
+    border: 1px solid black;
 }
