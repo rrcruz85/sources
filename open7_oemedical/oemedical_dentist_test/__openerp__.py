@@ -56,14 +56,16 @@ Permite gestionar exámenes odontológicos para los pacientes
     'test':[
     ],
     'css': [
-            'static/src/css/styles.css',
+        'static/src/css/styles.css',
+        'static/src/css/odontograma.css',
     ],
     'js': [
-            'static/src/js/view_form.js',
-            'static/src/js/boot.js',
+        'static/src/js/view_form.js',
+        'static/src/js/boot.js',
+        'static/src/css/odontograma.js',
     ],
     'qweb': [
-             'static/src/xml/base.xml',
+        'static/src/xml/base.xml',
     ],
     'installable': True,
     'auto_install': False,

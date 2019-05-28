@@ -17,7 +17,7 @@
 			<field name="model">oemedical.dentist.test</field>
 			<field name="arch" type="xml">
 				<form string="Dentist Test" version="7.0">
-					<!-- <sheet> -->
+					<sheet>
 						<group col="8">
 							<group col="6">
 								<field name="patient_id" col="1" colspan="6"/>
@@ -26,7 +26,7 @@
 							</group>
 						</group>
 					  	<notebook>
-	                        <page string="Principal">
+	                       <page string="Principal">
 	                        	<group col="8">
 	                        		<field name="mdc_info" col="1" colspan="8"/>
 	                                <field name="info_diagnosis" col="1" colspan="8"/>
@@ -1758,7 +1758,11 @@
 	                       		</tr>
 	                       		</table>
 	                       </page>
-	                       
+
+						   <page string="Odontograma 2">
+						       <div id="odonto" style="width: 100%%"></div>
+						   </page>
+
 	                       <page string="Salud bucal">
 	                       		<group col="8">
 	                       			<field name="periodontale_illness" col="1" colspan="8"/>
@@ -1959,7 +1963,7 @@
 	                       		<field name="evolution_ids" col="1" colspan="8"/>
 	                       </page>
 	                   	</notebook>
-					<!-- </sheet> -->
+					</sheet>
 				</form>
 			</field>
 		</record>

@@ -51,4 +51,30 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 	});
 	
 	instance.web.form.widgets.add('xhtml', 'instance.web.form.FieldTextXHtml');
+
+	instance.web.Odontograma =  instance.web.Widget.extend({
+		template: 'Odontograma',
+		init: function() {
+			this._super.apply(this, arguments);
+			instance.web.odontograma = this;
+		},
+		start: function() {
+			this._super.apply(this, arguments);	
+			
+			var $content = this.$('#odonto');
+			console.log('Select');
+			console.log($content);
+            /*
+			var line = new module.OrderlineWidget(this, {
+				model: orderLine,
+				order: this.pos.get('selectedOrder'),
+			});		
+			line.appendTo($content);
+            */
+			this.appendTo($content);
+		}
+	});
+
+	instance.web.client_actions.add("show_odontogram", "instance.web.Odontograma");
+	
 }
