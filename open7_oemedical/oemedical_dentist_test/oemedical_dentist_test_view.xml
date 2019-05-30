@@ -8048,7 +8048,7 @@
 									</div>
                                     
 									<!--Symbols-->
-									<div class="row-center">
+									<div id="row-symbols" class="row-center">
                                         
 										<div id="colorSelector" class="row-center">
 											<span style="font-weight: bold;font-size: 22px; font-family: sans-serif">Color:</span>

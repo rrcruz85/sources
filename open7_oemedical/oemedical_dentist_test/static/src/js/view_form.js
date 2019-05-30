@@ -52,60 +52,20 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 	
 	instance.web.form.widgets.add('xhtml', 'instance.web.form.FieldTextXHtml');
 
-	instance.web.ViewManager.include({
-        start: function () {
-            this._super.apply(this, arguments);
-            if (this.dataset.model == 'oemedical.dentist.test') {
-				//console.log('Printing View');
-				//console.log(this);
-				//console.log(instance.webclient.$el.find('div.oe_form_sheetbg div.oe_form_sheet.oe_form_sheet_width'));				
-				//console.log(instance.webclient.$el.find('div.oe_form_sheet.oe_form_sheet_width'));
-				//console.log($('div.oe_form_sheetbg div.oe_form_sheet.oe_form_sheet_width'));
-				//console.log($('div.oe_form_sheet.oe_form_sheet_width'));
-				//console.log(instance.webclient.$el.children('div.oe_form_sheet'));
-                //button = new instance.web.OeMedicalMail();
-				//button.appendTo(instance.webclient.$el.find('.oe_view_manager_buttons'));				
-            }
-        },
-
-        switch_mode: function(view_type, no_store, view_options) {
-			
-			var result = this._super(view_type, no_store, view_options);
-
-			if(view_type == 'form') {
-				//console.log('View Form:');
-				//console.log($('div.oe_form_sheetbg div.oe_form_sheet.oe_form_sheet_width'));
-				//console.log(instance.webclient.$el.find('div.oe_view_manager_view_form'));				
-				//console.log(instance.webclient.$el.find('div.oe_formview.oe_view.oe_form_readonly'));
-				//console.log(instance.webclient.$el.find('div.oe_form_sheetbg'));
-				//console.log(instance.webclient.$el.find('div.oe_form_sheetbg div.oe_form_sheet.oe_form_sheet_width'));
-				//console.log(instance.webclient.$el.find('div.oe_view_manager_view_form .oe_formview.oe_view'));				
-				//console.log(instance.webclient.$el.find('div.oe_view_manager_view_form div.oe_formview.oe_view'));
-				//console.log(instance.webclient.$el.find('div.oe_view_manager_view_form .oe_formview'));
-				//console.log(instance.webclient.$el.find('div.oe_view_manager_view_form .oe_formview.oe_view'));
-				//console.log(instance.webclient.$el.find('div.oe_form_container'));
-			}
-
-			/*
-			if (instance.webclient.$el.find('#oemedical_mail_wizard').length == 0) {
-                if (this.dataset.model == 'oemedical.patient') {
-                    button = new instance.web.OeMedicalMail();
-                    button.appendTo(instance.webclient.$el.find('.oe_view_manager_buttons'));
-                }
-            }*/
-
-            return result;
-		},
-	});
-	
 	instance.web.FormView.include({
+
         load_form: function(data) {
 			var result = this._super(data);
-			if(data.type == 'form'){
+		 	if(data.type == 'form'){
+         		
 				if(data.model == 'oemedical.dentist.test'){
 				   this.$el.find('.oe_form_container div.oe_form_sheet.oe_form_sheet_width').css("max-width", "1200px"); 
 				
 				   this.initOdontogram();
+
+				   if(this.$el.find('.oe_form_container').parent().hasClass('oe_form_readonly')){
+					   $('#row-symbols').addClass('hidden');
+				   }
 				}
 				else{
 			       this.$el.find('.oe_form_container div.oe_form_sheet.oe_form_sheet_width').css("max-width", "860px"); 
@@ -1039,7 +999,6 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 
 					$('#' + id + '-pf1').css('display', 'inline');
 					$('#' + id + '-pf2').css('display', 'inline');
-
 				}
 				else {
 					$('#' + id + '-ool1').attr("stroke", selectedColor);
@@ -1525,11 +1484,13 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 					if (consecutives[i].posi <= limiti && consecutives[i].posf >= limitf) {
 						$('#r' + rowId + 'luu').css('display', 'inline');
 						for (let y = consecutives[i].posi; y < limiti; y++) {
-							$('#r' + rowId + 'lu' + (y + 1).toString()).css('display', 'inline');
+							$('#r' + rowId + 'lu' + (y + 1).toString()).css('display', 'inline');	
+							$('#r' + rowId + 'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);						 
 							$('#r' + rowId + 'sep' + (y + 1).toString()).css('display', 'inline');
 						}
 						for (let y = limitf; y < consecutives[i].posf; y++) {
 							$('#r' + rowId + 'lu' + y.toString()).css('display', 'inline');
+							$('#r' + rowId + 'sep' + y.toString()).children().attr('stroke', selectedColor);
 							$('#r' + rowId + 'sep' + y.toString()).css('display', 'inline');
 						}
 					}
@@ -1538,10 +1499,12 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 						for (let y = consecutives[i].posi; y < consecutives[i].posf; y++) {
 							if (consecutives[i].posf <= limiti) {
 								$('#r' + rowId + 'lu' + (y + 1).toString()).css('display', 'inline');
+								$('#r' + rowId + 'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);
 								$('#r' + rowId + 'sep' + (y + 1).toString()).css('display', 'inline');
 							}
 							else {
 								$('#r' + rowId + 'lu' + y.toString()).css('display', 'inline');
+								$('#r' + rowId + 'sep' + y.toString()).children().attr('stroke', selectedColor);
 								$('#r' + rowId + 'sep' + y.toString()).css('display', 'inline');
 							}
 						}
@@ -1590,13 +1553,27 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 					showSymbol(id, zoneId, currentSymbol, rowId);
 				}
 
-				drawBridge(rowId);
+				drawBridge(rowId, id);
 
 				$("#" + ui.helper[0].id).css({
 					left: 0,
 					top: 0
 				});
 			}
+		},
+
+		_actualize_mode: function(switch_to) {
+			this._super(switch_to);
+
+			if(this.model == 'oemedical.dentist.test'){
+				
+				if(this.$el.hasClass('oe_form_editable')){
+					$('#row-symbols').removeClass('hidden');
+				}
+				else{
+					$('#row-symbols').addClass('hidden');
+				}
+			}		
 		}
 		 
 	});

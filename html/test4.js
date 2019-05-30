@@ -921,8 +921,7 @@ $(function(){
       setSpecialSymbol(id,'O-O');
     }
 
-    var showProtesisTotal = function(id, rowId)
-    {
+    var showProtesisTotal = function(id, rowId){
       clearAll(id, false);    
       
       if(rowId == 1 || rowId ==4){
@@ -1174,21 +1173,49 @@ $(function(){
 
     var drawBridge = function(rowId, id){
         
-      let piecePosInit = getPiecePosition(id);
-      let row = getPieceRow(id);
+	  let piece = getPiece(id);
+	  let piecePosInit = getPiecePosition(id);
+	  let row = getPieceRow(id);
+	  let limit = 0;
+      if(rowId == 1 || rowId == 4){
+		limit = 15;  
+	  }else{
+		limit = 9;   
+	  }		
+	  
+      if(piece.specialSymbol != 'O-O' && piece.specialSymbol != 'PT'){
+		  if(piecePosInit >= 1 && row[piecePosInit - 1].specialSymbol == 'O-O')
+		  {
+			$('#r'+ rowId + 'sep' + (piecePosInit - 1).toString()).css('display', 'none');   
+			$('#r'+ rowId +'lu' + (piecePosInit - 1).toString()).css('display', 'none'); 
+			$('#'+ row[piecePosInit - 1].id +'-u').css('display', 'none');
+		  }
+		  if(piecePosInit < limit && (row[piecePosInit + 1].specialSymbol == 'PT' || row[piecePosInit + 1].specialSymbol == 'O-O'))
+		  {
+			$('#r' + rowId + 'sep' + piecePosInit.toString()).css('display', 'none');    
+            $('#r' + rowId + 'lu' +  piecePosInit.toString()).css('display', 'none'); 
+			$('#' + row[piecePosInit + 1].id + '-u').css('display', 'none');			
+		  }		  
+		
+		  $('#'+ id +'-u').css('display', 'none'); 
+		  return;
+	  }
+	 
       let piecePos = piecePosInit;
       if(piecePos > 0 && row[piecePosInit].specialSymbol == 'PT'){
         while(row[piecePos - 1].specialSymbol == 'PT'){
           piecePos --;
         }
-      }      
+      }
+      
       if(piecePos > 0 && row[piecePosInit].specialSymbol == 'PT' && row[piecePos - 1].specialSymbol && row[piecePos - 1].specialSymbol == 'O-O'){
         
-        $('#r'+ rowId +'sep' + piecePos.toString()).attr('stroke', selectedColor);
-        $('#r'+ rowId + 'sep' + piecePos.toString()).css('display', 'inline');
+        $('#r'+ rowId + 'sep' + (piecePos - 1).toString()).attr('stroke', selectedColor);
+		$('#r'+ rowId + 'sep' + (piecePos - 1).toString()).children().attr('stroke', selectedColor);
+        $('#r'+ rowId + 'sep' + (piecePos - 1).toString()).css('display', 'inline');
         return;
-      }
-
+      }	  
+	  
       if(rowId == 1){
         $('#p18-u').css('display', 'none');
         $('#p17-u').css('display', 'none');
@@ -1401,13 +1428,15 @@ $(function(){
           $('#r'+ rowId +'luu').css('display', 'inline');
           for(let y = consecutives[i].posi; y < limiti; y++)
           {
-            $('#r'+ rowId +'lu' + (y + 1).toString()).css('display', 'inline');
+            $('#r'+ rowId +'lu' + (y + 1).toString()).css('display', 'inline');			 
             $('#r'+ rowId +'sep' + (y + 1).toString()).css('display', 'inline');
+			$('#r'+ rowId +'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);
           }
           for(let y = limitf; y < consecutives[i].posf; y++)
           {
-            $('#r'+ rowId +'lu' + y.toString()).css('display', 'inline');
+            $('#r'+ rowId +'lu' + y.toString()).css('display', 'inline');			 
             $('#r'+ rowId +'sep' + y.toString()).css('display', 'inline');
+			$('#r'+ rowId +'sep' + y.toString()).children().attr('stroke', selectedColor);
           }
         } 
         else{
@@ -1416,17 +1445,26 @@ $(function(){
           {
             if(consecutives[i].posf <= limiti)
             {
-              $('#r'+ rowId +'lu' + (y + 1).toString()).css('display', 'inline');
+              $('#r'+ rowId +'lu' + (y + 1).toString()).css('display', 'inline');			   
               $('#r'+ rowId +'sep' + (y + 1).toString()).css('display', 'inline');
+			  $('#r'+ rowId +'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);
             }
             else
             {
-              $('#r'+ rowId +'lu' + y.toString()).css('display', 'inline');
+              $('#r'+ rowId +'lu' + y.toString()).css('display', 'inline');			  
               $('#r'+ rowId +'sep' + y.toString()).css('display', 'inline');
+			  $('#r'+ rowId +'sep' + y.toString()).children().attr('stroke', selectedColor);
             }
           }          
         }       
       }
+	  
+	  if(piece.specialSymbol == 'O-O'){
+          if(piecePosInit < limit && row[piecePosInit + 1].specialSymbol == 'PT'){
+			$('#r'+ rowId + 'sep' + (piecePosInit).toString()).children().attr('stroke', selectedColor);
+			$('#r'+ rowId + 'sep' + (piecePosInit).toString()).css('display', 'inline');  
+		  }
+	  }	   
     }
     
     var droppableFunction = function(id, event, ui){
@@ -1470,7 +1508,7 @@ $(function(){
         showSymbol(id, zoneId, currentSymbol, rowId);
       }
 
-      drawBridge(rowId);
+      drawBridge(rowId, id);
      
       $("#" + ui.helper[0].id).css({
         left: 0,
