@@ -1559,6 +1559,53 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			}		
 		},
 
+		on_button_save: function(e) {
+		    var self = this;
+			this.setDataPieces(piecesRow1, this.datarecord);
+			this.setDataPieces(piecesRow2, this.datarecord);
+			this.setDataPieces(piecesRow3, this.datarecord);
+			this.setDataPieces(piecesRow4, this.datarecord);
+
+			 
+			var tmpFields = this.fields;
+
+			_(this.fields).each(function (field, f) {
+				
+				if(f == 'p18_z5')
+				{
+					 
+					/*
+					console.log('AAAA');
+					console.log(tmpFields[f].get_value());
+					tmpFields[f].set_value('A');
+					//self.do_onchange(tmpFields[f]);
+					tmpFields[f].commit_value();
+					console.log(tmpFields[f].get_value());
+
+					*/
+				}				
+				
+			});
+
+			var result = this._super(e);			
+		    return result;
+		},
+	   
+		/*
+		save: function(prepend_on_create) {
+			var self = this;
+			var save_obj = {prepend_on_create: prepend_on_create, ret: null};
+			this.save_list.push(save_obj);
+			return this._process_operations().then(function() {
+				if (save_obj.error)
+					return $.Deferred().reject();
+				return $.when.apply($, save_obj.ret);
+			}).done(function() {
+				self.$el.removeClass('oe_form_dirty');
+			});
+		},
+		*/
+
 		initOdontogram: function () {
 
             setDraggables();			
@@ -1624,6 +1671,18 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 					}
 				}
 			}
+		},
+		
+		setDataPieces: function(row , datarecord){
+			for(let i =0; i < row.length; i++){
+				datarecord[row[i].id + '_symbol'] = row[i].symbol;
+				datarecord[row[i].id + '_z1'] = row[i].z1;
+				datarecord[row[i].id + '_z2'] = row[i].z2;
+				datarecord[row[i].id + '_z3'] = row[i].z3;
+				datarecord[row[i].id + '_z4'] = row[i].z4;
+				datarecord[row[i].id + '_z5'] = row[i].z5;				
+			}
 		}		 
+
 	});
 }
