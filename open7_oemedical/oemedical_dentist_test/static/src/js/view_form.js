@@ -655,12 +655,12 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		let pieces = getPieceRow(id);
 		for (let i = 0; i < pieces.length; i++) {
 			if (pieces[i].id == id) {
-				pieces[i].symbol = '';
-				pieces[i].z1 = '';
-				pieces[i].z2 = '';
-				pieces[i].z3 = '';
-				pieces[i].z4 = '';
-				pieces[i].z5 = '';
+				pieces[i].symbol = false;
+				pieces[i].z1 = false;
+				pieces[i].z2 = false;
+				pieces[i].z3 = false;
+				pieces[i].z4 = false;
+				pieces[i].z5 = false;
 				break;
 			}
 		}
@@ -769,7 +769,6 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 
 			$('#' + id + '-pf1').css("display", "none");
 			$('#' + id + '-pf2').css("display", "none");
-
 		}
 		else {
 			$('#' + id + '-ool1').css("display", "none");
@@ -1209,22 +1208,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		}
 	};
 
-	var drawBridge = function (rowId, id) {
-
-		let piecePosInit = getPiecePosition(id);
-		let row = getPieceRow(id);
-		let piecePos = piecePosInit;
-		if (piecePos > 0 && row[piecePosInit].symbol == 'PT') {
-			while (row[piecePos - 1].symbol == 'PT') {
-				piecePos--;
-			}
-		}
-		if (piecePos > 0 && row[piecePosInit].symbol == 'PT' && row[piecePos - 1].symbol && row[piecePos - 1].symbol == 'O-O') {
-
-			$('#r' + rowId + 'sep' + piecePos.toString()).attr('stroke', selectedColor);
-			$('#r' + rowId + 'sep' + piecePos.toString()).css('display', 'inline');
-			return;
-		}
+	var hideLine = function(rowId){
 
 		if (rowId == 1) {
 			$('#p18-u').css('display', 'none');
@@ -1416,6 +1400,26 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			$('#r' + rowId + 'lu13').attr('stroke', selectedColor);
 			$('#r' + rowId + 'lu14').attr('stroke', selectedColor);
 		}
+	};
+
+	var drawBridge = function (rowId, id) {
+
+		let piecePosInit = getPiecePosition(id);
+		let row = getPieceRow(id);
+		let piecePos = piecePosInit;
+		if (piecePos > 0 && row[piecePosInit].symbol == 'PT') {
+			while (row[piecePos - 1].symbol == 'PT') {
+				piecePos--;
+			}
+		}
+		if (piecePos > 0 && row[piecePosInit].symbol == 'PT' && row[piecePos - 1].symbol && row[piecePos - 1].symbol == 'O-O') {
+
+			$('#r' + rowId + 'sep' + piecePos.toString()).attr('stroke', selectedColor);
+			$('#r' + rowId + 'sep' + piecePos.toString()).css('display', 'inline');
+			return;
+		}
+
+		hideLine(rowId);		
 
 		let consecutives = consecutivePieceSequences(rowId);
 		let pieces = getPiecesByRowId(rowId);
@@ -1550,7 +1554,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 				}
 				else{
 					$('#row-symbols').addClass('hidden');
-
+					this.clearOdontogram();
 					this.setPieces(this.datarecord, piecesRow1);
 					this.setPieces(this.datarecord, piecesRow2);
 					this.setPieces(this.datarecord, piecesRow3);
@@ -1558,53 +1562,82 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 				}
 			}		
 		},
-
-		on_button_save: function(e) {
-		    var self = this;
-			this.setDataPieces(piecesRow1, this.datarecord);
-			this.setDataPieces(piecesRow2, this.datarecord);
-			this.setDataPieces(piecesRow3, this.datarecord);
-			this.setDataPieces(piecesRow4, this.datarecord);
-
-			 
-			var tmpFields = this.fields;
-
-			_(this.fields).each(function (field, f) {
-				
-				if(f == 'p18_z5')
-				{
-					 
-					/*
-					console.log('AAAA');
-					console.log(tmpFields[f].get_value());
-					tmpFields[f].set_value('A');
-					//self.do_onchange(tmpFields[f]);
-					tmpFields[f].commit_value();
-					console.log(tmpFields[f].get_value());
-
-					*/
-				}				
-				
-			});
-
-			var result = this._super(e);			
-		    return result;
+		
+		on_button_new: function() {
+            this.clearOdontogram();            
+			var result = this._super();
+			return result;
 		},
-	   
-		/*
-		save: function(prepend_on_create) {
+		
+		_process_save: function(save_obj) {
 			var self = this;
-			var save_obj = {prepend_on_create: prepend_on_create, ret: null};
-			this.save_list.push(save_obj);
-			return this._process_operations().then(function() {
-				if (save_obj.error)
+			var prepend_on_create = save_obj.prepend_on_create;
+			try {
+				var form_invalid = false,
+					values = {},
+					first_invalid_field = null,
+					readonly_values = {};
+				for (var f in self.fields) {
+					if (!self.fields.hasOwnProperty(f)) { continue; }
+					f = self.fields[f];
+					if (!f.is_valid()) {
+						form_invalid = true;
+						if (!first_invalid_field) {
+							first_invalid_field = f;
+						}
+					} else if (f.name !== 'id' && (!self.datarecord.id || f._dirty_flag)) {
+						
+						if (!f.get("readonly")) {
+							values[f.name] = f.get_value();
+						} else {
+							readonly_values[f.name] = f.get_value();
+						}
+					}
+				}
+				 
+				if (!self.datarecord.id && self.fields.sequence &&
+					!_.has(values, 'sequence') && !_.isEmpty(self.dataset.cache)) {
+					// Find current max or min sequence (editable top/bottom)
+					var current = _[prepend_on_create ? "min" : "max"](
+						_.map(self.dataset.cache, function(o){return o.values.sequence})
+					);
+					values['sequence'] = prepend_on_create ? current - 1 : current + 1;
+				}
+				if (form_invalid) {
+					self.set({'display_invalid_fields': true});
+					first_invalid_field.focus();
+					self.on_invalid();
 					return $.Deferred().reject();
-				return $.when.apply($, save_obj.ret);
-			}).done(function() {
-				self.$el.removeClass('oe_form_dirty');
-			});
+				} else {
+					self.set({'display_invalid_fields': false});
+					var save_deferral;
+				   
+					//Modification
+					if(self.dataset.model == 'oemedical.dentist.test'){
+                        self.setDataPieces(values);
+					}                   
+
+					if (!self.datarecord.id) {
+						// Creation save
+					    save_deferral = self.dataset.create(values, {readonly_fields: readonly_values}).then(function(r) {
+							return self.record_created(r, prepend_on_create);
+						}, null);
+					} else if (_.isEmpty(values)) {
+						// Not dirty, noop save
+						save_deferral = $.Deferred().resolve({}).promise();
+					} else {
+						// Write save
+						save_deferral = self.dataset.write(self.datarecord.id, values, {readonly_fields: readonly_values}).then(function(r) {
+							return self.record_saved(r);
+						}, null);
+					}
+					return save_deferral;
+				}
+			} catch (e) {
+				console.error(e);
+				return $.Deferred().reject();
+			}             
 		},
-		*/
 
 		initOdontogram: function () {
 
@@ -1628,8 +1661,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 				for (let i = 0; i < pieceList.length; i++) {				 
 					$("#" + pieceList[i].id).droppable({
 						drop: function (event, ui) {							 							 
-							droppableFunction(pieceList[i].id, event, ui);
-							 
+							droppableFunction(pieceList[i].id, event, ui);							 
 						}
 					}); 
 				} 
@@ -1673,16 +1705,63 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			}
 		},
 		
-		setDataPieces: function(row , datarecord){
-			for(let i =0; i < row.length; i++){
-				datarecord[row[i].id + '_symbol'] = row[i].symbol;
-				datarecord[row[i].id + '_z1'] = row[i].z1;
-				datarecord[row[i].id + '_z2'] = row[i].z2;
-				datarecord[row[i].id + '_z3'] = row[i].z3;
-				datarecord[row[i].id + '_z4'] = row[i].z4;
-				datarecord[row[i].id + '_z5'] = row[i].z5;				
+		setDataPieces: function(values){
+			for(let i =0; i < piecesRow1.length; i++){
+				values[piecesRow1[i].id + '_symbol'] = piecesRow1[i].symbol || false;
+				values[piecesRow1[i].id + '_z1'] = piecesRow1[i].z1 || false;
+				values[piecesRow1[i].id + '_z2'] = piecesRow1[i].z2 || false;
+				values[piecesRow1[i].id + '_z3'] = piecesRow1[i].z3 || false;
+				values[piecesRow1[i].id + '_z4'] = piecesRow1[i].z4 || false;
+				values[piecesRow1[i].id + '_z5'] = piecesRow1[i].z5 || false;				
 			}
-		}		 
+
+			for(let i =0; i < piecesRow2.length; i++){
+				values[piecesRow2[i].id + '_symbol'] = piecesRow2[i].symbol || false;
+				values[piecesRow2[i].id + '_z1'] = piecesRow2[i].z1 || false;
+				values[piecesRow2[i].id + '_z2'] = piecesRow2[i].z2 || false;
+				values[piecesRow2[i].id + '_z3'] = piecesRow2[i].z3 || false;
+				values[piecesRow2[i].id + '_z4'] = piecesRow2[i].z4 || false;
+				values[piecesRow2[i].id + '_z5'] = piecesRow2[i].z5 || false;				
+			}
+
+			for(let i =0; i < piecesRow3.length; i++){
+				values[piecesRow3[i].id + '_symbol'] = piecesRow3[i].symbol || false;
+				values[piecesRow3[i].id + '_z1'] = piecesRow3[i].z1 || false;
+				values[piecesRow3[i].id + '_z2'] = piecesRow3[i].z2 || false;
+				values[piecesRow3[i].id + '_z3'] = piecesRow3[i].z3 || false;
+				values[piecesRow3[i].id + '_z4'] = piecesRow3[i].z4 || false;
+				values[piecesRow3[i].id + '_z5'] = piecesRow3[i].z5 || false;				
+			}
+
+			for(let i =0; i < piecesRow4.length; i++){
+				values[piecesRow4[i].id + '_symbol'] = piecesRow4[i].symbol || false;
+				values[piecesRow4[i].id + '_z1'] = piecesRow4[i].z1 || false;
+				values[piecesRow4[i].id + '_z2'] = piecesRow4[i].z2 || false;
+				values[piecesRow4[i].id + '_z3'] = piecesRow4[i].z3 || false;
+				values[piecesRow4[i].id + '_z4'] = piecesRow4[i].z4 || false;
+				values[piecesRow4[i].id + '_z5'] = piecesRow4[i].z5 || false;				
+			}
+		},
+		
+		clearOdontogram: function(){
+			for(let i =0; i < piecesRow1.length; i++){
+				clearAll(piecesRow1[i].id, true);				
+			}
+			for(let i =0; i < piecesRow2.length; i++){
+				clearAll(piecesRow2[i].id, true);				
+			}
+			for(let i =0; i < piecesRow3.length; i++){
+				clearAll(piecesRow3[i].id, true);				
+			}
+			for(let i =0; i < piecesRow4.length; i++){
+				clearAll(piecesRow4[i].id, true);				
+			}
+
+			hideLine(1);
+			hideLine(2);
+			hideLine(3);
+			hideLine(4);
+		}
 
 	});
 }

@@ -1,55 +1,125 @@
 $(function(){
+    
+    $(document).tooltip({ 
+      classes: {
+        "ui-tooltip": "highlight"        
+      },
+      position: { my: "left+8 center", at: "right center" },
+      show: { effect: "blind", duration: 100 },
+      tooltipClass: "tooltip-styling",
+      track: true
+    });
    
-    $("#draggablePT").draggable({
+    $("#red-draggablePT").draggable({
       revert: "invalid",
       revertDuration: 100
     });
-    $("#draggableO").draggable({
+    $("#red-draggablePR").draggable({
       revert: "invalid",
       revertDuration: 100
     });
-    $("#draggableC").draggable({
+    $("#red-draggableO").draggable({
       revert: "invalid",
       revertDuration: 100
     });
-    $("#draggableF").draggable({
+    $("#red-draggableC").draggable({
       revert: "invalid",
       revertDuration: 100
     });
-    $("#draggableA").draggable({
+    $("#red-draggableF").draggable({
       revert: "invalid",
       revertDuration: 100
     });
-    $("#draggableK").draggable({
+    $("#red-draggableA").draggable({
       revert: "invalid",
       revertDuration: 100
     });
-    $("#draggableBSlash").draggable({
+    $("#red-draggableK").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#red-draggableBSlash").draggable({
       revert: "invalid",
       revertDuration: 100
     });  
-    $("#draggableAster").draggable({
+    $("#red-draggableAster").draggable({
       revert: "invalid",
       revertDuration: 100
     }); 
-    $("#draggableX").draggable({
+    $("#red-draggableX").draggable({
       revert: "invalid",
       revertDuration: 100
     });
-    $("#draggablePipe").draggable({
+    $("#red-draggablePipe").draggable({
       revert: "invalid",
       revertDuration: 100
     });
-    $("#draggableOO").draggable({
+    $("#red-draggableOO").draggable({
       revert: "invalid",
       revertDuration: 100
     });
-    $("#draggableErase").draggable({
+    $("#red-draggableErase").draggable({
       revert: "invalid",
       revertDuration: 100
     });
 
+    $("#blue-draggablePT").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#blue-draggablePR").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#blue-draggableO").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#blue-draggableC").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#blue-draggableF").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#blue-draggableA").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#blue-draggableK").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#blue-draggableBSlash").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });  
+    $("#blue-draggableAster").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    }); 
+    $("#blue-draggableX").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#blue-draggablePipe").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#blue-draggableOO").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+    $("#blue-draggableErase").draggable({
+      revert: "invalid",
+      revertDuration: 100
+    });
+
+
     let selectedColor = 'red';
+    $('#red-symbols').css('display', 'flex');
+    $('#blue-symbols').css('display', 'none');
 
     $("#red").prop("checked", true);
 
@@ -847,7 +917,7 @@ $(function(){
         });
       }
 
-      $("#draggableC").css({
+      $("#" + selectedColor + "-draggableC").css({
         left: 0,
         top: 0
       });
@@ -873,7 +943,7 @@ $(function(){
         $('#' + id + '-lext2').css('display','inline');  
       }    
 
-      $("#draggableX").css({
+      $("#" + selectedColor + "-draggableX").css({
         left: 0,
         top: 0
       });
@@ -887,7 +957,7 @@ $(function(){
       $('#' + id + '-pipe').attr("stroke", selectedColor);
       $('#' + id + '-pipe').css('display','inline');      
 
-      $("#draggablePipe").css({
+      $("#" + selectedColor + "-draggablePipe").css({
         left: 0,
         top: 0
       });
@@ -914,7 +984,7 @@ $(function(){
         $('#' + id + '-ool2').css('display','inline');
       }         
 
-      $("#draggableOO").css({
+      $("#" + selectedColor + "-draggableOO").css({
         left: 0,
         top: 0
       });
@@ -934,7 +1004,7 @@ $(function(){
         $('#' + id + '-c1').attr("r", 26);
       }
 
-      $("#draggablePT").css({
+      $("#" + selectedColor + "-draggablePT").css({
         left: 0,
         top: 0
       });
@@ -1466,11 +1536,53 @@ $(function(){
 		  }
 	  }	   
     }
+
+    var getSelectedSymbol = function(el){
+
+       if(el.id == 'red-draggablePT' || el.id == 'blue-draggablePT'){
+          return 'PT';
+       }
+       else if(el.id == 'red-draggablePR' || el.id == 'blue-draggablePR'){
+        return 'W';
+       }
+       else if(el.id == 'red-draggableOO' || el.id == 'blue-draggableOO'){
+        return 'O-O';
+       }
+       else if(el.id == 'red-draggablePipe' || el.id == 'blue-draggablePipe'){
+        return '|';
+       }
+       else if(el.id == 'red-draggableC' || el.id == 'blue-draggableC'){
+        return 'C';
+       }
+       else if(el.id == 'red-draggableX' || el.id == 'blue-draggableX'){
+        return 'X';
+       }
+       else if(el.id == 'red-draggableA' || el.id == 'blue-draggableA'){
+        return 'A';
+       }
+       else if(el.id == 'red-draggableK' || el.id == 'blue-draggableK'){
+        return 'K';
+       }
+       else if(el.id == 'red-draggableO' || el.id == 'blue-draggableO'){
+        return 'O';
+       }
+       else if(el.id == 'red-draggableBSlash' || el.id == 'blue-draggableBSlash'){
+        return '/';
+       }
+       else if(el.id == 'red-draggableF' || el.id == 'blue-draggableF'){
+        return 'F';
+       }
+       else if(el.id == 'red-draggableAster' || el.id == 'blue-draggableAster'){
+        return '*';
+       }
+        
+    }
     
-    var droppableFunction = function(id, event, ui){
-      
-      let currentSymbol = ui.helper[0].innerHTML;
+    var droppableFunction = function(id, event, ui){      
+        
+      let currentSymbol = getSelectedSymbol(ui.helper[0]);   
       let rowId = getPieceRowNumber(id);
+
       if(currentSymbol == 'PT'){ 
         showProtesisTotal(id, rowId); 
       }
@@ -1495,9 +1607,9 @@ $(function(){
       if(hasSpecialSymbol(id)){         
         clearAll(id, true);           
       }  
-
+      
       let zoneId = getZoneNumber(id, event, rowId);
-
+      
       if (currentSymbol == 'K') {
         showCalza(id, zoneId, rowId);
       }
@@ -1509,7 +1621,7 @@ $(function(){
       }
 
       drawBridge(rowId, id);
-     
+      
       $("#" + ui.helper[0].id).css({
         left: 0,
         top: 0
@@ -1519,12 +1631,16 @@ $(function(){
     $("#red").click(function(){
       if($("#red").prop("checked")){         
         selectedColor = 'red';
+        $('#red-symbols').css('display', 'flex');
+        $('#blue-symbols').css('display', 'none');
       }         
     });
 
     $("#blue").click(function(){
       if($("#blue").prop("checked")){         
         selectedColor = 'blue';
+        $('#red-symbols').css('display', 'none');
+        $('#blue-symbols').css('display', 'flex');
       }  
     });
     

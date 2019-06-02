@@ -6311,39 +6311,53 @@
           </svg>
         </div>
         
+         <!--Symbols------------------------->
         <div class="row-center">
         
-          <div id="colorSelector" class="row-center">
+          <div id="colorSelector">
             <span style="font-weight: bold;font-size: 22px; font-family: sans-serif">Color:</span>
-            <input id="red" type="radio" name="color" value="red">
-              <span style="color: red;font-weight: bold;font-size: 18px; font-family: sans-serif">Red</span><br>
-            <input id="blue" type="radio" name="color" value="blue" checked="true"><span
-              style="color: blue;font-weight: bold;font-size: 18px; font-family: sans-serif">Blue</span><br>
+            <input id="red" type="radio" name="color" value="red" />
+            <span style="color: red;font-weight: bold;font-size: 18px; font-family: sans-serif">Red</span>
+            <input id="blue" type="radio" name="color" value="blue" checked="true" /><span
+              style="color: blue;font-weight: bold;font-size: 18px; font-family: sans-serif">Blue</span>
           </div>
-
-          <div id="symbols">
-            <div style="width: 50px"></div>
-            <div><span style="font-weight: bold;font-size: 22px; font-family: sans-serif">Symbols:</span></div>
-            <div class="solid-border"><span id="draggablePT" class="draggable">PT</span></div>
-            <div class="solid-border"><span id="draggableO" class="draggable">O</span></div>
-            <div class="solid-border"><span id="draggableC" class="draggable">C</span></div>
-            <div class="solid-border"><span id="draggableF" class="draggable">F</span></div>
-            <div class="solid-border"><span id="draggableA" class="draggable">A</span></div>
-            <div class="solid-border"><span id="draggableOO" class="draggable">O-O</span></div>
-            <div class="solid-border"><span id="draggableK" class="draggable">K</span></div>
-            <div class="solid-border"><span id="draggableBSlash" class="draggable">/</span></div>
-            <div class="solid-border"><span id="draggableAster" class="draggable">*</span></div>
-            <div class="solid-border"><span id="draggableX" class="draggable">X</span></div>
-            <div class="solid-border"><span id="draggablePipe" class="draggable">|</span></div>
-          </div>
-        </div>
         
-        <!--
-                        <div><input id="protTotal" type="radio" name="pt" value="pt"><span style="font-weight: bold">Prótesis Total?</span></div>
-                        <div><img id="draggableErase" src="icon/icons8-erase-48.png"/></div>       
-                        <button id="btnClear">Clear Selection</button>  
-                        -->
-    
+          <div id="red-symbols" class="row-center">
+        
+            <div><span style="font-weight: bold;font-size: 22px; font-family: sans-serif">Symbols:</span></div>
+            <div><img id="red-draggablePT" class="img-size" src="Icons/ptotal-red.png" title="Prótesis Total" /></div>
+            <div><img id="red-draggablePR" class="img-size" src="Icons/premov-red.png" title="Prótesis Removible" /></div>
+            <div><img id="red-draggableOO" class="img-size" src="Icons/pfija-red.png" title="Prótesis Fija" /></div>
+            <div><img id="red-draggablePipe" class="img-size" src="Icons/endodo-red.png" title="Tratamiento Endodoncia" /></div>
+            <div><img id="red-draggableC" class="img-size" src="Icons/corona-red.png" title="Corona" /></div>
+            <div><img id="red-draggableX" class="img-size" src="Icons/ext-red.png" title="Extracción" /></div>
+            <div><img id="red-draggableA" class="img-size" src="Icons/ausente-red.png" title="Ausente" /></div>
+            <div><img id="red-draggableK" class="img-size" src="Icons/calza-red.png" title="Calza" /></div>
+            <div><img id="red-draggableO" class="img-size" src="Icons/carie-red.png" title="Carie" /></div>
+            <div><img id="red-draggableBSlash" class="img-size" src="Icons/rest-red.png" title="Restauración" /></div>
+            <div><img id="red-draggableF" class="img-size" src="Icons/restos-red.png" title="Restos Radiografía" /></div>
+            <div><img id="red-draggableAster" class="img-size" src="Icons/sellante-red.png" title="Sellante" /></div>
+          </div>
+        
+          <div id="blue-symbols" class="row-center">
+        
+            <div><span style="font-weight: bold;font-size: 22px; font-family: sans-serif">Symbols:</span></div>
+            <div><img id="blue-draggablePT" class="img-size" src="Icons/ptotal-blue.png" title="Prótesis Total" /></div>
+            <div><img id="blue-draggablePR" class="img-size" src="Icons/premov-blue.png" title="Prótesis Removible" /></div>
+            <div><img id="blue-draggableOO" class="img-size" src="Icons/pfija-blue.png" title="Prótesis Fija" /></div>
+            <div><img id="blue-draggablePipe" class="img-size" src="Icons/endodo-blue.png" title="Tratamiento Endodoncia" />
+            </div>
+            <div><img id="blue-draggableC" class="img-size" src="Icons/corona-blue.png" title="Corona" /></div>
+            <div><img id="blue-draggableX" class="img-size" src="Icons/ext-blue.png" title="Extracción" /></div>
+            <div><img id="blue-draggableA" class="img-size" src="Icons/ausente-blue.png" title="Ausente" /></div>
+            <div><img id="blue-draggableK" class="img-size" src="Icons/calza-blue.png" title="Calza" /></div>
+            <div><img id="blue-draggableO" class="img-size" src="Icons/carie-blue.png" title="Carie" /></div>
+            <div><img id="blue-draggableBSlash" class="img-size" src="Icons/rest-blue.png" title="Restauración" /></div>
+            <div><img id="blue-draggableF" class="img-size" src="Icons/restos-blue.png" title="Restos Radiografía" /></div>
+            <div><img id="blue-draggableAster" class="img-size" src="Icons/sellante-blue.png" title="Sellante" /></div>
+          </div>
+        
+        </div>
    
   </div>
 

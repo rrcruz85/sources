@@ -84,3 +84,23 @@ div.row-center div span{
     text-align: center;
     vertical-align: middle;
 }
+
+#red-symbols, #blue-symbols{
+    text-align: center;
+    vertical-align: middle;
+}
+
+.img-size{
+    width: 70%;
+    height: 90%;
+}
+
+.tooltip-styling{
+    font-size: 12px;
+    font-family: sans-serif;
+}
+
+#colorSelector{
+    margin-right: 120px;
+}
+
