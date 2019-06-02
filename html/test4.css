@@ -101,6 +101,8 @@ div.row-center div span{
 }
 
 #colorSelector{
-    margin-right: 120px;
+    margin-right: 50px;    
+    text-align: center;
+    vertical-align: middle;
 }
 
