@@ -1,9 +1,7 @@
 $(function(){
     
     $(document).tooltip({ 
-      classes: {
-        "ui-tooltip": "highlight"        
-      },
+      classes: {"ui-tooltip": "highlight"},
       position: { my: "left+8 center", at: "right center" },
       show: { effect: "blind", duration: 100 },
       tooltipClass: "tooltip-styling",
@@ -120,7 +118,6 @@ $(function(){
     let selectedColor = 'red';
     $('#red-symbols').css('display', 'flex');
     $('#blue-symbols').css('display', 'none');
-
     $("#red").prop("checked", true);
 
     var getPiecesRow1 = function(){
@@ -662,7 +659,7 @@ $(function(){
       let pieces = getPieceRow(id);
       for(let i=0; i < pieces.length; i++ ){
          if(pieces[i].id == id){
-           pieces[i].specialSymbol = symbol;
+           pieces[i].specialSymbol = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
            pieces[i].s1 = '';
            pieces[i].s2 = '';
            pieces[i].s3 = '';
@@ -677,12 +674,12 @@ $(function(){
       let pieces = getPieceRow(id);
       for(let i=0; i < pieces.length; i++ ){
          if(pieces[i].id == id){
-           pieces[i].specialSymbol = '';
-           pieces[i].s1 = '';
-           pieces[i].s2 = '';
-           pieces[i].s3 = '';
-           pieces[i].s4 = '';
-           pieces[i].s5 = '';
+           pieces[i].specialSymbol = false;
+           pieces[i].s1 = false;
+           pieces[i].s2 = false;
+           pieces[i].s3 = false;
+           pieces[i].s4 = false;
+           pieces[i].s5 = false;
            break;
          }  
       }
@@ -695,23 +692,23 @@ $(function(){
           pieces[i].specialSymbol = '';
           switch (zoneId) {
             case '1': {
-              pieces[i].s1 = symbol;
+              pieces[i].s1 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
               break;
             }
             case '2': {
-              pieces[i].s2 = symbol;
+              pieces[i].s2 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
               break;
             }
             case '3': {
-              pieces[i].s3 = symbol;
+              pieces[i].s3 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
               break;
             }
             case '4': {
-              pieces[i].s4 = symbol;
+              pieces[i].s4 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
               break;
             }
             case '5': {
-              pieces[i].s5 = symbol;
+              pieces[i].s5 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
               break;
             }
           }
@@ -731,6 +728,7 @@ $(function(){
 
     var hasSymbol = function(id, symbol){
       let pieces = getPieceRow(id);
+      symbol += '-' + (selectedColor == 'red' ? 'r' : 'b');
       for(let i=0; i < pieces.length; i++ ){
          if(pieces[i].id == id){
            return pieces[i].s1 == symbol || pieces[i].s2 == symbol || pieces[i].s3 == symbol || pieces[i].s4 == symbol || pieces[i].s5 == symbol;           
@@ -988,15 +986,17 @@ $(function(){
         left: 0,
         top: 0
       });
+
       setSpecialSymbol(id,'O-O');
     }
 
     var showProtesisTotal = function(id, rowId){
+
       clearAll(id, false);    
       
       if(rowId == 1 || rowId ==4){
         $('#' + id + '-mainFrame').attr("stroke", selectedColor);
-        $('#' + id + '-mainFrame').attr("stroke-width", 10);
+        $('#' + id + '-mainFrame').attr("stroke-width", 14);
       }
       else{
         $('#' + id + '-c1').attr("stroke", selectedColor); 
@@ -1186,10 +1186,11 @@ $(function(){
     }
      
     var areConsecutive = function(p1, p2){
-      return p1.specialSymbol == 'O-O' && p2.specialSymbol == 'O-O';
+      let symbolWithColor = 'O-O-' + (selectedColor == 'red' ? 'r' : 'b');
+      return p1.specialSymbol == symbolWithColor && p2.specialSymbol == symbolWithColor;
     }
 
-    var isSpecialSymbol = function(symbol){
+    var isSpecialSymbol = function(symbol){       
       return symbol == 'PT' || symbol == 'C' || symbol == 'X' || symbol == '|' || symbol == 'O-O';
     }
 
@@ -1241,52 +1242,51 @@ $(function(){
       }             
     }
 
-    var drawBridge = function(rowId, id){
-        
-	  let piece = getPiece(id);
-	  let piecePosInit = getPiecePosition(id);
-	  let row = getPieceRow(id);
-	  let limit = 0;
-      if(rowId == 1 || rowId == 4){
-		limit = 15;  
-	  }else{
-		limit = 9;   
-	  }		
-	  
-      if(piece.specialSymbol != 'O-O' && piece.specialSymbol != 'PT'){
-		  if(piecePosInit >= 1 && row[piecePosInit - 1].specialSymbol == 'O-O')
-		  {
-			$('#r'+ rowId + 'sep' + (piecePosInit - 1).toString()).css('display', 'none');   
-			$('#r'+ rowId +'lu' + (piecePosInit - 1).toString()).css('display', 'none'); 
-			$('#'+ row[piecePosInit - 1].id +'-u').css('display', 'none');
-		  }
-		  if(piecePosInit < limit && (row[piecePosInit + 1].specialSymbol == 'PT' || row[piecePosInit + 1].specialSymbol == 'O-O'))
-		  {
-			$('#r' + rowId + 'sep' + piecePosInit.toString()).css('display', 'none');    
-            $('#r' + rowId + 'lu' +  piecePosInit.toString()).css('display', 'none'); 
-			$('#' + row[piecePosInit + 1].id + '-u').css('display', 'none');			
-		  }		  
-		
-		  $('#'+ id +'-u').css('display', 'none'); 
-		  return;
-	  }
-	 
+    var drawBridge = function (rowId, id) {
+
+      let piece = getPiece(id);
+      let piecePosInit = getPiecePosition(id);
+      let row = getPieceRow(id);
+      let limit = 0;
+      if (rowId == 1 || rowId == 4) {
+        limit = 15;
+      } else {
+        limit = 9;
+      }
+      /*
+      if (piece.specialSymbol != 'O-O' && piece.specialSymbol != 'PT') {
+        if (piecePosInit >= 1 && row[piecePosInit - 1].specialSymbol == 'O-O') {
+          $('#r' + rowId + 'sep' + (piecePosInit - 1).toString()).css('display', 'none');
+          $('#r' + rowId + 'lu' + (piecePosInit - 1).toString()).css('display', 'none');
+          $('#' + row[piecePosInit - 1].id + '-u').css('display', 'none');
+        }
+        if (piecePosInit < limit && (row[piecePosInit + 1].specialSymbol == 'PT' || row[piecePosInit + 1].specialSymbol == 'O-O')) {
+          $('#r' + rowId + 'sep' + piecePosInit.toString()).css('display', 'none');
+          $('#r' + rowId + 'lu' + piecePosInit.toString()).css('display', 'none');
+          $('#' + row[piecePosInit + 1].id + '-u').css('display', 'none');
+        }
+
+        $('#' + id + '-u').css('display', 'none');
+        return;
+      }
+
       let piecePos = piecePosInit;
-      if(piecePos > 0 && row[piecePosInit].specialSymbol == 'PT'){
-        while(row[piecePos - 1].specialSymbol == 'PT'){
-          piecePos --;
+      if (piecePos > 0 && row[piecePosInit].specialSymbol == 'PT') {
+        while (row[piecePos - 1].specialSymbol == 'PT') {
+          piecePos--;
         }
       }
-      
-      if(piecePos > 0 && row[piecePosInit].specialSymbol == 'PT' && row[piecePos - 1].specialSymbol && row[piecePos - 1].specialSymbol == 'O-O'){
-        
-        $('#r'+ rowId + 'sep' + (piecePos - 1).toString()).attr('stroke', selectedColor);
-		$('#r'+ rowId + 'sep' + (piecePos - 1).toString()).children().attr('stroke', selectedColor);
-        $('#r'+ rowId + 'sep' + (piecePos - 1).toString()).css('display', 'inline');
+
+      if (piecePos > 0 && row[piecePosInit].specialSymbol == 'PT' && row[piecePos - 1].specialSymbol && row[piecePos - 1].specialSymbol == 'O-O') {
+
+        $('#r' + rowId + 'sep' + (piecePos - 1).toString()).attr('stroke', selectedColor);
+        $('#r' + rowId + 'sep' + (piecePos - 1).toString()).children().attr('stroke', selectedColor);
+        $('#r' + rowId + 'sep' + (piecePos - 1).toString()).css('display', 'inline');
         return;
-      }	  
-	  
-      if(rowId == 1){
+      }
+      */
+
+      if (rowId == 1) {
         $('#p18-u').css('display', 'none');
         $('#p17-u').css('display', 'none');
         $('#p16-u').css('display', 'none');
@@ -1303,7 +1303,7 @@ $(function(){
         $('#p26-u').css('display', 'none');
         $('#p27-u').css('display', 'none');
         $('#p28-u').css('display', 'none');
-        
+
         $('#p18-u').attr('stroke', selectedColor);
         $('#p17-u').attr('stroke', selectedColor);
         $('#p16-u').attr('stroke', selectedColor);
@@ -1321,7 +1321,7 @@ $(function(){
         $('#p27-u').attr('stroke', selectedColor);
         $('#p28-u').attr('stroke', selectedColor);
       }
-      else if(rowId == 2){
+      else if (rowId == 2) {
         $('#p55-u').css('display', 'none');
         $('#p54-u').css('display', 'none');
         $('#p53-u').css('display', 'none');
@@ -1344,7 +1344,7 @@ $(function(){
         $('#p64-u').attr('stroke', selectedColor);
         $('#p65-u').attr('stroke', selectedColor);
       }
-      else if(rowId == 3){
+      else if (rowId == 3) {
         $('#p85-u').css('display', 'none');
         $('#p84-u').css('display', 'none');
         $('#p83-u').css('display', 'none');
@@ -1367,7 +1367,7 @@ $(function(){
         $('#p74-u').attr('stroke', selectedColor);
         $('#p75-u').attr('stroke', selectedColor);
       }
-      else if(rowId == 4){
+      else if (rowId == 4) {
         $('#p48-u').css('display', 'none');
         $('#p47-u').css('display', 'none');
         $('#p46-u').css('display', 'none');
@@ -1384,7 +1384,7 @@ $(function(){
         $('#p36-u').css('display', 'none');
         $('#p37-u').css('display', 'none');
         $('#p38-u').css('display', 'none');
-        
+
         $('#p48-u').attr('stroke', selectedColor);
         $('#p47-u').attr('stroke', selectedColor);
         $('#p46-u').attr('stroke', selectedColor);
@@ -1403,138 +1403,135 @@ $(function(){
         $('#p38-u').attr('stroke', selectedColor);
       }
 
-      $('#r'+ rowId +'sep1').css('display', 'none');
-      $('#r'+ rowId +'sep2').css('display', 'none');
-      $('#r'+ rowId +'sep3').css('display', 'none');
-      $('#r'+ rowId +'sep4').css('display', 'none');
-      $('#r'+ rowId +'sep5').css('display', 'none');
-      $('#r'+ rowId +'sep6').css('display', 'none');
-      $('#r'+ rowId +'sep7').css('display', 'none');
-      $('#r'+ rowId +'sep8').css('display', 'none');
+      $('#r' + rowId + 'sep1').css('display', 'none');
+      $('#r' + rowId + 'sep2').css('display', 'none');
+      $('#r' + rowId + 'sep3').css('display', 'none');
+      $('#r' + rowId + 'sep4').css('display', 'none');
+      $('#r' + rowId + 'sep5').css('display', 'none');
+      $('#r' + rowId + 'sep6').css('display', 'none');
+      $('#r' + rowId + 'sep7').css('display', 'none');
+      $('#r' + rowId + 'sep8').css('display', 'none');
 
-      if(rowId == 1 || rowId == 4){
-        $('#r'+ rowId +'sep9').css('display', 'none');
-        $('#r'+ rowId +'sep10').css('display', 'none');
-        $('#r'+ rowId +'sep11').css('display', 'none');
-        $('#r'+ rowId +'sep12').css('display', 'none');
-        $('#r'+ rowId +'sep13').css('display', 'none');
-        $('#r'+ rowId +'sep14').css('display', 'none');
+      if (rowId == 1 || rowId == 4) {
+        $('#r' + rowId + 'sep9').css('display', 'none');
+        $('#r' + rowId + 'sep10').css('display', 'none');
+        $('#r' + rowId + 'sep11').css('display', 'none');
+        $('#r' + rowId + 'sep12').css('display', 'none');
+        $('#r' + rowId + 'sep13').css('display', 'none');
+        $('#r' + rowId + 'sep14').css('display', 'none');
       }
 
-      $('#r'+ rowId +'sep1').attr('stroke', selectedColor);
-      $('#r'+ rowId +'sep2').attr('stroke', selectedColor);
-      $('#r'+ rowId +'sep3').attr('stroke', selectedColor);
-      $('#r'+ rowId +'sep4').attr('stroke', selectedColor);
-      $('#r'+ rowId +'sep5').attr('stroke', selectedColor);
-      $('#r'+ rowId +'sep6').attr('stroke', selectedColor);
-      $('#r'+ rowId +'sep7').attr('stroke', selectedColor);
-      $('#r'+ rowId +'sep8').attr('stroke', selectedColor);
+      $('#r' + rowId + 'sep1').attr('stroke', selectedColor);
+      $('#r' + rowId + 'sep2').attr('stroke', selectedColor);
+      $('#r' + rowId + 'sep3').attr('stroke', selectedColor);
+      $('#r' + rowId + 'sep4').attr('stroke', selectedColor);
+      $('#r' + rowId + 'sep5').attr('stroke', selectedColor);
+      $('#r' + rowId + 'sep6').attr('stroke', selectedColor);
+      $('#r' + rowId + 'sep7').attr('stroke', selectedColor);
+      $('#r' + rowId + 'sep8').attr('stroke', selectedColor);
 
-      if(rowId == 1 || rowId == 4){
-        $('#r'+ rowId +'sep9').attr('stroke', selectedColor);
-        $('#r'+ rowId +'sep10').attr('stroke', selectedColor);
-        $('#r'+ rowId +'sep11').attr('stroke', selectedColor);
-        $('#r'+ rowId +'sep12').attr('stroke', selectedColor);
-        $('#r'+ rowId +'sep13').attr('stroke', selectedColor);
-        $('#r'+ rowId +'sep14').attr('stroke', selectedColor);
+      if (rowId == 1 || rowId == 4) {
+        $('#r' + rowId + 'sep9').attr('stroke', selectedColor);
+        $('#r' + rowId + 'sep10').attr('stroke', selectedColor);
+        $('#r' + rowId + 'sep11').attr('stroke', selectedColor);
+        $('#r' + rowId + 'sep12').attr('stroke', selectedColor);
+        $('#r' + rowId + 'sep13').attr('stroke', selectedColor);
+        $('#r' + rowId + 'sep14').attr('stroke', selectedColor);
       }
 
-      $('#r'+ rowId +'lu1').css('display', 'none');
-      $('#r'+ rowId +'lu2').css('display', 'none'); 
-      $('#r'+ rowId +'lu3').css('display', 'none'); 
-      $('#r'+ rowId +'lu4').css('display', 'none');  
-      $('#r'+ rowId +'luu').css('display', 'none');
-      $('#r'+ rowId +'lu5').css('display', 'none');
-      $('#r'+ rowId +'lu6').css('display', 'none'); 
-      $('#r'+ rowId +'lu7').css('display', 'none'); 
-      $('#r'+ rowId +'lu8').css('display', 'none');
+      $('#r' + rowId + 'lu1').css('display', 'none');
+      $('#r' + rowId + 'lu2').css('display', 'none');
+      $('#r' + rowId + 'lu3').css('display', 'none');
+      $('#r' + rowId + 'lu4').css('display', 'none');
+      $('#r' + rowId + 'luu').css('display', 'none');
+      $('#r' + rowId + 'lu5').css('display', 'none');
+      $('#r' + rowId + 'lu6').css('display', 'none');
+      $('#r' + rowId + 'lu7').css('display', 'none');
+      $('#r' + rowId + 'lu8').css('display', 'none');
 
-      if(rowId == 1 || rowId == 4){
-        $('#r'+ rowId +'lu9').css('display', 'none');
-        $('#r'+ rowId +'lu10').css('display', 'none');
-        $('#r'+ rowId +'lu11').css('display', 'none');
-        $('#r'+ rowId +'lu12').css('display', 'none');
-        $('#r'+ rowId +'lu13').css('display', 'none');
-        $('#r'+ rowId +'lu14').css('display', 'none');
+      if (rowId == 1 || rowId == 4) {
+        $('#r' + rowId + 'lu9').css('display', 'none');
+        $('#r' + rowId + 'lu10').css('display', 'none');
+        $('#r' + rowId + 'lu11').css('display', 'none');
+        $('#r' + rowId + 'lu12').css('display', 'none');
+        $('#r' + rowId + 'lu13').css('display', 'none');
+        $('#r' + rowId + 'lu14').css('display', 'none');
       }
 
-      $('#r'+ rowId +'lu1').attr('stroke', selectedColor);
-      $('#r'+ rowId +'lu2').attr('stroke', selectedColor); 
-      $('#r'+ rowId +'lu3').attr('stroke', selectedColor); 
-      $('#r'+ rowId +'lu4').attr('stroke', selectedColor);  
-      $('#r'+ rowId +'luu').attr('stroke', selectedColor);
-      $('#r'+ rowId +'lu5').attr('stroke', selectedColor);
-      $('#r'+ rowId +'lu6').attr('stroke', selectedColor); 
-      $('#r'+ rowId +'lu7').attr('stroke', selectedColor); 
-      $('#r'+ rowId +'lu8').attr('stroke', selectedColor);
+      $('#r' + rowId + 'lu1').attr('stroke', selectedColor);
+      $('#r' + rowId + 'lu2').attr('stroke', selectedColor);
+      $('#r' + rowId + 'lu3').attr('stroke', selectedColor);
+      $('#r' + rowId + 'lu4').attr('stroke', selectedColor);
+      $('#r' + rowId + 'luu').attr('stroke', selectedColor);
+      $('#r' + rowId + 'lu5').attr('stroke', selectedColor);
+      $('#r' + rowId + 'lu6').attr('stroke', selectedColor);
+      $('#r' + rowId + 'lu7').attr('stroke', selectedColor);
+      $('#r' + rowId + 'lu8').attr('stroke', selectedColor);
 
-      if(rowId == 1 || rowId == 4){
-        $('#r'+ rowId +'lu9').attr('stroke', selectedColor);
-        $('#r'+ rowId +'lu10').attr('stroke', selectedColor);
-        $('#r'+ rowId +'lu11').attr('stroke', selectedColor);
-        $('#r'+ rowId +'lu12').attr('stroke', selectedColor);
-        $('#r'+ rowId +'lu13').attr('stroke', selectedColor);
-        $('#r'+ rowId +'lu14').attr('stroke', selectedColor);
+      if (rowId == 1 || rowId == 4) {
+        $('#r' + rowId + 'lu9').attr('stroke', selectedColor);
+        $('#r' + rowId + 'lu10').attr('stroke', selectedColor);
+        $('#r' + rowId + 'lu11').attr('stroke', selectedColor);
+        $('#r' + rowId + 'lu12').attr('stroke', selectedColor);
+        $('#r' + rowId + 'lu13').attr('stroke', selectedColor);
+        $('#r' + rowId + 'lu14').attr('stroke', selectedColor);
       }
 
       let consecutives = consecutivePieceSequences(rowId);
       let pieces = getPiecesByRowId(rowId);
-         
-      for(let i=0; i < consecutives.length; i++){
-        let p1 = pieces[consecutives[i].posi];  
-        let p2 = pieces[consecutives[i].posf]; 
-        
+
+      for (let i = 0; i < consecutives.length; i++) {
+        let p1 = pieces[consecutives[i].posi];
+        let p2 = pieces[consecutives[i].posf];
+
         $('#' + p1.id + '-u').css('display', 'inline');
-        $('#' + p2.id + '-u').css('display', 'inline'); 
+        $('#' + p2.id + '-u').css('display', 'inline');
 
         let limiti = 4;
-        let limitf = 5 
-        if(rowId == 1 || rowId == 4){
+        let limitf = 5
+        if (rowId == 1 || rowId == 4) {
           limiti = 7;
-          limitf = 8;          
+          limitf = 8;
         }
-        
-        if(consecutives[i].posi <= limiti && consecutives[i].posf >= limitf ){
-          $('#r'+ rowId +'luu').css('display', 'inline');
-          for(let y = consecutives[i].posi; y < limiti; y++)
-          {
-            $('#r'+ rowId +'lu' + (y + 1).toString()).css('display', 'inline');			 
-            $('#r'+ rowId +'sep' + (y + 1).toString()).css('display', 'inline');
-			$('#r'+ rowId +'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);
+
+        if (consecutives[i].posi <= limiti && consecutives[i].posf >= limitf) {
+          $('#r' + rowId + 'luu').css('display', 'inline');
+          for (let y = consecutives[i].posi; y < limiti; y++) {
+            $('#r' + rowId + 'lu' + (y + 1).toString()).css('display', 'inline');
+            $('#r' + rowId + 'sep' + (y + 1).toString()).css('display', 'inline');
+            $('#r' + rowId + 'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);
           }
-          for(let y = limitf; y < consecutives[i].posf; y++)
-          {
-            $('#r'+ rowId +'lu' + y.toString()).css('display', 'inline');			 
-            $('#r'+ rowId +'sep' + y.toString()).css('display', 'inline');
-			$('#r'+ rowId +'sep' + y.toString()).children().attr('stroke', selectedColor);
+          for (let y = limitf; y < consecutives[i].posf; y++) {
+            $('#r' + rowId + 'lu' + y.toString()).css('display', 'inline');
+            $('#r' + rowId + 'sep' + y.toString()).css('display', 'inline');
+            $('#r' + rowId + 'sep' + y.toString()).children().attr('stroke', selectedColor);
           }
-        } 
-        else{
-  
-          for(let y = consecutives[i].posi; y < consecutives[i].posf; y++)
-          {
-            if(consecutives[i].posf <= limiti)
-            {
-              $('#r'+ rowId +'lu' + (y + 1).toString()).css('display', 'inline');			   
-              $('#r'+ rowId +'sep' + (y + 1).toString()).css('display', 'inline');
-			  $('#r'+ rowId +'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);
+        }
+        else {
+
+          for (let y = consecutives[i].posi; y < consecutives[i].posf; y++) {
+            if (consecutives[i].posf <= limiti) {
+              $('#r' + rowId + 'lu' + (y + 1).toString()).css('display', 'inline');
+              $('#r' + rowId + 'sep' + (y + 1).toString()).css('display', 'inline');
+              $('#r' + rowId + 'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);
             }
-            else
-            {
-              $('#r'+ rowId +'lu' + y.toString()).css('display', 'inline');			  
-              $('#r'+ rowId +'sep' + y.toString()).css('display', 'inline');
-			  $('#r'+ rowId +'sep' + y.toString()).children().attr('stroke', selectedColor);
+            else {
+              $('#r' + rowId + 'lu' + y.toString()).css('display', 'inline');
+              $('#r' + rowId + 'sep' + y.toString()).css('display', 'inline');
+              $('#r' + rowId + 'sep' + y.toString()).children().attr('stroke', selectedColor);
             }
-          }          
-        }       
+          }
+        }
       }
-	  
-	  if(piece.specialSymbol == 'O-O'){
-          if(piecePosInit < limit && row[piecePosInit + 1].specialSymbol == 'PT'){
-			$('#r'+ rowId + 'sep' + (piecePosInit).toString()).children().attr('stroke', selectedColor);
-			$('#r'+ rowId + 'sep' + (piecePosInit).toString()).css('display', 'inline');  
-		  }
-	  }	   
+
+      /*
+      if (piece.specialSymbol == 'O-O') {
+        if (piecePosInit < limit && row[piecePosInit + 1].specialSymbol == 'PT') {
+          $('#r' + rowId + 'sep' + (piecePosInit).toString()).children().attr('stroke', selectedColor);
+          $('#r' + rowId + 'sep' + (piecePosInit).toString()).css('display', 'inline');
+        }
+      }
+      */
     }
 
     var getSelectedSymbol = function(el){
