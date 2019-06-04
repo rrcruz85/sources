@@ -5,550 +5,582 @@ $(function(){
       position: { my: "left+8 center", at: "right center" },
       show: { effect: "blind", duration: 100 },
       tooltipClass: "tooltip-styling",
-      track: true
-    });
-   
-    $("#red-draggablePT").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#red-draggablePR").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#red-draggableO").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#red-draggableC").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#red-draggableF").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#red-draggableA").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#red-draggableK").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#red-draggableBSlash").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });  
-    $("#red-draggableAster").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    }); 
-    $("#red-draggableX").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#red-draggablePipe").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#red-draggableOO").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#red-draggableErase").draggable({
-      revert: "invalid",
-      revertDuration: 100
+      track: false
     });
 
-    $("#blue-draggablePT").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#blue-draggablePR").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#blue-draggableO").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#blue-draggableC").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#blue-draggableF").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#blue-draggableA").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#blue-draggableK").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#blue-draggableBSlash").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });  
-    $("#blue-draggableAster").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    }); 
-    $("#blue-draggableX").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#blue-draggablePipe").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#blue-draggableOO").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
-    $("#blue-draggableErase").draggable({
-      revert: "invalid",
-      revertDuration: 100
-    });
+    var setDraggables = function () {
+      let opacity = 0.85;
+      $("#red-draggablePT").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity         
+      });
+      $("#red-draggablePR").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
+      $("#red-draggableO").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
+      $("#red-draggableC").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
+      $("#red-draggableF").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
+      $("#red-draggableA").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
+      $("#red-draggableK").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
+      $("#red-draggableBSlash").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
+      $("#red-draggableAster").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
+      $("#red-draggableX").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
+      $("#red-draggablePipe").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
+      $("#red-draggableOO").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
+      $("#red-draggableErase").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity   
+      });
 
+      //-----Blue--------------------------
+      $("#blue-draggablePT").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggablePR").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggableO").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggableC").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggableF").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggableA").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggableK").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggableBSlash").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggableAster").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggableX").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggablePipe").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggableOO").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+      $("#blue-draggableErase").draggable({
+        revert: "invalid",
+        revertDuration: 100,
+        opacity: opacity
+      });
+
+    };    
 
     let selectedColor = 'red';
     $('#red-symbols').css('display', 'flex');
     $('#blue-symbols').css('display', 'none');
     $("#red").prop("checked", true);
 
+    setDraggables();
+
     var getPiecesRow1 = function(){
       return [{
         id: 'p18',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p17',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p16',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p15',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p14',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p13',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p12',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p11',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p21',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p22',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p23',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p24',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p25',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p26',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p27',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p28',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       }];
     }
 
     var getPiecesRow2 = function(){
       return [{
         id: 'p55',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p54',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p53',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p52',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p51',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p61',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p62',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p63',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p64',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p65',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       }];
     }
 
     var getPiecesRow3 = function(){
       return [{
         id: 'p85',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p84',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p83',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p82',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p81',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p71',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p72',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p73',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p74',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p75',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       }];
     }
 
     var getPiecesRow4 = function(){
       return [{
         id: 'p48',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p47',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p46',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p45',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p44',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p43',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p42',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p41',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p31',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p32',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p33',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p34',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p35',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p36',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p37',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       },{
         id: 'p38',
-        specialSymbol: '',
-        s1:'',
-        s2:'',
-        s3:'',
-        s4:'',
-        s5:''
+        symbol: '',
+        z1:'',
+        z2:'',
+        z3:'',
+        z4:'',
+        z5:''
       }];
     }
 
@@ -659,12 +691,12 @@ $(function(){
       let pieces = getPieceRow(id);
       for(let i=0; i < pieces.length; i++ ){
          if(pieces[i].id == id){
-           pieces[i].specialSymbol = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
-           pieces[i].s1 = '';
-           pieces[i].s2 = '';
-           pieces[i].s3 = '';
-           pieces[i].s4 = '';
-           pieces[i].s5 = '';
+           pieces[i].symbol = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
+           pieces[i].z1 = false;
+           pieces[i].z2 = false;
+           pieces[i].z3 = false;
+           pieces[i].z4 = false;
+           pieces[i].z5 = false;
            break;
          }  
       }
@@ -674,12 +706,12 @@ $(function(){
       let pieces = getPieceRow(id);
       for(let i=0; i < pieces.length; i++ ){
          if(pieces[i].id == id){
-           pieces[i].specialSymbol = false;
-           pieces[i].s1 = false;
-           pieces[i].s2 = false;
-           pieces[i].s3 = false;
-           pieces[i].s4 = false;
-           pieces[i].s5 = false;
+           pieces[i].symbol = false;
+           pieces[i].z1 = false;
+           pieces[i].z2 = false;
+           pieces[i].z3 = false;
+           pieces[i].z4 = false;
+           pieces[i].z5 = false;
            break;
          }  
       }
@@ -689,26 +721,26 @@ $(function(){
       let pieces = getPieceRow(id);
       for (let i = 0; i < pieces.length; i++) {
         if (pieces[i].id == id) {
-          pieces[i].specialSymbol = '';
+          pieces[i].symbol = '';
           switch (zoneId) {
             case '1': {
-              pieces[i].s1 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
+              pieces[i].z1 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
               break;
             }
             case '2': {
-              pieces[i].s2 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
+              pieces[i].z2 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
               break;
             }
             case '3': {
-              pieces[i].s3 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
+              pieces[i].z3 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
               break;
             }
             case '4': {
-              pieces[i].s4 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
+              pieces[i].z4 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
               break;
             }
             case '5': {
-              pieces[i].s5 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
+              pieces[i].z5 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
               break;
             }
           }
@@ -721,7 +753,7 @@ $(function(){
       let pieces = getPieceRow(id);
       for(let i=0; i < pieces.length; i++ ){
          if(pieces[i].id == id){
-           return pieces[i].specialSymbol && pieces[i].specialSymbol.length != 0;           
+           return pieces[i].symbol && pieces[i].symbol.length != 0;           
          }  
       }
     }
@@ -731,7 +763,7 @@ $(function(){
       symbol += '-' + (selectedColor == 'red' ? 'r' : 'b');
       for(let i=0; i < pieces.length; i++ ){
          if(pieces[i].id == id){
-           return pieces[i].s1 == symbol || pieces[i].s2 == symbol || pieces[i].s3 == symbol || pieces[i].s4 == symbol || pieces[i].s5 == symbol;           
+           return pieces[i].z1 == symbol || pieces[i].z2 == symbol || pieces[i].z3 == symbol || pieces[i].z4 == symbol || pieces[i].z5 == symbol;           
          }  
       }
     }
@@ -1063,7 +1095,7 @@ $(function(){
         else
         { 
           let piece = getPiece(id); 
-          if(piece.s5 == '')
+          if(piece.z5 == '')
           {
             $('#' + id + '-x6-1').css("display", "inline");
             $('#' + id + '-x6-2').css("display", "inline");
@@ -1187,7 +1219,7 @@ $(function(){
      
     var areConsecutive = function(p1, p2){
       let symbolWithColor = 'O-O-' + (selectedColor == 'red' ? 'r' : 'b');
-      return p1.specialSymbol == symbolWithColor && p2.specialSymbol == symbolWithColor;
+      return p1.symbol == symbolWithColor && p2.symbol == symbolWithColor;
     }
 
     var isSpecialSymbol = function(symbol){       
@@ -1243,48 +1275,6 @@ $(function(){
     }
 
     var drawBridge = function (rowId, id) {
-
-      let piece = getPiece(id);
-      let piecePosInit = getPiecePosition(id);
-      let row = getPieceRow(id);
-      let limit = 0;
-      if (rowId == 1 || rowId == 4) {
-        limit = 15;
-      } else {
-        limit = 9;
-      }
-      /*
-      if (piece.specialSymbol != 'O-O' && piece.specialSymbol != 'PT') {
-        if (piecePosInit >= 1 && row[piecePosInit - 1].specialSymbol == 'O-O') {
-          $('#r' + rowId + 'sep' + (piecePosInit - 1).toString()).css('display', 'none');
-          $('#r' + rowId + 'lu' + (piecePosInit - 1).toString()).css('display', 'none');
-          $('#' + row[piecePosInit - 1].id + '-u').css('display', 'none');
-        }
-        if (piecePosInit < limit && (row[piecePosInit + 1].specialSymbol == 'PT' || row[piecePosInit + 1].specialSymbol == 'O-O')) {
-          $('#r' + rowId + 'sep' + piecePosInit.toString()).css('display', 'none');
-          $('#r' + rowId + 'lu' + piecePosInit.toString()).css('display', 'none');
-          $('#' + row[piecePosInit + 1].id + '-u').css('display', 'none');
-        }
-
-        $('#' + id + '-u').css('display', 'none');
-        return;
-      }
-
-      let piecePos = piecePosInit;
-      if (piecePos > 0 && row[piecePosInit].specialSymbol == 'PT') {
-        while (row[piecePos - 1].specialSymbol == 'PT') {
-          piecePos--;
-        }
-      }
-
-      if (piecePos > 0 && row[piecePosInit].specialSymbol == 'PT' && row[piecePos - 1].specialSymbol && row[piecePos - 1].specialSymbol == 'O-O') {
-
-        $('#r' + rowId + 'sep' + (piecePos - 1).toString()).attr('stroke', selectedColor);
-        $('#r' + rowId + 'sep' + (piecePos - 1).toString()).children().attr('stroke', selectedColor);
-        $('#r' + rowId + 'sep' + (piecePos - 1).toString()).css('display', 'inline');
-        return;
-      }
-      */
 
       if (rowId == 1) {
         $('#p18-u').css('display', 'none');
@@ -1523,15 +1513,37 @@ $(function(){
           }
         }
       }
+    }
 
-      /*
-      if (piece.specialSymbol == 'O-O') {
-        if (piecePosInit < limit && row[piecePosInit + 1].specialSymbol == 'PT') {
-          $('#r' + rowId + 'sep' + (piecePosInit).toString()).children().attr('stroke', selectedColor);
-          $('#r' + rowId + 'sep' + (piecePosInit).toString()).css('display', 'inline');
+    var drawUnion = function(rowId, id){
+      
+      let piece = getPiece(id);
+      let piecePos = getPiecePosition(id);
+      let row = getPieceRow(id);
+      
+      for (let i = 0; i < row.length; i++) {
+        if (row[i].symbol == 'PT-r' || row[i].symbol == 'PT-b') {
+
+          if (i > 0 && (row[i - 1].symbol == 'O-O-r' || row[i - 1].symbol == 'O-O-b')) {
+            $('#r' + rowId + 'sep' + (i - 1 == 0 ? 1 : i).toString()).attr('stroke', selectedColor);
+            $('#r' + rowId + 'sep' + (i - 1 == 0 ? 1 : i).toString()).css('display', 'inline');
+          }
+
+          if ((i < row.length - 1) && (row[i + 1].symbol == 'O-O-r' || row[i + 1].symbol == 'O-O-b')) {
+            $('#r' + rowId + 'sep' + (i + 1).toString()).attr('stroke', selectedColor);
+            $('#r' + rowId + 'sep' + (i + 1).toString()).css('display', 'inline');
+          }
         }
       }
-      */
+
+      if (piece.symbol != 'O-O-r' && piece.symbol != 'O-O-b'  && piece.symbol != 'PT-r' && piece.symbol != 'PT-b') {
+       
+        $('#r' + rowId + 'sep' + (piecePos > 0 ? piecePos : 1).toString()).css('display', 'none');
+        
+        if (piecePos < row.length) {
+          $('#r' + rowId + 'sep' + piecePos.toString()).css('display', 'none');
+        }        
+      }
     }
 
     var getSelectedSymbol = function(el){
@@ -1598,6 +1610,7 @@ $(function(){
       
       if(isSpecialSymbol(currentSymbol)){
         drawBridge(rowId, id);
+        drawUnion(rowId, id);
         return;
       }
 
@@ -1618,6 +1631,7 @@ $(function(){
       }
 
       drawBridge(rowId, id);
+      drawUnion(rowId, id);
       
       $("#" + ui.helper[0].id).css({
         left: 0,
