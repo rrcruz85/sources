@@ -1520,18 +1520,19 @@ $(function(){
       let piece = getPiece(id);
       let piecePos = getPiecePosition(id);
       let row = getPieceRow(id);
+      let limit = rowId == 1 || rowId == 4 ? 7 : 4;
       
       for (let i = 0; i < row.length; i++) {
         if (row[i].symbol == 'PT-r' || row[i].symbol == 'PT-b') {
 
           if (i > 0 && (row[i - 1].symbol == 'O-O-r' || row[i - 1].symbol == 'O-O-b')) {
-            $('#r' + rowId + 'sep' + (i - 1 == 0 ? 1 : i).toString()).attr('stroke', selectedColor);
-            $('#r' + rowId + 'sep' + (i - 1 == 0 ? 1 : i).toString()).css('display', 'inline');
+            $('#r' + rowId + 'sep' + (i - 1 == 0 ? 1 : i > limit ? i - 1 : i).toString()).children().attr('stroke', selectedColor);	
+            $('#r' + rowId + 'sep' + (i - 1 == 0 ? 1 : i > limit ? i - 1 : i).toString()).css('display', 'inline');
           }
 
-          if ((i < row.length - 1) && (row[i + 1].symbol == 'O-O-r' || row[i + 1].symbol == 'O-O-b')) {
-            $('#r' + rowId + 'sep' + (i + 1).toString()).attr('stroke', selectedColor);
-            $('#r' + rowId + 'sep' + (i + 1).toString()).css('display', 'inline');
+          if ((i < row.length - 1) && (row[i + 1].symbol == 'O-O-r' || row[i + 1].symbol == 'O-O-b')) {             
+            $('#r' + rowId + 'sep' + (i > limit ? i: i + 1).toString()).children().attr('stroke', selectedColor);
+            $('#r' + rowId + 'sep' + (i > limit ? i: i + 1).toString()).css('display', 'inline');
           }
         }
       }

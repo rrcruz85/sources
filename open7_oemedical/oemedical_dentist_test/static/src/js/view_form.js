@@ -491,66 +491,140 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 
 	var selectedColor = 'red';
 
-	var setDraggables = function(){
-		$("#draggablePT").draggable({
-			revert: "invalid",
-			revertDuration: 100
+	var setDraggables = function () {
+		let opacity = 0.85;
+		$("#red-draggablePT").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity         
 		});
-
-		$("#draggableO").draggable({
-			revert: "invalid",
-			revertDuration: 100
+		$("#red-draggablePR").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
 		});
-
-		$("#draggableC").draggable({
-			revert: "invalid",
-			revertDuration: 100
+		$("#red-draggableO").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
 		});
-
-		$("#draggableF").draggable({
-			revert: "invalid",
-			revertDuration: 100
+		$("#red-draggableC").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
 		});
-
-		$("#draggableA").draggable({
-			revert: "invalid",
-			revertDuration: 100
+		$("#red-draggableF").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
 		});
-
-		$("#draggableK").draggable({
-			revert: "invalid",
-			revertDuration: 100
+		$("#red-draggableA").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
 		});
-
-		$("#draggableBSlash").draggable({
-			revert: "invalid",
-			revertDuration: 100
+		$("#red-draggableK").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
 		});
-
-		$("#draggableAster").draggable({
-			revert: "invalid",
-			revertDuration: 100
+		$("#red-draggableBSlash").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
 		});
-
-		$("#draggableX").draggable({
-			revert: "invalid",
-			revertDuration: 100
+		$("#red-draggableAster").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
 		});
-
-		$("#draggablePipe").draggable({
-			revert: "invalid",
-			revertDuration: 100
+		$("#red-draggableX").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
 		});
-
-		$("#draggableOO").draggable({
-			revert: "invalid",
-			revertDuration: 100
+		$("#red-draggablePipe").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
 		});
-
-		$("#draggableErase").draggable({
-			revert: "invalid",
-			revertDuration: 100
+		$("#red-draggableOO").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
 		});
+		$("#red-draggableErase").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity   
+		});
+  
+		//-----Blue--------------------------
+		$("#blue-draggablePT").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggablePR").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggableO").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggableC").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggableF").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggableA").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggableK").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggableBSlash").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggableAster").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggableX").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggablePipe").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggableOO").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});
+		$("#blue-draggableErase").draggable({
+		  revert: "invalid",
+		  revertDuration: 100,
+		  opacity: opacity
+		});  
 	};
 
 	var getPieceRow = function (id) {
@@ -636,18 +710,18 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		}
 	};
 
-	var setSpecialSymbol = function (id, symbol) {
+	var setSpecialSymbol = function(id, symbol){
 		let pieces = getPieceRow(id);
-		for (let i = 0; i < pieces.length; i++) {
-			if (pieces[i].id == id) {
-				pieces[i].symbol = symbol;
-				pieces[i].z1 = '';
-				pieces[i].z2 = '';
-				pieces[i].z3 = '';
-				pieces[i].z4 = '';
-				pieces[i].z5 = '';
-				break;
-			}
+		for(let i=0; i < pieces.length; i++ ){
+		   if(pieces[i].id == id){
+			 pieces[i].symbol = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
+			 pieces[i].z1 = '';
+			 pieces[i].z2 = '';
+			 pieces[i].z3 = '';
+			 pieces[i].z4 = '';
+			 pieces[i].z5 = '';
+			 break;
+		   }  
 		}
 	};
 
@@ -655,12 +729,12 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		let pieces = getPieceRow(id);
 		for (let i = 0; i < pieces.length; i++) {
 			if (pieces[i].id == id) {
-				pieces[i].symbol = false;
-				pieces[i].z1 = false;
-				pieces[i].z2 = false;
-				pieces[i].z3 = false;
-				pieces[i].z4 = false;
-				pieces[i].z5 = false;
+				pieces[i].symbol = '';
+				pieces[i].z1 = '';
+				pieces[i].z2 = '';
+				pieces[i].z3 = '';
+				pieces[i].z4 = '';
+				pieces[i].z5 = '';
 				break;
 			}
 		}
@@ -673,23 +747,23 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 				pieces[i].symbol = '';
 				switch (zoneId) {
 					case '1': {
-						pieces[i].z1 = symbol;
+						pieces[i].z1 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
 						break;
 					}
 					case '2': {
-						pieces[i].z2 = symbol;
+						pieces[i].z2 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
 						break;
 					}
 					case '3': {
-						pieces[i].z3 = symbol;
+						pieces[i].z3 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
 						break;
 					}
 					case '4': {
-						pieces[i].z4 = symbol;
+						pieces[i].z4 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
 						break;
 					}
 					case '5': {
-						pieces[i].z5 = symbol;
+						pieces[i].z5 = symbol + '-' + (selectedColor == 'red' ? 'r' : 'b');
 						break;
 					}
 				}
@@ -709,6 +783,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 
 	var hasSymbol = function (id, symbol) {
 		let pieces = getPieceRow(id);
+		symbol += '-' + (selectedColor == 'red' ? 'r' : 'b');
 		for (let i = 0; i < pieces.length; i++) {
 			if (pieces[i].id == id) {
 				return pieces[i].z1 == symbol || pieces[i].z2 == symbol || pieces[i].z3 == symbol || pieces[i].z4 == symbol || pieces[i].z5 == symbol;
@@ -889,7 +964,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			});
 		}
 
-		$("#draggableC").css({
+		$("#" + selectedColor + "-draggableC").css({
 			left: 0,
 			top: 0
 		});
@@ -916,7 +991,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			$('#' + id + '-lext2').css('display', 'inline');
 		}
 
-		$("#draggableX").css({
+		$("#" + selectedColor + "-draggableX").css({
 			left: 0,
 			top: 0
 		});
@@ -931,7 +1006,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		$('#' + id + '-pipe').attr("stroke", selectedColor);
 		$('#' + id + '-pipe').css('display', 'inline');
 
-		$("#draggablePipe").css({
+		$("#" + selectedColor + "-draggablePipe").css({
 			left: 0,
 			top: 0
 		});
@@ -958,7 +1033,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			$('#' + id + '-ool2').css('display', 'inline');
 		}
 
-		$("#draggableOO").css({
+		$("#" + selectedColor + "-draggableOO").css({
 			left: 0,
 			top: 0
 		});
@@ -979,7 +1054,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			$('#' + id + '-c1').attr("r", 26);
 		}
 
-		$("#draggablePT").css({
+		$("#" + selectedColor + "-draggablePT").css({
 			left: 0,
 			top: 0
 		});
@@ -1153,7 +1228,8 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 	};
 
 	var areConsecutive = function (p1, p2) {
-		return p1.symbol == 'O-O' && p2.symbol == 'O-O';
+		let symbolWithColor = 'O-O-' + (selectedColor == 'red' ? 'r' : 'b');
+		return p1.symbol == symbolWithColor && p2.symbol == symbolWithColor;
 	};
 
 	var isSpecialSymbol = function (symbol) {
@@ -1404,75 +1480,144 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 
 	var drawBridge = function (rowId, id) {
 
-		let piecePosInit = getPiecePosition(id);
-		let row = getPieceRow(id);
-		let piecePos = piecePosInit;
-		if (piecePos > 0 && row[piecePosInit].symbol == 'PT') {
-			while (row[piecePos - 1].symbol == 'PT') {
-				piecePos--;
-			}
-		}
-		if (piecePos > 0 && row[piecePosInit].symbol == 'PT' && row[piecePos - 1].symbol && row[piecePos - 1].symbol == 'O-O') {
-
-			$('#r' + rowId + 'sep' + piecePos.toString()).attr('stroke', selectedColor);
-			$('#r' + rowId + 'sep' + piecePos.toString()).css('display', 'inline');
-			return;
-		}
-
-		hideLine(rowId);		
-
+		hideLine(rowId);
+		
 		let consecutives = consecutivePieceSequences(rowId);
 		let pieces = getPiecesByRowId(rowId);
-
+  
 		for (let i = 0; i < consecutives.length; i++) {
-			let p1 = pieces[consecutives[i].posi];
-			let p2 = pieces[consecutives[i].posf];
-
-			$('#' + p1.id + '-u').css('display', 'inline');
-			$('#' + p2.id + '-u').css('display', 'inline');
-
-			let limiti = 4;
-			let limitf = 5
-			if (rowId == 1 || rowId == 4) {
-				limiti = 7;
-				limitf = 8;
+		  let p1 = pieces[consecutives[i].posi];
+		  let p2 = pieces[consecutives[i].posf];
+  
+		  $('#' + p1.id + '-u').css('display', 'inline');
+		  $('#' + p2.id + '-u').css('display', 'inline');
+  
+		  let limiti = 4;
+		  let limitf = 5
+		  if (rowId == 1 || rowId == 4) {
+			limiti = 7;
+			limitf = 8;
+		  }
+  
+		  if (consecutives[i].posi <= limiti && consecutives[i].posf >= limitf) {
+			$('#r' + rowId + 'luu').css('display', 'inline');
+			for (let y = consecutives[i].posi; y < limiti; y++) {
+			  $('#r' + rowId + 'lu' + (y + 1).toString()).css('display', 'inline');
+			  $('#r' + rowId + 'sep' + (y + 1).toString()).css('display', 'inline');
+			  $('#r' + rowId + 'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);
 			}
+			for (let y = limitf; y < consecutives[i].posf; y++) {
+			  $('#r' + rowId + 'lu' + y.toString()).css('display', 'inline');
+			  $('#r' + rowId + 'sep' + y.toString()).css('display', 'inline');
+			  $('#r' + rowId + 'sep' + y.toString()).children().attr('stroke', selectedColor);
+			}
+		  }
+		  else {
+  
+			for (let y = consecutives[i].posi; y < consecutives[i].posf; y++) {
+			  if (consecutives[i].posf <= limiti) {
+				$('#r' + rowId + 'lu' + (y + 1).toString()).css('display', 'inline');
+				$('#r' + rowId + 'sep' + (y + 1).toString()).css('display', 'inline');
+				$('#r' + rowId + 'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);
+			  }
+			  else {
+				$('#r' + rowId + 'lu' + y.toString()).css('display', 'inline');
+				$('#r' + rowId + 'sep' + y.toString()).css('display', 'inline');
+				$('#r' + rowId + 'sep' + y.toString()).children().attr('stroke', selectedColor);
+			  }
+			}
+		  }
+		}		 
+	};
 
-			if (consecutives[i].posi <= limiti && consecutives[i].posf >= limitf) {
-				$('#r' + rowId + 'luu').css('display', 'inline');
-				for (let y = consecutives[i].posi; y < limiti; y++) {
-					$('#r' + rowId + 'lu' + (y + 1).toString()).css('display', 'inline');	
-					$('#r' + rowId + 'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);						 
-					$('#r' + rowId + 'sep' + (y + 1).toString()).css('display', 'inline');
+	var drawUnion = function (rowId, id) {
+
+		let piece = getPiece(id);
+		let piecePos = getPiecePosition(id);
+		let row = getPieceRow(id);
+		let limit = rowId == 1 || rowId == 4 ? 7 : 4;
+
+		for (let i = 0; i < row.length; i++) {
+			if (row[i].symbol == 'PT-r' || row[i].symbol == 'PT-b') {
+
+				if (i > 0 && (row[i - 1].symbol == 'O-O-r' || row[i - 1].symbol == 'O-O-b')) {
+					$('#r' + rowId + 'sep' + (i - 1 == 0 ? 1 : i > limit ? i - 1 : i).toString()).children().attr('stroke', selectedColor);
+					$('#r' + rowId + 'sep' + (i - 1 == 0 ? 1 : i > limit ? i - 1 : i).toString()).css('display', 'inline');
 				}
-				for (let y = limitf; y < consecutives[i].posf; y++) {
-					$('#r' + rowId + 'lu' + y.toString()).css('display', 'inline');
-					$('#r' + rowId + 'sep' + y.toString()).children().attr('stroke', selectedColor);
-					$('#r' + rowId + 'sep' + y.toString()).css('display', 'inline');
+
+				if ((i < row.length - 1) && (row[i + 1].symbol == 'O-O-r' || row[i + 1].symbol == 'O-O-b')) {
+					$('#r' + rowId + 'sep' + (i > limit ? i : i + 1).toString()).children().attr('stroke', selectedColor);
+					$('#r' + rowId + 'sep' + (i > limit ? i : i + 1).toString()).css('display', 'inline');
 				}
 			}
-			else {
+		}
 
-				for (let y = consecutives[i].posi; y < consecutives[i].posf; y++) {
-					if (consecutives[i].posf <= limiti) {
-						$('#r' + rowId + 'lu' + (y + 1).toString()).css('display', 'inline');
-						$('#r' + rowId + 'sep' + (y + 1).toString()).children().attr('stroke', selectedColor);
-						$('#r' + rowId + 'sep' + (y + 1).toString()).css('display', 'inline');
-					}
-					else {
-						$('#r' + rowId + 'lu' + y.toString()).css('display', 'inline');
-						$('#r' + rowId + 'sep' + y.toString()).children().attr('stroke', selectedColor);
-						$('#r' + rowId + 'sep' + y.toString()).css('display', 'inline');
-					}
-				}
+		if (piece.symbol != 'O-O-r' && piece.symbol != 'O-O-b' && piece.symbol != 'PT-r' && piece.symbol != 'PT-b') {
+
+			$('#r' + rowId + 'sep' + (piecePos > 0 ? piecePos : 1).toString()).css('display', 'none');
+
+			if (piecePos < row.length) {
+				$('#r' + rowId + 'sep' + piecePos.toString()).css('display', 'none');
 			}
 		}
 	};
 
+	var getSelectedSymbol = function(el){
+
+		if(el.id == 'red-draggablePT' || el.id == 'blue-draggablePT'){
+		   return 'PT';
+		}
+		else if(el.id == 'red-draggablePR' || el.id == 'blue-draggablePR'){
+		 return 'W';
+		}
+		else if(el.id == 'red-draggableOO' || el.id == 'blue-draggableOO'){
+		 return 'O-O';
+		}
+		else if(el.id == 'red-draggablePipe' || el.id == 'blue-draggablePipe'){
+		 return '|';
+		}
+		else if(el.id == 'red-draggableC' || el.id == 'blue-draggableC'){
+		 return 'C';
+		}
+		else if(el.id == 'red-draggableX' || el.id == 'blue-draggableX'){
+		 return 'X';
+		}
+		else if(el.id == 'red-draggableA' || el.id == 'blue-draggableA'){
+		 return 'A';
+		}
+		else if(el.id == 'red-draggableK' || el.id == 'blue-draggableK'){
+		 return 'K';
+		}
+		else if(el.id == 'red-draggableO' || el.id == 'blue-draggableO'){
+		 return 'O';
+		}
+		else if(el.id == 'red-draggableBSlash' || el.id == 'blue-draggableBSlash'){
+		 return '/';
+		}
+		else if(el.id == 'red-draggableF' || el.id == 'blue-draggableF'){
+		 return 'F';
+		}
+		else if(el.id == 'red-draggableAster' || el.id == 'blue-draggableAster'){
+		 return '*';
+		}		 
+	};
+	
 	var droppableFunction = function (id, event, ui, current_symbol = '', zone_Id = '') {
 
-		let currentSymbol = !current_symbol ? ui.helper[0].innerHTML : current_symbol;
+		let currentSymbol = !current_symbol ?  getSelectedSymbol(ui.helper[0]) : current_symbol;
+
+		if(currentSymbol.endsWith('-r')){
+			selectedColor = 'red';
+			currentSymbol = currentSymbol.replace('-r', '');
+		}
+
+		if(currentSymbol.endsWith('-b')){
+			selectedColor = 'blue';
+			currentSymbol = currentSymbol.replace('-b', '');
+		}
+
 		let rowId = getPieceRowNumber(id);
+
 		if (currentSymbol == 'PT') {
 			showProtesisTotal(id, rowId);
 		}
@@ -1491,6 +1636,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 
 		if (isSpecialSymbol(currentSymbol)) {
 			drawBridge(rowId, id);
+			drawUnion(rowId, id);
 			return;
 		}
 
@@ -1511,6 +1657,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		}
 
 		drawBridge(rowId, id);
+		drawUnion(rowId, id);
 
 		if(!zone_Id){
 			$("#" + ui.helper[0].id).css({
@@ -1641,20 +1788,34 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 
 		initOdontogram: function () {
 
-            setDraggables();			
+			setDraggables();
+			/*
+			$(document).tooltip({ 
+				classes: {"ui-tooltip": "highlight"},
+				position: { my: "left+8 center", at: "right center" },
+				show: { effect: "blind", duration: 100 },
+				tooltipClass: "tooltip-styling",
+				track: false
+			});*/
 
 			$("#red").prop("checked", true);
+			$('#red-symbols').css('display', 'flex');
+			$('#blue-symbols').css('display', 'none');			
 
-			$("#red").click(function () {
-				if ($("#red").prop("checked")) {
-					selectedColor = 'red';
-				}
+			$("#red").click(function(){
+				if($("#red").prop("checked")){         
+				  selectedColor = 'red';
+				  $('#red-symbols').css('display', 'flex');
+				  $('#blue-symbols').css('display', 'none');
+				}         
 			});
 
-			$("#blue").click(function () {
-				if ($("#blue").prop("checked")) {
-					selectedColor = 'blue';
-				}
+			$("#blue").click(function(){
+				if($("#blue").prop("checked")){         
+				  selectedColor = 'blue';
+				  $('#red-symbols').css('display', 'none');
+				  $('#blue-symbols').css('display', 'flex');
+				}  
 			});
 
 			var setPiecesAsDroppable = function (pieceList) {
@@ -1762,6 +1923,5 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			hideLine(3);
 			hideLine(4);
 		}
-
 	});
 }
