@@ -92,3 +92,11 @@ div.row-center div span{
     vertical-align: middle;
 }
 
+.border-highlighted-red{
+    border: 5px solid red;    
+}
+
+.border-highlighted{
+    border: 1px solid black;    
+}
+

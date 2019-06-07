@@ -8,72 +8,233 @@ $(function(){
       track: false
     });
 
+    $("#red-delete").draggable({  
+      revert: "invalid",
+      revertDuration: 100,    
+      drag: function( event, ui ) {
+        $(this).removeClass('border-highlighted');         
+      }              
+    });
+    
+    $("#red-delete").mouseenter(function(event) {
+      $(this).addClass('border-highlighted');
+    });
+
+    $("#red-delete").mouseleave(function(event) {
+      $(this).removeClass('border-highlighted');
+    });
+
+    $("#blue-delete").draggable({  
+      revert: "invalid",
+      revertDuration: 100,    
+      drag: function( event, ui ) {
+        $(this).removeClass('border-highlighted');         
+      }              
+    });
+    
+    $("#blue-delete").mouseenter(function(event) {
+      $(this).addClass('border-highlighted');
+    });
+
+    $("#blue-delete").mouseleave(function(event) {
+      $(this).removeClass('border-highlighted');
+    });
+
     var setDraggables = function () {
       let opacity = 0.85;
       $("#red-draggablePT").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity         
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },          
       });
+      $("#red-draggablePT").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggablePT").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      }); 
+
       $("#red-draggablePR").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },     
       });
+      $("#red-draggablePR").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggablePR").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      }); 
+
       $("#red-draggableO").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },     
       });
+      $("#red-draggableO").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggableO").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      });
+
       $("#red-draggableC").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },     
       });
+      $("#red-draggableC").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggableC").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      });
+
       $("#red-draggableF").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },     
       });
+      $("#red-draggableF").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggableF").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      });
+
       $("#red-draggableA").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },    
       });
+      $("#red-draggableA").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggableA").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      });
+
       $("#red-draggableK").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },     
       });
+      $("#red-draggableK").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggableK").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      });
+
       $("#red-draggableBSlash").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },     
       });
+      $("#red-draggableBSlash").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggableBSlash").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      });
+
       $("#red-draggableAster").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },     
       });
+      $("#red-draggableAster").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggableAster").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      });
+
       $("#red-draggableX").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },     
       });
+      $("#red-draggableX").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggableX").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      });
+
       $("#red-draggablePipe").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },     
       });
+      $("#red-draggablePipe").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggablePipe").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      });
+
       $("#red-draggableOO").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },     
       });
+      $("#red-draggableOO").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggableOO").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
+      });
+
       $("#red-draggableErase").draggable({
         revert: "invalid",
         revertDuration: 100,
-        opacity: opacity   
+        opacity: opacity,
+        drag: function( event, ui ) {
+          $(this).removeClass('border-highlighted');         
+        },     
+      });
+      $("#red-draggableErase").mouseenter(function(event) {
+        $(this).addClass('border-highlighted');
+      });  
+      $("#red-draggableErase").mouseleave(function(event) {
+        $(this).removeClass('border-highlighted');
       });
 
       //-----Blue--------------------------
@@ -589,12 +750,102 @@ $(function(){
     var piecesRow3 = getPiecesRow3();
     var piecesRow4 = getPiecesRow4();
 
-    var setPiecesAsDroppable = function(pieceList) {
+    var getPieceRowNumber = function(id){
+      for(let i = 0; i < piecesRow1.length; i++){
+        if(piecesRow1[i].id == id){
+          return 1;
+        }
+      }
+
+      for(let i = 0; i < piecesRow2.length; i++){
+        if(piecesRow2[i].id == id){
+          return 2;
+        }
+      }
+
+      for(let i = 0; i < piecesRow3.length; i++){
+        if(piecesRow3[i].id == id){
+          return 3;
+        }
+      }
+
+      for(let i = 0; i < piecesRow4.length; i++){
+        if(piecesRow4[i].id == id){
+          return 4;
+        }
+      }
+
+      return 0;
+    }
+
+    var applyStyle = function (id) {
+      var rowId = getPieceRowNumber(id);
+
+      if (rowId == 1 || rowId == 4) {
+        $('#' + id + '-mainFrame').attr('stroke-width', '8');
+      }
+      else {
+        $('#' + id + '-c1').attr("stroke-width", '6');
+        $('#' + id + '-c1').attr("r", '27');
+      }
+    }
+
+    var removeStyle = function (id, ui) {
+      var rowId = getPieceRowNumber(id);
+      let currentSymbol = getSelectedSymbol(ui.helper[0]);
+      
+      if (currentSymbol != 'PT') {
+
+        if (rowId == 1 || rowId == 4) {
+          $('#' + id + '-mainFrame').attr('stroke-width', '3');
+        }
+        else {
+          $('#' + id + '-c1').attr('stroke-width', '2');
+          $('#' + id + '-c1').attr('r', '29');
+        }
+      }         
+    }
+
+    var removeStyleOut = function (id) {
+      var rowId = getPieceRowNumber(id);      
+      var piece = getPiece(id);
+      
+      if(piece.symbol == 'PT-r' || piece.symbol == 'PT-b')
+      {
+        if (rowId == 1 || rowId == 4) {
+          $('#' + id + '-mainFrame').attr('stroke-width', '14');
+        }
+        else {
+          $('#' + id + '-c1').attr("stroke-width", '8');
+          $('#' + id + '-c1').attr("r", '26');
+        }
+        return;
+      }
+
+      if (rowId == 1 || rowId == 4) {
+        $('#' + id + '-mainFrame').attr('stroke-width', '3');
+      }
+      else {
+        $('#' + id + '-c1').attr('stroke-width', '2');
+        $('#' + id + '-c1').attr('r', '29');
+      }
+     
+    }
+
+    var setPiecesAsDroppable = function(pieceList) {      
+      
       for (let i = 0; i < pieceList.length; i++) {
         $("#" + pieceList[i].id).droppable({
-          drop: function (event, ui) {
-            droppableFunction(pieceList[i].id, event, ui);
-          }
+          drop: function (event, ui) {           
+            droppableFunction(pieceList[i].id, event, ui); 
+            removeStyle(event.target.id, ui);
+          },
+          over: function (event, ui) {
+            applyStyle(event.target.id);            
+          },          
+          out: function (event, ui) {
+            removeStyleOut(event.target.id);                      
+          },                      
         });
       }
     }
@@ -639,34 +890,6 @@ $(function(){
           return i;
         }
       }
-    }
-
-    var getPieceRowNumber = function(id){
-      for(let i = 0; i < piecesRow1.length; i++){
-        if(piecesRow1[i].id == id){
-          return 1;
-        }
-      }
-
-      for(let i = 0; i < piecesRow2.length; i++){
-        if(piecesRow2[i].id == id){
-          return 2;
-        }
-      }
-
-      for(let i = 0; i < piecesRow3.length; i++){
-        if(piecesRow3[i].id == id){
-          return 3;
-        }
-      }
-
-      for(let i = 0; i < piecesRow4.length; i++){
-        if(piecesRow4[i].id == id){
-          return 4;
-        }
-      }
-
-      return 0;
     }
 
     var getPiecesByRowId = function(id){
@@ -1585,14 +1808,37 @@ $(function(){
        else if(el.id == 'red-draggableAster' || el.id == 'blue-draggableAster'){
         return '*';
        }
-        
+       else if(el.id == 'red-delete' || el.id == 'blue-delete'){
+        return 'DEL';
+       }        
     }
-    
+
+    var clearPiece2 = function(id){
+     
+      let rowId = getPieceRowNumber(id);    
+      let piecePos = getPiecePosition(id);      
+      clearAll(id, true);
+
+      $('#r' + rowId + 'sep' + (piecePos == 0 ? 1 : piecePos).toString()).css('display', 'none');
+      $('#r' + rowId + 'sep' + (piecePos - 1 < 1 ? 1: piecePos - 1).toString()).css('display', 'none');  
+        
+      $("#" + selectedColor + "-delete").css({
+        left: 0,
+        top: 0
+      });
+    }
+     
     var droppableFunction = function(id, event, ui){      
         
-      let currentSymbol = getSelectedSymbol(ui.helper[0]);   
-      let rowId = getPieceRowNumber(id);
+      let currentSymbol = getSelectedSymbol(ui.helper[0]);
+      
+      if(currentSymbol == 'DEL'){
+        clearPiece2(id);
+        return;
+      }
 
+      let rowId = getPieceRowNumber(id); 
+      
       if(currentSymbol == 'PT'){ 
         showProtesisTotal(id, rowId); 
       }
