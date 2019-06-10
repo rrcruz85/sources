@@ -8070,6 +8070,7 @@
 													<div><img id="red-draggableBSlash" class="img-size" src="/oemedical_dentist_test/static/src/img/icons/rest-red.png" title="Restauración" /></div>
 													<div><img id="red-draggableF" class="img-size" src="/oemedical_dentist_test/static/src/img/icons/restos-red.png" title="Restos Radiografí­a" /></div>
 													<div><img id="red-draggableAster" class="img-size" src="/oemedical_dentist_test/static/src/img/icons/sellante-red.png" title="Sellante" /></div>
+													<div><img id="red-delete" class="img-size" src="/oemedical_dentist_test/static/src/img/icons/delete.png" title="Borrar" /></div>
 												</div>                                       
 												<div id="blue-symbols" class="row-center">			
 													<div><span style="font-weight: bold;font-size: 22px; font-family: sans-serif">Symbols:</span></div>
@@ -8085,6 +8086,7 @@
 													<div><img id="blue-draggableBSlash" class="img-size" src="/oemedical_dentist_test/static/src/img/icons/rest-blue.png" title="Restauración" /></div>
 													<div><img id="blue-draggableF" class="img-size" src="/oemedical_dentist_test/static/src/img/icons/restos-blue.png" title="Restos Radiografí­a" /></div>
 													<div><img id="blue-draggableAster" class="img-size" src="/oemedical_dentist_test/static/src/img/icons/sellante-blue.png" title="Sellante" /></div>
+													<div><img id="blue-delete" class="img-size" src="/oemedical_dentist_test/static/src/img/icons/delete.png" title="Borrar" /></div>
 												</div>
 											</div>
 									</div>

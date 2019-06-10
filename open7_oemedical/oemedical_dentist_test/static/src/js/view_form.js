@@ -51,7 +51,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 	});
 	
 	instance.web.form.widgets.add('xhtml', 'instance.web.form.FieldTextXHtml');
-   
+	 
 	var getPiecesRow1 = function () {
 		return [{
 			id: 'p18',
@@ -494,137 +494,395 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 	var setDraggables = function () {
 		let opacity = 0.85;
 		$("#red-draggablePT").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity         
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},          
 		});
+		$("#red-draggablePT").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggablePT").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
 		$("#red-draggablePR").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},     
 		});
+		$("#red-draggablePR").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggablePR").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
 		$("#red-draggableO").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},     
 		});
+		$("#red-draggableO").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggableO").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		});
+
 		$("#red-draggableC").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},     
 		});
+		$("#red-draggableC").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggableC").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		});
+
 		$("#red-draggableF").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},     
 		});
+		$("#red-draggableF").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggableF").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		});
+
 		$("#red-draggableA").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},    
 		});
+		$("#red-draggableA").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggableA").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		});
+
 		$("#red-draggableK").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},     
 		});
+		$("#red-draggableK").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggableK").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		});
+
 		$("#red-draggableBSlash").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},     
 		});
+		$("#red-draggableBSlash").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggableBSlash").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		});
+
 		$("#red-draggableAster").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},     
 		});
+		$("#red-draggableAster").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggableAster").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		});
+
 		$("#red-draggableX").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},     
 		});
+		$("#red-draggableX").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggableX").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		});
+
 		$("#red-draggablePipe").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},     
 		});
+		$("#red-draggablePipe").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggablePipe").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		});
+
 		$("#red-draggableOO").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},     
 		});
+		$("#red-draggableOO").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggableOO").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		});
+
 		$("#red-draggableErase").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity   
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			},     
 		});
-  
+		$("#red-draggableErase").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#red-draggableErase").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		});
+
 		//-----Blue--------------------------
 		$("#blue-draggablePT").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
 		});
-		$("#blue-draggablePR").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
-		});
-		$("#blue-draggableO").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
-		});
-		$("#blue-draggableC").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
-		});
-		$("#blue-draggableF").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
-		});
-		$("#blue-draggableA").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
-		});
-		$("#blue-draggableK").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
-		});
-		$("#blue-draggableBSlash").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
-		});
-		$("#blue-draggableAster").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
-		});
-		$("#blue-draggableX").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
-		});
-		$("#blue-draggablePipe").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
-		});
-		$("#blue-draggableOO").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
-		});
-		$("#blue-draggableErase").draggable({
-		  revert: "invalid",
-		  revertDuration: 100,
-		  opacity: opacity
+		$("#blue-draggablePT").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
 		});  
+		$("#blue-draggablePT").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggablePR").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggablePR").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggablePR").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggableO").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggableO").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggableO").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggableC").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggableC").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggableC").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggableF").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggableF").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggableF").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggableA").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggableA").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggableA").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggableK").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggableK").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggableK").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggableBSlash").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggableBSlash").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggableBSlash").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggableAster").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggableAster").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggableAster").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggableX").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggableX").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggableX").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggablePipe").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggablePipe").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggablePipe").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggableOO").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggableOO").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggableOO").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
+
+		$("#blue-draggableErase").draggable({
+			revert: "invalid",
+			revertDuration: 100,
+			opacity: opacity,
+			drag: function( event, ui ) {
+				$(this).removeClass('border-highlighted');         
+			}, 
+		});
+		$("#blue-draggableErase").mouseenter(function(event) {
+			$(this).addClass('border-highlighted');
+		});  
+		$("#blue-draggableErase").mouseleave(function(event) {
+			$(this).removeClass('border-highlighted');
+		}); 
 	};
 
 	var getPieceRow = function (id) {
@@ -1540,12 +1798,12 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		for (let i = 0; i < row.length; i++) {
 			if (row[i].symbol == 'PT-r' || row[i].symbol == 'PT-b') {
 
-				if (i > 0 && (row[i - 1].symbol == 'O-O-r' || row[i - 1].symbol == 'O-O-b')) {
+				if (i > 0 && (i - 1 != limit) && (row[i - 1].symbol == 'O-O-r' || row[i - 1].symbol == 'O-O-b')) {
 					$('#r' + rowId + 'sep' + (i - 1 == 0 ? 1 : i > limit ? i - 1 : i).toString()).children().attr('stroke', selectedColor);
 					$('#r' + rowId + 'sep' + (i - 1 == 0 ? 1 : i > limit ? i - 1 : i).toString()).css('display', 'inline');
 				}
 
-				if ((i < row.length - 1) && (row[i + 1].symbol == 'O-O-r' || row[i + 1].symbol == 'O-O-b')) {
+				if (i != limit && (i < row.length - 1) && (row[i + 1].symbol == 'O-O-r' || row[i + 1].symbol == 'O-O-b')) {
 					$('#r' + rowId + 'sep' + (i > limit ? i : i + 1).toString()).children().attr('stroke', selectedColor);
 					$('#r' + rowId + 'sep' + (i > limit ? i : i + 1).toString()).css('display', 'inline');
 				}
@@ -1599,12 +1857,38 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		}
 		else if(el.id == 'red-draggableAster' || el.id == 'blue-draggableAster'){
 		 return '*';
-		}		 
+		}	
+		else if(el.id == 'red-delete' || el.id == 'blue-delete'){
+			return 'DEL';
+		} 	 
+	};
+
+	var resetPiece = function(id){
+     
+		let rowId = getPieceRowNumber(id);    
+		let piecePos = getPiecePosition(id);      
+		clearAll(id, true);
+
+		$('#r' + rowId + 'sep' + (piecePos == 0 ? 1 : piecePos).toString()).css('display', 'none');
+		$('#r' + rowId + 'sep' + (piecePos - 1 < 1 ? 1: piecePos - 1).toString()).css('display', 'none');  
+			
+		$("#" + selectedColor + "-delete").css({
+			left: 0,
+			top: 0
+		});
 	};
 	
 	var droppableFunction = function (id, event, ui, current_symbol = '', zone_Id = '') {
 
 		let currentSymbol = !current_symbol ?  getSelectedSymbol(ui.helper[0]) : current_symbol;
+		let rowId = getPieceRowNumber(id);
+		
+		if(currentSymbol == 'DEL'){
+			resetPiece(id);
+			drawBridge(rowId, id);
+			drawUnion(rowId, id);
+			return;
+		}
 
 		if(currentSymbol.endsWith('-r')){
 			selectedColor = 'red';
@@ -1616,7 +1900,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			currentSymbol = currentSymbol.replace('-b', '');
 		}
 
-		let rowId = getPieceRowNumber(id);
+		
 
 		if (currentSymbol == 'PT') {
 			showProtesisTotal(id, rowId);
@@ -1761,7 +2045,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 				   
 					//Modification
 					if(self.dataset.model == 'oemedical.dentist.test'){
-                        self.setDataPieces(values);
+              self.setDataPieces(values);
 					}                   
 
 					if (!self.datarecord.id) {
@@ -1774,6 +2058,9 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 						save_deferral = $.Deferred().resolve({}).promise();
 					} else {
 						// Write save
+						console.log('Values');
+						console.log(values);					 
+
 						save_deferral = self.dataset.write(self.datarecord.id, values, {readonly_fields: readonly_values}).then(function(r) {
 							return self.record_saved(r);
 						}, null);
@@ -1818,12 +2105,105 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 				}  
 			});
 
+			$("#red-delete").draggable({  
+				revert: "invalid",
+				revertDuration: 100,    
+				drag: function( event, ui ) {
+					$(this).removeClass('border-highlighted');         
+				}              
+			});
+			
+			$("#red-delete").mouseenter(function(event) {
+				$(this).addClass('border-highlighted');
+			});
+		
+			$("#red-delete").mouseleave(function(event) {
+				$(this).removeClass('border-highlighted');
+			});
+		
+			$("#blue-delete").draggable({  
+				revert: "invalid",
+				revertDuration: 100,    
+				drag: function( event, ui ) {
+					$(this).removeClass('border-highlighted');         
+				}              
+			});
+			
+			$("#blue-delete").mouseenter(function(event) {
+				$(this).addClass('border-highlighted');
+			});
+		
+			$("#blue-delete").mouseleave(function(event) {
+				$(this).removeClass('border-highlighted');
+			});		
+
+			var applyStyle = function (id) {
+				var rowId = getPieceRowNumber(id);
+	
+				if (rowId == 1 || rowId == 4) {
+					$('#' + id + '-mainFrame').attr('stroke-width', '8');
+				}
+				else {
+					$('#' + id + '-c1').attr("stroke-width", '6');
+					$('#' + id + '-c1').attr("r", '27');
+				}
+			};
+	
+			var removeStyle = function (id, ui) {
+				var rowId = getPieceRowNumber(id);
+				let currentSymbol = getSelectedSymbol(ui.helper[0]);
+				
+				if (currentSymbol != 'PT') {
+	
+					if (rowId == 1 || rowId == 4) {
+						$('#' + id + '-mainFrame').attr('stroke-width', '3');
+					}
+					else {
+						$('#' + id + '-c1').attr('stroke-width', '2');
+						$('#' + id + '-c1').attr('r', '29');
+					}
+				}         
+			};
+	
+			var removeStyleOut = function (id) {
+				var rowId = getPieceRowNumber(id);      
+				var piece = getPiece(id);
+				
+				if(piece.symbol == 'PT-r' || piece.symbol == 'PT-b')
+				{
+					if (rowId == 1 || rowId == 4) {
+						$('#' + id + '-mainFrame').attr('stroke-width', '14');
+					}
+					else {
+						$('#' + id + '-c1').attr("stroke-width", '8');
+						$('#' + id + '-c1').attr("r", '26');
+					}
+					return;
+				}
+	
+				if (rowId == 1 || rowId == 4) {
+					$('#' + id + '-mainFrame').attr('stroke-width', '3');
+				}
+				else {
+					$('#' + id + '-c1').attr('stroke-width', '2');
+					$('#' + id + '-c1').attr('r', '29');
+				}
+			 
+			};
+
 			var setPiecesAsDroppable = function (pieceList) {
 				for (let i = 0; i < pieceList.length; i++) {				 
 					$("#" + pieceList[i].id).droppable({
-						drop: function (event, ui) {							 							 
-							droppableFunction(pieceList[i].id, event, ui);							 
-						}
+						drop: function (event, ui) {           
+							droppableFunction(pieceList[i].id, event, ui); 
+							removeStyle(event.target.id, ui);
+						},
+						over: function (event, ui) {
+							applyStyle(event.target.id);            
+						},          
+						out: function (event, ui) {
+							removeStyleOut(event.target.id);                      
+						}, 
 					}); 
 				} 
 			}

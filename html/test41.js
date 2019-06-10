@@ -7,7 +7,70 @@ $(function(){
       tooltipClass: "tooltip-styling",
       track: false
     });
- 
+
+    var getCanvas;
+    /*
+    $("#btnSave").click(function() { 
+      html2canvas($("#odontogram"), {
+          onrendered: function(canvas) {
+              theCanvas = canvas;
+              //document.body.appendChild(canvas);
+
+              // Convert and download as image 
+              Canvas2Image.saveAsPNG(canvas); 
+              //$("#previewImage").append(canvas);
+              // Clean up 
+              //document.body.removeChild(canvas);
+          }
+      });
+  });
+  */
+
+      
+
+    $("#btn-download").on('click', function () {
+
+      /*
+      console.log('AAA');
+      
+      html2canvas($("#odontogram"), {
+        onrendered: function (canvas) {
+          $("#previewImage").append(canvas);
+          getCanvas = canvas;
+        }
+      });
+
+      var imageData = getCanvas.toDataURL("image/png");
+      var newData = imageData.replace(/^data:image\/png/, "data:application/octet-stream");
+      //$("#btnSave").attr("download", "image.png").attr("href", newData);
+     
+
+      var cnvs = document.getElementById('cnvs'),
+      ctx = cnvs.getContext('2d'),
+      mirror = document.getElementById('mirror');
+  
+      cnvs.width = mirror.width = window.innerWidth;
+      cnvs.height = mirror.height = window.innerHeight;
+
+      var dataURL = canvas.toDataURL('image/png');
+      mirror.src = dataURL;
+       */
+
+      var node = document.getElementById('odontogram');
+
+      domtoimage.toPng(node)
+          .then(function (dataUrl) {
+              let mirror = document.getElementById('mirror');
+              ///var img = new Image();
+              mirror.src = dataUrl;
+              //document.body.appendChild(img);
+          })
+          .catch(function (error) {
+              console.error('oops, something went wrong!', error);
+          });
+    });
+     
+
     $("#red-delete").draggable({  
       revert: "invalid",
       revertDuration: 100,    
@@ -1037,7 +1100,8 @@ $(function(){
         $('#' + id + '-c3').css("display","none");
         $('#' + id + '-c4').css("display","none");
         $('#' + id + '-c5').css("display","none"); 
-      
+
+        $('#' + id + '-tc').css("display","none");
         $('#' + id + '-pipe').css("display","none"); 
 
         $('#' + id + '-ext1').css("display","none");
@@ -1135,12 +1199,6 @@ $(function(){
       $('#' + id + '-t3').html("");
       $('#' + id + '-t4').html("");
       $('#' + id + '-t5').html("");
-      $('#' + id + '-t5').attr("x", 24);
-      $('#' + id + '-t5').attr("y", 36);      
-      $('#' + id + '-t5').css({
-        'font-size': '16px',
-        'display': 'none'
-      });
      
       toogleCross(id,'1', show);
       toogleCross(id,'2', show);
@@ -1157,14 +1215,8 @@ $(function(){
 
       if(rowId == 1 || rowId == 4)
       {
-        $('#' + id + '-t5').attr("fill", selectedColor);
-        $('#' + id + '-t5').attr("x", 3);
-        $('#' + id + '-t5').attr("y", 58);
-        $('#' + id + '-t5').html('C');
-        $('#' + id + '-t5').css({
-          'font-size': '75px',
-          'display': 'inline'
-        });
+        $('#' + id + '-tc').attr("fill", selectedColor);
+        $('#' + id + '-tc').css("display", "inline");
       }
       else
       {
@@ -1914,17 +1966,38 @@ $(function(){
       }  
     });
     
-    $("#btnSave").on('click', function () { 
-      
-      var svg  = document.getElementById('p41-main-square');
-      var xml  = new XMLSerializer().serializeToString(svg);
-      var data = "data:image/svg+xml;base64," + btoa(xml);
-      var img  = new Image();
-
-      img.setAttribute('src', data);
-      document.body.appendChild(img);    
+    /*    
+    $(".exportImageButton").on("click", function() {
+      var svg = document.getElementById("p18");
+      var rect = document.getElementById("p18-mainframe")
+      //rect.setAttribute("fill", "green")
+      var svgData = new XMLSerializer().serializeToString(svg);
+      var canvas = document.createElement("canvas");
+      var svgSize = svg.getBoundingClientRect();
+      canvas.width = svgSize.width * 3;
+      canvas.height = svgSize.height * 3;
+      canvas.style.width = svgSize.width;
+      canvas.style.height = svgSize.height;
+      var ctx = canvas.getContext("2d");
+      ctx.scale(3, 3);
+      var img = document.createElement("img");
+      img.setAttribute("src", "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData))));
+      //rect.setAttribute("fill", "red")
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+        var canvasdata = canvas.toDataURL("image/png", 1);
+    
+        var pngimg = '<img src="' + canvasdata + '">';
+        d3.select("#pngdataurl").html(pngimg);
+    
+        var a = document.createElement("a");
+        a.download = "download_img" + ".png";
+        a.href = canvasdata;
+        document.body.appendChild(a);
+        a.click();
+      };
     });
-     
+    */
 
         
 });	
