@@ -1916,13 +1916,21 @@ $(function(){
     
     $("#btnSave").on('click', function () { 
       
-      var svg  = document.getElementById('p41-main-square');
-      var xml  = new XMLSerializer().serializeToString(svg);
+	  /*
+	  toogleCross('p41','1', false);
+      toogleCross('p41','2', false);
+      toogleCross('p41','3', false);
+      toogleCross('p41','4', false);
+      toogleCross('p41','5', false);
+	  */
+	  
+      var svg  = document.getElementById('p41-main-square');	  	  
+      var xml  = new XMLSerializer().serializeToString(svg);	   
       var data = "data:image/svg+xml;base64," + btoa(xml);
       var img  = new Image();
-
       img.setAttribute('src', data);
-      document.body.appendChild(img);    
+	  img.setAttribute('width', '35px');
+	  document.body.appendChild(img);    
     });
      
 
