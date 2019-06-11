@@ -1925,112 +1925,109 @@ $(function(){
       }  
     });
     
-    var redrawSymbol = function(id){
+    var redrawSymbol = function(id, symbol, zoneId, rowId){
 
-    }
-    
-    $("#btnSave").on('click', function () { 
-      
-      if(isEmpty('p41')){       
-        clearAll('p41', false);
-      }  
+      var tmp = symbol.substring(0, 1);
+
+      if(tmp == 'K'){
+        showCalza(id, zoneId, rowId);
+      }
+      else if(tmp == 'O'){
+        showCarie(id, zoneId, rowId);
+      }
       else{
-         
-        var piece = jQuery.extend({}, getPiece('p41'));
-        if(!piece.z1) 
-          toogleCross('p41','1', false);
-        if(!piece.z2)
-          toogleCross('p41','2', false);
-        if(!piece.z3)
-          toogleCross('p41','3', false);
-        if(!piece.z4)
-          toogleCross('p41','4', false);
-        if(!piece.z5)
-          toogleCross('p41','5', false);
-        
-        if(!hasSpecialSymbol('p41')){
-          
+        showSymbol(id, zoneId, tmp, rowId);
+      }
+    }
 
-          if(piece.z1) 
-          {
-            if (piece.z1 == 'K') {
-              showCalza('p41', '1', 4);
-            }
-            else if (piece.z1 == 'O') {
-              showCarie('p41', '1', 4);
-            }
-            else {
-              showSymbol('p41', '1', piece.z1, 4);
-            }
-          }
-          if(piece.z2)
-          {
-            if (piece.z2 == 'K') {
-              showCalza('p41', '2', 4);
-            }
-            else if (piece.z2 == 'O') {
-              showCarie('p41', '2', 4);
-            }
-            else {
-              showSymbol('p41', '2', piece.z2, 4);
-            }
-          }
-          if(piece.z3)
-          {
-            if (piece.z3 == 'K') {
-              showCalza('p41', '3', 4);
-            }
-            else if (piece.z3 == 'O') {
-              showCarie('p41', '3', 4);
-            }
-            else {
-              showSymbol('p41', '3', piece.z3, 4);
-            }
-          }
-          if(piece.z4)
-          {
-            if (piece.z4 == 'K') {
-              showCalza('p41', '4', 4);
-            }
-            else if (piece.z4 == 'O') {
-              showCarie('p41', '4', 4);
-            }
-            else {
-              showSymbol('p41', '4', piece.z4, 4);
-            }
-          }
-          if(piece.z5)
-          {
-            if (piece.z5 == 'K') {
-              showCalza('p41', '5', 4);
-            }
-            else if (piece.z5 == 'O') {
-              showCarie('p41', '5', 4);
-            }
-            else {
-              showSymbol('p41', '5', piece.z5, 4);
-            }
-          }
-        }      
+    var generateImg = function(id){
+      var piece = jQuery.extend({}, getPiece(id)); 
+      let rowId = getPieceRowNumber(id);        
+      if(isEmpty(id)){       
+        clearAll(id, false);
+      }  
+      else if(!hasSpecialSymbol(id)){ 
+        clearAll(id, false);   
+
+        if(!piece.z1) 
+          toogleCross(id,'1', false);
+        else
+          redrawSymbol(id, piece.z1, '1', rowId);
+
+        if(!piece.z2)
+          toogleCross(id,'2', false);
+        else
+          redrawSymbol(id, piece.z2, '2', rowId);
+
+        if(!piece.z3)
+          toogleCross(id,'3', false);
+        else         
+          redrawSymbol(id, piece.z3, '3', rowId);
+
+        if(!piece.z4)
+          toogleCross(id,'4', false);
+        else         
+          redrawSymbol(id, piece.z4, '4', rowId);
+
+        if(!piece.z5)
+          toogleCross(id,'5', false);
+        else         
+          redrawSymbol(id, piece.z5, '5', rowId);        
       }   
 	  
-      var svg  = document.getElementById('p41-main-square');	  	  
+      var svg  = document.getElementById(rowId == 1 || rowId == 4 ? id + '-main-square': id + '-main-circle');	  	  
       var xml  = new XMLSerializer().serializeToString(svg);	   
       var data = "data:image/svg+xml;base64," + btoa(xml);
       var img  = new Image();
       img.setAttribute('src', data);
-	    img.setAttribute('width', '35px');
+	    img.setAttribute('width', '40px');
       document.body.appendChild(img);
       
-      if(isEmpty('p41')){ 
-        toogleCross('p41','1', true);
-        toogleCross('p41','2', true);
-        toogleCross('p41','3', true);
-        toogleCross('p41','4', true);
-        toogleCross('p41','5', true);
+      if(isEmpty(id)){ 
+        toogleCross(id,'1', true);
+        toogleCross(id,'2', true);
+        toogleCross(id,'3', true);
+        toogleCross(id,'4', true);
+        toogleCross(id,'5', true);
       }
-    });
-     
+      else if(!piece.symbol){        
+        if(!piece.z1) 
+          toogleCross(id,'1', true);
+        if(!piece.z2)
+          toogleCross(id,'2', true);
+        if(!piece.z3)
+          toogleCross(id,'3', true);
+        if(!piece.z4)
+          toogleCross(id,'4', true);
+        if(!piece.z5)
+          toogleCross(id,'5', true);
+      }
+    }
+    
+    $("#btnSave").on('click', function () { 
+      
+      document.body.appendChild(document.createElement("br")); 
+      for(let i = 0 ; i < piecesRow1.length; i++)
+      {
+        generateImg(piecesRow1[i].id);
+      }
+       
+      document.body.appendChild(document.createElement("br"));      
+      for(let i = 0 ; i < piecesRow2.length; i++)
+      {
+        generateImg(piecesRow2[i].id);
+      }
+      document.body.appendChild(document.createElement("br")); 
+      for(let i = 0 ; i < piecesRow3.length; i++)
+      {
+        generateImg(piecesRow3[i].id);
+      }
+      document.body.appendChild(document.createElement("br")); 
+      for(let i = 0 ; i < piecesRow4.length; i++)
+      {
+        generateImg(piecesRow4[i].id);
+      }
+    });    
 
         
 });	
