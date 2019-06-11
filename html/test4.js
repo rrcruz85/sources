@@ -991,6 +991,15 @@ $(function(){
       }
     }
 
+    var isEmpty = function(id){
+      let pieces = getPieceRow(id);     
+      for(let i=0; i < pieces.length; i++ ){
+         if(pieces[i].id == id){
+           return (!pieces[i].symbol && !pieces[i].z1 && !pieces[i].z2 && !pieces[i].z3 && !pieces[i].z4 && !pieces[i].z5);           
+         }  
+      }
+    }
+
     var getPiece = function(id){
       let pieces = getPieceRow(id);
       for(let i=0; i < pieces.length; i++ ){
@@ -1345,7 +1354,7 @@ $(function(){
       setPiece(id, 'K', zone);
     }
 
-    var showSymbol = function(id, zone, symbol,rowId){
+    var showSymbol = function(id, zone, symbol, rowId){
       toogleCross(id, zone, false);
 
       if(rowId == 1 || rowId == 4){
@@ -1839,9 +1848,9 @@ $(function(){
       });
     }
      
-    var droppableFunction = function(id, event, ui){      
+    var droppableFunction = function(id, event, ui, symb = '', z = ''){      
         
-      let currentSymbol = getSelectedSymbol(ui.helper[0]);
+      let currentSymbol = symb || getSelectedSymbol(ui.helper[0]);
       let rowId = getPieceRowNumber(id); 
 
       if(currentSymbol == 'DEL'){
@@ -1877,7 +1886,7 @@ $(function(){
         clearAll(id, true);           
       }  
       
-      let zoneId = getZoneNumber(id, event, rowId);
+      let zoneId = z || getZoneNumber(id, event, rowId);
       
       if (currentSymbol == 'K') {
         showCalza(id, zoneId, rowId);
@@ -1892,10 +1901,12 @@ $(function(){
       drawBridge(rowId, id);
       drawUnion(rowId, id);
       
-      $("#" + ui.helper[0].id).css({
-        left: 0,
-        top: 0
-      });
+      if(ui){
+        $("#" + ui.helper[0].id).css({
+          left: 0,
+          top: 0
+        });
+      }
     }
 
     $("#red").click(function(){
@@ -1914,23 +1925,110 @@ $(function(){
       }  
     });
     
+    var redrawSymbol = function(id){
+
+    }
+    
     $("#btnSave").on('click', function () { 
       
-	  /*
-	  toogleCross('p41','1', false);
-      toogleCross('p41','2', false);
-      toogleCross('p41','3', false);
-      toogleCross('p41','4', false);
-      toogleCross('p41','5', false);
-	  */
+      if(isEmpty('p41')){       
+        clearAll('p41', false);
+      }  
+      else{
+         
+        var piece = jQuery.extend({}, getPiece('p41'));
+        if(!piece.z1) 
+          toogleCross('p41','1', false);
+        if(!piece.z2)
+          toogleCross('p41','2', false);
+        if(!piece.z3)
+          toogleCross('p41','3', false);
+        if(!piece.z4)
+          toogleCross('p41','4', false);
+        if(!piece.z5)
+          toogleCross('p41','5', false);
+        
+        if(!hasSpecialSymbol('p41')){
+          
+
+          if(piece.z1) 
+          {
+            if (piece.z1 == 'K') {
+              showCalza('p41', '1', 4);
+            }
+            else if (piece.z1 == 'O') {
+              showCarie('p41', '1', 4);
+            }
+            else {
+              showSymbol('p41', '1', piece.z1, 4);
+            }
+          }
+          if(piece.z2)
+          {
+            if (piece.z2 == 'K') {
+              showCalza('p41', '2', 4);
+            }
+            else if (piece.z2 == 'O') {
+              showCarie('p41', '2', 4);
+            }
+            else {
+              showSymbol('p41', '2', piece.z2, 4);
+            }
+          }
+          if(piece.z3)
+          {
+            if (piece.z3 == 'K') {
+              showCalza('p41', '3', 4);
+            }
+            else if (piece.z3 == 'O') {
+              showCarie('p41', '3', 4);
+            }
+            else {
+              showSymbol('p41', '3', piece.z3, 4);
+            }
+          }
+          if(piece.z4)
+          {
+            if (piece.z4 == 'K') {
+              showCalza('p41', '4', 4);
+            }
+            else if (piece.z4 == 'O') {
+              showCarie('p41', '4', 4);
+            }
+            else {
+              showSymbol('p41', '4', piece.z4, 4);
+            }
+          }
+          if(piece.z5)
+          {
+            if (piece.z5 == 'K') {
+              showCalza('p41', '5', 4);
+            }
+            else if (piece.z5 == 'O') {
+              showCarie('p41', '5', 4);
+            }
+            else {
+              showSymbol('p41', '5', piece.z5, 4);
+            }
+          }
+        }      
+      }   
 	  
       var svg  = document.getElementById('p41-main-square');	  	  
       var xml  = new XMLSerializer().serializeToString(svg);	   
       var data = "data:image/svg+xml;base64," + btoa(xml);
       var img  = new Image();
       img.setAttribute('src', data);
-	  img.setAttribute('width', '35px');
-	  document.body.appendChild(img);    
+	    img.setAttribute('width', '35px');
+      document.body.appendChild(img);
+      
+      if(isEmpty('p41')){ 
+        toogleCross('p41','1', true);
+        toogleCross('p41','2', true);
+        toogleCross('p41','3', true);
+        toogleCross('p41','4', true);
+        toogleCross('p41','5', true);
+      }
     });
      
 
