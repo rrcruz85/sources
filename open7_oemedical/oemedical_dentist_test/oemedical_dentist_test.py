@@ -882,7 +882,8 @@ class OeMedicalDentistTest(osv.Model):
         'evolution_ids'              : fields.one2many('oemedical.dentist.evolution', 'dentist_test_id', 'Notas de Evolucion'),
     
     
-        # Odontograma 2 ...          
+        # Odontograma 2 ...  
+        'odontogram_img': fields.binary("Odontogram"),        
         # Row 1 -------------------------------------------------------
         'p18_symbol'                 : fields.char('Symbol', size = 6),
         'p18_z1'                     : fields.char('Zone 1', size = 4),

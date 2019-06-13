@@ -1049,6 +1049,15 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		}
 	};
 
+	var isEmpty = function(id){
+		let pieces = getPieceRow(id);     
+		for(let i=0; i < pieces.length; i++ ){
+			 if(pieces[i].id == id){
+				 return (!pieces[i].symbol && !pieces[i].z1 && !pieces[i].z2 && !pieces[i].z3 && !pieces[i].z4 && !pieces[i].z5);           
+			 }  
+		}
+	};
+
 	var getPiece = function (id) {
 		let pieces = getPieceRow(id);
 		for (let i = 0; i < pieces.length; i++) {
@@ -1094,8 +1103,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			$('#' + id + '-c4').css("display", "none");
 			$('#' + id + '-c5').css("display", "none");
 
-			$('#' + id + '-tc').css("display", "none");
-			$('#' + id + '-pipe').css("display", "none");
+		 	$('#' + id + '-pipe').css("display", "none");
 
 			$('#' + id + '-ext1').css("display", "none");
 			$('#' + id + '-ext2').css("display", "none");
@@ -1200,32 +1208,41 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		clearPiece(id);
 	};
 
-	var showCorona = function (id, rowId) {
+	var showCorona = function (id, rowId, color = '') {
 
 		clearAll(id, false);
 
 		if (rowId == 1 || rowId == 4) {
-			$('#' + id + '-tc').attr("fill", selectedColor);
-			$('#' + id + '-tc').css("display", "inline");
+			$('#' + id + '-t5').attr("fill", color || selectedColor);
+			$('#' + id + '-t5').attr("x", 3);
+			$('#' + id + '-t5').attr("y", 58);
+			$('#' + id + '-t5').html('C');
+			$('#' + id + '-t5').css({
+				'font-size': '75px',
+				'color': color || selectedColor,
+				'display': 'inline'
+			});
 		}
 		else {
-			$('#' + id + '-t1').attr("fill", selectedColor);
+			$('#' + id + '-t1').attr("fill", color || selectedColor);
 			$('#' + id + '-t1').attr("x", 3);
 			$('#' + id + '-t1').attr("y", 58);
-
 			$('#' + id + '-t1').html('C');
 			$('#' + id + '-t1').css({
 				'font-family': 'sans-serif',
 				'font-weight': 'bold',
 				'font-size': '75px',
+				'color': color || selectedColor,
 				'display': 'inline'
 			});
 		}
 
-		$("#" + selectedColor + "-draggableC").css({
-			left: 0,
-			top: 0
-		});
+		if(!color){
+			$("#" + selectedColor + "-draggableC").css({
+				left: 0,
+				top: 0
+			});
+		}
 
 		setSpecialSymbol(id, 'C');
 	};
@@ -1320,14 +1337,14 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		setSpecialSymbol(id, 'PT');
 	};
 
-	var showCarie = function(id, zone, rowId) {
+	var showCarie = function(id, zone, rowId, color = '') {
 
 		$('#' + id + '-t' + zone).css("display", "none");
 		toogleCross(id, zone, false);
 
 		if (rowId == 1 || rowId == 4) {
 			$('#' + id + '-k' + zone).css("display", "none");
-			$('#' + id + '-c' + zone).attr("fill", selectedColor);
+			$('#' + id + '-c' + zone).attr("fill", color || selectedColor);
 			$('#' + id + '-c' + zone).css("display", "inline");
 		}
 		else {
@@ -1342,28 +1359,28 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 				$('#' + id + '-s' + zone).css("display", "none");
 			}
 
-			$('#' + id + '-cc' + zone).attr("fill", selectedColor);
+			$('#' + id + '-cc' + zone).attr("fill", color || selectedColor);
 			$('#' + id + '-cc' + zone).css("display", "inline");
 		}
 
 		setPiece(id, 'O', zone);
 	};
 
-	var showCalza = function (id, zone, rowId) {
+	var showCalza = function (id, zone, rowId, color = '') {
 
 		toogleCross(id, zone, false);
 		$('#' + id + '-t' + zone).css("display", "none");
 
 		if (rowId == 1 || rowId == 4) {
 			$('#' + id + '-c' + zone).css("display", "none");
-			$('#' + id + '-k' + zone).attr("fill", selectedColor);
+			$('#' + id + '-k' + zone).attr("fill", color || selectedColor);
 			$('#' + id + '-k' + zone).css("display", "inline");
 		}
 		else {
 			$('#' + id + '-cc' + zone).css("display", "none");
 
 			if (zone == '5') {
-				$('#' + id + '-c4').attr("fill", selectedColor);
+				$('#' + id + '-c4').attr("fill", color || selectedColor);
 				$('#' + id + '-x6-1').css("display", "none");
 				$('#' + id + '-x6-2').css("display", "none");
 				$('#' + id + '-t5-2').css("display", "none");
@@ -1376,7 +1393,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 					$('#' + id + '-c4').attr("fill", "white");
 				}
 
-				$('#' + id + '-s' + zone).attr("fill", selectedColor);
+				$('#' + id + '-s' + zone).attr("fill", color || selectedColor);
 				$('#' + id + '-s' + zone).css("display", "inline");
 			}
 			$('#' + id + '-c4').css("display", "inline");
@@ -1385,14 +1402,15 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		setPiece(id, 'K', zone);
 	};
 
-	var showSymbol = function (id, zone, symbol, rowId) {
+	var showSymbol = function (id, zone, symbol, rowId, color = '') {
 		toogleCross(id, zone, false);
 
 		if (rowId == 1 || rowId == 4) {
 			$('#' + id + '-k' + zone).css("display", "none");
 			$('#' + id + '-c' + zone).css("display", "none");
 
-			$('#' + id + '-t' + zone).attr("fill", selectedColor);
+			$('#' + id + '-t' + zone).attr("fill", color || selectedColor);
+			$('#' + id + '-t' + zone).css("color", color || selectedColor);
 			$('#' + id + '-t' + zone).html(symbol);
 			$('#' + id + '-t' + zone).css("display", "inline");
 		}
@@ -1423,11 +1441,12 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			}
 
 			$('#' + id + '-cc' + zone).css("display", "none");
-			$('#' + id + '-t' + zone).attr("fill", selectedColor);
+			$('#' + id + '-t' + zone).attr("fill", color || selectedColor);
 			$('#' + id + '-t' + zone).html(symbol);
 			$('#' + id + '-t' + zone).css({
 				'font-family': 'sans-serif',
 				'font-weight': 'bold',
+				"color": color || selectedColor,
 				"display": "inline"
 			});
 		}
@@ -1736,7 +1755,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		}
 	};
 
-	var drawBridge = function (rowId, id) {
+	var drawBridge = function (rowId) {
 
 		hideLine(rowId);
 		
@@ -1885,7 +1904,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		
 		if(currentSymbol == 'DEL'){
 			resetPiece(id);
-			drawBridge(rowId, id);
+			drawBridge(rowId);
 			drawUnion(rowId, id);
 			return;
 		}
@@ -1898,9 +1917,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		if(currentSymbol.endsWith('-b')){
 			selectedColor = 'blue';
 			currentSymbol = currentSymbol.replace('-b', '');
-		}
-
-		
+		}		
 
 		if (currentSymbol == 'PT') {
 			showProtesisTotal(id, rowId);
@@ -1919,7 +1936,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		}
 
 		if (isSpecialSymbol(currentSymbol)) {
-			drawBridge(rowId, id);
+			drawBridge(rowId);
 			drawUnion(rowId, id);
 			return;
 		}
@@ -1940,7 +1957,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			showSymbol(id, zoneId, currentSymbol, rowId);
 		}
 
-		drawBridge(rowId, id);
+		drawBridge(rowId);
 		drawUnion(rowId, id);
 
 		if(!zone_Id){
@@ -1950,6 +1967,62 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			});
 		}
 	};
+
+	var redrawSymbol = function(id, symbol, zoneId, rowId){
+
+		var tmp = symbol.substring(0, 1);
+		var color = symbol.endsWith('-r') ? 'red' : 'blue'; 
+
+		if(tmp == 'K'){
+			showCalza(id, zoneId, rowId, color);
+		}
+		else if(tmp == 'O'){
+			showCarie(id, zoneId, rowId, color);
+		}
+		else{
+			showSymbol(id, zoneId, tmp, rowId, color);
+		}
+	};
+
+	var generateImg = function(id){
+		var piece = jQuery.extend({}, getPiece(id)); 
+		let rowId = getPieceRowNumber(id);        
+		if(isEmpty(id)){       
+			clearAll(id, false);
+		} 
+		else if(!hasSpecialSymbol(id)){ 
+			clearAll(id, false);   
+
+			if(!piece.z1) 
+				toogleCross(id,'1', false);
+			else
+				redrawSymbol(id, piece.z1, '1', rowId);
+
+			if(!piece.z2)
+				toogleCross(id,'2', false);
+			else
+				redrawSymbol(id, piece.z2, '2', rowId);
+
+			if(!piece.z3)
+				toogleCross(id,'3', false);
+			else         
+				redrawSymbol(id, piece.z3, '3', rowId);
+
+			if(!piece.z4)
+				toogleCross(id,'4', false);
+			else         
+				redrawSymbol(id, piece.z4, '4', rowId);
+
+			if(!piece.z5)
+				toogleCross(id,'5', false);
+			else         
+				redrawSymbol(id, piece.z5, '5', rowId);        
+		}        
+		
+		drawBridge(rowId);
+		drawUnion(rowId, id);  
+	};
+	
 
 	instance.web.FormView.include({
 		 
