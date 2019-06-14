@@ -1284,6 +1284,12 @@ class OeMedicalDentistTest(osv.Model):
                     (_check_indicators, _('La cantidad de grupos de indicadores no puede exceder de 6.'), []),
                     (_check_diagnosis, _('La cantidad de diagnosticos no puede exceder de 4.'), []),
                    ]
+
+    def print_odotogram(self, cr, uid, ids, context = None):
+        if ids and context and 'print_odontogram' in context:
+           a = 1
+        return True
+    
 OeMedicalDentistTest()
 
 class OeMedicalPathology(osv.Model):

@@ -1761,6 +1761,11 @@
 
 						   <page string="Odontograma 2">
 						        <div class="column">
+								    
+									<div id="print_btn" class = "row-right"> 
+									     <button string="Print" type="object" name="print_odotogram" class="oe_highlight" context="{'print_odontogram': 1}"/>
+									</div>
+									 
 								    <div class="row-center"> 
 										<div id="odontogram" class="column">							        
 											<!--Row1-->

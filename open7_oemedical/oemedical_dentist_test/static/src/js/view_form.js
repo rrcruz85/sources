@@ -2021,8 +2021,32 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		
 		drawBridge(rowId);
 		drawUnion(rowId, id);  
+	};	
+
+	var produceImg = function(){
+	   
+		for(let i = 0 ; i < piecesRow1.length; i++)
+		{
+		  generateImg(piecesRow1[i].id);
+		}
+		 
+		for(let i = 0 ; i < piecesRow2.length; i++)
+		{
+		  generateImg(piecesRow2[i].id);
+		}
+		
+		for(let i = 0 ; i < piecesRow3.length; i++)
+		{
+		  generateImg(piecesRow3[i].id);
+		}
+		
+		for(let i = 0 ; i < piecesRow4.length; i++)
+		{
+		  generateImg(piecesRow4[i].id);
+		}
+  
+		return html2canvas(document.getElementById('odontogram'));
 	};
-	
 
 	instance.web.FormView.include({
 		 
@@ -2053,6 +2077,14 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			this._super(switch_to);
          	if(this.model == 'oemedical.dentist.test'){
 				
+				/*
+                if(!this.datarecord.id){
+					$('#print_btn').css("display", "none !important");
+				}
+				else{
+					$('#print_btn').css("display", "inline !important");
+				}*/
+
 				if(this.$el.hasClass('oe_form_editable')){
 					$('#row-symbols').removeClass('hidden');
 				}
@@ -2118,7 +2150,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 				   
 					//Modification
 					if(self.dataset.model == 'oemedical.dentist.test'){
-              self.setDataPieces(values);
+						self.setDataPieces(values);	
 					}                   
 
 					if (!self.datarecord.id) {
@@ -2131,12 +2163,24 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 						save_deferral = $.Deferred().resolve({}).promise();
 					} else {
 						// Write save
-						console.log('Values');
-						console.log(values);					 
-
-						save_deferral = self.dataset.write(self.datarecord.id, values, {readonly_fields: readonly_values}).then(function(r) {
-							return self.record_saved(r);
-						}, null);
+						 
+						if(self.dataset.model == 'oemedical.dentist.test'){
+							
+							return produceImg().then(function(canvas) {								
+								canvas.style.width = "50%";
+								//canvas.style.width = "90%";
+								var generatedImg = canvas.toDataURL();
+								values['odontogram_img'] = generatedImg.substring(generatedImg.indexOf(",") + 1);								 
+							  	save_deferral = self.dataset.write(self.datarecord.id, values, {readonly_fields: readonly_values}).then(function(r) {
+									return self.record_saved(r);
+								}, null);
+							});
+						}						
+						else{
+							save_deferral = self.dataset.write(self.datarecord.id, values, {readonly_fields: readonly_values}).then(function(r) {
+								return self.record_saved(r);
+							}, null);
+					    }					    
 					}
 					return save_deferral;
 				}
@@ -2149,15 +2193,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 		initOdontogram: function () {
 
 			setDraggables();
-			/*
-			$(document).tooltip({ 
-				classes: {"ui-tooltip": "highlight"},
-				position: { my: "left+8 center", at: "right center" },
-				show: { effect: "blind", duration: 100 },
-				tooltipClass: "tooltip-styling",
-				track: false
-			});*/
-
+			
 			$("#red").prop("checked", true);
 			$('#red-symbols').css('display', 'flex');
 			$('#blue-symbols').css('display', 'none');			

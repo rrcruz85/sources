@@ -108,3 +108,9 @@ div.row-center div span{
 .border-highlighted{
     border: 1px solid black;    
 }
+
+.row-right{
+    display: flex;
+    flex-direction: row; 
+    justify-content: flex-end;      
+}
