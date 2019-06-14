@@ -1013,23 +1013,7 @@ class oemedical_dentist_test_report(report_rml):
                                 
                                 <tr><td><para style="P20_COURIER">""" + (tools.ustr(dentist_test.mdc_info) if dentist_test.mdc_info else '') + """</para></td><td></td></tr>
                             </blockTable>"""
-            '''
-            mdc_info = ''
-            if dentist_test.mdc_info:
-                word_list = self._get_list_words(dentist_test.mdc_info, letters_per_row)
-                mdc_info = word_list[0]
-            
-            rml += """      <spacer length="0.1cm"/>
-                            <blockTable colWidths="140.0,387.0" rowHeights="12.0,12.0" style="Table3">
-                                <tr>
-                                    <td><para style="P20">1.  MOTIVO DE CONSULTA</para></td>
-                                    <td><para style="P14_RIGHT">ANOTAR LA CAUSA DEL PROBLEMA EN LA VERSION DEL INFORMANTE</para></td>
-                                </tr>
-                                <tr>
-                                    <td><para style="P20_COURIER">""" + tools.ustr(mdc_info) + """</para></td><td></td>
-                                </tr>
-                            </blockTable>"""
-            '''
+           
             info_diagnosis = ''
             if dentist_test.info_diagnosis:
                 word_list = self._get_list_words(dentist_test.info_diagnosis, letters_per_row * 4)
