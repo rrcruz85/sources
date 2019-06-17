@@ -2163,24 +2163,10 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 						save_deferral = $.Deferred().resolve({}).promise();
 					} else {
 						// Write save
-						 
-						if(self.dataset.model == 'oemedical.dentist.test'){
-							
-							return produceImg().then(function(canvas) {								
-								canvas.style.width = "50%";
-								//canvas.style.width = "90%";
-								var generatedImg = canvas.toDataURL();
-								values['odontogram_img'] = generatedImg.substring(generatedImg.indexOf(",") + 1);								 
-							  	save_deferral = self.dataset.write(self.datarecord.id, values, {readonly_fields: readonly_values}).then(function(r) {
-									return self.record_saved(r);
-								}, null);
-							});
-						}						
-						else{
-							save_deferral = self.dataset.write(self.datarecord.id, values, {readonly_fields: readonly_values}).then(function(r) {
-								return self.record_saved(r);
-							}, null);
-					    }					    
+						save_deferral = self.dataset.write(self.datarecord.id, values, {readonly_fields: readonly_values}).then(function(r) {
+							return self.record_saved(r);
+						}, null);
+					     					    
 					}
 					return save_deferral;
 				}
@@ -2411,6 +2397,84 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			hideLine(2);
 			hideLine(3);
 			hideLine(4);
+		}
+	});
+
+	instance.web.Sidebar.include({
+
+		on_item_action_clicked: function(item) {
+			var self = this;
+			self.getParent().sidebar_eval_context().done(function (sidebar_eval_context) {
+				var ids = self.getParent().get_selected_ids();
+				if (ids.length == 0) {
+					instance.web.dialog($("<div />").text(_t("You must choose at least one record.")), { title: _t("Warning"), modal: true });
+					return false;
+				}
+				var dataset = self.getParent().dataset;
+				var active_ids_context = {
+					active_id: ids[0],
+					active_ids: ids,
+					active_model: dataset.model
+				}; 
+				var c = instance.web.pyeval.eval('context',
+					new instance.web.CompoundContext(
+						sidebar_eval_context, active_ids_context));
+				
+				if(item.action.model == 'oemedical.dentist.test' && item.action.name == 'Print Odontogram'){
+					
+					produceImg().then(function(canvas) {								
+						//canvas.style.width = "50%";
+					 	//canvas.style.width = "90%";
+						var generatedImg = canvas.toDataURL();
+						
+						var obj = {
+							odontogram_img: generatedImg.substring(generatedImg.indexOf(",") + 1)
+						};						
+
+						dataset.write(ids[0], obj).then(function(r) {
+                             
+							self.rpc("/web/action/load", {
+								action_id: item.action.id,
+								context: new instance.web.CompoundContext(
+									dataset.get_context(), active_ids_context).eval()
+							}).done(function(result) {
+								result.context = new instance.web.CompoundContext(
+									result.context || {}, active_ids_context)
+										.set_eval_context(c);
+								result.flags = result.flags || {};
+								result.flags.new_window = true;
+								self.do_action(result, {
+									on_close: function() {
+										// reload view
+										self.getParent().reload();
+									},
+								});
+							});							 
+
+						}, null); 
+					});					 
+				}
+				else{
+                
+					self.rpc("/web/action/load", {
+						action_id: item.action.id,
+						context: new instance.web.CompoundContext(
+							dataset.get_context(), active_ids_context).eval()
+					}).done(function(result) {
+						result.context = new instance.web.CompoundContext(
+							result.context || {}, active_ids_context)
+								.set_eval_context(c);
+						result.flags = result.flags || {};
+						result.flags.new_window = true;
+						self.do_action(result, {
+							on_close: function() {
+								// reload view
+								self.getParent().reload();
+							},
+						});
+					});
+			    }
+			});
 		}
 	});
 }

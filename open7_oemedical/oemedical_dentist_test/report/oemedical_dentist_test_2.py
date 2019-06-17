@@ -1,12 +1,19 @@
 # -*- encoding: utf-8 -*-
 import os
 import openerp
+import random
+import string
 #import time
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from openerp import pooler, tools
 from openerp.report.interface import report_rml
 #from openerp.tools.translate import _
+
+def randomString(stringLength=10):
+  """Generate a random string of fixed length """
+  letters = string.ascii_lowercase
+  return ''.join(random.choice(letters) for i in range(stringLength))
 
 class oemedical_dentist_test_report_2(report_rml):
     
@@ -546,16 +553,10 @@ class oemedical_dentist_test_report_2(report_rml):
                               <blockAlignment value="CENTER"/>
                               
                               <blockSpan start="0,0" stop="32,0"/>
+                              <blockSpan start="0,1" stop="32,1"/>
+                              
                               <blockBackground colorName="#F0A9C4" start="0,0" stop="32,0"/>
                               <blockBackground colorName="#CAE7D4" start="0,1" stop="32,-1"/>
-                              
-                              <blockSpan start="3,5" stop="30,5"/>
-                              <blockSpan start="1,10" stop="10,10"/>
-                              <blockSpan start="1,11" stop="31,12"/>
-                              <blockSpan start="1,13" stop="31,13"/>
-                              
-                              <blockSpan start="1,4" stop="31,4"/>
-                              <blockSpan start="1,9" stop="31,9"/>                               
                               
                               <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="32,0" thickness="0.1"/>
                               <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="32,0" thickness="0.1"/>
@@ -1124,15 +1125,16 @@ class oemedical_dentist_test_report_2(report_rml):
                                 </tr>
                             </blockTable>"""
             
-            path = openerp.modules.get_module_path('oemedical_dentist_test')
-            path += '/static/src/img/tmp'
-            path = os.path.normpath(path)
-            odontogram_img = os.path.join(path, 'odontogram.png')
-                        
-            #if dentist_test.odontogram_img:
-            #    fh = open(odontogram_img, "wb")
-            #    fh.write(dentist_test.odontogram_img.decode('base64'))
-            #    fh.close()
+            odontogram_img = ""
+            if dentist_test.odontogram_img:
+              path = openerp.modules.get_module_path('oemedical_dentist_test')
+              path += '/static/src/img/tmp'
+              path = os.path.normpath(path)
+              fileName = randomString() + '.png'
+              odontogram_img = os.path.join(path, fileName)
+              fh = open(odontogram_img, "wb")
+              fh.write(dentist_test.odontogram_img.decode('base64'))
+              fh.close()
             
             rml += """      <spacer length="0.1cm"/>
                             <blockTable colWidths="19.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,51.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,19.0" rowHeights="12.0,252.0" style="Table7">
@@ -1145,7 +1147,11 @@ class oemedical_dentist_test_report_2(report_rml):
                                 </tr>
                                 
                                 <tr>
-                                    <td><image file='""" + odontogram_img + """' x="30" y="0" width="300" height="150"/></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                                    <td>
+                                         
+                                          <image file='""" + odontogram_img + """' x="0" y="0" width="300" height="150" preserveAspectRatio="yes"/>
+                                        
+                                    </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td>
@@ -1754,14 +1760,13 @@ class oemedical_dentist_test_report_2(report_rml):
             rml += """ </story>"""
             rml += """</document>"""
 
-        #print '----------------------------------------------------------------------------'
-        #print rml
-        #print '----------------------------------------------------------------------------'
-        
         report_type = datas.get('report_type', 'pdf')
         create_doc = self.generators[report_type]
-        
         pdf = create_doc(rml, title=self.title)
+        
+        #Removing temporary file
+        #os.remove(odontogram_img)
+        #dentist_test_obj.write(cr, uid, ids, {'odontogram_img': None})
         
         return (pdf, report_type)
     
