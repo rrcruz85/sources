@@ -556,11 +556,12 @@ class oemedical_dentist_test_report_2(report_rml):
                               <blockSpan start="0,0" stop="32,0"/>
                               <blockSpan start="0,1" stop="32, -1"/>
                               
-                              <blockBackground colorName="#F0A9C4" start="0,0" stop="32,0"/>
-                              <!--
+                              <blockBackground colorName="#F0A9C4" start="0,0" stop="32,0"/> 
+                              
+                              <!--                              
                               <blockBackground colorName="#CAE7D4" start="0,1" stop="32,-1"/>
                               -->
-                              
+
                               <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="32,0" thickness="0.1"/>
                               <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="32,0" thickness="0.1"/>
                               <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="32,0" thickness="0.1"/>
@@ -1168,7 +1169,7 @@ class oemedical_dentist_test_report_2(report_rml):
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td>
                                 </tr>
-                                <!--
+                               <!--
                                 <tr>
                                     <td></td>
                                     <td><para style="P200_LEFT">SIMBOLOGIA DEL ODONTOGRAMA</para></td>
@@ -1177,10 +1178,14 @@ class oemedical_dentist_test_report_2(report_rml):
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td>
                                 </tr>
+                                -->
+                                </blockTable>
                                 
+                                <!--
                                 <tr>
                                     <td></td>
                                     <td>
+                                    -->
                                         <blockTable colWidths="45.0,20.0,2.0,50.0,20.0,2.0,60.0,20.0,2.0,60.0,20.0,2.0,60.0,28.0,2.0,55.0,20.0" rowHeights="12.0,12.0" style="Table9">
                                             <tr>
                                                 <td><para style="P220">Caries</para></td>
@@ -1226,12 +1231,15 @@ class oemedical_dentist_test_report_2(report_rml):
                                                 <td><para style="P220">K</para></td>
                                             </tr>
                                         </blockTable>
+                                    <!--    
                                     </td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td>
                                 </tr>
+
+                                
                                 
                                 <tr>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
@@ -1248,8 +1256,8 @@ class oemedical_dentist_test_report_2(report_rml):
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td>
                                 </tr>
-                                -->
-                            </blockTable>"""
+                                
+                            </blockTable>-->"""
              
             rml += """      <spacer length="0.1cm"/>
                             <blockTable colWidths="20.0,12.0,20.0,12.0,20.0,12.0,53.0,53.0,53.0,53.0,11.0,40.0,11.0,40.0,11.0,15.0,20.0,20.0,20.0,31.0" rowHeights="12.0,12.0,12.0,12.0,12.0,12.0,12.0,12.0,12.0,12.0" style="Table10">
