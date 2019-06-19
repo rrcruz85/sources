@@ -8,6 +8,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from openerp import pooler, tools
 from openerp.report.interface import report_rml
+from PIL import Image
 #from openerp.tools.translate import _
 
 def randomString(stringLength=10):
@@ -553,10 +554,12 @@ class oemedical_dentist_test_report_2(report_rml):
                               <blockAlignment value="CENTER"/>
                               
                               <blockSpan start="0,0" stop="32,0"/>
-                              <blockSpan start="0,1" stop="32,1"/>
+                              <blockSpan start="0,1" stop="32, -1"/>
                               
                               <blockBackground colorName="#F0A9C4" start="0,0" stop="32,0"/>
+                              <!--
                               <blockBackground colorName="#CAE7D4" start="0,1" stop="32,-1"/>
+                              -->
                               
                               <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="32,0" thickness="0.1"/>
                               <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="32,0" thickness="0.1"/>
@@ -1125,16 +1128,26 @@ class oemedical_dentist_test_report_2(report_rml):
                                 </tr>
                             </blockTable>"""
             
-            odontogram_img = ""
+            png_odontogram_img = ""
+            jpg_odontogram_img = ""
             if dentist_test.odontogram_img:
               path = openerp.modules.get_module_path('oemedical_dentist_test')
               path += '/static/src/img/tmp'
               path = os.path.normpath(path)
               fileName = randomString() + '.png'
-              odontogram_img = os.path.join(path, fileName)
-              fh = open(odontogram_img, "wb")
+              fileNameJpg = randomString() + '.jpg'
+
+              #fileName = 'test.jpg'
+              png_odontogram_img = os.path.join(path, fileName)
+              jpg_odontogram_img = os.path.join(path, fileNameJpg)
+              
+              fh = open(png_odontogram_img, "wb")
               fh.write(dentist_test.odontogram_img.decode('base64'))
               fh.close()
+
+              img = Image.open(png_odontogram_img)
+              new_img = img.resize((525,249)) 
+              new_img.save(jpg_odontogram_img)
             
             rml += """      <spacer length="0.1cm"/>
                             <blockTable colWidths="19.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,51.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,19.0" rowHeights="12.0,252.0" style="Table7">
@@ -1149,7 +1162,7 @@ class oemedical_dentist_test_report_2(report_rml):
                                 <tr>
                                     <td>
                                          
-                                          <image file='""" + odontogram_img + """' x="0" y="0" width="300" height="150" preserveAspectRatio="yes"/>
+                                          <image file='""" + jpg_odontogram_img + """' x="0" y="1" width="525" height="178" preserveAspectRatio="no"/> <!-- 525, 249 -->
                                         
                                     </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>

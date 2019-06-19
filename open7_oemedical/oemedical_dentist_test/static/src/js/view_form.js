@@ -2423,8 +2423,9 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 				if(item.action.model == 'oemedical.dentist.test' && item.action.name == 'Print Odontogram'){
 					
 					produceImg().then(function(canvas) {								
-						//canvas.style.width = "50%";
-					 	//canvas.style.width = "90%";
+						//canvas.style.width = "525px";
+						 //canvas.style.height = "248px";
+						canvas.style.width = "50%";
 						var generatedImg = canvas.toDataURL();
 						
 						var obj = {
@@ -2438,9 +2439,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 								context: new instance.web.CompoundContext(
 									dataset.get_context(), active_ids_context).eval()
 							}).done(function(result) {
-								result.context = new instance.web.CompoundContext(
-									result.context || {}, active_ids_context)
-										.set_eval_context(c);
+								result.context = new instance.web.CompoundContext(result.context || {}, active_ids_context).set_eval_context(c);
 								result.flags = result.flags || {};
 								result.flags.new_window = true;
 								self.do_action(result, {
