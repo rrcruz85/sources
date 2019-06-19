@@ -1129,28 +1129,27 @@ class oemedical_dentist_test_report_2(report_rml):
                             </blockTable>"""
             
             png_odontogram_img = ""
-            jpg_odontogram_img = ""
+            _png_odontogram_img = ""
             if dentist_test.odontogram_img:
               path = openerp.modules.get_module_path('oemedical_dentist_test')
               path += '/static/src/img/tmp'
               path = os.path.normpath(path)
-              fileName = randomString() + '.png'
-              fileNameJpg = randomString() + '.jpg'
+              png_odontogram_img = os.path.join(path, randomString() + '.png')
+              _png_odontogram_img = os.path.join(path, randomString() + '.png')
 
-              #fileName = 'test.jpg'
-              png_odontogram_img = os.path.join(path, fileName)
-              jpg_odontogram_img = os.path.join(path, fileNameJpg)
-              
-              fh = open(png_odontogram_img, "wb")
-              fh.write(dentist_test.odontogram_img.decode('base64'))
-              fh.close()
+              with open(png_odontogram_img, "wb") as fh:
+                fh.write(dentist_test.odontogram_img.decode('base64'))
 
-              img = Image.open(png_odontogram_img)
-              new_img = img.resize((525,249)) 
-              new_img.save(jpg_odontogram_img)
+              fill_color = 'white'
+              image = Image.open(png_odontogram_img)
+              if image.mode in ('RGBA', 'LA'):
+                background = Image.new(image.mode[:-1], image.size, fill_color)
+                background.paste(image, image.split()[-1])
+                image = background
+              image.save(_png_odontogram_img, 'png', quality=95)
             
             rml += """      <spacer length="0.1cm"/>
-                            <blockTable colWidths="19.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,51.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,19.0" rowHeights="12.0,252.0" style="Table7">
+                            <blockTable colWidths="19.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,51.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,19.0" rowHeights="12.0,180.0" style="Table7">
                                 <tr>
                                     <td><para style="P20">""" + tools.ustr("6.  ODONTOGRAMA") + """</para></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
@@ -1162,7 +1161,7 @@ class oemedical_dentist_test_report_2(report_rml):
                                 <tr>
                                     <td>
                                          
-                                          <image file='""" + jpg_odontogram_img + """' x="0" y="1" width="525" height="178" preserveAspectRatio="no"/> <!-- 525, 249 -->
+                                          <image file='""" + _png_odontogram_img + """' x="3" y="1" width="500" height="178" preserveAspectRatio="no"/> 
                                         
                                     </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
@@ -1778,8 +1777,11 @@ class oemedical_dentist_test_report_2(report_rml):
         pdf = create_doc(rml, title=self.title)
         
         #Removing temporary file
-        #os.remove(odontogram_img)
-        #dentist_test_obj.write(cr, uid, ids, {'odontogram_img': None})
+        if png_odontogram_img:
+          os.remove(png_odontogram_img)
+        if _png_odontogram_img:
+          os.remove(_png_odontogram_img)
+        dentist_test_obj.write(cr, uid, ids, {'odontogram_img': None})
         
         return (pdf, report_type)
     

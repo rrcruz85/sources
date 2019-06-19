@@ -2424,8 +2424,8 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 					
 					produceImg().then(function(canvas) {								
 						//canvas.style.width = "525px";
-						 //canvas.style.height = "248px";
-						canvas.style.width = "50%";
+						//canvas.style.height = "248px";
+						//canvas.style.width = "50%";
 						var generatedImg = canvas.toDataURL();
 						
 						var obj = {
