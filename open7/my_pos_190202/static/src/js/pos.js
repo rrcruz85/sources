@@ -2,6 +2,8 @@ globalType = false;
 
 function my_pos_header (instance) {
     module = instance.point_of_sale;
+
+    var order_number = 0;
     
     /*
         Define : PosOrderHeaderWidget to allow possibility to include inside
@@ -914,7 +916,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
                     self.iface_vkeyboard           =  !!pos_config.iface_vkeyboard;
                     self.iface_self_checkout       =  !!pos_config.iface_self_checkout;
                     self.iface_cashdrawer          =  !!pos_config.iface_cashdrawer;
-                    self.order_number              =  pos_config.order_seq_start_from;
+                    order_number                   =  pos_config.order_seq_start_from;
 
                     return self.fetch('sale.shop',[],[['id','=',pos_config.shop_id[0]]]);
                 }).then(function(shops){
@@ -987,7 +989,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
 
         // logs the usefull posmodel data to the console for debug purposes
         log_loaded_data: function(){
-        	
+        	/*
             console.log('PosModel data has been loaded:');
             console.log('PosModel: units:',this.get('units'));
             console.log('PosModel: bank_statements:',this.get('bank_statements'));
@@ -1009,6 +1011,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             console.log('PosModel: reference:',this.get('reference'));
             console.log('PosModel.session:',this.session);
             console.log('PosModel end of data log.');
+            */
         },
 
         // this is called when an order is removed from the order collection. It ensures that there is always an existing
@@ -1071,7 +1074,6 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
                     self._flush(index+1);
                 })
                 .done(function(){                	 
-                	self.order_number += 1;
                 	//remove from db if success
                     self.db.remove_order(order.id);
                     self._flush(index);
@@ -1129,7 +1131,8 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
         },
         generateUniqueId: function() {
             //return new Date().getTime();       	 
-        	return this.attributes.pos.order_number;
+            order_number += 1;
+            return order_number;
         },
         addProduct: function(product, options){
             options = options || {};
