@@ -1,56 +1,6 @@
-openerp.oemedical_dentist_test_view_form = function (instance) {
+openerp.oemedical_odontology_exam_view_form = function (instance) {
 	var _t = instance.web._t, _lt = instance.web._lt;
 	var QWeb = instance.web.qweb;
-	
-	instance.web.form.FieldTextXHtml = instance.web.form.AbstractField.extend(instance.web.form.ReinitializeFieldMixin, {
-	    template: 'FieldTextXHtml',
-	    init: function() {
-	        this._super.apply(this, arguments);
-	    },
-	    initialize_content: function() {
-	        var self = this;
-	        if (! this.get("effective_readonly")) {
-	            self._updating_editor = false;
-	            this.$textarea = this.$el.find('textarea');
-	            var width = ((this.node.attrs || {}).editor_width || '100%');
-	            var height = ((this.node.attrs || {}).editor_height || 250);
-	            this.$textarea.cleditor({
-	                width:      width, // width not including margins, borders or padding
-	                height:     height, // height not including margins, borders or padding
-	                controls:   // controls to add to the toolbar
-	                            "bold italic underline strikethrough " +
-	                            "| removeformat | bullets numbering | outdent " +
-	                            "indent | link unlink | source",
-	                bodyStyle:  // style to assign to document body contained within the editor
-	                            "margin:4px; color:#4c4c4c; font-size:13px; font-family:'Lucida Grande',Helvetica,Verdana,Arial,sans-serif; cursor:text"
-	            });
-	            this.$cleditor = this.$textarea.cleditor()[0];
-	            this.$cleditor.change(function() {
-	                if (! self._updating_editor) {
-	                    self.$cleditor.updateTextArea();
-	                    self.internal_set_value(self.$textarea.val());
-	                }
-	            });
-	            if (this.field.translate) {
-	                var $img = $('<img class="oe_field_translate oe_input_icon" src="/web/static/src/img/icons/terp-translate.png" width="16" height="16" border="0"/>')
-	                    .click(this.on_translate);
-	                this.$cleditor.$toolbar.append($img);
-	            }
-	        }
-	    },
-	    render_value: function() {
-	        if (! this.get("effective_readonly")) {
-	            this.$textarea.val(this.get('value') || '');
-	            this._updating_editor = true;
-	            this.$cleditor.updateFrame();
-	            this._updating_editor = false;
-	        } else {
-	            this.$el.html(this.get('value'));
-	        }
-	    },
-	});
-	
-	instance.web.form.widgets.add('xhtml', 'instance.web.form.FieldTextXHtml');
 	 
 	var getPiecesRow1 = function () {
 		return [{
@@ -2054,7 +2004,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			var result = this._super(data);
 		 	if(data.type == 'form'){
 	
-				if(data.model == 'oemedical.dentist.test'){
+				if(data.model == 'oemedical.odontology.exam'){
 
 				   	this.$el.find('.oe_form_container div.oe_form_sheet.oe_form_sheet_width').css("max-width", "1200px"); 
 				
@@ -2075,16 +2025,8 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 
 		_actualize_mode: function(switch_to) {
 			this._super(switch_to);
-         	if(this.model == 'oemedical.dentist.test'){
+         	if(this.model == 'oemedical.odontology.exam'){
 				
-				/*
-                if(!this.datarecord.id){
-					$('#print_btn').css("display", "none !important");
-				}
-				else{
-					$('#print_btn').css("display", "inline !important");
-				}*/
-
 				if(this.$el.hasClass('oe_form_editable')){
 					$('#row-symbols').removeClass('hidden');
 				}
@@ -2149,7 +2091,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 					var save_deferral;
 				   
 					//Modification
-					if(self.dataset.model == 'oemedical.dentist.test'){
+					if(self.dataset.model == 'oemedical.odontology.exam'){
 						self.setDataPieces(values);	
 					}                   
 
@@ -2420,7 +2362,7 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 					new instance.web.CompoundContext(
 						sidebar_eval_context, active_ids_context));
 				
-				if(item.action.model == 'oemedical.dentist.test' && item.action.name == 'Print Odontogram'){
+				if(item.action.model == 'oemedical.odontology.exam' && item.action.name == 'Print Odontogram'){
 					
 					produceImg().then(function(canvas) {								
 						//canvas.style.width = "525px";
@@ -2475,5 +2417,43 @@ openerp.oemedical_dentist_test_view_form = function (instance) {
 			    }
 			});
 		}
+	});
+
+	instance.web.form.WidgetButton.include({
+		on_click: function() {
+			var self = this;
+			
+			if(self.node.attrs.name == 'print_odontogram'){
+                
+				produceImg().then(function(canvas) {								
+					 
+					var generatedImg = canvas.toDataURL();
+					
+					var obj = {
+						odontogram_img: generatedImg.substring(generatedImg.indexOf(",") + 1)
+					};						
+				 
+					self.view.dataset.write(self.view.datarecord.id , obj).then(function(r) {
+						
+						self.force_disabled = true;
+						self.check_disable();
+						self.execute_action().always(function() {
+							self.force_disabled = false;
+							self.check_disable();
+						});
+					}, null);
+					 
+				});
+			}
+			else{
+	
+				this.force_disabled = true;
+				this.check_disable();
+				this.execute_action().always(function() {
+					self.force_disabled = false;
+					self.check_disable();
+				});
+			}
+		},
 	});
 }

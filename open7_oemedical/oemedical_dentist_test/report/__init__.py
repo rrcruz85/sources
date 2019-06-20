@@ -1,2 +1,0 @@
-import oemedical_dentist_test
-import oemedical_dentist_test_2

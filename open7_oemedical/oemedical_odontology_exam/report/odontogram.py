@@ -3,34 +3,34 @@ import os
 import openerp
 import random
 import string
-#import time
+import time
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from openerp import pooler, tools
 from openerp.report.interface import report_rml
 from PIL import Image
-#from openerp.tools.translate import _
+from openerp.tools.translate import _
 
 def randomString(stringLength=10):
   """Generate a random string of fixed length """
   letters = string.ascii_lowercase
   return ''.join(random.choice(letters) for i in range(stringLength))
 
-class oemedical_dentist_test_report_2(report_rml):
+class odontogram(report_rml):
     
     def create(self, cr, uid, ids, datas, context):
-        dentist_test_obj = pooler.get_pool(cr.dbname).get('oemedical.dentist.test')
+        odontology_exam_obj = pooler.get_pool(cr.dbname).get('oemedical.odontology.exam')
         company_obj = pooler.get_pool(cr.dbname).get('res.company')
         
         company_ids_list = company_obj.search(cr, uid, [], context=context)
         company = company_obj.browse(cr, uid, company_ids_list[0], context) if len(company_ids_list) > 0 else False
         
-        for dentist_test in dentist_test_obj.browse(cr, uid, ids, context):
-            first_name = tools.ustr(dentist_test.patient_id.first_name.split(" ")[0])
-            second_name = tools.ustr(dentist_test.patient_id.first_name.split(" ")[1]) if len(dentist_test.patient_id.first_name.split(" ")) > 1 else ""
+        for odontology_exam in odontology_exam_obj.browse(cr, uid, ids, context):
+            first_name = tools.ustr(odontology_exam.patient_id.first_name.split(" ")[0])
+            second_name = tools.ustr(odontology_exam.patient_id.first_name.split(" ")[1]) if len(odontology_exam.patient_id.first_name.split(" ")) > 1 else ""
             
-            rml = """<document filename="odontogramReport.pdf">
-                        <template pageSize="(595.0,842.0)" title="Odontogram Report" author="Reynaldo Rodriguez Cruz" allowSplitting="20">
+            rml = """<document filename="OdontogramReport.pdf">
+                        <template pageSize="(595.0,842.0)" title="Odontogram Report" author="EasysDev" allowSplitting="20">
                             <pageTemplate id="page1">
                                 <pageGraphics>
                                 <place x="57.5" y="765.0" width="459.0" height="77.0">
@@ -904,25 +904,25 @@ class oemedical_dentist_test_report_2(report_rml):
                                     
                                     <td>
                                       <para style="P20_COURIER_CENTER">
-                                        <font color="black">""" + (tools.ustr(dentist_test.patient_id.first_name) if dentist_test.patient_id.first_name else "")[0:22]  + """</font>
+                                        <font color="black">""" + (tools.ustr(odontology_exam.patient_id.first_name) if odontology_exam.patient_id.first_name else "")[0:22]  + """</font>
                                       </para>
                                     </td>
                                     
                                     <td>
                                       <para style="P20_COURIER_CENTER">
-                                        <font color="black">""" + ((tools.ustr(dentist_test.patient_id.last_name) if dentist_test.patient_id.last_name else "") + " " + (tools.ustr(dentist_test.patient_id.slastname) if dentist_test.patient_id.slastname else ""))[0:22] + """</font>
+                                        <font color="black">""" + ((tools.ustr(odontology_exam.patient_id.last_name) if odontology_exam.patient_id.last_name else "") + " " + (tools.ustr(odontology_exam.patient_id.slastname) if odontology_exam.patient_id.slastname else ""))[0:22] + """</font>
                                       </para>
                                     </td>
                                     
                                     <td>
                                       <para style="P20_COURIER_CENTER">
-                                        <font color="black">""" + ("X" if dentist_test.patient_id.sex and dentist_test.patient_id.sex == "m" else "") + """</font>
+                                        <font color="black">""" + ("X" if odontology_exam.patient_id.sex and odontology_exam.patient_id.sex == "m" else "") + """</font>
                                       </para>
                                     </td>
                                     
                                     <td>
                                       <para style="P20_COURIER_CENTER">
-                                        <font color="black">""" + ("X" if dentist_test.patient_id.sex and dentist_test.patient_id.sex == "f" else "") + """</font>
+                                        <font color="black">""" + ("X" if odontology_exam.patient_id.sex and odontology_exam.patient_id.sex == "f" else "") + """</font>
                                       </para>
                                     </td>
                                     
@@ -932,18 +932,18 @@ class oemedical_dentist_test_report_2(report_rml):
                                     
                                     <td>
                                       <para style="P20_COURIER_CENTER">
-                                        <font color="black">""" + (tools.ustr(dentist_test.patient_id.identification_code) if dentist_test.patient_id and dentist_test.patient_id.identification_code else "") + """</font>
+                                        <font color="black">""" + (tools.ustr(odontology_exam.patient_id.identification_code) if odontology_exam.patient_id and odontology_exam.patient_id.identification_code else "") + """</font>
                                       </para>
                                     </td>
                                   </tr>
                                 </blockTable>"""
                
-            years = self._get_year(dentist_test.patient_id)
-            a = True if dentist_test.is_planned and years == 0 else False
+            years = self._get_year(odontology_exam.patient_id)
+            a = True if odontology_exam.is_planned and years == 0 else False
             b = True if years >= 1 and years <= 4 else False
-            c = True if dentist_test.is_planned and years >= 5 and years <= 9 else False
-            d = True if years >= 5 and years <= 14 and not dentist_test.is_planned else False
-            e = True if years >= 10 and years <= 14 and dentist_test.is_planned else False
+            c = True if odontology_exam.is_planned and years >= 5 and years <= 9 else False
+            d = True if years >= 5 and years <= 14 and not odontology_exam.is_planned else False
+            e = True if years >= 10 and years <= 14 and odontology_exam.is_planned else False
             f = True if years >= 15 and years <= 19 else False
             g = True if years >= 20 else False
             
@@ -966,15 +966,15 @@ class oemedical_dentist_test_report_2(report_rml):
                                     <td><para style="P14_LEFT">""" + tools.ustr("MAYOR DE 20 AÑOS") + """</para></td>
                                     <td><para style="P20_COURIER_CENTER">""" + ("X" if g else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("EMBARAZADA") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.patient_id.is_pregnant else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.patient_id.is_pregnant else "") + """</para></td>
                                 </tr>
                             </blockTable>"""
             
             letters_per_row = 123            
             
             rowHeights = '12.0'
-            if dentist_test.mdc_info:
-                strMDC = dentist_test.mdc_info.replace('\n',' ')
+            if odontology_exam.mdc_info:
+                strMDC = odontology_exam.mdc_info.replace('\n',' ')
                 if len(strMDC) > 123:
                     filaAlto = 1 
                     tmp = len(strMDC)/123            
@@ -991,12 +991,12 @@ class oemedical_dentist_test_report_2(report_rml):
                                     <td><para style="P14_RIGHT">ANOTAR LA CAUSA DEL PROBLEMA EN LA VERSION DEL INFORMANTE</para></td>
                                 </tr>
                                 
-                                <tr><td><para style="P20_COURIER">""" + (tools.ustr(dentist_test.mdc_info) if dentist_test.mdc_info else "") + """</para></td><td></td></tr>
+                                <tr><td><para style="P20_COURIER">""" + (tools.ustr(odontology_exam.mdc_info) if odontology_exam.mdc_info else "") + """</para></td><td></td></tr>
                             </blockTable>"""
            
             info_diagnosis = ""
-            if dentist_test.info_diagnosis:
-                word_list = self._get_list_words(dentist_test.info_diagnosis, letters_per_row * 4)
+            if odontology_exam.info_diagnosis:
+                word_list = self._get_list_words(odontology_exam.info_diagnosis, letters_per_row * 4)
                 info_diagnosis = word_list[0] if len(word_list) >= 1 else ''
             
             rml += """      <spacer length="0.1cm"/>
@@ -1009,8 +1009,8 @@ class oemedical_dentist_test_report_2(report_rml):
                             </blockTable>"""
             
             others_antecedents = ""
-            if dentist_test.others_antecedents and dentist_test.others:
-                word_list = self._get_list_words(dentist_test.others_antecedents, letters_per_row * 2)
+            if odontology_exam.others_antecedents and odontology_exam.others:
+                word_list = self._get_list_words(odontology_exam.others_antecedents, letters_per_row * 2)
                 others_antecedents = word_list[0] if len(word_list) >= 1 else ''
             
             rml += """      <spacer length="0.1cm"/>
@@ -1023,25 +1023,25 @@ class oemedical_dentist_test_report_2(report_rml):
                                 
                                 <tr>
                                     <td><para style="P14_LEFT">1. ALERGIA ANTIBIOTICO</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.antibotic_allergic else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.antibotic_allergic else "") + """</para></td>
                                     <td><para style="P14_LEFT">2. ALERGIA ANESTESIA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.anesthesia_allergic else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.anesthesia_allergic else "") + """</para></td>
                                     <td><para style="P14_LEFT">3. HEMORRAGIAS</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.hemorrhage else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.hemorrhage else "") + """</para></td>
                                     <td><para style="P14_LEFT">4. VIH/SIDA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.vih_sida else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.vih_sida else "") + """</para></td>
                                     <td><para style="P14_LEFT">5. TUBERCULOSIS</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.tuberculosis else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.tuberculosis else "") + """</para></td>
                                     <td><para style="P14_LEFT">6. ASMA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.asma else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.asma else "") + """</para></td>
                                     <td><para style="P14_LEFT">7. DIABETES</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.diabetes else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.diabetes else "") + """</para></td>
                                     <td><para style="P14_LEFT">8. HIPERTENSION</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.hipertension else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.hipertension else "") + """</para></td>
                                     <td><para style="P14_LEFT">9. ENF. CARDIACA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.enf_cardiaca else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.enf_cardiaca else "") + """</para></td>
                                     <td><para style="P14_LEFT">10. OTRO</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.others else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.others else "") + """</para></td>
                                 </tr>
                                 <tr>
                                     <td><para style="P20_COURIER">""" + tools.ustr(others_antecedents) + """</para></td>
@@ -1060,27 +1060,27 @@ class oemedical_dentist_test_report_2(report_rml):
                                 
                                 <tr>
                                     <td><para style="P14_LEFT">""" + tools.ustr("PRESIÓN ARTERIAL") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (dentist_test.pat_info if dentist_test.pat_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (odontology_exam.pat_info if odontology_exam.pat_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("FRECUENCIA CARDIACA min") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(dentist_test.ppm_info) if dentist_test.ppm_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.ppm_info) if odontology_exam.ppm_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("FRECUENCIA RESPIRAT. min") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(dentist_test.ppr_info) if dentist_test.ppr_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.ppr_info) if odontology_exam.ppr_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("TEMPERATURA BUCAL °C") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(dentist_test.tem_info) if dentist_test.tem_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.tem_info) if odontology_exam.tem_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("TEMPERATURA AXILAR °C") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(dentist_test.tem2_info) if dentist_test.tem2_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.tem2_info) if odontology_exam.tem2_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("PESO Kg") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(dentist_test.pes_info) if dentist_test.pes_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.pes_info) if odontology_exam.pes_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("TALLA m") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(dentist_test.size_info) if dentist_test.size_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.size_info) if odontology_exam.size_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("NO APLICA") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.not_apply else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.not_apply else "") + """</para></td>
                                 </tr>
                             </blockTable>"""
             
             stomatognathic_system_observation = ""
-            if dentist_test.stomatognathic_system_observation:
-                word_list = self._get_list_words(dentist_test.stomatognathic_system_observation, letters_per_row * 4 - 17)
+            if odontology_exam.stomatognathic_system_observation:
+                word_list = self._get_list_words(odontology_exam.stomatognathic_system_observation, letters_per_row * 4 - 17)
                 stomatognathic_system_observation = word_list[0] if len(word_list) >= 1 else ''
             
             rml += """      <spacer length="0.1cm"/>
@@ -1094,32 +1094,32 @@ class oemedical_dentist_test_report_2(report_rml):
                                 
                                 <tr>
                                     <td><para style="P14_LEFT">""" + tools.ustr("1. LABIOS") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.libs else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.libs else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("2. MEJILLAS") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.cheeks else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.cheeks else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("3. MAXILAR SUPERIOR") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.top_max else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.top_max else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("4. MAXILAR INFERIOR") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.bottom_max else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.bottom_max else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("5. LENGUA") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.tongle else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.tongle else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("6. PALADAR") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.taste else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.taste else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("7. PISO") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.floor else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.floor else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("8. CARRILLOS") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.jowls else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.jowls else "") + """</para></td>
                                 </tr>
                                 
                                 <tr>
                                     <td><para style="P14_LEFT">""" + tools.ustr("9. GLANDULAS SALIVALES") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.sal_glands else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.sal_glands else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("10. ORO FARINGE") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.pharynx else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.pharynx else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("11. ATM") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.atm else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.atm else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("12. GANGLIOS") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.lymph else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.lymph else "") + """</para></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                 </tr>
                                 <tr>
@@ -1131,15 +1131,15 @@ class oemedical_dentist_test_report_2(report_rml):
             
             png_odontogram_img = ""
             _png_odontogram_img = ""
-            if dentist_test.odontogram_img:
-              path = openerp.modules.get_module_path('oemedical_dentist_test')
+            if odontology_exam.odontogram_img:
+              path = openerp.modules.get_module_path('oemedical_odontology_exam')
               path += '/static/src/img/tmp'
               path = os.path.normpath(path)
               png_odontogram_img = os.path.join(path, randomString() + '.png')
               _png_odontogram_img = os.path.join(path, randomString() + '.png')
 
               with open(png_odontogram_img, "wb") as fh:
-                fh.write(dentist_test.odontogram_img.decode('base64'))
+                fh.write(odontology_exam.odontogram_img.decode('base64'))
 
               fill_color = 'white'
               image = Image.open(png_odontogram_img)
@@ -1304,43 +1304,43 @@ class oemedical_dentist_test_report_2(report_rml):
                                     <td><para style="P222_CENTER">0 - 1</para></td>
                                     
                                     <td><para style="P221_CENTER">LEVE</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.periodontale_illness == 'leve' else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.periodontale_illness == 'leve' else "") + """</para></td>
                                     
                                     <td><para style="P221_CENTER">ANGLE I</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.malocclusion == 'angle1' else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.malocclusion == 'angle1' else "") + """</para></td>
                                     
                                     <td><para style="P221_CENTER">LEVE</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.fluorosis == 'leve' else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.fluorosis == 'leve' else "") + """</para></td>
                                     
                                     <td></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.carieDC) if dentist_test.carieDC else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.carieDP) if dentist_test.carieDP else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.carieDO) if dentist_test.carieDO else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.totalCarieD) if dentist_test.totalCarieD else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.carieDC) if odontology_exam.carieDC else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.carieDP) if odontology_exam.carieDP else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.carieDO) if odontology_exam.carieDO else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.totalCarieD) if odontology_exam.totalCarieD else "") + """</para></td>
                                 </tr>
                                 
                                 <tr>
                                     <td><para style="P222_CENTER">16</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._16 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._16 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">17</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._17 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._17 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">55</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._55 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._55 else "") + """</para></td>
                                     
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_1_placa) if dentist_test.section_1_placa else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_1_calculo) if dentist_test.section_1_calculo else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_1_gingivitis) if dentist_test.section_1_gingivitis else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_1_placa) if odontology_exam.section_1_placa else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_1_calculo) if odontology_exam.section_1_calculo else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_1_gingivitis) if odontology_exam.section_1_gingivitis else "") + """</para></td>
                                     
                                     <td><para style="P221_CENTER">MODERADA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.periodontale_illness == 'moderada' else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.periodontale_illness == 'moderada' else "") + """</para></td>
                                     
                                     <td><para style="P221_CENTER">ANGLE II</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.malocclusion == 'angle2' else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.malocclusion == 'angle2' else "") + """</para></td>
                                     
                                     <td><para style="P221_CENTER">MODERADA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.fluorosis == 'moderada' else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.fluorosis == 'moderada' else "") + """</para></td>
                                     
                                     <td><para style="PP20_CENTER">d</para></td>
                                     
@@ -1352,47 +1352,47 @@ class oemedical_dentist_test_report_2(report_rml):
                                 
                                 <tr>
                                     <td><para style="P222_CENTER">11</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._11 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._11 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">21</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._21 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._21 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">51</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._51 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._51 else "") + """</para></td>
                                     
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_2_placa) if dentist_test.section_2_placa else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_2_calculo) if dentist_test.section_2_calculo else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_2_gingivitis) if dentist_test.section_2_gingivitis else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_2_placa) if odontology_exam.section_2_placa else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_2_calculo) if odontology_exam.section_2_calculo else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_2_gingivitis) if odontology_exam.section_2_gingivitis else "") + """</para></td>
                                     
                                     <td><para style="P221_CENTER">SEVERA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.periodontale_illness == 'severa' else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.periodontale_illness == 'severa' else "") + """</para></td>
                                     
                                     <td><para style="P221_CENTER">ANGLE III</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.malocclusion == 'angle3' else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.malocclusion == 'angle3' else "") + """</para></td>
                                     
                                     <td><para style="P221_CENTER">SEVERA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.fluorosis == 'severa' else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.fluorosis == 'severa' else "") + """</para></td>
                                     
                                     <td></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.carie_dc) if dentist_test.carie_dc else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.carie_de) if dentist_test.carie_de else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.carie_do) if dentist_test.carie_do else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.totalCarie_d) if dentist_test.totalCarie_d else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.carie_dc) if odontology_exam.carie_dc else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.carie_de) if odontology_exam.carie_de else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.carie_do) if odontology_exam.carie_do else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.totalCarie_d) if odontology_exam.totalCarie_d else "") + """</para></td>
                                 </tr>
                                 
                                 <tr>
                                     <td><para style="P222_CENTER">26</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._26 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._26 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">27</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._27 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._27 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">65</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._65 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._65 else "") + """</para></td>
                                     
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_3_placa) if dentist_test.section_3_placa else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_3_calculo) if dentist_test.section_3_calculo else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_3_gingivitis) if dentist_test.section_3_gingivitis else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_3_placa) if odontology_exam.section_3_placa else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_3_calculo) if odontology_exam.section_3_calculo else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_3_gingivitis) if odontology_exam.section_3_gingivitis else "") + """</para></td>
                                     
                                     <td></td><td></td>
                                     <td></td><td></td><td></td><td></td>
@@ -1401,17 +1401,17 @@ class oemedical_dentist_test_report_2(report_rml):
                                 
                                 <tr>
                                     <td><para style="P222_CENTER">36</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._36 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._36 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">37</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._37 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._37 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">75</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._75 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._75 else "") + """</para></td>
                                     
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_4_placa) if dentist_test.section_4_placa else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_4_calculo) if dentist_test.section_4_calculo else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_4_gingivitis) if dentist_test.section_4_gingivitis else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_4_placa) if odontology_exam.section_4_placa else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_4_calculo) if odontology_exam.section_4_calculo else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_4_gingivitis) if odontology_exam.section_4_gingivitis else "") + """</para></td>
                                     
                                     <td></td><td></td>
                                     <td></td><td></td><td></td><td></td>
@@ -1420,17 +1420,17 @@ class oemedical_dentist_test_report_2(report_rml):
                                 
                                 <tr>
                                     <td><para style="P222_CENTER">31</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._31 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._31 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">41</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._41 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._41 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">71</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._71 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._71 else "") + """</para></td>
                                     
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_5_placa) if dentist_test.section_5_placa else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_5_calculo) if dentist_test.section_5_calculo else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_5_gingivitis) if dentist_test.section_5_gingivitis else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_5_placa) if odontology_exam.section_5_placa else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_5_calculo) if odontology_exam.section_5_calculo else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_5_gingivitis) if odontology_exam.section_5_gingivitis else "") + """</para></td>
                                     
                                     <td></td><td></td>
                                     <td></td><td></td><td></td><td></td>
@@ -1439,17 +1439,17 @@ class oemedical_dentist_test_report_2(report_rml):
                                 
                                 <tr>
                                     <td><para style="P222_CENTER">46</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._46 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._46 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">47</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._47 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._47 else "") + """</para></td>
                                     
                                     <td><para style="P222_CENTER">85</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test._85 else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam._85 else "") + """</para></td>
                                     
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_6_placa) if dentist_test.section_6_placa else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_6_calculo) if dentist_test.section_6_calculo else "") + """</para></td>
-                                    <td><para style="P222_CENTER">""" + (str(dentist_test.section_6_gingivitis) if dentist_test.section_6_gingivitis else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_6_placa) if odontology_exam.section_6_placa else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_6_calculo) if odontology_exam.section_6_calculo else "") + """</para></td>
+                                    <td><para style="P222_CENTER">""" + (str(odontology_exam.section_6_gingivitis) if odontology_exam.section_6_gingivitis else "") + """</para></td>
                                     
                                     <td></td><td></td>
                                     <td></td><td></td><td></td><td></td>
@@ -1460,9 +1460,9 @@ class oemedical_dentist_test_report_2(report_rml):
                                     <td><para style="P220_CENTER_BOLD">TOTALES</para></td>
                                     <td></td><td></td><td></td><td></td><td></td>
                                     
-                                    <td><para style="P220_CENTER_BOLD">""" + str(dentist_test.totalPlate) + """</para></td>
-                                    <td><para style="P220_CENTER_BOLD">""" + str(dentist_test.totalStone) + """</para></td>
-                                    <td><para style="P220_CENTER_BOLD">""" + str(dentist_test.totalGengivitis) + """</para></td>
+                                    <td><para style="P220_CENTER_BOLD">""" + str(odontology_exam.totalPlate) + """</para></td>
+                                    <td><para style="P220_CENTER_BOLD">""" + str(odontology_exam.totalStone) + """</para></td>
+                                    <td><para style="P220_CENTER_BOLD">""" + str(odontology_exam.totalGengivitis) + """</para></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td>
                                 </tr>
@@ -1473,8 +1473,8 @@ class oemedical_dentist_test_report_2(report_rml):
            
             '''
             other_observation = ""
-            if dentist_test.other_observation:
-                word_list = self._get_list_words(dentist_test.other_observation, letters_per_row * 2)
+            if odontology_exam.other_observation:
+                word_list = self._get_list_words(odontology_exam.other_observation, letters_per_row * 2)
                 other_observation = word_list[0] if len(word_list) >= 1 else ''
             
             rml += """      <spacer length="0.1cm"/>
@@ -1489,16 +1489,16 @@ class oemedical_dentist_test_report_2(report_rml):
                                 
                                 <tr>
                                     <td><para style="P14_LEFT">""" + tools.ustr("1. BIOMETRIA") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.biometric else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.biometric else "") + """</para></td>
                                     
                                     <td><para style="P14_LEFT">""" + tools.ustr("2. QUIMICA SANGUINEA") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.blood_chemistry else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.blood_chemistry else "") + """</para></td>
                                     
                                     <td><para style="P14_LEFT">""" + tools.ustr("3. RAYOS-X") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.x_rays else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.x_rays else "") + """</para></td>
                                     
                                     <td><para style="P14_LEFT">""" + tools.ustr("4. OTRO") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if dentist_test.other else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.other else "") + """</para></td>
                                     <td></td>
                                 </tr>
                                 
@@ -1510,8 +1510,8 @@ class oemedical_dentist_test_report_2(report_rml):
 
             diag_cant = 0
             diagnostics_list = []
-            if dentist_test.diagnosis_ids:
-                for diag in dentist_test.diagnosis_ids:
+            if odontology_exam.diagnosis_ids:
+                for diag in odontology_exam.diagnosis_ids:
                     diagnostics_list.append((diag.name if diag.name else '', diag.code if diag.code else '', "X" if diag.presuntive else "", "X" if diag.definitive else "", "X" if diag.foment else ""))
                     diag_cant = diag_cant + 1
             
@@ -1520,8 +1520,8 @@ class oemedical_dentist_test_report_2(report_rml):
                 diag_cant = diag_cant + 1
             
             word_list = []
-            if dentist_test.mdc_info:
-                word_list = self._get_list_words(dentist_test.diagnosis_observation, 68)
+            if odontology_exam.mdc_info:
+                word_list = self._get_list_words(odontology_exam.diagnosis_observation, 68)
             
             d = {
                 1: word_list[0] if len(word_list) >= 1 else '',
@@ -1592,8 +1592,8 @@ class oemedical_dentist_test_report_2(report_rml):
             
             cant = 0
             lista_tratamientos = []
-            if dentist_test.treatment_ids:
-                for tr in dentist_test.treatment_ids:
+            if odontology_exam.treatment_ids:
+                for tr in odontology_exam.treatment_ids:
                     lista_tratamientos.append((tr.name if tr.name else '', tr.concentration if tr.concentration else '', tr.presentation if tr.presentation else '', tr.via if tr.via else '', tr.dosis if tr.dosis else '', tr.frequency if tr.frequency else '', tr.days if tr.days else ''))
                     cant = cant + 1
             
@@ -1602,8 +1602,8 @@ class oemedical_dentist_test_report_2(report_rml):
                 cant = cant + 1
             
             word_list = []
-            if dentist_test.mdc_info:
-                word_list = self._get_list_words(dentist_test.treatment_observation, 68)
+            if odontology_exam.mdc_info:
+                word_list = self._get_list_words(odontology_exam.treatment_observation, 68)
             
             d = {
                 1: word_list[0] if len(word_list) >= 1 else '',
@@ -1633,19 +1633,19 @@ class oemedical_dentist_test_report_2(report_rml):
                                     
                                     <td><para style="P55P">""" + tools.ustr("DIAS") + """</para></td>
                                     <td><para style="P55P">""" + tools.ustr("INTER CONSULTA") + """</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if dentist_test.interconsult else "") + """</para></td>
+                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.interconsult else "") + """</para></td>
                                     
                                     <td><para style="P55P">PROCEDIMIENTO</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if dentist_test.procedure else "") + """</para></td>
+                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.procedure else "") + """</para></td>
                                     
                                     <td><para style="P55P">INTERNACION</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if dentist_test.internation else "") + """</para></td>
+                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.internation else "") + """</para></td>
                                     
                                     <td><para style="P55P">CONSULTA EXTERNA</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if dentist_test.extern_consult else "") + """</para></td>
+                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.extern_consult else "") + """</para></td>
                                     
                                     <td><para style="P55P">DIAS DE INCAPACIDAD</para></td>
-                                    <td><para style="P14_LEFT">""" + (str(dentist_test.incapacity_days) if dentist_test.incapacity_days else "") + """</para></td>
+                                    <td><para style="P14_LEFT">""" + (str(odontology_exam.incapacity_days) if odontology_exam.incapacity_days else "") + """</para></td>
                                 </tr>
                                 
                                 <tr>
@@ -1659,16 +1659,16 @@ class oemedical_dentist_test_report_2(report_rml):
                                     <td><para style="P144_LEFT_COURIER">""" + tools.ustr(lista_tratamientos[0][6][0:3]) + """</para></td>
                                     
                                     <td><para style="P55P">TOPICACION FLUOR</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if dentist_test.fluor_topification else "") + """</para></td>
+                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.fluor_topification else "") + """</para></td>
                                     
                                     <td><para style="P55P">SELLANTES</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if dentist_test.sealment else "") + """</para></td>
+                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.sealment else "") + """</para></td>
                                     
                                     <td><para style="P55P">REFERENCIA</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if dentist_test.reference else "") + """</para></td>
+                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.reference else "") + """</para></td>
                                     
                                     <td><para style="P55P">SERVICIO</para></td>
-                                    <td><para style="P144_LEFT_COURIER">""" + (dentist_test.service[0:14] if dentist_test.service else "") + """</para></td>
+                                    <td><para style="P144_LEFT_COURIER">""" + (odontology_exam.service[0:14] if odontology_exam.service else "") + """</para></td>
                                     
                                     <td></td><td></td>
                                 </tr>
@@ -1730,12 +1730,12 @@ class oemedical_dentist_test_report_2(report_rml):
                                 
                                 <tr>
                                     <td><para style="P220_CENTER">FECHA PROX. SESION</para></td>
-                                    <td><para style="P220_CENTER">""" + (dentist_test.next_appointment_date if dentist_test.next_appointment_date else '') + """</para></td>
+                                    <td><para style="P220_CENTER">""" + (odontology_exam.next_appointment_date if odontology_exam.next_appointment_date else '') + """</para></td>
                                     
                                     <td></td><td></td>
                                     <td><para style="P220">ODONTOLOGO</para></td>
-                                    <td><para style="P220_CENTER">""" + (tools.ustr(dentist_test.doctor.physician_id.name) if dentist_test.doctor and dentist_test.doctor.physician_id and dentist_test.doctor.physician_id.name else '') + """</para></td>
-                                    <td><para style="P220_CENTER">""" + (dentist_test.doctor.doctor_id if dentist_test.doctor and dentist_test.doctor.doctor_id else '') + """</para></td>
+                                    <td><para style="P220_CENTER">""" + (tools.ustr(odontology_exam.doctor.physician_id.name) if odontology_exam.doctor and odontology_exam.doctor.physician_id and odontology_exam.doctor.physician_id.name else '') + """</para></td>
+                                    <td><para style="P220_CENTER">""" + (odontology_exam.doctor.doctor_id if odontology_exam.doctor and odontology_exam.doctor.doctor_id else '') + """</para></td>
                                     
                                     <td><para style="P220">FIRMA</para></td>
                                     <td></td>
@@ -1757,8 +1757,8 @@ class oemedical_dentist_test_report_2(report_rml):
                                 </tr>"""
             
             cant = 0
-            if dentist_test.evolution_ids:
-                for evo in dentist_test.evolution_ids:
+            if odontology_exam.evolution_ids:
+                for evo in odontology_exam.evolution_ids:
                     texto = (evo.evolution_date if evo.evolution_date else "")
                     texto += (", " + evo.name if evo.name else "")
                     texto += ", " + evo.observation if evo.observation else ""
@@ -1789,16 +1789,16 @@ class oemedical_dentist_test_report_2(report_rml):
           os.remove(png_odontogram_img)
         if _png_odontogram_img:
           os.remove(_png_odontogram_img)
-        dentist_test_obj.write(cr, uid, ids, {'odontogram_img': None})
+        odontology_exam_obj.write(cr, uid, ids, {'odontogram_img': None})
         
         return (pdf, report_type)
     
     def _get_year(self, record):
-        if (record.dob):
-            now = datetime.now()
-            dob = datetime.strptime(str(record.dob), '%Y-%m-%d')
-            delta = relativedelta(now, dob)
-            return delta.years
+      if (record.dob):
+        now = datetime.now()
+        dob = datetime.strptime(str(record.dob), '%Y-%m-%d')
+        delta = relativedelta(now, dob)
+        return delta.years
     
     def _get_list_words(self, data, size):
         if not data: return []
@@ -1819,4 +1819,4 @@ class oemedical_dentist_test_report_2(report_rml):
             if x == len(text) - 1: word_list.append(temp)
         return word_list     
 
-oemedical_dentist_test_report_2('report.oemedical_dentist_test_report_2', 'oemedical.dentist.test', '', '')
+odontogram('report.odontogram_report', 'oemedical.odontology.exam', '', '')

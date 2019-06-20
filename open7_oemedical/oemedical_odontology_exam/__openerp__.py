@@ -1,38 +1,35 @@
 # -*- coding: utf-8 -*-
 {
 
-    'name': 'Examen Odontológico',
+    'name': 'Odontology Exams',
     'version': '1.0',
-    'author': "OeMEdical Team",
+    'author': "Easys Dev Solutions",
     'category': 'Generic Modules/Others',
     'depends': ['oemedical'],
     'application': True,
     'description': """
-Permite gestionar exámenes odontológicos para los pacientes
+Allows to manage odontology exams for patients
 """,
-    "website": "http://launchpad.net/oemedical",
+    "website": "https://www.easysdev.com",
     "licence": "AGPL v3",
     "data": [
-        'oemedical_dentist_test_view.xml',
-        'oemedical_dentist_test_menu.xml',
-        'report/oemedical_dentist_test.xml',
+        'odontology_exam_view.xml',
+        'odontology_exam_menu.xml',
+        'report/odontogram.xml',
     ],
     "demo": [
     ],
     'test':[
     ],
-    'css': [
-        'static/src/css/styles.css',
-        'static/src/css/odontograma.css',
+    'css': [        
+        'static/src/css/odontogram.css',
     ],
     'js': [
         'static/src/js/lib/jspdf.debug.js',
         'static/src/js/view_form.js',
         'static/src/js/boot.js',        
     ],
-    'qweb': [
-        'static/src/xml/base.xml',
-    ],
+    'qweb': [],
     'installable': True,
     'auto_install': False,
 }

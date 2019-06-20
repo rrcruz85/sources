@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+           <!--
+           <report id="odontogram_report"
+                      name="odontogram_report"
+                      string="Print Odontogram" 
+                      model="oemedical.dentist.test"
+                      auto="False"/> 
+            -->
+    </data>
+</openerp>
