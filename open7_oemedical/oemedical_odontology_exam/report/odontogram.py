@@ -1129,12 +1129,13 @@ class odontogram(report_rml):
                                 </tr>
                             </blockTable>"""
             
-            png_odontogram_img = ""
-            _png_odontogram_img = ""
-            if odontology_exam.odontogram_img:
-              path = openerp.modules.get_module_path('oemedical_odontology_exam')
-              path += '/static/src/img/tmp'
-              path = os.path.normpath(path)
+            png_odontogram_img = ""            
+            path = openerp.modules.get_module_path('oemedical_odontology_exam')            
+            path += '/static/src/img/tmp'
+            path = os.path.normpath(path)
+            _png_odontogram_img = os.path.join(path, 'empty.png')
+
+            if odontology_exam.odontogram_img:              
               png_odontogram_img = os.path.join(path, randomString() + '.png')
               _png_odontogram_img = os.path.join(path, randomString() + '.png')
 
@@ -1147,7 +1148,7 @@ class odontogram(report_rml):
                 background = Image.new(image.mode[:-1], image.size, fill_color)
                 background.paste(image, image.split()[-1])
                 image = background
-              image.save(_png_odontogram_img, 'png', quality=95)
+              image.save(_png_odontogram_img, 'png', quality = 98)
             
             rml += """      <spacer length="0.1cm"/>
                             <blockTable colWidths="19.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,51.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,19.0" rowHeights="12.0,180.0" style="Table7">
@@ -1787,7 +1788,7 @@ class odontogram(report_rml):
         #Removing temporary file
         if png_odontogram_img:
           os.remove(png_odontogram_img)
-        if _png_odontogram_img:
+        if _png_odontogram_img and odontology_exam.odontogram_img:
           os.remove(_png_odontogram_img)
         odontology_exam_obj.write(cr, uid, ids, {'odontogram_img': None})
         
