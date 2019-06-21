@@ -121,7 +121,7 @@
 						        <div class="column">
 								    
 									<div id="print_btn" class = "row-right"> 
-									     <button string="Print" type="object" name="print_odontogram" class="oe_highlight"/>
+									     <button icon="STOCK_PRINT" string="Print" type="object" name="print_odontogram"/>
 									</div>
 									 
 								    <div class="row-center"> 

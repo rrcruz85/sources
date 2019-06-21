@@ -2013,7 +2013,7 @@ openerp.oemedical_odontology_exam_view_form = function (instance) {
 				   	}
 					
 					this.initOdontogram();
-				   	 
+
 				}
 				else{
 			       this.$el.find('.oe_form_container div.oe_form_sheet.oe_form_sheet_width').css("max-width", "860px"); 

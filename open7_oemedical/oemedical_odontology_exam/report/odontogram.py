@@ -554,12 +554,16 @@ class odontogram(report_rml):
                               <blockAlignment value="CENTER"/>
                               
                               <blockSpan start="0,0" stop="32,0"/>
-                              <blockSpan start="0,1" stop="32, -1"/>
+                              <blockSpan start="0,1" stop="32,1"/>
+                              <blockSpan start="0,2" stop="32,2"/>
+                              <blockSpan start="0,3" stop="32,3"/>
+                              <blockSpan start="0,4" stop="32,4"/>
+                              <blockSpan start="0,5" stop="32,5"/>
                               
                               <blockBackground colorName="#F0A9C4" start="0,0" stop="32,0"/> 
                               
                               <!--                              
-                              <blockBackground colorName="#CAE7D4" start="0,1" stop="32,-1"/>
+                              <blockBackground colorName="#CAE7D4" start="0,2" stop="32,2"/>
                               -->
 
                               <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="32,0" thickness="0.1"/>
@@ -580,10 +584,10 @@ class odontogram(report_rml):
                             <blockTableStyle id="checkBox">
                                 <blockValign value="MIDDLE"/>
                                 <blockAlignment value="CENTER"/>
-                                <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,0" thickness="0.1"/>
-                                <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="0,0" thickness="0.1"/>
-                                <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,0" thickness="0.1"/>
-                                <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="0,0" thickness="0.1"/>
+                                <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,0" thickness="0.4"/>
+                                <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="0,0" thickness="0.4"/>
+                                <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,0" thickness="0.4"/>
+                                <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="0,0" thickness="0.4"/>
                             </blockTableStyle>
                             
                             <blockTableStyle id="Table9">
@@ -844,9 +848,11 @@ class odontogram(report_rml):
                             <paraStyle name="P20_COURIER_CENTER" fontName="Courier" fontSize="7.0" leading="8" alignment="CENTER"/>
                             
                             <paraStyle name="P200" fontName="Helvetica-Bold" fontSize="6.0" leading="8" alignment="CENTER"/>
+                            <paraStyle name="P200_2" fontName="Helvetica-Bold" fontSize="6.0" leading="8" alignment="CENTER"/>
                             <paraStyle name="P200_LEFT" fontName="Helvetica-Bold" fontSize="6.0" leading="8" alignment="LEFT"/>
                             
                             <paraStyle name="P220" fontName="Helvetica" fontSize="6.0" leading="8" alignment="LEFT"/>
+                            <paraStyle name="P220_BOLD" fontName="Helvetica-Bold" fontSize="6.0" leading="8" alignment="LEFT"/>
                             <paraStyle name="P220_CENTER" fontName="Helvetica" fontSize="5.0" leading="5" alignment="CENTER"/>
                             <paraStyle name="P2220_CENTER" fontName="Helvetica" fontSize="5.0" leading="50" alignment="CENTER"/>
                             <paraStyle name="P220_CENTER_BOLD" fontName="Helvetica-Bold" fontSize="5.0" leading="5" alignment="CENTER"/>
@@ -1151,7 +1157,7 @@ class odontogram(report_rml):
               image.save(_png_odontogram_img, 'png', quality = 98)
             
             rml += """      <spacer length="0.1cm"/>
-                            <blockTable colWidths="19.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,51.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,19.0" rowHeights="12.0,180.0" style="Table7">
+                            <blockTable colWidths="19.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,51.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,5.0,23.0,19.0" rowHeights="12.0, 180.0, 12.0, 12.0, 24.0, 12.0" style="Table7">
                                 <tr>
                                     <td><para style="P20">""" + tools.ustr("6.  ODONTOGRAMA") + """</para></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
@@ -1161,48 +1167,49 @@ class odontogram(report_rml):
                                 </tr>
                                 
                                 <tr>
-                                    <td>
-                                         
-                                          <image file='""" + _png_odontogram_img + """' x="3" y="1" width="500" height="178" preserveAspectRatio="no"/> 
-                                        
+                                    <td><image file='""" + _png_odontogram_img + """' x="3" y="1" width="500" height="178" preserveAspectRatio="no"/> 
                                     </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td>
                                 </tr>
-                               <!--
+                               
                                 <tr>
+                                    <td><para style="P200">SIMBOLOGIA DEL ODONTOGRAMA</para></td>
                                     <td></td>
-                                    <td><para style="P200_LEFT">SIMBOLOGIA DEL ODONTOGRAMA</para></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td>
                                 </tr>
-                                -->
-                                </blockTable>
-                                
-                                <!--
+
                                 <tr>
                                     <td></td>
+                                    <td></td>
+                                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                                    <td></td><td></td><td></td>
+                                </tr>
+
+                                <tr>
                                     <td>
-                                    -->
-                                        <blockTable colWidths="45.0,20.0,2.0,50.0,20.0,2.0,60.0,20.0,2.0,60.0,20.0,2.0,60.0,28.0,2.0,55.0,20.0" rowHeights="12.0,12.0" style="Table9">
+                                         <blockTable colWidths="45.0,20.0,2.0,50.0,20.0,2.0,60.0,20.0,2.0,60.0,20.0,2.0,60.0,28.0,2.0,55.0,20.0" rowHeights="12.0,12.0" style="Table9">
                                             <tr>
                                                 <td><para style="P220">Caries</para></td>
-                                                <td><para style="P220">O</para></td>
+                                                <td><para style="P220_BOLD">O</para></td>
                                                 <td><para style="P220"></para></td>
                                                 <td><para style="P220">Restaurac.</para></td>
-                                                <td><para style="P220">/</para></td>
+                                                <td><para style="P220_BOLD">/</para></td>
                                                 <td><para style="P220"></para></td>
                                                 <td><para style="P220">Retos radic.</para></td>
-                                                <td><para style="P220">F</para></td>
+                                                <td><para style="P220_BOLD">F</para></td>
                                                 <td><para style="P220"></para></td>
                                                 <td><para style="P220">Corona</para></td>
-                                                <td><para style="P220">C</para></td>
+                                                <td><para style="P220_BOLD">C</para></td>
                                                 <td><para style="P220"></para></td>
                                                 <td><para style="P220">""" + tools.ustr("Prótesis remov.") + """</para></td>
-                                                <td><para style="P220">w</para></td>
+                                                <td><para style="P220_BOLD">W</para></td>
                                                 <td></td>
                                                 <td><para style="P220">""" + tools.ustr("Prótesis total") + """</para></td>
                                                 <td>
@@ -1214,51 +1221,43 @@ class odontogram(report_rml):
                                             
                                             <tr>
                                                 <td><para style="P220">Sellante</para></td>
-                                                <td><para style="P220">*</para></td>
+                                                <td><para style="P220_BOLD">*</para></td>
                                                 <td><para style="P220"></para></td>
-                                                <td><para style="P220">""" + tools.ustr("Estracción") + """</para></td>
-                                                <td><para style="P220">X</para></td>
+                                                <td><para style="P220">""" + tools.ustr("Extracción") + """</para></td>
+                                                <td><para style="P220_BOLD">X</para></td>
                                                 <td><para style="P220"></para></td>
                                                 <td><para style="P220">Ausente</para></td>
-                                                <td><para style="P220">A</para></td>
+                                                <td><para style="P220_BOLD">A</para></td>
                                                 <td><para style="P220"></para></td>
                                                 <td><para style="P220">Trat. endodon.</para></td>
-                                                <td><para style="P220">I</para></td>
+                                                <td><para style="P220_BOLD">I</para></td>
                                                 <td><para style="P220"></para></td>
-                                                <td><para style="P220">""" + tools.ustr("Prótesis fija.") + """</para></td>
-                                                <td><para style="P220">0-0</para></td>
+                                                <td><para style="P220">""" + tools.ustr("Prótesis fija") + """</para></td>
+                                                <td><para style="P220_BOLD">0-0</para></td>
                                                 <td><para style="P220"></para></td>
                                                 <td><para style="P220">""" + tools.ustr("Calza") + """</para></td>
-                                                <td><para style="P220">K</para></td>
+                                                <td><para style="P220_BOLD">K</para></td>
                                             </tr>
                                         </blockTable>
-                                    <!--    
                                     </td>
+                                    <td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td>
                                 </tr>
 
-                                
-                                
                                 <tr>
-                                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                                    <td></td><td></td><td></td>
-                                </tr>
-                                
-                                <tr>
+                                    <td><para style="P200">""" + tools.ustr("Usar color ROJO para Patología actual, AZUL para tratamientos odontológicos realizados") + """</para></td>
                                     <td></td>
-                                    <td><para style="P200_LEFT">""" + tools.ustr("Usar color ROJO para Patología actual AZUL para tratamientos odontológicos realizados") + """</para></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                     <td></td><td></td><td></td>
                                 </tr>
                                 
-                            </blockTable>-->"""
+                              </blockTable>
+                            """
              
             rml += """      <spacer length="0.1cm"/>
                             <blockTable colWidths="20.0,12.0,20.0,12.0,20.0,12.0,53.0,53.0,53.0,53.0,11.0,40.0,11.0,40.0,11.0,15.0,20.0,20.0,20.0,31.0" rowHeights="12.0,12.0,12.0,12.0,12.0,12.0,12.0,12.0,12.0,12.0" style="Table10">
@@ -1472,7 +1471,6 @@ class odontogram(report_rml):
             rml += """      </section>"""
             rml += """      <pageBreak></pageBreak>"""            
            
-            '''
             other_observation = ""
             if odontology_exam.other_observation:
                 word_list = self._get_list_words(odontology_exam.other_observation, letters_per_row * 2)
@@ -1508,7 +1506,7 @@ class odontogram(report_rml):
                                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                                 </tr>
                             </blockTable>"""
-
+            
             diag_cant = 0
             diagnostics_list = []
             if odontology_exam.diagnosis_ids:
@@ -1775,9 +1773,7 @@ class odontogram(report_rml):
                 cant = cant + 1
                 rml += """      <tr><td><para style="P20_COURIER"></para></td><td></td></tr>"""
                 
-            rml += """      </blockTable>"""
-            '''
-
+            rml += """ </blockTable>"""
             rml += """ </story>"""
             rml += """</document>"""
 
