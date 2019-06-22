@@ -607,4 +607,4 @@ class AccountInvoiceVarietyReport(report_rml):
         pdf = create_doc(rml, title=self.title)
         return pdf, report_type
 
-AccountInvoiceVarietyReport('report.account_invoice_variety_report', 'pedido.cliente', '', '')
+AccountInvoiceVarietyReport('report.account_invoice_variety_report_2', 'pedido.cliente', '', '')

@@ -600,4 +600,4 @@ class AccountInvoiceReport(report_rml):
         pdf = create_doc(rml, title=self.title)
         return pdf, report_type
 
-AccountInvoiceReport('report.account_invoice_report', 'pedido.cliente', '', '')
+AccountInvoiceReport('report.account_invoice_report_2', 'pedido.cliente', '', '')

@@ -64,13 +64,11 @@ class pedido_cliente(osv.osv):
                         order by 
                         detalle_lines.name , (d_id,))
             """
-            cr.execute( "SELECT * from detalle_lines_pedido where pedido_id = %s", (d_id,))
+            cr.execute("SELECT * from detalle_lines where pedido_id = %s", (d_id,))
             result = cr.fetchall()
             list_ids = []
             line_number = 1
-            for record in result:
-                if record[23] in (5380,5388,5413,5417,5426,5429,5446,5374):
-                    print record
+            for record in result:                 
                 cr.execute("SELECT " +
                            "sum((case when is_box_qty then box_qty * bunch_type::int * bunch_per_box else tale_qty end))" +
                            "from PUBLIC.request_product_variant as v " +
@@ -862,5 +860,3 @@ class freight_agency(osv.osv):
     ]
 
 freight_agency()
-
-

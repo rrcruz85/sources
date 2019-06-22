@@ -2,15 +2,15 @@
 
 <openerp>
     <data>
-		<report id="account_invoice_report"
-                name="account_invoice_report"
+		<report id="account_invoice_report_2"
+                name="account_invoice_report_2"
                 string="Print Invoice..."
                 model="pedido.cliente"
 				menu="False"
                 auto="False"/>
 
-		<report id="account_invoice_variety_report"
-                name="account_invoice_variety_report"
+		<report id="account_invoice_variety_report_2"
+                name="account_invoice_variety_report_2"
                 string="Print Invoice Variety..."
                 model="pedido.cliente"
 				menu="False"
