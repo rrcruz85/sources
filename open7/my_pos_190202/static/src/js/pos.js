@@ -2,8 +2,6 @@ globalType = false;
 
 function my_pos_header (instance) {
     module = instance.point_of_sale;
-
-    var order_number = 0;
     
     /*
         Define : PosOrderHeaderWidget to allow possibility to include inside
@@ -673,33 +671,41 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
         show: function(){
             this._super();
             var self = this;
-            var client = this.pos.get('selectedOrder').get_client();
-			
-            if (client != null && client != undefined && client != false) {
-            	this.$('#div_customer_name').html(client.name);
-            	this.$('#div_customer_address').html(client.contact_address);
-            	this.$('#div_customer_email').html(client.email);
-            	this.$('#div_customer_mobile').html(client.mobile);
-            	this.$('#div_customer_phone').html(client.phone);
-            	
-            	if (client.ced_ruc) {
-            		this.$('#div_customer_ced').html('Id: ' + client.ced_ruc);
-            	}
-            }
-            else {
-            	this.$('.client_data_div').html();
-            }
+
+            var posId = this.pos.get('pos_session').id;
+            new instance.web.Model('pos.config').call('read',[[posId],['order_seq_start_from']]).then(function(result){               
+               
+                currentOrder = self.pos.get('selectedOrder');    
+                currentOrder.set('name', "Order " + result[0].order_seq_start_from);                      
+                var client = currentOrder.get_client();
+            
+                if (client != null && client != undefined && client != false) {
+                    self.$('#div_customer_name').html(client.name);
+                    self.$('#div_customer_address').html(client.contact_address);
+                    self.$('#div_customer_email').html(client.email);
+                    self.$('#div_customer_mobile').html(client.mobile);
+                    self.$('#div_customer_phone').html(client.phone);
+                    
+                    if (client.ced_ruc) {
+                        self.$('#div_customer_ced').html('Id: ' + client.ced_ruc);
+                    }
+                }
+                else {
+                    self.$('.client_data_div').html();
+                }                 
+            });  
         },
 
         validateCurrentOrder: function () {
             var currentOrder = this.pos.get('selectedOrder');
+          
             if (currentOrder.attributes.orderLines.length >= 2) {
                 $("div.pos-sale-ticket").css("max-height", "800px");
             }
             else {
                 $("div.pos-sale-ticket").css("max-height", "400px");
             }
-
+            
             this.pos.push_order(currentOrder.exportAsJSON())
             if (this.pos.iface_print_via_proxy) {
                 this.pos.proxy.print_receipt(currentOrder.export_for_printing());
@@ -711,6 +717,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             if (currentOrder.attributes.orderLines.length >= 2) {
                 $("div.pos-sale-ticket").css("max-height", "370px");
             }
+ 
         },
         
         fetch: function(model, fields, domain, ctx){
@@ -718,7 +725,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
         },
         
         get_card_payment: function(journal){
-            console.log('Diarios: ' + journal);
+           
             var myPos = new instance.web.Model('pos.order');
             myPos.call('get_type_journal', [journal]).then(function (result) {});
         },
@@ -772,7 +779,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
     module.PosModel = Backbone.Model.extend({
         initialize: function(session, attributes) {
             Backbone.Model.prototype.initialize.call(this, attributes);
-            var  self = this;
+            var self = this;
             this.session = session;
             this.ready = $.Deferred();                          // used to notify the GUI that the PosModel has loaded all resources
             this.flush_mutex = new $.Mutex();                   // used to make sure the orders are sent to the server once at time
@@ -916,8 +923,6 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
                     self.iface_vkeyboard           =  !!pos_config.iface_vkeyboard;
                     self.iface_self_checkout       =  !!pos_config.iface_self_checkout;
                     self.iface_cashdrawer          =  !!pos_config.iface_cashdrawer;
-                    order_number                   =  pos_config.order_seq_start_from;
-
                     return self.fetch('sale.shop',[],[['id','=',pos_config.shop_id[0]]]);
                 }).then(function(shops){
                     self.set('shop',shops[0]);
@@ -1110,11 +1115,12 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
     module.Order = Backbone.Model.extend({
         initialize: function(attributes){
             Backbone.Model.prototype.initialize.apply(this, arguments);
+           
             this.set({
                 creationDate:   new Date(),
                 orderLines:     new module.OrderlineCollection(),
                 paymentLines:   new module.PaymentlineCollection(),
-                name:           "Order " + this.generateUniqueId(),
+                name:           "Order 1",
                 client:         null,
                 acquirer:       null,
                 card_type:      null,
@@ -1128,12 +1134,8 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             this.screen_data = {};  // see ScreenSelector
             this.receipt_type = 'receipt';  // 'receipt' || 'invoice'
             return this;
-        },
-        generateUniqueId: function() {
-            //return new Date().getTime();       	 
-            order_number += 1;
-            return order_number;
-        },
+        },        
+        
         addProduct: function(product, options){
             options = options || {};
             var attr = product.toJSON();
