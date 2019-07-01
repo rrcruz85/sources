@@ -32,7 +32,6 @@ class OeMedicalMedicament(osv.Model):
             res[record.id] = record.product_id.name
         return res
 
-
     _columns = {
         'product_id': fields.many2one('product.product', string='Medicament', requered=True, help='Product Name'),
         'name': fields.function(_get_name, type='char', string='Medicament', help="", multi=False),
@@ -86,6 +85,7 @@ class OeMedicalMedicament(osv.Model):
                                  help='Warnings for Pregnant Women'),
         'presentation': fields.text(string='Presentation'),
         'composition': fields.text(string='Composition', help='Components'),
+        'concentration'    : fields.char(size=256, string='Concentracion'),
     }
 
 OeMedicalMedicament()

@@ -87,7 +87,8 @@ class OeMedicalAppointment(osv.Model):
             ('done', 'Done'),('canceled', 'Canceled')], string='State'),
         'history_ids' : fields.one2many('oemedical.appointment.history','appointment_id','History lines', states={'start':[('readonly',True)]}),
         'is_planned'  : fields.boolean('Cita programada?'),
-
+        'next_appointment_date' : fields.date(string='Fecha Proxima Cita'), 
+        'next_appointment_hour' : fields.float(string='Hora Proxima Cita'),
         'info_diagnosis': fields.text(string='Enfermedad Actual'),
 
         # Signos vitales y mediciones...
@@ -158,17 +159,34 @@ class OeMedicalAppointment(osv.Model):
     def _check_overlapped(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context): 
             date_start = get_datetime(obj.start_date, obj.start_time)  
-            #date_end = date_start + timedelta(minutes = obj.stimated_duration)            
             records = self.search(cr,uid, [('id', '!=', obj.id ),('doctor_id', '=', obj.doctor_id.id),('appointment_time', '<=', str(date_start)),('appointment_stimated_endtime', '>', str(date_start))])
             if records:
                 return False    
+        return True
+
+    def _check_next_date_appointment(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.next_appointment_date and obj.next_appointment_hour:
+                records = self.search(cr,uid, [('id', '!=', obj.id ),('is_planned', '=', False),('doctor_id', '=', obj.doctor_id.id),('start_date', '=', obj.next_appointment_date),('start_time', '>=', obj.next_appointment_hour), ('start_time', '<=', (obj.next_appointment_hour + 0.5))])
+                if records:
+                    return False    
+        return True
+
+    def _check_next_date_appointment_vals(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.next_appointment_date and (obj.next_appointment_date <= datetime.now().date or obj.next_appointment_date <= obj.start_date):
+                return False 
+            if obj.next_appointment_date and obj.next_appointment_hour and (obj.next_appointment_hour <= 0 or obj.next_appointment_hour >= 24):
+                return False               
         return True
 
     _constraints = [    
         (_check_start_time, 'La hora de inicio esta incorrecta', []),   
         (_check_date_start_end, 'La fecha y hora de inicio no puede ser posterior a la fecha final', []),   
         (_check_overlapped, 'En la fecha y hora seleccionada el doctor ya tiene una cita, debe escoger otro horario', []),
-        (_check_stimated_time, 'El tiempo estimado de la cita esta incorrecto, el rango correcto es [15-120]', []),        
+        (_check_stimated_time, 'El tiempo estimado de la cita esta incorrecto, el rango correcto es [15-120]', []),
+        (_check_next_date_appointment, 'La fecha y hora de la proxima cita estan incorrectas. El doctor ya tiene una cita agendada en esa fecha y hora', []),        
+        (_check_next_date_appointment_vals, 'La fecha y hora de la proxima cita estan incorrectas. La fecha y hora deben ser posteriores a la fecha y hora actual y de esta cita', []),        
     ]
 
     def onchange_patient_doctor(self, cr, uid, ids, patient_id, doctor_id, context=None):
@@ -330,6 +348,31 @@ class OeMedicalAppointment(osv.Model):
 
         return True
 
+    def write(self, cr, uid, ids, vals, context=None):
+        if 'next_appointment_date' in vals or 'next_appointment_hour' in vals:
+            obj = self.browse(cr, uid, ids[0])
+            next_appointment_date = vals['next_appointment_date'] if 'next_appointment_date' in vals else obj.next_appointment_date or time.strftime('%Y-%m-%d')
+            next_appointment_hour = vals['next_appointment_hour'] if 'next_appointment_hour' in vals else obj.next_appointment_hour or 8.5
+            
+            record_ids = self.search(cr,uid, [('id', '!=', obj.id ),('patient_id', '=', obj.patient_id.id),('doctor_id', '=', obj.doctor_id.id),('state', 'in', ('draft','confirmed')),('start_date', '>', obj.start_date)])
+            if not record_ids:
+                create_vals = {
+                    'patient_id'   : obj.patient_id.id,
+                    'doctor_id'    : obj.doctor_id.id,
+                    'specialty_id' : obj.specialty_id.id,
+                    'type'         : 'cp',
+                    'start_date'   : next_appointment_date,
+                    'start_time'   : next_appointment_hour,
+                    'is_planned'   : True
+                }
+                super(OeMedicalAppointment, self).create(cr, uid, create_vals, context=context)
+            else:
+                update_vals = {
+                   'start_date'   : next_appointment_date,
+                   'start_time'   : next_appointment_hour
+                }
+                super(OeMedicalAppointment, self).write(cr, uid, record_ids, update_vals, context=context)
+        return super(OeMedicalAppointment, self).write(cr, uid, ids, vals, context=context)
 
 OeMedicalAppointment()
 

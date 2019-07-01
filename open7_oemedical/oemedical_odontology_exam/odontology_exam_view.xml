@@ -30,6 +30,8 @@
 							<field name="exam_time" readonly="1" widget="float_time"/>									 								
                         </group>
 					  	<notebook>
+
+						   <!--
 	                       <page string="Principal">
 	                        	<group col="8">
 	                        		<field name="mdc_info" col="1" colspan="8"/>
@@ -75,51 +77,8 @@
            						
            						<field name="others_antecedents" col="1" colspan="4" attrs="{'invisible': [('others', '=', False)]}"/>
 	                            
-	                            <group col="8" string="Examen del sistema estomatognatico.">
-	                            	<group col="4">
-	                            		<field name="libs" col="1" colspan="4"/>
-	                            		<!-- <field name="libs_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('libs', '=', False)]}"/> -->
-	                            		
-	                            		<field name="cheeks" col="1" colspan="4"/>
-	                            		<!-- <field name="cheeks_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('cheeks', '=', False)]}"/> -->
-	                            		
-	                            		<field name="top_max" col="1" colspan="4"/>
-	                            		<!-- <field name="top_max_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('top_max', '=', False)]}"/> -->
-	                            		
-	                            		<field name="bottom_max" col="1" colspan="4"/>
-	                            		<!-- <field name="bottom_max_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('bottom_max', '=', False)]}"/> -->
-	                            		
-	                            		<field name="tongle" col="1" colspan="4"/>
-	                            		<!-- <field name="tongle_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('tongle', '=', False)]}"/> -->
-	                            		
-	                            		<field name="taste" col="1" colspan="4"/>
-	                            		<!-- <field name="taste_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('taste', '=', False)]}"/> -->
-	                            	</group>
-	                            	
-	                            	<group col="4">
-	                            		<field name="floor" col="1" colspan="4"/>
-	                            		<!-- <field name="floor_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('floor', '=', False)]}"/> -->
-	                            		
-	                            		<field name="jowls" col="1" colspan="4"/>
-	                            		<!-- <field name="jowls_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('jowls', '=', False)]}"/> -->
-	                            		
-	                            		<field name="sal_glands" col="1" colspan="4"/>
-	                            		<!-- <field name="sal_glands_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('sal_glands', '=', False)]}"/> -->
-	                            		
-	                            		<field name="pharynx" col="1" colspan="4"/>
-	                            		<!-- <field name="pharynx_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('pharynx', '=', False)]}"/> -->
-	                            		
-	                            		<field name="atm" col="1" colspan="4"/>
-	                            		<!-- <field name="atm_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('atm', '=', False)]}"/> -->
-	                            		
-	                            		<field name="lymph" col="1" colspan="4"/>
-	                            		<!-- <field name="lymph_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('lymph', '=', False)]}"/> -->
-	                            	</group>
-	                            </group>
-	                            
-	                            <label for="stomatognathic_system_observation"/>
-	                           	<field name="stomatognathic_system_observation" nolabel="1"/>
-	                       </page>
+	                          
+	                       </page> -->
 	                      
 						   <page string="Odontograma">
 						        <div class="column">
@@ -6742,7 +6701,52 @@
 						   </page>
 
 	                       <page string="Salud bucal">
-	                       		<group col="8">
+                                <group col="8" string="Examen del sistema estomatognático.">
+	                            	<group col="4">
+	                            		<field name="libs" col="1" colspan="4"/>
+	                            		<!-- <field name="libs_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('libs', '=', False)]}"/> -->
+	                            		
+	                            		<field name="cheeks" col="1" colspan="4"/>
+	                            		<!-- <field name="cheeks_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('cheeks', '=', False)]}"/> -->
+	                            		
+	                            		<field name="top_max" col="1" colspan="4"/>
+	                            		<!-- <field name="top_max_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('top_max', '=', False)]}"/> -->
+	                            		
+	                            		<field name="bottom_max" col="1" colspan="4"/>
+	                            		<!-- <field name="bottom_max_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('bottom_max', '=', False)]}"/> -->
+	                            		
+	                            		<field name="tongle" col="1" colspan="4"/>
+	                            		<!-- <field name="tongle_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('tongle', '=', False)]}"/> -->
+	                            		
+	                            		<field name="taste" col="1" colspan="4"/>
+	                            		<!-- <field name="taste_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('taste', '=', False)]}"/> -->
+	                            	</group>
+	                            	
+	                            	<group col="4">
+	                            		<field name="floor" col="1" colspan="4"/>
+	                            		<!-- <field name="floor_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('floor', '=', False)]}"/> -->
+	                            		
+	                            		<field name="jowls" col="1" colspan="4"/>
+	                            		<!-- <field name="jowls_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('jowls', '=', False)]}"/> -->
+	                            		
+	                            		<field name="sal_glands" col="1" colspan="4"/>
+	                            		<!-- <field name="sal_glands_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('sal_glands', '=', False)]}"/> -->
+	                            		
+	                            		<field name="pharynx" col="1" colspan="4"/>
+	                            		<!-- <field name="pharynx_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('pharynx', '=', False)]}"/> -->
+	                            		
+	                            		<field name="atm" col="1" colspan="4"/>
+	                            		<!-- <field name="atm_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('atm', '=', False)]}"/> -->
+	                            		
+	                            		<field name="lymph" col="1" colspan="4"/>
+	                            		<!-- <field name="lymph_observation" col="1" colspan="4" string=" " attrs="{'invisible': [('lymph', '=', False)]}"/> -->
+	                            	</group>
+	                            </group>
+	                            
+	                            <label for="stomatognathic_system_observation"/>
+	                           	<field name="stomatognathic_system_observation" nolabel="1"/>
+
+	                       		<group col="8" string="Indicadores de Salud bucal">
 	                       			<field name="periodontale_illness" col="1" colspan="8"/>
 	                       			<field name="malocclusion" col="1" colspan="8"/>
 	                       			<field name="fluorosis" col="1" colspan="8"/>
@@ -6881,26 +6885,51 @@
 	                       		</table>
 	                       </page>
 	                       
-	                       <page string="Diagnosticos y tratamientos">
-	                       		<group col="8" string="Plan diagnostico.">
-	                       			<field name="biometric" col="1" colspan="8"/>
-	                       			<field name="blood_chemistry" col="1" colspan="8"/>
-	                       			<field name="x_rays" col="1" colspan="8"/>
-	                       			<field name="other" col="1" colspan="8"/>
+	                       <page string="Diagnósticos y tratamientos">
+	                       		<group col="8" string="Plan diagnóstico">
+								    <group col="2">
+										<field name="biometric" col="1" colspan="2"/>
+										<field name="blood_chemistry" col="1" colspan="2"/>
+									</group>
+									<group colspan="2">
+									    <field name="x_rays" col="1" colspan="2"/>
+										<field name="other" col="1" colspan="2"/>										 
+									</group>
 	                       		</group>
-	                       		
-	                       		<group col="8">
-	                       			<field name="other_observation" col="1" colspan="8"/>
-	                       		</group>
-	                       		
-	                       		<group col="8" string="Diagnosticos.">
-	                       			<field name="diagnosis_ids" col="1" colspan="8"/>
+								<label for="other_observation"/> <!--attrs="{'invisible': [('other', '=', False)]}" -->
+								<field name="other_observation" nolabel="1" col="1" colspan="8"/>																				 
+								
+	                       		<group col="8" string="Diagnósticos">
+	                       			<field name="diagnosis_ids" col="1" colspan="8"/>									  
+									<newline/>
 	                       			<field name="diagnosis_observation" col="1" colspan="8"/>
 	                       		</group>
 	                       		
-	                       		<group col="8" string="Plan de tratamiento.">
+	                       		<group col="8" string="Plan de tratamiento">
 	                       			<group col="8">
-	                       				<field name="treatment_ids" col="1" colspan="8"/>
+	                       				<field name="treatment_ids" context="{'exam_id': active_id}" col="1" colspan="8">									   
+											<tree string="Treatments">
+												<field name ="medicament_id" required="1" />
+												<field name ="presentation"/>
+												<field name ="concentration"/>
+												<field name ="via"/>
+												<field name ="dosis"/>
+												<field name ="frequency"/>
+												<field name ="days"/>
+											</tree>											
+											<form string="Treatment">
+												<field name ="medicament_id" on_change="onchange_medicament(medicament_id)" required="1" />
+												<newline/>
+												<field name ="presentation"/>
+												<field name ="concentration"/>
+												<newline/>
+												<field name ="via" required="1" />
+												<field name ="dosis" required="1" />
+												<newline/>
+												<field name ="frequency" required="1" />
+												<field name ="days" required="1" />
+											</form>  
+										</field>
 	                       			</group>
 	                       		</group>
 	                       		
@@ -6930,14 +6959,24 @@
 	                       			<field name="service" col="1" colspan="8"/>
 	                       			<field name="treatment_observation" col="1" colspan="8"/>
 	                       		</group>
-	                       		
-	                       		<group col="8" string="Proxima consulta.">
+
+	                       		<group col="8" string="Próxima consulta.">
 	                       			<field name="next_appointment_date" col="1" colspan="8"/>	                       			
 	                       		</group>
 	                       </page>
 	                       
-	                       <page string="Notas de evolucion">
-	                       		<field name="evolution_ids" col="1" colspan="8"/>
+	                       <page string="Notas de evolución">
+	                       	    <field name="evolution_ids" context="{'exam_id': active_id}" col="1" colspan="8">
+								    <tree string="Evolutions">
+										<field name ="evolution_date" />
+										<field name ="observation"/>												 
+									</tree>	
+									<form string="Evolution">
+										<field name ="evolution_date" required="1"/>
+										<newline/>
+										<field name ="observation"/>												 
+									</form> 
+								</field>
 	                       </page>
 	                   	</notebook>
 					</sheet>
@@ -6953,6 +6992,33 @@
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[]</field>
 			<field name="context">{}</field>
+		</record>
+
+		<record id="view_oemedical_pathology_tree_inherit" model="ir.ui.view">
+			<field name="name">oemedical.pathology.tree.inherit</field>
+			<field name="model">oemedical.pathology</field>
+	        <field name="inherit_id" ref="oemedical.view_oemedical_pathology_tree"/>
+			<field name="arch" type="xml">
+                <xpath expr="//field[@name='category']" position="after">
+                    <field name="definitive" />
+					<field name="presuntive" />
+					<field name="foment" />
+                </xpath> 
+			</field>
+		</record>
+
+		<record id="view_oemedical_pathology_form_inherit" model="ir.ui.view">
+			<field name="name">oemedical.pathology.form.inherit</field>
+			<field name="model">oemedical.pathology</field>
+	        <field name="inherit_id" ref="oemedical.view_oemedical_pathology_form"/>
+			<field name="arch" type="xml">
+                <xpath expr="//field[@name='category']" position="after">
+				    <newline/>
+                    <field name="definitive" />
+					<field name="presuntive" />
+					<field name="foment" />
+                </xpath> 
+			</field>
 		</record>
 		
 	</data>

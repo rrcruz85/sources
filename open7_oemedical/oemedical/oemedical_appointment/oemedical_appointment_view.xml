@@ -50,7 +50,11 @@
 					        <field name="start_time" widget="float_time" />							
 							<newline/>										    
 							<field name="end_date" attrs="{'invisible':[('state','!=','done')],'readonly':[('state','==','done')]}"  />
-							<field name="stimated_duration" />									 								
+							<field name="stimated_duration" />	
+							<newline/>
+							<field name="next_appointment_date" attrs="{'invisible':[('state','=','draft')]}"/>	
+							<newline/>
+							<field name="next_appointment_hour" widget="float_time" attrs="{'invisible':[('state','=','draft')]}"/>							 								
                         </group>                                                
                         <notebook>
                             <page string="Patient Information">  

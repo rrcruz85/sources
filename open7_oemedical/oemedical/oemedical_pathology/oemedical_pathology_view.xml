@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+	
 		<record id="view_oemedical_pathology_tree" model="ir.ui.view">
 			<field name="name">oemedical.pathology.tree</field>
 			<field name="model">oemedical.pathology</field>
 			<field name="priority" eval="8" />
 			<field name="arch" type="xml">
 				<tree string="Oemedical Pathology">
-					<!--field name="category" />
-					<field name="info" /-->
 					<field name="code" />
 					<field name="name" />
-					<!--field name="groups"/ -->
-					<!--field name="protein" />
-					<field name="gene" />
-					<field name="chromosome" /-->
+					<field name="category" />					 
 				</tree>
 			</field>
 		</record>
@@ -26,12 +22,12 @@
 			<field name="arch" type="xml">
 				<form string="Oemedical Pathology">
 					<field name="code" />
+					<newline/>
 					<field name="name" />
+					<newline/>
 					<field name="category" />
-					<!--field name="groups"/ -->
-					<field name="protein" />
-					<field name="gene" />
-					<field name="chromosome" />
+					<newline/>
+					<field name="groups" />					 
                     <group colspan="4" string="Extra Info">
     					<field name="info" nolabel="1" colspan="4"/>
                     </group>
@@ -45,13 +41,13 @@
 			<field name="priority" eval="8" />
 			<field name="arch" type="xml">
 				<search string="Oemedical Pathology">
+				    <field name="code" />
+					<field name="name" />	
 					<field name="category" />
-					<field name="info" />
-					<field name="code" />
-					<field name="name" />
 					<field name="protein" />
 					<field name="gene" />
-					<field name="chromosome" />
+					<field name="chromosome" /> 
+					<field name="info" />
 					<newline />
 					<group expand="0" string="Group By...">
 						<filter string="Main Category" domain="[]"

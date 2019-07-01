@@ -22,6 +22,7 @@
 					<field name="pregnancy" />
 					<field name="presentation" />
 					<field name="composition" />
+					<field name="concentration" />
 				</tree>
 			</field>
 		</record>
@@ -49,10 +50,12 @@
                             </page>
                             <page string="Presentation">
 					            <field name="presentation" colspan="4" nolabel="1"/>
-
                             </page>
                             <page string="Composition">
 					            <field name="composition" nolabel="1" colspan="4"/>
+                            </page>
+                            <page string="Concentration">
+					            <field name="concentration" nolabel="1" colspan="4"/>
                             </page>
                             <page string="Dosage">
                                 <separator string="Dosage" colspan="2"/>
