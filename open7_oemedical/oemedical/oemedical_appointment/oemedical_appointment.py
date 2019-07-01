@@ -19,8 +19,9 @@ class OeMedicalAppointment(osv.Model):
     def name_get(self, cr, uid, ids, context=None):
         res = []
         for exam in self.browse(cr, uid, ids, context=context):
-            patient_name = exam.patient_id.first_name + ' ' + exam.patient_id.last_name            
-            res.append((exam.id, patient_name + '(' +  exam.patient_id.ced_ruc + ') / (' + exam.appointment_time + ') / (' + exam.specialty_id.name + ')'))
+            patient_name = exam.patient_id.first_name + ' ' + exam.patient_id.last_name
+            formatted_hours = get_datetime(exam.start_date, exam.start_time).strftime("%Y-%m-%d %H:%M")
+            res.append((exam.id, patient_name + '(' +  exam.patient_id.ced_ruc + ') / (' + formatted_hours + ') / (' + exam.specialty_id.name + ')'))
         return res
     
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
