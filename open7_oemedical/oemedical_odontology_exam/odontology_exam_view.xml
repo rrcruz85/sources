@@ -5,9 +5,11 @@
 			<field name="name">oemedical.odontology.exam.view.tree</field>
 			<field name="model">oemedical.odontology.exam</field>
 			<field name="arch" type="xml">
-				<tree string="Odontology Exams">
+				<tree string="Odontological Exams">
 					<field name="patient_id" />
-					<field name="test_date" />
+					<field name="doctor_id" />
+					<field name="exam_date" />
+					<field name="exam_time" />
 				</tree>
 			</field>
 		</record>
@@ -18,13 +20,15 @@
 			<field name="arch" type="xml">
 				<form string="Odontology Exam" version="7.0">
 					<sheet>
-						<group col="8">
-							<group col="6">
-								<field name="patient_id" col="1" colspan="6"/>
-								<field name="test_date" col="1" colspan="6"/>
-								<field name="is_planned" col="1" colspan="6"/>
-							</group>
-						</group>
+                        <group col="4">
+					        <field name="appointment_id" required="1" on_change="onchange_appointment(appointment_id)" /> 
+							<newline/>
+							<field name="patient_id" readonly="1"/>							 
+							<field name="doctor_id" readonly="1"/>
+                            <newline/>										    
+							<field name="exam_date" readonly="1"/>
+							<field name="exam_time" readonly="1" widget="float_time"/>									 								
+                        </group>
 					  	<notebook>
 	                       <page string="Principal">
 	                        	<group col="8">
@@ -6928,8 +6932,7 @@
 	                       		</group>
 	                       		
 	                       		<group col="8" string="Proxima consulta.">
-	                       			<field name="next_appointment_date" col="1" colspan="8"/>
-	                       			<field name="doctor" col="1" colspan="8"/>
+	                       			<field name="next_appointment_date" col="1" colspan="8"/>	                       			
 	                       		</group>
 	                       </page>
 	                       

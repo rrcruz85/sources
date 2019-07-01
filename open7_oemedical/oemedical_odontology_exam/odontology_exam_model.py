@@ -82,21 +82,45 @@ class OeMedicalOdontologyExam(osv.Model):
         return res
     
     _columns = {
-        'patient_id'        : fields.many2one('oemedical.patient', 'Patient', required=True),
-        'test_date'         : fields.date(string='Fecha'),
-        'mdc_info'          : fields.text(string='Motivo de Consulta'),
-        'info_diagnosis'    : fields.text(string='Enfermedad Actual'),        
-        'is_planned'        : fields.boolean('Consulta programada?'),
+
+        'appointment_id'    : fields.many2one('oemedical.appointment', 'Appointment', domain="[('state','!=','done'),('state','!=','canceled')]", required=True, context="{'search_odontology': 1}"),
         
+        #Appointment Info...
+        'patient_id'        : fields.related('appointment_id','patient_id', type='many2one', relation='oemedical.patient', string='Patient', required=True),
+        'doctor_id'         : fields.related('appointment_id','doctor_id', type='many2one', relation='oemedical.physician', string='Odontologo', required=True),
+        'exam_date'         : fields.related('appointment_id','start_date', type='date', string='Fecha'),
+        'exam_time'         : fields.related('appointment_id','start_time', type='float', string='Hora'),
+        'mdc_info'          : fields.related('appointment_id','motive', type='text', string='Motivo de Consulta'),
+        'info_diagnosis'    : fields.related('appointment_id','info_diagnosis', type='text', string='Enfermedad Actual'),
+        'is_planned'        : fields.related('appointment_id','is_planned', type='boolean', string='Consulta programada?'),
+   
         # Signos vitales y mediciones...
-        'pat_info'  : fields.char(size=256, string='Presion arterial'),
-        'ppm_info'  : fields.integer('Frecuencia cardiaca'),
-        'ppr_info'  : fields.integer('Frecuencia respiratoria'),
-        'tem_info'  : fields.float('Temperatura bucal', digits=(2,2)),
-        'tem2_info' : fields.float('Temperatura axilar', digits=(2,2)),
-        'pes_info'  : fields.float('Peso (Kg)', digits=(3,2)),
-        'size_info' : fields.float('Talla (m)', digits=(3,2)),
-        'not_apply' : fields.boolean('No aplica?'),
+        'pat_info'        : fields.related('appointment_id','pat_info', type='char', string='Presion arterial'),
+        'ppm_info'        : fields.related('appointment_id','ppm_info', type='integer', string='Frecuencia cardiaca'),
+        'ppr_info'        : fields.related('appointment_id','ppr_info', type='integer', string='Frecuencia respiratoria'),
+        'tem_info'        : fields.related('appointment_id','tem_info', type='float', digits=(2,2), string='Temperatura bucal'),
+        'tem2_info'       : fields.related('appointment_id','tem2_info', type='float', digits=(2,2), string='Temperatura axilar'),
+        'pes_info'        : fields.related('appointment_id','pes_info', type='float', digits=(3,2), string='Peso (Kg)'),
+        'size_info'       : fields.related('appointment_id','size_info', type='float',  digits=(3,2), string='Talla (m)'),
+        'not_apply'       : fields.boolean('No aplica?'),
+
+        #Personal antecedents and family antecedents...
+        'diabetes'             : fields.related('appointment_id','patient_id', 'diabetes', type='boolean', string='Diabetes'),
+        'cardiopatia'          : fields.related('appointment_id','patient_id', 'cardiopatia', type='boolean', string='Cardiopatia'),
+        'enf_cardiaca'         : fields.related('appointment_id','patient_id', 'enf_car', type='boolean', string='Enfermedad Cardiovascular'),
+        'hipertension'         : fields.related('appointment_id','patient_id', 'hipertension', type='boolean', string='Hipertensión'),
+        'asma'                 : fields.related('appointment_id','patient_id', 'asma', type='boolean', string='Asma'),
+        'tuberculosis'         : fields.related('appointment_id','patient_id', 'tuberculosis', type='boolean', string='Tuberculosis'),
+        'antibotic_allergic'   : fields.related('appointment_id','patient_id', 'antibotic_allergic', type='boolean', string='Alergia a antibioticos'),
+        'anesthesia_allergic'  : fields.related('appointment_id','patient_id', 'anesthesia_allergic', type='boolean',string='Alergia a anestesia'),
+        'hemorrhage'           : fields.related('appointment_id','patient_id', 'hemorrhage', type='boolean', string='Hemorragia'),
+        'vih_sida'             : fields.related('appointment_id','patient_id', 'vih_sida', type='boolean', string='VIH/SIDA'),        
+        'cancer'               : fields.related('appointment_id','patient_id', 'cancer', type='boolean', string='Cancer'),       
+        'enf_men'              : fields.related('appointment_id','patient_id', 'enf_men', type='boolean', string='Enfermedad Mental'),
+        'enf_inf'              : fields.related('appointment_id','patient_id', 'enf_inf', type='boolean', string='Enfermedad Infecciosa'),
+        'mal_for'              : fields.related('appointment_id','patient_id', 'mal_for', type='boolean', string='Mal Formación'),
+        'others'               : fields.related('appointment_id','patient_id', 'other', type='boolean', string='Otras'), 
+        'others_antecedents'   : fields.related('appointment_id','patient_id', 'others_antecedents', type='text', string='Otros antecedentes'), 
         
         # stomatognathic system test...
         'libs': fields.boolean('Labios'),
@@ -136,19 +160,6 @@ class OeMedicalOdontologyExam(osv.Model):
         #'lymph_observation': fields.text(),
         
         'stomatognathic_system_observation': fields.text(string='Observaciones del examen del Sistema Estomatognático'),
-        
-        #Personal antecedents and family antecedents...
-        'antibotic_allergic'        : fields.boolean(string='Alergia a antibioticos'),
-        'anesthesia_allergic'       : fields.boolean(string='Alergia a anestesia'),
-        'hemorrhage'                : fields.boolean(string='VIH/SIDA'),
-        'vih_sida'                  : fields.boolean(string='Hemorragia'),
-        'tuberculosis'              : fields.boolean(string='Tuberculosis'),
-        'asma'                      : fields.boolean(string='Asma'),
-        'diabetes'                  : fields.boolean(string='Diabetes'),
-        'hipertension'              : fields.boolean(string='hipertension'),
-        'enf_cardiaca'              : fields.boolean(string='Enf. Cardiaca'),
-        'others'                    : fields.boolean(string='Otro'),
-        'others_antecedents'        : fields.text(string='Otros antecedentes'),
         
         #INDICADORES DE SALUD BUCAL...
         '_16'                        : fields.boolean('16'),
@@ -241,16 +252,15 @@ class OeMedicalOdontologyExam(osv.Model):
         
         'incapacity_days'            : fields.integer('Dias de incapacidad'),
         'service'                    : fields.char('Servicio'),
-        'treatment_observation'      : fields.text('Observaciones'),
-        
+        'treatment_observation'      : fields.text('Observaciones'),        
         'next_appointment_date'      : fields.date(string='Fecha Proxima Cita'),    
-        'doctor'                     : fields.many2one('oemedical.physician', string='Odontologo'),
         
         # 12. NOTAS DE EVOLUCION
         'evolution_ids'              : fields.one2many('oemedical.odontology.exam.evolution', 'dentist_test_id', 'Notas de Evolucion'),
         
         # Odontograma ...  
-        'odontogram_img'             : fields.binary("Odontogram"),        
+        'odontogram_img'             : fields.binary("Odontogram"), 
+
         # Row 1 -------------------------------------------------------
         'p18_symbol'                 : fields.char('Symbol', size = 6),
         'p18_z1'                     : fields.char('Zone 1', size = 4),
@@ -620,6 +630,44 @@ class OeMedicalOdontologyExam(osv.Model):
         'p38_z5'                     : fields.char('Zone 5', size = 4),
     }
 
+    def onchange_appointment(self, cr, uid, ids, appointment_id, context=None):
+        res = {}
+        if appointment_id:
+            res['value'] = {}
+            appointment = self.pool.get('oemedical.appointment').browse(cr, uid, appointment_id)
+            res['value']['cardiopatia'] = appointment.patient_id.cardiopatia
+            res['value']['diabetes'] = appointment.patient_id.diabetes
+            res['value']['enf_cardiaca'] = appointment.patient_id.enf_car
+            res['value']['hipertension'] = appointment.patient_id.hipertension
+            res['value']['cancer'] = appointment.patient_id.cancer
+            res['value']['tuberculosis'] = appointment.patient_id.tuberculosis
+            res['value']['enf_men'] = appointment.patient_id.enf_men
+            res['value']['enf_inf'] = appointment.patient_id.enf_inf
+            res['value']['mal_for'] = appointment.patient_id.mal_for
+            res['value']['antibotic_allergic'] = appointment.patient_id.antibotic_allergic
+            res['value']['anesthesia_allergic'] = appointment.patient_id.anesthesia_allergic
+            res['value']['hemorrhage'] = appointment.patient_id.hemorrhage
+            res['value']['vih_sida'] = appointment.patient_id.vih_sida
+            res['value']['asma'] = appointment.patient_id.asma
+            res['value']['other'] = appointment.patient_id.other
+            res['value']['others_antecedents'] = appointment.patient_id.others_antecedents
+            res['value']['patient_id'] = appointment.patient_id.id
+            res['value']['doctor_id'] = appointment.doctor_id.id
+            res['value']['exam_date'] = appointment.start_date
+            res['value']['exam_time'] = appointment.start_time
+            res['value']['mdc_info'] = appointment.motive
+            res['value']['info_diagnosis'] = appointment.info_diagnosis
+            res['value']['is_planned'] = appointment.is_planned
+            res['value']['pat_info'] = appointment.pat_info
+            res['value']['ppm_info'] = appointment.ppm_info
+            res['value']['ppr_info'] = appointment.ppr_info
+            res['value']['tem_info'] = appointment.tem_info
+            res['value']['tem2_info'] = appointment.tem2_info
+            res['value']['pes_info'] = appointment.pes_info
+            res['value']['size_info'] = appointment.size_info
+
+        return res
+    
     def _get_patient(self, cr, uid, context):
         run_pool = self.pool.get('oemedical.patient')
         run_data = {}
@@ -631,7 +679,6 @@ class OeMedicalOdontologyExam(osv.Model):
         return False
     
     _defaults = {
-                    'test_date': time.strftime('%Y-%m-%d'),
                     'patient_id': _get_patient,
                 }
 

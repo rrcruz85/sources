@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="001" model="oemedical.specialty">
+            <field name="code">001</field>
+            <field name="name">Odontología</field>            
+        </record>
+        
+        <record id="002" model="oemedical.specialty">
+            <field name="code">002</field>
+            <field name="name">Alergología</field>            
+        </record>
+
+        <record id="003" model="oemedical.specialty">
+            <field name="code">003</field>
+            <field name="name">Anestesiología y reanimación</field>            
+        </record>
+
+        <record id="004" model="oemedical.specialty">
+            <field name="code">004</field>
+            <field name="name">Cardiología</field>            
+        </record>
+
+        <record id="005" model="oemedical.specialty">
+            <field name="code">005</field>
+            <field name="name">Gastroenterología</field>            
+        </record>
+
+        <record id="006" model="oemedical.specialty">
+            <field name="code">006</field>
+            <field name="name">Endocrinología</field>            
+        </record>
+
+        <record id="007" model="oemedical.specialty">
+            <field name="code">007</field>
+            <field name="name">Geriatría</field>            
+        </record>
+
+        <record id="008" model="oemedical.specialty">
+            <field name="code">008</field>
+            <field name="name">Hematología y hemoterapia</field>            
+        </record>
+
+        <record id="009" model="oemedical.specialty">
+            <field name="code">009</field>
+            <field name="name">Infectología</field>            
+        </record>
+
+        <record id="010" model="oemedical.specialty">
+            <field name="code">010</field>
+            <field name="name">Rehabilitación</field>            
+        </record>
+
+        <record id="010" model="oemedical.specialty">
+            <field name="code">010</field>
+            <field name="name">Medicina física y Rehabilitación</field>            
+        </record>
+
+        <record id="011" model="oemedical.specialty">
+            <field name="code">011</field>
+            <field name="name">Medicina intensiva</field>            
+        </record>
+
+        <record id="012" model="oemedical.specialty">
+            <field name="code">012</field>
+            <field name="name">Medicina interna</field>            
+        </record>
+
+        <record id="013" model="oemedical.specialty">
+            <field name="code">013</field>
+            <field name="name">Medicina legal y forense</field>            
+        </record>
+
+        <record id="014" model="oemedical.specialty">
+            <field name="code">014</field>
+            <field name="name">Medicina veterinaria</field>            
+        </record>
+
+        <record id="015" model="oemedical.specialty">
+            <field name="code">015</field>
+            <field name="name">Nefrología</field>            
+        </record>
+
+        <record id="016" model="oemedical.specialty">
+            <field name="code">016</field>
+            <field name="name">Neumología</field>            
+        </record>
+
+        <record id="017" model="oemedical.specialty">
+            <field name="code">017</field>
+            <field name="name">Neurología</field>            
+        </record>
+
+        <record id="018" model="oemedical.specialty">
+            <field name="code">018</field>
+            <field name="name">Nutriología</field>            
+        </record>
+
+        <record id="019" model="oemedical.specialty">
+            <field name="code">019</field>
+            <field name="name">Oftalmología</field>            
+        </record>
+
+        <record id="020" model="oemedical.specialty">
+            <field name="code">020</field>
+            <field name="name">Oncología médica</field>            
+        </record>
+
+        <record id="021" model="oemedical.specialty">
+            <field name="code">021</field>
+            <field name="name">Oncología radioterápica</field>            
+        </record>
+
+        <record id="022" model="oemedical.specialty">
+            <field name="code">022</field>
+            <field name="name">Pediatría</field>            
+        </record>
+
+        <record id="023" model="oemedical.specialty">
+            <field name="code">023</field>
+            <field name="name">Psiquiatría</field>            
+        </record>
+
+        <record id="024" model="oemedical.specialty">
+            <field name="code">024</field>
+            <field name="name">Reumatología</field>            
+        </record>
+
+        <record id="025" model="oemedical.specialty">
+            <field name="code">025</field>
+            <field name="name">Toxicología</field>            
+        </record>
+
+        <record id="026" model="oemedical.specialty">
+            <field name="code">026</field>
+            <field name="name">Urología</field>            
+        </record>
+
+        <record id="027" model="oemedical.specialty">
+            <field name="code">027</field>
+            <field name="name">Ginecología</field>            
+        </record>
+
+        <record id="028" model="oemedical.specialty">
+            <field name="code">028</field>
+            <field name="name">Oftalmología</field>            
+        </record>
+
+    </data>
+</openerp>

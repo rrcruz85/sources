@@ -96,7 +96,6 @@ class ResPartner(osv.Model):
     def _get_default_tipo_persona(self, cr, uid, context=None):
         return '6' if context and 'default_is_person' in context and context['default_is_person'] else '9'
 
-
     _defaults = {
         'tipo_persona':  _get_default_tipo_persona,
         'type_ced_ruc': 'cedula'

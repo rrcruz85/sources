@@ -17,6 +17,13 @@ class OeMedicalAppointment(osv.Model):
     _name = 'oemedical.appointment'
     _rec_name = 'patient_id'
 
+    def name_get(self, cr, uid, ids, context=None):
+        res = []
+        for exam in self.browse(cr, uid, ids, context=context):
+            patient_name = exam.patient_id.first_name + ' ' + exam.patient_id.last_name
+            res.append((exam.id, patient_name + '(' +  exam.patient_id.ced_ruc + ')'))
+        return res
+
     def _get_appointment_time(self, cr, uid, ids, field_name, arg, context=None):
         res = {} 
         for record in self.browse(cr, uid, ids, context=context):

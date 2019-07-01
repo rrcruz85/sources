@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+
         <menuitem id="oemedical_odontology_exam_menuitem"
-				  name="Odontology Exams"
+				  name="Odontological Exams"
 				  action="oemedical_odontology_exam_action"
-				  parent="oemedical.oemedical_patient_root"
-				  sequence="40"/>
+				  parent="oemedical.oemedical_appointment_root"
+				  sequence="20"/>
 	</data>
 </openerp>

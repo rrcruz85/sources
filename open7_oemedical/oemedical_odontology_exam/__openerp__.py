@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 {
 
-    'name': 'Odontology Exams',
+    'name': 'Odontological Exams',
     'version': '1.0',
     'author': "Easys Dev Solutions",
     'category': 'Generic Modules/Others',
     'depends': ['oemedical'],
     'application': True,
     'description': """
-Allows to manage odontology exams for patients
+Allows to manage odontological exams for patients
 """,
     "website": "https://www.easysdev.com",
     "licence": "AGPL v3",

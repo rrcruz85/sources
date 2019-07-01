@@ -19,6 +19,30 @@
             <field name="code">CNC</field>
             <field name="country_id" ref="base.ec"/>
         </record>
+
+        <record id="mnt" model="res.country.state">
+            <field name="name">Manta</field>
+            <field name="code">MNT</field>
+            <field name="country_id" ref="base.ec"/>
+        </record>
+
+        <record id="sntd" model="res.country.state">
+            <field name="name">Santo Domingo</field>
+            <field name="code">SNTD</field>
+            <field name="country_id" ref="base.ec"/>
+        </record>
+
+        <record id="lja" model="res.country.state">
+            <field name="name">Loja</field>
+            <field name="code">LJA</field>
+            <field name="country_id" ref="base.ec"/>
+        </record>
+
+        <record id="rbmb" model="res.country.state">
+            <field name="name">Riobamba</field>
+            <field name="code">RBMB</field>
+            <field name="country_id" ref="base.ec"/>
+        </record>
          
     </data>
 </openerp>
