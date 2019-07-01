@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from osv import osv
-from osv import fields
+from openerp.osv import osv, fields
 import time
 from datetime import datetime,timedelta
 from dateutil.relativedelta import relativedelta
@@ -10,8 +9,8 @@ import pytz
 
 def get_datetime(pdate, float_time):
     hour = int(float_time)
-    min = int(round(float_time - hour, 2) * 60)
-    return datetime.strptime(str(pdate) + ' ' + str(hour) + '-' + str(min), '%Y-%m-%d %H-%M')
+    minute = int(round(float_time - hour, 2) * 60)
+    return datetime.strptime(str(pdate) + ' ' + str(hour) + '-' + str(minute), '%Y-%m-%d %H-%M')
 
 class OeMedicalAppointment(osv.Model):
     _name = 'oemedical.appointment'
@@ -20,10 +19,33 @@ class OeMedicalAppointment(osv.Model):
     def name_get(self, cr, uid, ids, context=None):
         res = []
         for exam in self.browse(cr, uid, ids, context=context):
-            patient_name = exam.patient_id.first_name + ' ' + exam.patient_id.last_name
-            res.append((exam.id, patient_name + '(' +  exam.patient_id.ced_ruc + ')'))
+            patient_name = exam.patient_id.first_name + ' ' + exam.patient_id.last_name            
+            res.append((exam.id, patient_name + '(' +  exam.patient_id.ced_ruc + ') / (' + exam.appointment_time + ') / (' + exam.specialty_id.name + ')'))
         return res
-
+    
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context is None:
+            context = {}   
+        if 'search_odonto_appointment' in context and context['search_odonto_appointment']:
+            odonto_specialty = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', '001')  
+            args.append('|')  
+            args.append(['specialty_id', '=', odonto_specialty[1]])  
+            args.append(['specialty_id', 'child_of', odonto_specialty[1]])   
+        return super(OeMedicalAppointment, self).search(cr, uid, args, offset, limit,
+                order, context=context, count=count)
+    
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=80):
+        if not args:
+            args = []  
+        if 'search_odonto_appointment' in context and context['search_odonto_appointment']:
+            odonto_specialty = self.pool.get('ir.model.data').get_object_reference(cr, user, 'oemedical', '001')  
+            args.append('|')  
+            args.append(['specialty_id', '=', odonto_specialty[1]])  
+            args.append(['specialty_id', 'child_of', odonto_specialty[1]])
+            del context['search_odonto_appointment']
+        ids = self.search(cr, user, args, limit=limit, context=context)
+        return self.name_get(cr, user, ids, context=context)
+    
     def _get_appointment_time(self, cr, uid, ids, field_name, arg, context=None):
         res = {} 
         for record in self.browse(cr, uid, ids, context=context):
@@ -86,13 +108,20 @@ class OeMedicalAppointment(osv.Model):
         'other': fields.related('patient_id', 'other', type='boolean', string='Otra'),
         'others_antecedents': fields.related('patient_id', 'others_antecedents', type='text', string='Descripción de otros antescedentes'),        
     }
+    
+    def _get_default_specialty(self, cr, uid, context = None):
+        if context and 'odonto_specialty' in context and context['odonto_specialty']:
+            odonto_specialty = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', '001')  
+            return odonto_specialty[1]
+        return False
    
     _defaults = {         
         'stimated_duration': 30,
         'type': 'c',
         'state': 'draft',
         'start_date': time.strftime('%Y-%m-%d'),
-        'start_time' : 8.5         
+        'start_time' : 8.5,
+        'specialty_id': _get_default_specialty        
     }
 
     def _check_date_start_end(self, cr, uid, ids, context=None):
@@ -182,9 +211,9 @@ class OeMedicalAppointment(osv.Model):
         vals['history_ids'] = [(0, 0, val_history)] 
         
         hour = int(vals['start_time'])
-        min = int(round(vals['start_time'] - hour, 2) * 60)
+        minute = int(round(vals['start_time'] - hour, 2) * 60)
 
-        start_date = datetime.strptime(str(vals['start_date']) + ' ' + str(hour) + '-' + str(min), '%Y-%m-%d %H-%M')
+        start_date = datetime.strptime(str(vals['start_date']) + ' ' + str(hour) + '-' + str(minute), '%Y-%m-%d %H-%M')
         if start_date < datetime.now():
             raise osv.except_osv(_('Error!'), _('The start datetime must be higher the current datetime'))
         return super(OeMedicalAppointment, self).create(cr, uid, vals, context=context)     

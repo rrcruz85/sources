@@ -9,7 +9,7 @@
 					<field name="patient_id" />
 					<field name="doctor_id" />
 					<field name="exam_date" />
-					<field name="exam_time" />
+					<field name="exam_time" widget="float_time"/>
 				</tree>
 			</field>
 		</record>
@@ -21,7 +21,7 @@
 				<form string="Odontology Exam" version="7.0">
 					<sheet>
                         <group col="4">
-					        <field name="appointment_id" required="1" on_change="onchange_appointment(appointment_id)" /> 
+					        <field name="appointment_id" required="1" on_change="onchange_appointment(appointment_id)" context="{'odonto_specialty': 1}" /> 
 							<newline/>
 							<field name="patient_id" readonly="1"/>							 
 							<field name="doctor_id" readonly="1"/>

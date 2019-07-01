@@ -83,7 +83,7 @@ class OeMedicalOdontologyExam(osv.Model):
     
     _columns = {
 
-        'appointment_id'    : fields.many2one('oemedical.appointment', 'Appointment', domain="[('state','!=','done'),('state','!=','canceled')]", required=True, context="{'search_odontology': 1}"),
+        'appointment_id'    : fields.many2one('oemedical.appointment', 'Appointment', domain="[('state','!=','done'),('state','!=','canceled')]", required=True, context="{'search_odonto_appointment': 1}"),
         
         #Appointment Info...
         'patient_id'        : fields.related('appointment_id','patient_id', type='many2one', relation='oemedical.patient', string='Patient', required=True),
