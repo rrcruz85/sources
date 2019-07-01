@@ -117,7 +117,7 @@
             <field name="model">oemedical.appointment</field>            
             <field name="arch" type="xml">
                 <calendar color="patient_id" date_start="appointment_time" string="Appointments" version="7.0">
-				    <field name="patient_id"/>  
+				    <field name="patient_id"/> 				    
                 </calendar>
             </field>
         </record>

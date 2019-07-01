@@ -2,9 +2,9 @@
 from openerp.osv import osv, fields
 import time
 from datetime import datetime,timedelta
-from dateutil.relativedelta import relativedelta
+#from dateutil.relativedelta import relativedelta
 from openerp.tools.translate import _
-from openerp.tools import misc
+from openerp import tools
 import pytz
 
 def get_datetime(pdate, float_time):
@@ -48,11 +48,18 @@ class OeMedicalAppointment(osv.Model):
     
     def _get_appointment_time(self, cr, uid, ids, field_name, arg, context=None):
         res = {} 
+        
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        tz_name = user.tz or 'UTC'
+        user_tz = pytz.timezone(tz_name)
+                
         for record in self.browse(cr, uid, ids, context=context):
-            start_time = get_datetime(record.start_date, record.start_time)
+            start_time = get_datetime(record.start_date, record.start_time)            
+            timestamp = datetime.strptime(str(start_time), tools.DEFAULT_SERVER_DATETIME_FORMAT)  
+            timestamp = user_tz.localize(timestamp).astimezone(pytz.utc)             
             res[record.id] = {
-                'appointment_time' : start_time,
-                'appointment_stimated_endtime': start_time + timedelta(minutes = record.stimated_duration)
+                'appointment_time' : timestamp,
+                'appointment_stimated_endtime': timestamp + timedelta(minutes = record.stimated_duration)
             } 
         return res   
     
