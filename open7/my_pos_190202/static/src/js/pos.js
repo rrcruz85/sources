@@ -671,12 +671,10 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
         show: function(){
             this._super();
             var self = this;
-
-            var posId = this.pos.get('pos_session').id;
-            new instance.web.Model('pos.config').call('read',[[posId],['order_seq_start_from']]).then(function(result){               
-               
-                currentOrder = self.pos.get('selectedOrder');    
-                currentOrder.set('name', "Order " + result[0].order_seq_start_from);                      
+            var currentOrder = self.pos.get('selectedOrder'); 
+            new instance.web.Model('pos.config').call('read',[[self.pos.get('pos_session').config_id[0]],['order_seq_start_from']]).then(function(result){               
+                  
+                currentOrder.set('name', "Order " + result && result[0].order_seq_start_from.toString() || '1');                      
                 var client = currentOrder.get_client();
             
                 if (client != null && client != undefined && client != false) {
@@ -1208,8 +1206,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             return this.get('name');
         },
         getSubtotal : function(){
-        	var pos_config = this.pos.get('pos_config');
-        	
+        	//var pos_config = this.pos.get('pos_config');        	
 //            if (globalType) {
 //            	return (this.get('orderLines')).reduce((function(sum, orderLine){
 //                    return sum + orderLine.get_display_price() - ( orderLine.get_display_price() * pos_config.iva_compensation / 100 );
