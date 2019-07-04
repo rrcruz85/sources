@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<!-- ======================================================================================
+		PRODUCT
+		Model: product.product
+		=========================================================================================== -->
+    	
+    	<!-- FORM VIEW -->
+    	<record id="my_pos_product_form" model="ir.ui.view">
+            <field name="name">my_pos_product_form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view" />
+            <field name="arch" type="xml">
+				<data>
+				    <xpath expr="//field[@name='list_price']" position="after">
+						 <field name="sale_price_ids" context="{'product_id':active_id}">
+						     <tree editable="bottom" string="Alternative Sale Prices">
+						         <field name ="price"/>
+						         <field name ="product_id" invisible="1"/>
+						     </tree>
+						     <form string="Alternative Sale Price">
+						         <field name ="price"/>
+						         <field name ="product_id"/>
+						     </form>
+						 </field>
+					</xpath>
+					<xpath expr="//page[@string='Accounting']" position="after">
+						<page string="TPV">
+							<p class="oe_grey">Select the <b>TPVs</b> where the product will be available...</p>
+							<field name="tpv_list_ids"/>
+						</page>
+					</xpath>
+				</data>
+			</field>
+		</record>
+	</data>
+</openerp>
