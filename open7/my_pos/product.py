@@ -21,6 +21,7 @@ class product_price(osv.Model):
     _description = 'Product Prices'
     _rec_name = 'price'
     _columns = {
+        'name'         : fields.char('Name', size = 7, required=True, help='Promotion Name'),
         'price'        : fields.float('Sale Price', digits_compute = dp.get_precision('Product Price'), help='Alternative Sale Price'),
         'product_id'   : fields.many2one('product.product', 'Product', required=True),
     }
@@ -34,6 +35,7 @@ class product_price(osv.Model):
     ]
     
     _sql_constraints = [
+        ('name_product_uniq', 'unique(name, product_id)', 'No se pueden repetir los nombres de los precios por producto'),
         ('price_product_uniq', 'unique(price, product_id)', 'No se pueden repetir los precios por producto'),
     ]
     

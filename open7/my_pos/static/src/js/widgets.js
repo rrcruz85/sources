@@ -37,6 +37,14 @@ openerp.my_pos = function(instance) {
             		if($('input[name="'+ product.get('id').toString() +  '"]:checked').length > 0){
                 		
             			let productPrice = $('input[name="'+ product.get('id').toString() +  '"]:checked')[0].value;
+            			 
+            			for(var i = 0; i < product.get('sale_price_ids').length; i++){
+            				if(product.get('sale_price_ids')[i].price == productPrice){ 	            				
+	            				//product.attributes.name_price = ' (' + product.get('sale_price_ids')[i].name + ')';
+	            				break;
+            				}
+            			}
+            			
             			/*
             			//for setting the same price 
             			var products = self.pos.get('selectedOrder').get('orderLines').models;
@@ -46,12 +54,13 @@ openerp.my_pos = function(instance) {
             					products[i].price = productPrice;
             				}
             			}      
-            			*/      			
-            			self.pos.get('selectedOrder').addProduct(product, {price: productPrice});                	    
-            		}
+            			*/  
+            			
+            			self.pos.get('selectedOrder').addProduct(product, {price: productPrice}); 
+            		}	
             	}
-            	else{
-            		 self.pos.get('selectedOrder').addProduct(product);
+            	else{ 
+ 				     self.pos.get('selectedOrder').addProduct(product);
             	}
             }          
         },
