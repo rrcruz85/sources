@@ -47,6 +47,7 @@ import oemedical_genetics
 import oemedical_socioeconomics
 import oemedical_lab
 import oemedical_surgery
+import oemedical_treatment
 import report
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -241,19 +241,15 @@ class OeMedicalOdontologyExam(osv.Model):
         'diagnosis_observation'      : fields.text('Observaciones'),
         
         # 11.PLAN DE TRATAMIENTO
-        'treatment_ids'              : fields.one2many('oemedical.treatment','dentist_test_id','Plan de Tratamiento'),
         'interconsult'               : fields.boolean('InterConsulta'),
         'internation'                : fields.boolean('Internacion'),
         'extern_consult'             : fields.boolean('Consulta Externa'),
         'fluor_topification'         : fields.boolean('Topicacion Fluor'),
         'sealment'                   : fields.boolean('Sellante'),
         'reference'                  : fields.boolean('Referencia'),
-        'procedure'                  : fields.boolean('Procedimiento'),
-        
+        'procedure'                  : fields.boolean('Procedimiento'),        
         'incapacity_days'            : fields.integer('Dias de incapacidad'),
         'service'                    : fields.char('Servicio'),
-        'treatment_observation'      : fields.text('Observaciones'),        
-        'next_appointment_date'      : fields.date(string='Fecha Proxima Cita'),    
         
         # 12. NOTAS DE EVOLUCION
         'evolution_ids'              : fields.one2many('oemedical.odontology.exam.evolution', 'dentist_test_id', 'Notas de Evolucion'),
@@ -722,42 +718,6 @@ class OeMedicalPathology(osv.Model):
     } 
 
 OeMedicalPathology()
-
-class OeMedicalTreatment(osv.Model):
-    _name = 'oemedical.treatment'
-    _rec_name = 'medicament_id'  
-
-    def _get_concentration_presentation(self, cr, uid, ids, name, args, context):
-        res = {}.fromkeys(ids, {'concentration': '', 'presentation': ''})        
-        for obj in self.browse(cr,uid,ids):
-            res[obj.id]['concentration'] =  obj.medicament_id.concentration
-            res[obj.id]['presentation'] = obj.medicament_id.presentation
-        return res
-
-    _columns = {
-     'dentist_test_id'  : fields.many2one('oemedical.odontology.exam', 'Odontology Exam', required=True),
-     'medicament_id'    : fields.many2one('oemedical.medicament', 'Medicamento', required=True),  
-     'concentration'    : fields.function(_get_concentration_presentation, string='Concentration', type='text', multi = "_val"),
-     'presentation'     : fields.function(_get_concentration_presentation, string='Presentation', type='text', multi = "_val"),
-     'via'              : fields.char(size=256, string='Via'),
-     'dosis'            : fields.char(size=256, string='Dosis'),
-     'frequency'        : fields.char(size=256, string='Frecuencia'),        
-     'days'             : fields.char(size=256, string='Dias')
-    }
-
-    def onchange_medicament(self, cr, uid, ids, medicament_id, context = None):
-        res = {'value': {}}    
-        if medicament_id:
-            obj = self.pool.get('oemedical.medicament').browse(cr,uid,medicament_id)
-            res['value']['concentration'] =  obj.concentration
-            res['value']['presentation'] = obj.presentation
-        return res
-    
-    _defaults = {
-        'dentist_test_id': lambda self, cr, uid, context: context.get('exam_id', False) or False,
-    }
-
-OeMedicalTreatment()
 
 class OeMedicalOdontologyExamEvolution(osv.Model):
     _name = 'oemedical.odontology.exam.evolution'

@@ -6907,30 +6907,8 @@
 	                       		
 	                       		<group col="8" string="Plan de tratamiento">
 	                       			<group col="8">
-	                       				<field name="treatment_ids" context="{'exam_id': active_id}" col="1" colspan="8">									   
-											<tree string="Treatments">
-												<field name ="medicament_id" required="1" />
-												<field name ="presentation"/>
-												<field name ="concentration"/>
-												<field name ="via"/>
-												<field name ="dosis"/>
-												<field name ="frequency"/>
-												<field name ="days"/>
-											</tree>											
-											<form string="Treatment">
-												<field name ="medicament_id" on_change="onchange_medicament(medicament_id)" required="1" />
-												<newline/>
-												<field name ="presentation"/>
-												<field name ="concentration"/>
-												<newline/>
-												<field name ="via" required="1" />
-												<field name ="dosis" required="1" />
-												<newline/>
-												<field name ="frequency" required="1" />
-												<field name ="days" required="1" />
-											</form>  
-										</field>
-	                       			</group>
+	                       				<field name="treatment_ids" context="{'exam_id': active_id}" col="1" colspan="8"/>									   
+									</group>
 	                       		</group>
 	                       		
 	                       		<group col="8">

@@ -65,10 +65,10 @@ class OeMedicalAppointment(osv.Model):
         return res   
     
     _columns = {
-        'patient_id': fields.many2one('oemedical.patient', string='Patient', required=True, select=True),
-        'specialty_id': fields.many2one('oemedical.specialty', string='Specialty'),
-        'type': fields.selection([('c', 'Control Normal'),('1c', 'Primer Control'),('2c', 'Segundo Control'),('cp', 'Control Periodico'),('u', 'Urgencia')], string='Type', required=True),
-        'appointment_time': fields.function(_get_appointment_time, type='datetime', string='Appointment DateTime', 
+        'patient_id'            : fields.many2one('oemedical.patient', string='Patient', required=True, select=True),
+        'specialty_id'          : fields.many2one('oemedical.specialty', string='Specialty'),
+        'type'                  : fields.selection([('c', 'Control Normal'),('1c', 'Primer Control'),('2c', 'Segundo Control'),('cp', 'Control Periodico'),('u', 'Urgencia')], string='Type', required=True),
+        'appointment_time'      : fields.function(_get_appointment_time, type='datetime', string='Appointment DateTime', 
             store={
                 'oemedical.appointment': (lambda self, cr, uid, ids, c={}: ids, ['start_date','start_time'], 10),                         
         }, multi='time'),
@@ -76,29 +76,30 @@ class OeMedicalAppointment(osv.Model):
             store={
                 'oemedical.appointment': (lambda self, cr, uid, ids, c={}: ids, ['start_date','start_time','stimated_duration'], 10),                         
         }, multi='time'),
-        'start_date': fields.date(string='Date',required=True),
-        'start_time': fields.float(string='Time',required=True),
-        'doctor_id': fields.many2one('oemedical.physician',  string='Doctor', required=True), 
-        'end_date': fields.datetime(string='End DateTime'),        
-        'stimated_duration': fields.integer('Stimated Duration', help="Stimated Time in minutes [15-120] that the appointment last"),                
-        'motive': fields.text(string='Motive'),       
-        'state': fields.selection([('draft', 'Draft'),('confirm', 'Confirm'),
-            ('waiting', 'Wating'),('in_consultation', 'In consultation'),
-            ('done', 'Done'),('canceled', 'Canceled')], string='State'),
-        'history_ids' : fields.one2many('oemedical.appointment.history','appointment_id','History lines', states={'start':[('readonly',True)]}),
-        'is_planned'  : fields.boolean('Cita programada?'),
+        'start_date'            : fields.date(string='Date',required=True),
+        'start_time'            : fields.float(string='Time',required=True),
+        'doctor_id'             : fields.many2one('oemedical.physician',  string='Doctor', required=True), 
+        'end_date'              : fields.datetime(string='End DateTime'),        
+        'stimated_duration'     : fields.integer('Stimated Duration', help="Stimated Time in minutes [15-120] that the appointment last"),                
+        'motive'                : fields.text(string='Motive'),       
+        'state'                 : fields.selection([('draft', 'Draft'),('confirm', 'Confirm'),('waiting', 'Wating'),('in_consultation', 'In consultation'),
+                                                    ('done', 'Done'),('canceled', 'Canceled')], string='State'),
+        'history_ids'           : fields.one2many('oemedical.appointment.history','appointment_id','History lines', states={'start':[('readonly',True)]}),
+        'is_planned'            : fields.boolean('Cita programada?'),
         'next_appointment_date' : fields.date(string='Fecha Proxima Cita'), 
         'next_appointment_hour' : fields.float(string='Hora Proxima Cita'),
-        'info_diagnosis': fields.text(string='Enfermedad Actual'),
-
+        'info_diagnosis'        : fields.text(string='Enfermedad Actual'),
+        'linked_appointment_id' : fields.many2one('oemedical.appointment', string='Appointment'),
+        'treatment_ids'         : fields.one2many('oemedical.appointment.treatment','appointment_id','Tratamientos'),
+        
         # Signos vitales y mediciones...
-        'pat_info': fields.char(size=256, string='Presion arterial'),
-        'ppm_info': fields.integer('Frecuencia cardiaca'),
-        'ppr_info': fields.integer('Frecuencia respiratoria'),
-        'tem_info': fields.float('Temperatura bucal', digits=(2,2)),
-        'tem2_info': fields.float('Temperatura axilar', digits=(2,2)),
-        'pes_info': fields.float('Peso (Kg)', digits=(3,2)),
-        'size_info': fields.float('Talla (m)', digits=(3,2)), 
+        'pat_info'  : fields.char(size=256, string='Presion arterial'),
+        'ppm_info'  : fields.integer('Frecuencia cardiaca'),
+        'ppr_info'  : fields.integer('Frecuencia respiratoria'),
+        'tem_info'  : fields.float('Temperatura bucal', digits=(2,2)),
+        'tem2_info' : fields.float('Temperatura axilar', digits=(2,2)),
+        'pes_info'  : fields.float('Peso (Kg)', digits=(3,2)),
+        'size_info' : fields.float('Talla (m)', digits=(3,2)), 
 
         'cardiopatia': fields.related('patient_id', 'cardiopatia', type='boolean', string='Cardiopatía'),  
         'diabetes': fields.related('patient_id', 'diabetes', type='boolean', string='Diabetes'),
@@ -365,13 +366,15 @@ class OeMedicalAppointment(osv.Model):
                     'start_time'   : next_appointment_hour,
                     'is_planned'   : True
                 }
-                super(OeMedicalAppointment, self).create(cr, uid, create_vals, context=context)
-            else:
+                linked_appointment_id = super(OeMedicalAppointment, self).create(cr, uid, create_vals, context=context)
+                vals['linked_appointment_id'] = linked_appointment_id
+            elif obj.linked_appointment_id:
                 update_vals = {
                    'start_date'   : next_appointment_date,
                    'start_time'   : next_appointment_hour
                 }
-                super(OeMedicalAppointment, self).write(cr, uid, record_ids, update_vals, context=context)
+                super(OeMedicalAppointment, self).write(cr, uid, [obj.linked_appointment_id.id], update_vals, context=context)
+                
         return super(OeMedicalAppointment, self).write(cr, uid, ids, vals, context=context)
 
 OeMedicalAppointment()

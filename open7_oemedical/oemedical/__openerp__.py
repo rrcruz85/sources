@@ -113,6 +113,7 @@ OeMedical at a glance:
         #'oemedical_genetics/oemedical_disease_gene_view.xml',
         #'oemedical_genetics/data/disease_genes.xml',
         #'oemedical_lab/oemedical_lab_view.xml',
+        'oemedical_treatment/oemedical_treatment_view.xml',
         'security/ir.model.access.csv',
         'report/oemedical_patient_evalprint.xml', 
         'report/oemedical_patient_evolprint.xml', #removed because it's not functional
