@@ -102,8 +102,7 @@ OeMedical at a glance:
         'oemedical_family/oemedical_family_view.xml',
         'oemedical_hospital_bed/oemedical_hospital_bed_view.xml',
         'oemedical_occupation/oemedical_occupation_view.xml',
-        'oemedical_disease_group_members/'
-        'oemedical_disease_group_members_view.xml',
+        'oemedical_disease_group_members/oemedical_disease_group_members_view.xml',
         'oemedical_medicament/oemedical_medicament_view.xml',
         'oemedical_pathology_group/oemedical_pathology_group_view.xml',
         'oemedical_surgery/medical_surgery_view.xml',

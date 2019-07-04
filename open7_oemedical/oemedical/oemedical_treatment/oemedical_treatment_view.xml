@@ -1,6 +1,99 @@
 <?xml version="1.0" ?>
 <openerp>
     <data>
+
+        <!--Treatment -->  
+        <record id="view_oemedical_treatment_tree" model="ir.ui.view">
+			<field name="name">oemedical.treatment.tree</field>
+			<field name="model">oemedical.treatment</field>			 
+			<field name="arch" type="xml">
+				<tree string="Treatments">
+					<field name="name" />
+					<field name="cost" />		
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_oemedical_treatment_form" model="ir.ui.view">
+			<field name="name">oemedical.treatment.form</field>
+			<field name="model">oemedical.treatment</field>			 
+			<field name="arch" type="xml">
+				<form string="Treatment">
+					<field name="name" required="1"/>		
+					<field name="cost" widget="monetary"/>			 
+				</form>
+			</field>
+		</record>
+
+        <record model="ir.actions.act_window" id="act_open_oemedical_treatment">
+			<field name="name">Treatments</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">oemedical.treatment</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+         <!-- Appointment Treatment -->
+        <record id="view_oemedical_appointment_treatment_tree" model="ir.ui.view">
+			<field name="name">oemedical.appointment.treatment.tree</field>
+			<field name="model">oemedical.appointment.treatment</field>			 
+			<field name="arch" type="xml">
+				<tree string="Treatments">
+					<field name="treatment_id" />  
+                    <field name="treatment_date" />
+                    <field name="doctor_id" /> 
+					<field name="cost"/>                 			 
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_oemedical_appointment_treatment_form" model="ir.ui.view">
+			<field name="name">oemedical.appointment.treatment.form</field>
+			<field name="model">oemedical.appointment.treatment</field>			 
+			<field name="arch" type="xml">
+				<form string="Treatment">
+				    <group colspan="4" col="8">
+						<field name="appointment_id" colspan="4" invisible="1" on_change="onchange_appointment(appointment_id)"/>
+						<newline/>
+						<field name="treatment_id"  colspan="4" required="1" on_change="onchange_treatment(treatment_id)"/>
+						<newline/>
+						<field name="treatment_date" colspan="2" required="1"/>                     
+						<field name="doctor_id"  colspan="2" required="1"/>	
+						<newline/>
+						<label for="medicament_ids"/>
+						<field name="medicament_ids"  colspan="4" nolabel="1" context="{'treatment_id': active_id}">
+							<tree string="Medicaments">
+								<field name="medicament_id" />
+								<field name="concentration" />	
+								<field name="presentation" />
+								<field name="via" />
+								<field name="dosis" />
+								<field name="frequency" />
+								<field name="days" />				 
+							</tree>
+							<form string="Medicament">
+								<field name="appointment_treatment_id" invisible="1"/>
+								<field name="medicament_id" required="1" on_change="onchange_medicament(medicament_id)"/>
+								<newline/>
+								<field name="concentration" />	
+								<field name="presentation" />
+								<newline/>
+								<field name="via" />
+								<field name="dosis" />
+								<newline/>
+								<field name="frequency" />
+								<field name="days" />				 
+							</form>
+						</field>
+						<newline/>
+						<label for="observations"/>
+						<field name="observations" nolabel="1" colspan="4"/>
+						<newline/>	
+						<field name="cost" widget="monetary"/>	
+					</group>				 
+				</form>
+			</field>
+		</record>
  
 	</data>
 </openerp>

@@ -26,8 +26,8 @@ class odontogram(report_rml):
         company = company_obj.browse(cr, uid, company_ids_list[0], context) if len(company_ids_list) > 0 else False
         
         for odontology_exam in odontology_exam_obj.browse(cr, uid, ids, context):
-            first_name = tools.ustr(odontology_exam.patient_id.first_name.split(" ")[0])
-            second_name = tools.ustr(odontology_exam.patient_id.first_name.split(" ")[1]) if len(odontology_exam.patient_id.first_name.split(" ")) > 1 else ""
+            first_name = tools.ustr(odontology_exam.appointment_id.patient_id.first_name.split(" ")[0])
+            second_name = tools.ustr(odontology_exam.appointment_id.patient_id.first_name.split(" ")[1]) if len(odontology_exam.appointment_id.patient_id.first_name.split(" ")) > 1 else ""
             
             rml = """<document filename="OdontogramReport.pdf">
                         <template pageSize="(595.0,842.0)" title="Odontogram Report" author="EasysDev" allowSplitting="20">
@@ -910,25 +910,25 @@ class odontogram(report_rml):
                                     
                                     <td>
                                       <para style="P20_COURIER_CENTER">
-                                        <font color="black">""" + (tools.ustr(odontology_exam.patient_id.first_name) if odontology_exam.patient_id.first_name else "")[0:22]  + """</font>
+                                        <font color="black">""" + (tools.ustr(odontology_exam.appointment_id.patient_id.first_name) if odontology_exam.appointment_id.patient_id.first_name else "")[0:22]  + """</font>
                                       </para>
                                     </td>
                                     
                                     <td>
                                       <para style="P20_COURIER_CENTER">
-                                        <font color="black">""" + ((tools.ustr(odontology_exam.patient_id.last_name) if odontology_exam.patient_id.last_name else "") + " " + (tools.ustr(odontology_exam.patient_id.slastname) if odontology_exam.patient_id.slastname else ""))[0:22] + """</font>
+                                        <font color="black">""" + ((tools.ustr(odontology_exam.appointment_id.patient_id.last_name) if odontology_exam.appointment_id.patient_id.last_name else "") + " " + (tools.ustr(odontology_exam.appointment_id.patient_id.slastname) if odontology_exam.appointment_id.patient_id.slastname else ""))[0:22] + """</font>
                                       </para>
                                     </td>
                                     
                                     <td>
                                       <para style="P20_COURIER_CENTER">
-                                        <font color="black">""" + ("X" if odontology_exam.patient_id.sex and odontology_exam.patient_id.sex == "m" else "") + """</font>
+                                        <font color="black">""" + ("X" if odontology_exam.appointment_id.patient_id.sex and odontology_exam.appointment_id.patient_id.sex == "m" else "") + """</font>
                                       </para>
                                     </td>
                                     
                                     <td>
                                       <para style="P20_COURIER_CENTER">
-                                        <font color="black">""" + ("X" if odontology_exam.patient_id.sex and odontology_exam.patient_id.sex == "f" else "") + """</font>
+                                        <font color="black">""" + ("X" if odontology_exam.appointment_id.patient_id.sex and odontology_exam.appointment_id.patient_id.sex == "f" else "") + """</font>
                                       </para>
                                     </td>
                                     
@@ -938,18 +938,18 @@ class odontogram(report_rml):
                                     
                                     <td>
                                       <para style="P20_COURIER_CENTER">
-                                        <font color="black">""" + (tools.ustr(odontology_exam.patient_id.identification_code) if odontology_exam.patient_id and odontology_exam.patient_id.identification_code else "") + """</font>
+                                        <font color="black">""" + (tools.ustr(odontology_exam.appointment_id.patient_id.identification_code) if odontology_exam.appointment_id.patient_id.identification_code else "") + """</font>
                                       </para>
                                     </td>
                                   </tr>
                                 </blockTable>"""
                
-            years = self._get_year(odontology_exam.patient_id)
-            a = True if odontology_exam.is_planned and years == 0 else False
+            years = self._get_year(odontology_exam.appointment_id.patient_id)
+            a = True if odontology_exam.appointment_id.is_planned and years == 0 else False
             b = True if years >= 1 and years <= 4 else False
-            c = True if odontology_exam.is_planned and years >= 5 and years <= 9 else False
-            d = True if years >= 5 and years <= 14 and not odontology_exam.is_planned else False
-            e = True if years >= 10 and years <= 14 and odontology_exam.is_planned else False
+            c = True if odontology_exam.appointment_id.is_planned and years >= 5 and years <= 9 else False
+            d = True if years >= 5 and years <= 14 and not odontology_exam.appointment_id.is_planned else False
+            e = True if years >= 10 and years <= 14 and odontology_exam.appointment_id.is_planned else False
             f = True if years >= 15 and years <= 19 else False
             g = True if years >= 20 else False
             
@@ -972,15 +972,15 @@ class odontogram(report_rml):
                                     <td><para style="P14_LEFT">""" + tools.ustr("MAYOR DE 20 AÑOS") + """</para></td>
                                     <td><para style="P20_COURIER_CENTER">""" + ("X" if g else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("EMBARAZADA") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.patient_id.is_pregnant else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.appointment_id.patient_id.is_pregnant else "") + """</para></td>
                                 </tr>
                             </blockTable>"""
             
             letters_per_row = 123            
             
             rowHeights = '12.0'
-            if odontology_exam.mdc_info:
-                strMDC = odontology_exam.mdc_info.replace('\n',' ')
+            if odontology_exam.appointment_id.motive:
+                strMDC = odontology_exam.appointment_id.motive.replace('\n',' ')
                 if len(strMDC) > 123:
                     filaAlto = 1 
                     tmp = len(strMDC)/123            
@@ -997,12 +997,12 @@ class odontogram(report_rml):
                                     <td><para style="P14_RIGHT">ANOTAR LA CAUSA DEL PROBLEMA EN LA VERSION DEL INFORMANTE</para></td>
                                 </tr>
                                 
-                                <tr><td><para style="P20_COURIER">""" + (tools.ustr(odontology_exam.mdc_info) if odontology_exam.mdc_info else "") + """</para></td><td></td></tr>
+                                <tr><td><para style="P20_COURIER">""" + (tools.ustr(odontology_exam.appointment_id.motive) if odontology_exam.appointment_id.motive else "") + """</para></td><td></td></tr>
                             </blockTable>"""
            
             info_diagnosis = ""
-            if odontology_exam.info_diagnosis:
-                word_list = self._get_list_words(odontology_exam.info_diagnosis, letters_per_row * 4)
+            if odontology_exam.appointment_id.info_diagnosis:
+                word_list = self._get_list_words(odontology_exam.appointment_id.info_diagnosis, letters_per_row * 4)
                 info_diagnosis = word_list[0] if len(word_list) >= 1 else ''
             
             rml += """      <spacer length="0.1cm"/>
@@ -1015,8 +1015,8 @@ class odontogram(report_rml):
                             </blockTable>"""
             
             others_antecedents = ""
-            if odontology_exam.others_antecedents and odontology_exam.others:
-                word_list = self._get_list_words(odontology_exam.others_antecedents, letters_per_row * 2)
+            if odontology_exam.appointment_id.others_antecedents and odontology_exam.appointment_id.other:
+                word_list = self._get_list_words(odontology_exam.appointment_id.others_antecedents, letters_per_row * 2)
                 others_antecedents = word_list[0] if len(word_list) >= 1 else ''
             
             rml += """      <spacer length="0.1cm"/>
@@ -1029,25 +1029,25 @@ class odontogram(report_rml):
                                 
                                 <tr>
                                     <td><para style="P14_LEFT">1. ALERGIA ANTIBIOTICO</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.antibotic_allergic else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.appointment_id.patient_id.antibotic_allergic else "") + """</para></td>
                                     <td><para style="P14_LEFT">2. ALERGIA ANESTESIA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.anesthesia_allergic else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.appointment_id.patient_id.anesthesia_allergic else "") + """</para></td>
                                     <td><para style="P14_LEFT">3. HEMORRAGIAS</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.hemorrhage else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.appointment_id.patient_id.hemorrhage else "") + """</para></td>
                                     <td><para style="P14_LEFT">4. VIH/SIDA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.vih_sida else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.appointment_id.patient_id.vih_sida else "") + """</para></td>
                                     <td><para style="P14_LEFT">5. TUBERCULOSIS</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.tuberculosis else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.appointment_id.patient_id.tuberculosis else "") + """</para></td>
                                     <td><para style="P14_LEFT">6. ASMA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.asma else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.appointment_id.patient_id.asma else "") + """</para></td>
                                     <td><para style="P14_LEFT">7. DIABETES</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.diabetes else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.appointment_id.patient_id.diabetes else "") + """</para></td>
                                     <td><para style="P14_LEFT">8. HIPERTENSION</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.hipertension else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.appointment_id.patient_id.hipertension else "") + """</para></td>
                                     <td><para style="P14_LEFT">9. ENF. CARDIACA</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.enf_cardiaca else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.appointment_id.patient_id.enf_car else "") + """</para></td>
                                     <td><para style="P14_LEFT">10. OTRO</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.others else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.appointment_id.patient_id.other else "") + """</para></td>
                                 </tr>
                                 <tr>
                                     <td><para style="P20_COURIER">""" + tools.ustr(others_antecedents) + """</para></td>
@@ -1066,19 +1066,19 @@ class odontogram(report_rml):
                                 
                                 <tr>
                                     <td><para style="P14_LEFT">""" + tools.ustr("PRESIÓN ARTERIAL") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (odontology_exam.pat_info if odontology_exam.pat_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (odontology_exam.appointment_id.pat_info if odontology_exam.appointment_id.pat_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("FRECUENCIA CARDIACA min") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.ppm_info) if odontology_exam.ppm_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.appointment_id.ppm_info) if odontology_exam.appointment_id.ppm_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("FRECUENCIA RESPIRAT. min") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.ppr_info) if odontology_exam.ppr_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.appointment_id.ppr_info) if odontology_exam.appointment_id.ppr_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("TEMPERATURA BUCAL °C") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.tem_info) if odontology_exam.tem_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.appointment_id.tem_info) if odontology_exam.appointment_id.tem_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("TEMPERATURA AXILAR °C") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.tem2_info) if odontology_exam.tem2_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.appointment_id.tem2_info) if odontology_exam.appointment_id.tem2_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("PESO Kg") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.pes_info) if odontology_exam.pes_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.appointment_id.pes_info) if odontology_exam.appointment_id.pes_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("TALLA m") + """</para></td>
-                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.size_info) if odontology_exam.size_info else "") + """</para></td>
+                                    <td><para style="P144_CENTER">""" + (str(odontology_exam.appointment_id.size_info) if odontology_exam.appointment_id.size_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("NO APLICA") + """</para></td>
                                     <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.not_apply else "") + """</para></td>
                                 </tr>
@@ -1519,7 +1519,7 @@ class odontogram(report_rml):
                 diag_cant = diag_cant + 1
             
             word_list = []
-            if odontology_exam.mdc_info:
+            if odontology_exam.diagnosis_observation:
                 word_list = self._get_list_words(odontology_exam.diagnosis_observation, 68)
             
             d = {
@@ -1591,18 +1591,31 @@ class odontogram(report_rml):
             
             cant = 0
             lista_tratamientos = []
-            if odontology_exam.treatment_ids:
-                for tr in odontology_exam.treatment_ids:
-                    lista_tratamientos.append((tr.name if tr.name else '', tr.concentration if tr.concentration else '', tr.presentation if tr.presentation else '', tr.via if tr.via else '', tr.dosis if tr.dosis else '', tr.frequency if tr.frequency else '', tr.days if tr.days else ''))
-                    cant = cant + 1
+            if odontology_exam.appointment_id.treatment_ids:
+                for tr in odontology_exam.appointment_id.treatment_ids:
+                  concentration = ''
+                  presentation = ''
+                  via = ''
+                  dosis = ''
+                  frequency = ''
+                  days = ''
+                  if tr.medicament_ids:
+                    concentration = tr.medicament_ids[0].medicament_id.concentracion
+                    presentation = tr.medicament_ids[0].medicament_id.presentation
+                    via = tr.medicament_ids[0].via
+                    dosis = tr.medicament_ids[0].dosis
+                    frequency = tr.medicament_ids[0].frequency
+                    days = tr.medicament_ids[0].days
+                  lista_tratamientos.append((tr.treatment_id.name, concentration, presentation,via,dosis,frequency,days))
+                  cant = cant + 1
             
             while cant < 4:
                 lista_tratamientos.append(('', '', '', '', '', '', ''))
                 cant = cant + 1
             
             word_list = []
-            if odontology_exam.mdc_info:
-                word_list = self._get_list_words(odontology_exam.treatment_observation, 68)
+            if odontology_exam.appointment_id.treatment_ids and odontology_exam.appointment_id.treatment_ids[0].observations:
+                word_list = self._get_list_words(odontology_exam.appointment_id.treatment_ids[0].observations, 68)
             
             d = {
                 1: word_list[0] if len(word_list) >= 1 else '',
@@ -1718,6 +1731,14 @@ class odontogram(report_rml):
                                 </tr>
                             </blockTable>"""
             
+            app_date = odontology_exam.appointment_id.next_appointment_date if odontology_exam.appointment_id.next_appointment_date else ''
+            hour = 0
+            minute = 0
+            if odontology_exam.appointment_id.next_appointment_hour:
+              hour = int(odontology_exam.appointment_id.next_appointment_hour)
+              minute = int(round(odontology_exam.appointment_id.next_appointment_hour - hour, 2) * 60)
+              app_date += str(hour) + ':' + str(minute)
+
             rml += """
                             <spacer length="0.1cm"/>
                             <blockTable colWidths="49.0,70.0,30.0,30.0,80.0,120.0,50.0,50.0,50.0" rowHeights="10.0,12.0" style="Table16">
@@ -1729,12 +1750,12 @@ class odontogram(report_rml):
                                 
                                 <tr>
                                     <td><para style="P220_CENTER">FECHA PROX. SESION</para></td>
-                                    <td><para style="P220_CENTER">""" + (odontology_exam.next_appointment_date if odontology_exam.next_appointment_date else '') + """</para></td>
+                                    <td><para style="P220_CENTER">""" + (app_date or '') + """</para></td>
                                     
                                     <td></td><td></td>
                                     <td><para style="P220">ODONTOLOGO</para></td>
-                                    <td><para style="P220_CENTER">""" + (tools.ustr(odontology_exam.doctor.physician_id.name) if odontology_exam.doctor and odontology_exam.doctor.physician_id and odontology_exam.doctor.physician_id.name else '') + """</para></td>
-                                    <td><para style="P220_CENTER">""" + (odontology_exam.doctor.doctor_id if odontology_exam.doctor and odontology_exam.doctor.doctor_id else '') + """</para></td>
+                                    <td><para style="P220_CENTER">""" + (tools.ustr(odontology_exam.appointment_id.doctor_id.physician_id.first_name)) + """</para></td>
+                                    <td><para style="P220_CENTER">""" + (odontology_exam.appointment_id.doctor_id.doctor_id if odontology_exam.appointment_id.doctor_id.doctor_id else '') + """</para></td>
                                     
                                     <td><para style="P220">FIRMA</para></td>
                                     <td></td>

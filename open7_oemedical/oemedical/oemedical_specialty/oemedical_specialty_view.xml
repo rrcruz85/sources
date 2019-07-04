@@ -9,7 +9,8 @@
 				<tree string="Specialties">
 					<field name="code" />
 					<field name="name" />
-					<field name="parent_id" />				 
+					<field name="parent_id" />	
+					<field name="cost" />			 
 				</tree>
 			</field>
 		</record>  
@@ -36,6 +37,8 @@
 						<field name="parent_id" />
 						<newline/>
 						<field name="description" />
+						<newline/>
+						<field name="cost" widget="monetary"/>
 					</group>
 				</form>
 			</field>

@@ -11,7 +11,8 @@ class OeMedicalSpecialty(osv.Model):
         'description': fields.text(string='Description'),
         'parent_id': fields.many2one('oemedical.specialty', 'Parent Specialty'),
         'parent_name': fields.related('parent_id', 'name', type='char', readonly=True, string='Parent Specialty'),
-        'child_ids': fields.one2many('oemedical.specialty', 'parent_id', 'Child Specialties'),    
+        'child_ids': fields.one2many('oemedical.specialty', 'parent_id', 'Child Specialties'),  
+        'cost'     : fields.float(string='Cost'),   
     }
 
     _sql_constraints = [       

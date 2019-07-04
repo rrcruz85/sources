@@ -70,8 +70,8 @@
 		                                <field name="pes_info" col="1" colspan="2"/>
 		                                <field name="size_info" col="1" colspan="2"/>
 		                            </group>
-	                            </group>                             
-                                <group col="4" string="Motive Of the Appointment">
+	                            </group>
+							    <group col="4" string="Motive Of the Appointment">
 					                <field name="motive" colspan="4" nolabel="1"/>
                                 </group>								
 								<group string="Enfermedades o padecimientos" colspan="4">
@@ -99,7 +99,10 @@
 								<field name="others_antecedents" nolabel="1" colspan="4" attrs="{'invisible':[('other','=',False)]}"/>								 
 								<group col="4" string="Enfermedad Actual">
 					                <field name="info_diagnosis" colspan="4" nolabel="1"/>
-                                </group>
+                                </group>								
+                            </page>
+							 <page string="Treatments">
+                                <field name="treatment_ids" nolabel="1" context="{'appointment_id': active_id}"/>
                             </page>
                             <page string="History">
                                 <field name="history_ids" nolabel="1" readonly="1">
@@ -125,7 +128,6 @@
                 </calendar>
             </field>
         </record>
-
 
 		<record id="view_oemedical_appointment_search" model="ir.ui.view">
 			<field name="name">oemedical.appointment.search</field>

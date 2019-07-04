@@ -4,6 +4,11 @@ from openerp.osv import fields, osv, orm
 from openerp.tools.translate import _
 from openerp import tools
 
+def get_datetime(pdate, float_time):
+    hour = int(float_time)
+    minute = int(round(float_time - hour, 2) * 60)
+    return datetime.strptime(str(pdate) + ' ' + str(hour) + '-' + str(minute), '%Y-%m-%d %H-%M')
+
 class OeMedicalPatient(osv.Model):
     _inherit = 'oemedical.patient'
 
@@ -81,6 +86,18 @@ class OeMedicalOdontologyExam(osv.Model):
         
         return res
     
+    def _get_appointment_info(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}.fromkeys(ids, {'patient_id': False, 'doctor_id': False, 'exam_date': False, 'exam_time': False}) 
+        for record in self.browse(cr, uid, ids, context=context):
+            res[record.id]['patient_id'] = record.appointment_id.patient_id.id
+            res[record.id]['doctor_id'] = record.appointment_id.doctor_id.id
+            res[record.id]['exam_date'] = record.appointment_id.start_date
+            res[record.id]['exam_time'] = record.appointment_id.start_time
+        return res
+
+    def _get_model_ids(self, cr, uid, ids, context=None):
+        return self.pool.get('oemedical.odontology.exam').search(cr, uid, [('appointment_id', 'in', ids)])
+
     _columns = {
 
         'appointment_id'    : fields.many2one('oemedical.appointment', 'Appointment', domain="[('state','!=','done'),('state','!=','canceled')]", required=True, context="{'search_odonto_appointment': 1}"),
@@ -90,37 +107,27 @@ class OeMedicalOdontologyExam(osv.Model):
         'doctor_id'         : fields.related('appointment_id','doctor_id', type='many2one', relation='oemedical.physician', string='Odontologo', required=True),
         'exam_date'         : fields.related('appointment_id','start_date', type='date', string='Fecha'),
         'exam_time'         : fields.related('appointment_id','start_time', type='float', string='Hora'),
-        'mdc_info'          : fields.related('appointment_id','motive', type='text', string='Motivo de Consulta'),
-        'info_diagnosis'    : fields.related('appointment_id','info_diagnosis', type='text', string='Enfermedad Actual'),
-        'is_planned'        : fields.related('appointment_id','is_planned', type='boolean', string='Consulta programada?'),
-   
-        # Signos vitales y mediciones...
-        'pat_info'        : fields.related('appointment_id','pat_info', type='char', string='Presion arterial'),
-        'ppm_info'        : fields.related('appointment_id','ppm_info', type='integer', string='Frecuencia cardiaca'),
-        'ppr_info'        : fields.related('appointment_id','ppr_info', type='integer', string='Frecuencia respiratoria'),
-        'tem_info'        : fields.related('appointment_id','tem_info', type='float', digits=(2,2), string='Temperatura bucal'),
-        'tem2_info'       : fields.related('appointment_id','tem2_info', type='float', digits=(2,2), string='Temperatura axilar'),
-        'pes_info'        : fields.related('appointment_id','pes_info', type='float', digits=(3,2), string='Peso (Kg)'),
-        'size_info'       : fields.related('appointment_id','size_info', type='float',  digits=(3,2), string='Talla (m)'),
+      
+'''
+        'patient_id'   : fields.function(_get_appointment_info, type='many2one', relation = "oemedical.patient", string='Patient', 
+            store={
+                'oemedical.appointment': (_get_model_ids, ['patient_id'], 10),                         
+        }, multi='_data'),
+        'doctor_id'    : fields.function(_get_appointment_info, type='many2one', relation = "oemedical.physician", string='Odontologo', 
+            store={
+                'oemedical.appointment': (_get_model_ids, ['doctor_id'], 10),                         
+        }, multi='_data'),
+        'exam_date'    : fields.function(_get_appointment_info, type='date', string='Date', 
+            store={
+                'oemedical.appointment': (_get_model_ids, ['start_date'], 10),                         
+        }, multi='_data'),
+         'exam_time'    : fields.function(_get_appointment_info, type='float', string='Hour', 
+            store={
+                'oemedical.appointment': (_get_model_ids, ['start_time'], 10),                         
+        }, multi='_data'), 
+        '''
+        
         'not_apply'       : fields.boolean('No aplica?'),
-
-        #Personal antecedents and family antecedents...
-        'diabetes'             : fields.related('appointment_id','patient_id', 'diabetes', type='boolean', string='Diabetes'),
-        'cardiopatia'          : fields.related('appointment_id','patient_id', 'cardiopatia', type='boolean', string='Cardiopatia'),
-        'enf_cardiaca'         : fields.related('appointment_id','patient_id', 'enf_car', type='boolean', string='Enfermedad Cardiovascular'),
-        'hipertension'         : fields.related('appointment_id','patient_id', 'hipertension', type='boolean', string='Hipertensión'),
-        'asma'                 : fields.related('appointment_id','patient_id', 'asma', type='boolean', string='Asma'),
-        'tuberculosis'         : fields.related('appointment_id','patient_id', 'tuberculosis', type='boolean', string='Tuberculosis'),
-        'antibotic_allergic'   : fields.related('appointment_id','patient_id', 'antibotic_allergic', type='boolean', string='Alergia a antibioticos'),
-        'anesthesia_allergic'  : fields.related('appointment_id','patient_id', 'anesthesia_allergic', type='boolean',string='Alergia a anestesia'),
-        'hemorrhage'           : fields.related('appointment_id','patient_id', 'hemorrhage', type='boolean', string='Hemorragia'),
-        'vih_sida'             : fields.related('appointment_id','patient_id', 'vih_sida', type='boolean', string='VIH/SIDA'),        
-        'cancer'               : fields.related('appointment_id','patient_id', 'cancer', type='boolean', string='Cancer'),       
-        'enf_men'              : fields.related('appointment_id','patient_id', 'enf_men', type='boolean', string='Enfermedad Mental'),
-        'enf_inf'              : fields.related('appointment_id','patient_id', 'enf_inf', type='boolean', string='Enfermedad Infecciosa'),
-        'mal_for'              : fields.related('appointment_id','patient_id', 'mal_for', type='boolean', string='Mal Formación'),
-        'others'               : fields.related('appointment_id','patient_id', 'other', type='boolean', string='Otras'), 
-        'others_antecedents'   : fields.related('appointment_id','patient_id', 'others_antecedents', type='text', string='Otros antecedentes'), 
         
         # stomatognathic system test...
         'libs': fields.boolean('Labios'),

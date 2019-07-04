@@ -6904,12 +6904,13 @@
 									<newline/>
 	                       			<field name="diagnosis_observation" col="1" colspan="8"/>
 	                       		</group>
-	                       		
+	                       		<!--
 	                       		<group col="8" string="Plan de tratamiento">
 	                       			<group col="8">
 	                       				<field name="treatment_ids" context="{'exam_id': active_id}" col="1" colspan="8"/>									   
 									</group>
 	                       		</group>
+								-->
 	                       		
 	                       		<group col="8">
 	                       			<group col="2">
@@ -6935,12 +6936,14 @@
 	                       		<group col="8">
 	                       			<field name="incapacity_days" col="1" colspan="8"/>
 	                       			<field name="service" col="1" colspan="8"/>
-	                       			<field name="treatment_observation" col="1" colspan="8"/>
+	                       			<!--field name="treatment_observation" col="1" colspan="8"/-->
 	                       		</group>
-
+                                
+								<!--
 	                       		<group col="8" string="Próxima consulta.">
 	                       			<field name="next_appointment_date" col="1" colspan="8"/>	                       			
 	                       		</group>
+								-->
 	                       </page>
 	                       
 	                       <page string="Notas de evolución">

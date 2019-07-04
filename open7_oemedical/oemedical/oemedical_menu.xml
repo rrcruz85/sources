@@ -76,6 +76,12 @@
 		<menuitem id="oemedical_specialty_structure" name="Specialties Structure"
             parent="oemedical_specialty_root" sequence="20" 
             action="act_open_oemedical_specialty_structure_view" />
+		
+<!--Treatmenst -->
+
+		<menuitem id="oemedical_treatment_menu" name="Treatments"
+            parent="oemedical_root_sub" sequence="20" 
+            action="act_open_oemedical_treatment" />
 
 <!--       Laboratory       -->
 		<!--menuitem name="Laboratory" id="oemedical_conf_laboratory" 
@@ -123,28 +129,20 @@
 			action="act_open_oemedical_occupation_view" />
 			--> 
 
-
-
 <!-- Ethnicity  ( Config/misc/Ethnicity) )--> 
 
 		<!--menuitem id="oemedical_ethnicity" name="Ethnicity" parent="oemedical_root_misc"
 			sequence="10" action="act_open_oemedical_ethnicity_view" /-->
 
-
-
-
-
-
-<!--Medicaments
+        <!--Medicaments -->
 
 		<menuitem id="oemedical_medicament_root" name="Medicaments"
-			parent="oemedical_root_sub" sequence="50" />
-
+			parent="oemedical_root_sub" sequence="30" />
 
 		<menuitem id="oemedical_medicament" name="Medicaments"
 			parent="oemedical_medicament_root" sequence="10"
 			action="act_open_oemedical_medicament_view" />
-
+        
 		<menuitem id="oemedical_medication_template" name=" Medication Template"
 			parent="oemedical_medicament_root" sequence="20"
 			action="act_open_oemedical_medication_template_view" />
@@ -153,18 +151,17 @@
 			parent="oemedical_medicament_root" sequence="30"
 			action="act_open_oemedical_medication_dosage_view" />
 
-		<menuitem id="oemedical_drug_route" name=" Drug Admin Route"
+		<menuitem id="oemedical_drug_route" name="Drug Admin Route"
 			parent="oemedical_medicament_root" sequence="80"
 			action="act_open_oemedical_drug_route_view" />
 
-		<menuitem id="oemedical_drug_form" name=" Drug Form"
+		<menuitem id="oemedical_drug_form" name="Drug Form"
             parent="oemedical_medicament_root" sequence="90"
             action="act_open_oemedical_drug_form_view" />
 
-
-		<menuitem id="oemedical_medicament_category" name=" Medicament Category"
+		<menuitem id="oemedical_medicament_category" name="Medicament Category"
 			parent="oemedical_medicament_root" sequence="100"
-			action="act_open_oemedical_medicament_category_view" />-->
+			action="act_open_oemedical_medicament_category_view" />  
 
 <!--Hospital Centers
 
@@ -218,7 +215,7 @@
 
 
 
-		<!--menuitem id="oemedical_diagnostic_hypothesis" name=" Diagnostic Hypothesis"
+		<!-- menuitem id="oemedical_diagnostic_hypothesis" name=" Diagnostic Hypothesis"
 			parent="oemedical_root_sub" sequence="10"
 			action="act_open_oemedical_diagnostic_hypothesis_view" /-->
 			<!--

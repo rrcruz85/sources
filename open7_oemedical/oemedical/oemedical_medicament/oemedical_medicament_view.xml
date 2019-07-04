@@ -3,36 +3,34 @@
 	<data>
 		<record id="view_oemedical_medicament_tree" model="ir.ui.view">
 			<field name="name">oemedical.medicament.tree</field>
-			<field name="model">oemedical.medicament</field>
-			<field name="priority" eval="8" />
+			<field name="model">oemedical.medicament</field>			 
 			<field name="arch" type="xml">
-				<tree string="Oemedical Medicament">
+				<tree string="Medicaments">
 					<field name="product_id" />
 					<field name="category" />
 					<field name="indications" />
-					<field name="therapeutic_action" />
-					<!--field name="pregnancy_category"/ -->
+					<field name="therapeutic_action" />					
 					<field name="overdosage" />
+					<field name="pregnancy_category"/>
 					<field name="pregnancy_warning" />
-					<field name="notes" />
+					<field name="pregnancy" />					
 					<field name="storage" />
 					<field name="adverse_reaction" />
 					<field name="active_component" />
-					<field name="dosage" />
-					<field name="pregnancy" />
+					<field name="dosage" />					
 					<field name="presentation" />
 					<field name="composition" />
 					<field name="concentration" />
+					<!--field name="notes" /-->
 				</tree>
 			</field>
 		</record>
 
 		<record id="view_oemedical_medicament_form" model="ir.ui.view">
 			<field name="name">oemedical.medicament.form</field>
-			<field name="model">oemedical.medicament</field>
-			<field name="priority" eval="8" />
+			<field name="model">oemedical.medicament</field>			 
 			<field name="arch" type="xml">
-				<form string="Oemedical Medicament" version="7.0">
+				<form string="Medicament" version="7.0">
                     <sheet>
                         <H1>
         			        <field name="product_id" domain="[('is_medicament','=', True )]"/>
@@ -90,10 +88,9 @@
 
 		<record id="view_oemedical_medicament_search" model="ir.ui.view">
 			<field name="name">oemedical.medicament.search</field>
-			<field name="model">oemedical.medicament</field>
-			<field name="priority" eval="8" />
+			<field name="model">oemedical.medicament</field>		 
 			<field name="arch" type="xml">
-				<search string="Oemedical Medicament">
+				<search string="Medicaments">
 					<field name="product_id" />
 					<field name="category" />
 					<field name="indications" />
@@ -147,24 +144,9 @@
 			<field name="res_model">oemedical.medicament</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="search_view_id" ref="view_oemedical_medicament_search" />
-			<field name="domain">[]</field>
-			<field name="context">{}</field>
-		</record>
-
-		<record model="ir.actions.act_window.view" id="act_open_oemedical_medicament_view_form">
-			<field name="act_window_id" ref="act_open_oemedical_medicament_view" />
-			<field name="sequence" eval="20" />
-			<field name="view_mode">form</field>
-			<field name="view_id" ref="view_oemedical_medicament_form" />
-		</record>
-
-		<record model="ir.actions.act_window.view" id="act_open_oemedical_medicament_view_tree">
-			<field name="act_window_id" ref="act_open_oemedical_medicament_view" />
-			<field name="sequence" eval="10" />
-			<field name="view_mode">tree</field>
-			<field name="view_id" ref="view_oemedical_medicament_tree" />
-		</record>
+			<field name="search_view_id" ref="view_oemedical_medicament_search" />			 
+		</record>      
+		 
 
 	</data>
 </openerp>
