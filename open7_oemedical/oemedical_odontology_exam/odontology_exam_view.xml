@@ -20,74 +20,27 @@
 			<field name="arch" type="xml">
 				<form string="Odontology Exam" version="7.0">
 					<sheet>
+					    <div class="column">
+								    
+									<div id="print_btn" class = "row-right"> 
+									     <button icon="STOCK_PRINT" string="Print" type="object" name="print_odontogram"/>
+									</div> 
+						</div>
                         <group col="4">
-					        <field name="appointment_id" required="1" on_change="onchange_appointment(appointment_id)" context="{'odonto_specialty': 1}" /> 
+						    <field name="appointment_id" required="1" on_change="onchange_appointment(appointment_id)" context="{'odonto_specialty': 1}" /> 
 							<newline/>
 							<field name="patient_id" readonly="1"/>							 
 							<field name="doctor_id" readonly="1"/>
                             <newline/>										    
 							<field name="exam_date" readonly="1"/>
-							<field name="exam_time" readonly="1" widget="float_time"/>									 								
+							<field name="exam_time" readonly="1" widget="float_time"/>																 								
                         </group>
 					  	<notebook>
 
-						   <!--
-	                       <page string="Principal">
-	                        	<group col="8">
-	                        		<field name="mdc_info" col="1" colspan="8"/>
-	                                <field name="info_diagnosis" col="1" colspan="8"/>
-	                        	</group>
-	                        	
-	                        	<group col="8" string="Signos vitales y mediciones.">
-	                        		<group col="4">
-	                        			<field name="pat_info" col="1" colspan="4"/>
-		                                <field name="ppm_info" col="1" colspan="4"/>
-		                                <field name="ppr_info" col="1" colspan="4"/>
-	                        		</group>
-	                        		
-		                            <group col="2">
-		                                <field name="tem_info" col="1" colspan="2"/>
-		                                <field name="tem2_info" col="1" colspan="2"/>
-		                                <field name="not_apply" col="1" colspan="2"/>
-		                            </group>
-		                            
-		                            <group col="2">
-		                                <field name="pes_info" col="1" colspan="2"/>
-		                                <field name="size_info" col="1" colspan="2"/>
-		                            </group>
-	                            </group>
-	                            
-	                            <group col="8" string="Antecedentes personales y familiares.">
-	           						<group col="4">
-	           							<field name="antibotic_allergic" col="1" colspan="4"/>
-	           							<field name="anesthesia_allergic" col="1" colspan="4"/>
-	           							<field name="hemorrhage" col="1" colspan="4"/>
-	           							<field name="vih_sida" col="1" colspan="4"/>
-	           							<field name="tuberculosis" col="1" colspan="4"/>
-	           						</group>
-	           						
-	           						<group col="4">
-	           							<field name="asma" col="1" colspan="4"/>
-	           							<field name="diabetes" col="1" colspan="4"/>
-	           							<field name="hipertension" col="1" colspan="4"/>
-	           							<field name="enf_cardiaca" col="1" colspan="4"/>
-	           							<field name="others" col="1" colspan="4"/>
-	           						</group>
-           						</group>
-           						
-           						<field name="others_antecedents" col="1" colspan="4" attrs="{'invisible': [('others', '=', False)]}"/>
-	                            
-	                          
-	                       </page> -->
-	                      
 						   <page string="Odontograma">
 						        <div class="column">
 								    
-									<div id="print_btn" class = "row-right"> 
-									     <button icon="STOCK_PRINT" string="Print" type="object" name="print_odontogram"/>
-									</div>
-									 
-								    <div class="row-center"> 
+									<div class="row-center"> 
 										<div id="odontogram" class="column">							        
 											<!--Row1-->
 											<div class="row-center" style="margin-top: 25px;">

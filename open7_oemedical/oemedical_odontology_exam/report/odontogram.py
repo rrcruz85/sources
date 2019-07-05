@@ -872,6 +872,7 @@ class odontogram(report_rml):
                             
                             <paraStyle name="P55" fontName="Helvetica" fontSize="5.0" leading="13" alignment="CENTER"/>
                             <paraStyle name="P55P" fontName="Helvetica" fontSize="4.0" leading="5" alignment="CENTER"/>
+                            <paraStyle name="P55P2" fontName="Helvetica" fontSize="3.0" leading="5" alignment="CENTER"/>
                         </stylesheet>"""
            
             rml += """<story>    
@@ -938,7 +939,7 @@ class odontogram(report_rml):
                                     
                                     <td>
                                       <para style="P20_COURIER_CENTER">
-                                        <font color="black">""" + (tools.ustr(odontology_exam.appointment_id.patient_id.identification_code) if odontology_exam.appointment_id.patient_id.identification_code else "") + """</font>
+                                        <font color="black">""" + (tools.ustr(odontology_exam.appointment_id.patient_id.ref) if odontology_exam.appointment_id.patient_id.ref else "") + """</font>
                                       </para>
                                     </td>
                                   </tr>
@@ -1080,7 +1081,7 @@ class odontogram(report_rml):
                                     <td><para style="P14_LEFT">""" + tools.ustr("TALLA m") + """</para></td>
                                     <td><para style="P144_CENTER">""" + (str(odontology_exam.appointment_id.size_info) if odontology_exam.appointment_id.size_info else "") + """</para></td>
                                     <td><para style="P14_LEFT">""" + tools.ustr("NO APLICA") + """</para></td>
-                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.not_apply else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER"></para></td>
                                 </tr>
                             </blockTable>"""
             
@@ -1600,12 +1601,12 @@ class odontogram(report_rml):
                   frequency = ''
                   days = ''
                   if tr.medicament_ids:
-                    concentration = tr.medicament_ids[0].medicament_id.concentracion
-                    presentation = tr.medicament_ids[0].medicament_id.presentation
-                    via = tr.medicament_ids[0].via
-                    dosis = tr.medicament_ids[0].dosis
-                    frequency = tr.medicament_ids[0].frequency
-                    days = tr.medicament_ids[0].days
+                    concentration = tr.medicament_ids[0].medicament_id.concentration or ''
+                    presentation = tr.medicament_ids[0].medicament_id.presentation or ''
+                    via = tr.medicament_ids[0].via or ''
+                    dosis = tr.medicament_ids[0].dosis or ''
+                    frequency = tr.medicament_ids[0].frequency or ''
+                    days = tr.medicament_ids[0].days or ''
                   lista_tratamientos.append((tr.treatment_id.name, concentration, presentation,via,dosis,frequency,days))
                   cant = cant + 1
             
@@ -1622,7 +1623,7 @@ class odontogram(report_rml):
                 2: word_list[1] if len(word_list) >= 2 else '',
                 3: word_list[2] if len(word_list) >= 3 else '',
             }
-            
+ 
             rml += """
                             <spacer length="0.1cm"/>
                             <blockTable colWidths="19.0,80.0,33.0,33.0,23.0,28.0,31.0,24.0,38.0,10.0,35.0,10.0,40.0,10.0,40.0,10.0,45.0,20.0" rowHeights="12.0,15.0,12.0,12.0,12.0,12.0" style="Table15">
@@ -1636,8 +1637,8 @@ class odontogram(report_rml):
                                 <tr>
                                     <td><para style="P55P">""" + tools.ustr("N°") + """</para></td>
                                     <td><para style="P55P">""" + tools.ustr("MEDICAMENTO GENÉRICO") + """</para></td>
-                                    <td><para style="P55P">""" + tools.ustr("CONCENTRACION") + """</para></td>
-                                    <td><para style="P55P">""" + tools.ustr("PRESENTACION") + """</para></td>
+                                    <td><para style="P55P2">""" + tools.ustr("CONCENTRACION") + """</para></td>
+                                    <td><para style="P55P2">""" + tools.ustr("PRESENTACION") + """</para></td>
                                     
                                     <td><para style="P55P">VIA</para></td>
                                     <td><para style="P55P">DOSIS</para></td>
@@ -1645,16 +1646,16 @@ class odontogram(report_rml):
                                     
                                     <td><para style="P55P">""" + tools.ustr("DIAS") + """</para></td>
                                     <td><para style="P55P">""" + tools.ustr("INTER CONSULTA") + """</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.interconsult else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.interconsult else "") + """</para></td>
                                     
                                     <td><para style="P55P">PROCEDIMIENTO</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.procedure else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.procedure else "") + """</para></td>
                                     
                                     <td><para style="P55P">INTERNACION</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.internation else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.internation else "") + """</para></td>
                                     
                                     <td><para style="P55P">CONSULTA EXTERNA</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.extern_consult else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.extern_consult else "") + """</para></td>
                                     
                                     <td><para style="P55P">DIAS DE INCAPACIDAD</para></td>
                                     <td><para style="P14_LEFT">""" + (str(odontology_exam.incapacity_days) if odontology_exam.incapacity_days else "") + """</para></td>
@@ -1671,13 +1672,13 @@ class odontogram(report_rml):
                                     <td><para style="P144_LEFT_COURIER">""" + tools.ustr(lista_tratamientos[0][6][0:3]) + """</para></td>
                                     
                                     <td><para style="P55P">TOPICACION FLUOR</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.fluor_topification else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.fluor_topification else "") + """</para></td>
                                     
                                     <td><para style="P55P">SELLANTES</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.sealment else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.sealment else "") + """</para></td>
                                     
                                     <td><para style="P55P">REFERENCIA</para></td>
-                                    <td><para style="P14_CENTER">""" + ("X" if odontology_exam.reference else "") + """</para></td>
+                                    <td><para style="P20_COURIER_CENTER">""" + ("X" if odontology_exam.reference else "") + """</para></td>
                                     
                                     <td><para style="P55P">SERVICIO</para></td>
                                     <td><para style="P144_LEFT_COURIER">""" + (odontology_exam.service[0:14] if odontology_exam.service else "") + """</para></td>
@@ -1737,7 +1738,7 @@ class odontogram(report_rml):
             if odontology_exam.appointment_id.next_appointment_hour:
               hour = int(odontology_exam.appointment_id.next_appointment_hour)
               minute = int(round(odontology_exam.appointment_id.next_appointment_hour - hour, 2) * 60)
-              app_date += str(hour) + ':' + str(minute)
+              app_date += ' ' + str(hour) + ':' + str(minute)
 
             rml += """
                             <spacer length="0.1cm"/>
@@ -1754,9 +1755,8 @@ class odontogram(report_rml):
                                     
                                     <td></td><td></td>
                                     <td><para style="P220">ODONTOLOGO</para></td>
-                                    <td><para style="P220_CENTER">""" + (tools.ustr(odontology_exam.appointment_id.doctor_id.physician_id.first_name)) + """</para></td>
+                                    <td><para style="P220_CENTER">""" + (tools.ustr(odontology_exam.appointment_id.doctor_id.physician_id.first_name + ' ' + odontology_exam.appointment_id.doctor_id.physician_id.last_name + ' ' + odontology_exam.appointment_id.doctor_id.physician_id.slastname)) + """</para></td>
                                     <td><para style="P220_CENTER">""" + (odontology_exam.appointment_id.doctor_id.doctor_id if odontology_exam.appointment_id.doctor_id.doctor_id else '') + """</para></td>
-                                    
                                     <td><para style="P220">FIRMA</para></td>
                                     <td></td>
                                 </tr>
@@ -1779,9 +1779,8 @@ class odontogram(report_rml):
             cant = 0
             if odontology_exam.evolution_ids:
                 for evo in odontology_exam.evolution_ids:
-                    texto = (evo.evolution_date if evo.evolution_date else "")
-                    texto += (", " + evo.name if evo.name else "")
-                    texto += ", " + evo.observation if evo.observation else ""
+                    texto = evo.evolution_date if evo.evolution_date else ""                  
+                    texto += (", " if texto else "") + (evo.observation if evo.observation else "")
                                         
                     word_list = self._get_list_words(texto, letters_per_row)
                     for part_text in word_list:
@@ -1792,7 +1791,7 @@ class odontogram(report_rml):
             
             while cant < max_rows_table12:
                 cant = cant + 1
-                rml += """      <tr><td><para style="P20_COURIER"></para></td><td></td></tr>"""
+                rml += """<tr><td><para style="P20_COURIER"></para></td><td></td></tr>"""
                 
             rml += """ </blockTable>"""
             rml += """ </story>"""
@@ -1805,7 +1804,7 @@ class odontogram(report_rml):
         #Removing temporary file
         if png_odontogram_img:
           os.remove(png_odontogram_img)
-        if _png_odontogram_img and odontology_exam.odontogram_img:
+        if _png_odontogram_img:# and odontology_exam.odontogram_img:
           os.remove(_png_odontogram_img)
         odontology_exam_obj.write(cr, uid, ids, {'odontogram_img': None})
         

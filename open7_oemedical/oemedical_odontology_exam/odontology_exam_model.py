@@ -107,27 +107,6 @@ class OeMedicalOdontologyExam(osv.Model):
         'doctor_id'         : fields.related('appointment_id','doctor_id', type='many2one', relation='oemedical.physician', string='Odontologo', required=True),
         'exam_date'         : fields.related('appointment_id','start_date', type='date', string='Fecha'),
         'exam_time'         : fields.related('appointment_id','start_time', type='float', string='Hora'),
-      
-'''
-        'patient_id'   : fields.function(_get_appointment_info, type='many2one', relation = "oemedical.patient", string='Patient', 
-            store={
-                'oemedical.appointment': (_get_model_ids, ['patient_id'], 10),                         
-        }, multi='_data'),
-        'doctor_id'    : fields.function(_get_appointment_info, type='many2one', relation = "oemedical.physician", string='Odontologo', 
-            store={
-                'oemedical.appointment': (_get_model_ids, ['doctor_id'], 10),                         
-        }, multi='_data'),
-        'exam_date'    : fields.function(_get_appointment_info, type='date', string='Date', 
-            store={
-                'oemedical.appointment': (_get_model_ids, ['start_date'], 10),                         
-        }, multi='_data'),
-         'exam_time'    : fields.function(_get_appointment_info, type='float', string='Hour', 
-            store={
-                'oemedical.appointment': (_get_model_ids, ['start_time'], 10),                         
-        }, multi='_data'), 
-        '''
-        
-        'not_apply'       : fields.boolean('No aplica?'),
         
         # stomatognathic system test...
         'libs': fields.boolean('Labios'),
