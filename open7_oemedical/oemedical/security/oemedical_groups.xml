@@ -12,9 +12,9 @@
 
         <!-- Patient Rules -->
         <record model="ir.rule" id="patient_default_rule">
-            <field name="name">Multi_company_default company</field>
-            <field name="model_id" ref="model_multi_company_default"/>
-            <field name="domain_force">[('company_id','child_of',[user.company_id.id])]</field>
+            <field name="name">Patient List</field>
+            <field name="model_id" ref="model_oemedical_patient"/>
+            <field name="domain_force">[('partner_id.user_id','=',[user.id])]</field>
         </record>
 
     </data>
