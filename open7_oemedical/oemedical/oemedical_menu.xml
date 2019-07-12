@@ -14,7 +14,7 @@
 
 <!--Menu Doctors-->
         <menuitem name="Health Professionals" id="oemedical_physician_root"
-            parent="oemedical_root" sequence="20" />
+            parent="oemedical_root" sequence="20" groups="oemedical.doctor_group"/>
 
 		<menuitem id="oemedical_physician" name="Physicians" parent="oemedical_physician_root"
 			sequence="10" action="act_open_oemedical_physician_view" />
@@ -62,7 +62,7 @@
 <!--Configurations-->
 
 		<menuitem id="oemedical_root_sub" name="Configuration"
-			parent="oemedical_root" sequence="100" />
+			parent="oemedical_root" sequence="100" groups="oemedical.doctor_group,base.group_erp_manager"/>
 
 <!-- Medical Specialty  ( Config/specialty) ) --> 
 
@@ -81,7 +81,7 @@
 
 		<menuitem id="oemedical_treatment_menu" name="Treatments"
             parent="oemedical_root_sub" sequence="20" 
-            action="act_open_oemedical_treatment" />
+            action="act_open_oemedical_treatment" groups="oemedical.doctor_group,base.group_erp_manager"/>
 
 <!--       Laboratory       -->
 		<!--menuitem name="Laboratory" id="oemedical_conf_laboratory" 
@@ -137,7 +137,7 @@
         <!--Medicaments -->
 
 		<menuitem id="oemedical_medicament_root" name="Medicaments"
-			parent="oemedical_root_sub" sequence="30" />
+			parent="oemedical_root_sub" sequence="30" groups="oemedical.doctor_group,base.group_erp_manager"/>
 
 		<menuitem id="oemedical_medicament" name="Medicaments"
 			parent="oemedical_medicament_root" sequence="10"

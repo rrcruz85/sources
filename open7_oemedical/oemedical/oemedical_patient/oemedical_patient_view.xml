@@ -61,7 +61,7 @@
 									<label for="ref"/> 
 									<field string="Clinic History Number" required="1" name="ref" style="width: 20%%;vertical-align: middle"/>
 								</div>								 				 									
-							</div>							 					 
+							</div>						 					 
                         </div>
 						<notebook> 
 	                        <page string="Contact Information"> 
@@ -85,7 +85,8 @@
 	                                <group>
 	                                    <field name="phone" placeholder="e.g. 02.3149120"/>
 	                                    <field name="mobile" required="1" placeholder="e.g. 0955443322"/>                                    
-	                                    <field name="email" required="1" widget="email"/>
+	                                    <field name="email" required="1" widget="email"/>										 
+									    <field name="user_id" string="User"/>
 	                                </group>
 									<newline/>								
 	                                <group string="Emergency Person's Contact">

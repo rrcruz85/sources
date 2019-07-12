@@ -671,7 +671,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
         show: function(){
             this._super();
             var self = this;
-            var currentOrder = self.pos.get('selectedOrder'); 
+			var currentOrder = self.pos.get('selectedOrder'); 
             new instance.web.Model('pos.config').call('read',[[self.pos.get('pos_session').config_id[0]],['order_seq_start_from']]).then(function(result){               
                   
                 currentOrder.set('name', "Order " + result && result[0].order_seq_start_from.toString() || '1');                      
@@ -691,19 +691,18 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
                 else {
                     self.$('.client_data_div').html();
                 }                 
-            });  
+            });
         },
 
         validateCurrentOrder: function () {
             var currentOrder = this.pos.get('selectedOrder');
-          
             if (currentOrder.attributes.orderLines.length >= 2) {
                 $("div.pos-sale-ticket").css("max-height", "800px");
             }
             else {
                 $("div.pos-sale-ticket").css("max-height", "400px");
             }
-            
+
             this.pos.push_order(currentOrder.exportAsJSON())
             if (this.pos.iface_print_via_proxy) {
                 this.pos.proxy.print_receipt(currentOrder.export_for_printing());
@@ -715,7 +714,6 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             if (currentOrder.attributes.orderLines.length >= 2) {
                 $("div.pos-sale-ticket").css("max-height", "370px");
             }
- 
         },
         
         fetch: function(model, fields, domain, ctx){
@@ -723,7 +721,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
         },
         
         get_card_payment: function(journal){
-           
+            console.log('Diarios: ' + journal);
             var myPos = new instance.web.Model('pos.order');
             myPos.call('get_type_journal', [journal]).then(function (result) {});
         },
@@ -777,7 +775,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
     module.PosModel = Backbone.Model.extend({
         initialize: function(session, attributes) {
             Backbone.Model.prototype.initialize.call(this, attributes);
-            var self = this;
+            var  self = this;
             this.session = session;
             this.ready = $.Deferred();                          // used to notify the GUI that the PosModel has loaded all resources
             this.flush_mutex = new $.Mutex();                   // used to make sure the orders are sent to the server once at time
@@ -921,6 +919,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
                     self.iface_vkeyboard           =  !!pos_config.iface_vkeyboard;
                     self.iface_self_checkout       =  !!pos_config.iface_self_checkout;
                     self.iface_cashdrawer          =  !!pos_config.iface_cashdrawer;
+					
                     return self.fetch('sale.shop',[],[['id','=',pos_config.shop_id[0]]]);
                 }).then(function(shops){
                     self.set('shop',shops[0]);
@@ -992,7 +991,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
 
         // logs the usefull posmodel data to the console for debug purposes
         log_loaded_data: function(){
-        	/*
+        	
             console.log('PosModel data has been loaded:');
             console.log('PosModel: units:',this.get('units'));
             console.log('PosModel: bank_statements:',this.get('bank_statements'));
@@ -1014,7 +1013,6 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             console.log('PosModel: reference:',this.get('reference'));
             console.log('PosModel.session:',this.session);
             console.log('PosModel end of data log.');
-            */
         },
 
         // this is called when an order is removed from the order collection. It ensures that there is always an existing
@@ -1076,7 +1074,7 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
                     console.error('Failed to send order:',order);
                     self._flush(index+1);
                 })
-                .done(function(){                	 
+                .done(function(){ 
                 	//remove from db if success
                     self.db.remove_order(order.id);
                     self._flush(index);
@@ -1113,12 +1111,11 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
     module.Order = Backbone.Model.extend({
         initialize: function(attributes){
             Backbone.Model.prototype.initialize.apply(this, arguments);
-           
             this.set({
                 creationDate:   new Date(),
                 orderLines:     new module.OrderlineCollection(),
                 paymentLines:   new module.PaymentlineCollection(),
-                name:           "Order 1",
+                name:           "Order 0",
                 client:         null,
                 acquirer:       null,
                 card_type:      null,
@@ -1133,7 +1130,6 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             this.receipt_type = 'receipt';  // 'receipt' || 'invoice'
             return this;
         },        
-        
         addProduct: function(product, options){
             options = options || {};
             var attr = product.toJSON();
@@ -1206,7 +1202,8 @@ function my_pos_data(instance, module){ //module is instance.point_of_sale
             return this.get('name');
         },
         getSubtotal : function(){
-        	//var pos_config = this.pos.get('pos_config');        	
+        	var pos_config = this.pos.get('pos_config');
+        	
 //            if (globalType) {
 //            	return (this.get('orderLines')).reduce((function(sum, orderLine){
 //                    return sum + orderLine.get_display_price() - ( orderLine.get_display_price() * pos_config.iva_compensation / 100 );

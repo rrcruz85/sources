@@ -13,7 +13,7 @@
 	            </div>
 	            
 	            <div style="position: absolute; top: 36px; left: 410px; cursor: pointer;">
-	            	<img id="btn-addcust" src="my_pos/static/src/img/add_client.png"/>
+	            	<img id="btn-addcust" src="my_pos_190202/static/src/img/add_client.png"/>
 		            <!-- <span class="placeholder-AddCustomerButton">
 		            	<img class="company_img" src="my_pos/static/src/img/add_client.png"/>
 		            </span> -->

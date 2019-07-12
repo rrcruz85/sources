@@ -36,7 +36,7 @@
 					        <field name="physician_id" />
                         </group>
                         <group col="6" colspan="4">
-					        <field name="pharmacy" />
+					        <field name="pharmacy" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_form', 'default_is_pharmacy': True, 'default_is_work': True, 'default_customer': False, 'default_supplier': False, 'default_employee': False}"/>
 					        <!--field name="pregnancy_warning" /-->
 					        <field name="prescription_warning_ack" />
                         </group>
@@ -45,11 +45,13 @@
                         </group>
                         <lable for="indications" />
 						<field name="indications" />
+						<!--
 						<newline/>
                         <group>
 					        <field name="diagnosis" colspan="2"/>
 					        <field name="next_date" colspan="2"/>
                         </group>
+						-->
                     </sheet>
 				</form>
 			</field>

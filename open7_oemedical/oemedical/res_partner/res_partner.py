@@ -57,7 +57,6 @@ def _check_ruc(ced_ruc, position):
         return True
     else:
         return False
-
 class ResPartner(osv.Model):
     _inherit = 'res.partner'
     

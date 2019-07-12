@@ -108,7 +108,7 @@ class OeMedicalPatient(osv.osv):
         'emergency_phone': fields.char('Phone', size=64),
         'emergency_mobile': fields.char('Mobile', size=200),
 
-        'nationality_id': fields.many2one('res.country', string='Nationality'),
+        'nationality_id': fields.many2one('res.country', string='Nationality'),        
     }
 
     def _get_default_country(self, cr, uid, context=None):
@@ -188,9 +188,9 @@ class OeMedicalPatient(osv.osv):
     def create(self, cr, uid, vals, context=None):
         vals['is_patient'] = True
         vals['is_person'] = True
-        vals['is_company'] = False       
-        return super(OeMedicalPatient, self).create(cr, uid, vals, context=context)
-
+        vals['is_company'] = False   
+        return super(OeMedicalPatient, self).create(cr, uid, vals, context=context)        
+    
     def unlink(self, cr, uid, ids, context=None):
         partners = [r.partner_id.id for r in self.browse(cr,uid, ids)]
         self.pool.get('res.partner').write(cr, uid, partners, {'active': False});

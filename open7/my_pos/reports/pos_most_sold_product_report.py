@@ -246,4 +246,4 @@ class MostSoldProductReport(report_rml):
             os.remove(path)
         return pdf, report_type
 
-MostSoldProductReport('report.my_pos_most_sold_product_report', 'pos.most.sold.product', '', '')
+MostSoldProductReport('report.pos_most_sold_product_report', 'pos.most.sold.product', '', '')

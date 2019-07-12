@@ -103,9 +103,9 @@ class OeMedicalOdontologyExam(osv.Model):
         'appointment_id'    : fields.many2one('oemedical.appointment', 'Appointment', domain="[('state','!=','done'),('state','!=','canceled')]", required=True, context="{'search_odonto_appointment': 1}"),
         
         #Appointment Info...
-        'patient_id'        : fields.related('appointment_id','patient_id', type='many2one', relation='oemedical.patient', string='Patient', required=True),
-        'doctor_id'         : fields.related('appointment_id','doctor_id', type='many2one', relation='oemedical.physician', string='Odontologo', required=True),
-        'exam_date'         : fields.related('appointment_id','start_date', type='date', string='Fecha'),
+        'patient_id'        : fields.related('appointment_id','patient_id', type='many2one', relation='oemedical.patient', string='Patient', required=True, store = True),
+        'doctor_id'         : fields.related('appointment_id','doctor_id', type='many2one', relation='oemedical.physician', string='Odontologo', required=True, store = True),
+        'exam_date'         : fields.related('appointment_id','start_date', type='date', string='Fecha', store = True),
         'exam_time'         : fields.related('appointment_id','start_time', type='float', string='Hora'),
         
         # stomatognathic system test...

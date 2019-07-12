@@ -21,10 +21,9 @@
 				<form string="Odontology Exam" version="7.0">
 					<sheet>
 					    <div class="column">
-								    
-									<div id="print_btn" class = "row-right"> 
-									     <button icon="STOCK_PRINT" string="Print" type="object" name="print_odontogram"/>
-									</div> 
+							<div id="print_btn" class = "row-right"> 
+								<button icon="STOCK_PRINT" string="Print" type="object" name="print_odontogram" groups="oemedical.doctor_group,base.group_erp_manager"/>
+							</div> 
 						</div>
                         <group col="4">
 						    <field name="appointment_id" required="1" on_change="onchange_appointment(appointment_id)" context="{'odonto_specialty': 1}" /> 
@@ -6917,6 +6916,18 @@
 				</form>
 			</field>
 		</record>
+
+		<record id="oemedical_odontology_exam_view_search" model="ir.ui.view"> 
+ 			<field name="name">oemedical.odontology.exam.search</field> 
+ 			<field name="model">oemedical.odontology.exam</field> 
+ 			<field name="arch" type="xml"> 
+ 				<search string="Odontology Exams"> 
+ 					<field name="patient_id" /> 
+					<field name="doctor_id" /> 
+					<field name="exam_date" />					 				 
+ 				</search> 
+ 			</field> 
+ 		</record> 
         
         <record id="oemedical_odontology_exam_action" model="ir.actions.act_window">
 			<field name="name">Odontology Exams</field>
@@ -6926,6 +6937,7 @@
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[]</field>
 			<field name="context">{}</field>
+			<field name="search_view_id" ref="oemedical_odontology_exam_view_search" /> 
 		</record>
 
 		<record id="view_oemedical_pathology_tree_inherit" model="ir.ui.view">

@@ -84,7 +84,8 @@
 										<field name="phone" placeholder="e.g. 02.3149120"/>
 										<field name="mobile" required="1" placeholder="e.g. 0955443322"/>                                    
 										<field name="email" required="1" widget="email"/>
-										<field name="title" class="oe_no_button" options='{"no_open": True,"no_quick_create":True,"no_create_edit": True}'/>										
+										<field name="title" class="oe_no_button" options='{"no_open": True,"no_quick_create":True,"no_create_edit": True}'/>
+										<field name="user_id" string="User"/>										
 									</group>
 									<newline/>
 								</group> 
@@ -121,7 +122,7 @@
 												    </div>
 													<div style="width: 75%%;display: inline; vertical-align: middle;margin-top:25px">
 														<label for="institution_id"/>
-														<field name="institution_id" required ="1" style="width: 75%%; vertical-align: middle" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_form', 'default_is_institution': True, 'default_customer': False, 'default_supplier': False, 'default_employee': False}"/>														 
+														<field name="institution_id" required ="1" style="width: 75%%; vertical-align: middle" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_form', 'default_is_institution': True, 'default_is_work': True, 'default_customer': False, 'default_supplier': False, 'default_employee': False}"/>														 
 												    </div>													 
 												</div>	
 												<div style="width: 100%%">                                                   

@@ -15,6 +15,7 @@ Allows to manage odontological exams for patients
     "data": [
         'odontology_exam_view.xml',
         'odontology_exam_menu.xml',
+        'security/oemedical_groups.xml',
         'report/odontogram.xml',
     ],
     "demo": [

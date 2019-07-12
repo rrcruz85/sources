@@ -1,20 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
 		 
+        <!-- Patient Rules -->
+        <record model="ir.rule" id="patient_rule">
+            <field name="name">Patient List</field>
+            <field name="model_id" ref="model_oemedical_patient"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('user_id','=',user.id)]</field>
+        </record>
+
+        <!-- Appointments Rules -->
+        <record model="ir.rule" id="patient_appointment_rule">
+            <field name="name">Patient Appointment</field>
+            <field name="model_id" ref="model_oemedical_appointment"/>             
+            <field name="domain_force">[('patient_id.user_id','=',user.id)]</field>
+        </record> 
+        
+        <record model="ir.rule" id="doctor_appointment_rule">
+            <field name="name">Doctor Appointment</field>
+            <field name="model_id" ref="model_oemedical_appointment"/>            
+            <field name="domain_force">[('doctor_id.user_id','=',user.id)]</field>
+        </record>
+
+         <!-- Doctor Rules -->
+        <record model="ir.rule" id="doctor_rule">
+            <field name="name">Doctor List</field>
+            <field name="model_id" ref="model_oemedical_physician"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('user_id','=',user.id)]</field>
+        </record>
+
+        <!-- Prescription Order Rules -->
+        <record model="ir.rule" id="patient_prescription_order_rule">
+            <field name="name">Patient Prescription Order</field>
+            <field name="model_id" ref="model_oemedical_prescription_order"/>             
+            <field name="domain_force">[('patient_id.user_id','=',user.id)]</field>
+        </record> 
+        
+        <record model="ir.rule" id="doctor_prescription_order_rule">
+            <field name="name">Doctor Prescription Order</field>
+            <field name="model_id" ref="model_oemedical_prescription_order"/>             
+            <field name="domain_force">[('physician_id.user_id','=',user.id)]</field>
+        </record>
+
         <record model="res.groups" id="patient_group">
-            <field name="name">Patients</field>  
+            <field name="name">Patients</field>
+            <field name="rule_groups" eval="[(6,0,[ref('oemedical.patient_rule'), ref('oemedical.patient_prescription_order_rule'), ref('oemedical.patient_appointment_rule')])]"/>            
         </record>
 
         <record model="res.groups" id="doctor_group">
-            <field name="name">Doctors</field>  
-        </record>
-
-        <!-- Patient Rules -->
-        <record model="ir.rule" id="patient_default_rule">
-            <field name="name">Patient List</field>
-            <field name="model_id" ref="model_oemedical_patient"/>
-            <field name="domain_force">[('partner_id.user_id','=',[user.id])]</field>
+            <field name="name">Doctors</field>            
+            <field name="rule_groups" eval="[(6,0,[ref('oemedical.doctor_rule'), ref('oemedical.doctor_prescription_order_rule'), ref('oemedical.doctor_appointment_rule')])]"/>  
         </record>
 
     </data>
