@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="Login">
+
+        <t t-jquery="form ul:first li:contains('Name')" t-operation="replace">
+            <li data-modes="signup reset">Username</li>
+        </t>
+
+        <t t-jquery="form ul:first li:contains('Username (Email)')" t-operation="replace">
+            <li data-modes="signup reset">Email</li>
+        </t>
+
+        <t t-jquery="form ul:first li:has(input[name=login])" t-operation="after">
+            <li data-modes="signup reset">
+                <div style="display: flex">
+                    <span>Use Username for logging in</span>
+                    <input style="width:15px !important" name="use_name_for_logging_in" type="checkbox"/>
+                </div>
+            </li>
+        </t>
+
+    </t>
+
+</templates>
