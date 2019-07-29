@@ -19,6 +19,7 @@
     "active": False,
     "installable": True,
     "certificate" : "",
+    "css": ['static/src/css/styles.css'],
     'js': ['static/src/js/auth_signup.js'],
     'qweb': ['static/src/xml/auth_signup.xml'],
 }

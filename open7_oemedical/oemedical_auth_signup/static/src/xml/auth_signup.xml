@@ -5,21 +5,72 @@
     <t t-extend="Login">
 
         <t t-jquery="form ul:first li:contains('Name')" t-operation="replace">
-            <li data-modes="signup reset">Username</li>
+            <li style="width:100% !important" data-modes="signup reset">UserName</li>            
+        </t>
+
+        <t t-jquery="form ul:first li:has(input[name='name'])" t-operation="replace">
+            <li data-modes="signup reset"><input style="width:100% !important" name="name" type="text"/></li>
         </t>
 
         <t t-jquery="form ul:first li:contains('Username (Email)')" t-operation="replace">
             <li data-modes="signup reset">Email</li>
         </t>
-
+        
         <t t-jquery="form ul:first li:has(input[name=login])" t-operation="after">
             <li data-modes="signup reset">
                 <div style="display: flex">
-                    <span>Use Username for logging in</span>
+                    <span>Use UserName for logging in</span>
                     <input style="width:15px !important" name="use_name_for_logging_in" type="checkbox"/>
                 </div>
             </li>
         </t>
+ 
+        <t t-jquery="form ul:first li:has(input[name=login])" t-operation="replace">             
+             <li data-modes="default signup reset">
+                <input style="width:100% !important" autofocus="autofocus" name="login" type="text" value=""/>
+             </li>  
+        </t>  
+
+        <t t-jquery="form ul:first li:has(input[name=password])" t-operation="replace">             
+            <li data-modes="default signup reset"><input style="width:100% !important" name="password" type="password"/></li>
+        </t>
+
+        <t t-jquery="form ul:first li:has(input[name=confirm_password])" t-operation="replace">             
+            <li data-modes="signup reset"><input style="width:100% !important" name="confirm_password" type="password"/></li>
+        </t>
+         
+        <t t-jquery="form ul:first li:has(input[name=confirm_password])" t-operation="after">
+            <li data-modes="signup reset">
+               <li data-modes="signup reset">Nombres</li>
+               <li data-modes="signup reset"><input style="width:100% !important" name="names" type="text"/></li>
+            </li>
+            <li data-modes="signup reset">
+               <li data-modes="signup reset">Apellidos</li>
+               <li data-modes="signup reset"><input style="width:100% !important" name="last_names" type="text"/></li>
+            </li>
+            <li data-modes="signup reset">
+               <li data-modes="signup reset"><span>Tipo de Identificacion</span><span style="padding-left:14px">Valor</span></li>
+               <li data-modes="signup reset">
+                    <select name="type_identification_list" style="width:140px;height:28px;">
+                        <option value="cedula">Cedula</option>
+                        <option value="ruc">Ruc</option>
+                        <option value="pasaporte">Pasaporte</option>                         
+                    </select>
+                    <input name="type_identification_value" type="text"/>
+                </li>
+            </li>
+            <li data-modes="signup reset">
+               <li data-modes="signup reset"><span>Mobile</span><span style="padding-left:230px">Operadora</span></li>
+               <li data-modes="signup reset">
+                    <input name="mobile" type="text"/>
+                    <select name="operadora_list" style="width:140px;height:28px;">
+                        <option value="claro">Claro</option>
+                        <option value="cnt">CNT</option>
+                        <option value="movistar">Movistar</option>                         
+                    </select>
+                </li>
+            </li>
+        </t> 
 
     </t>
 
