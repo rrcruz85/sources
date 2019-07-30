@@ -121,6 +121,32 @@ openerp.oemedical_auth_signup = function(instance) {
             return true;
         },
 
+        validateCedula: function(cedula) {
+            var cad = cedula.trim();
+            var total = 0;
+            var longitud = cad.length;
+            var longcheck = longitud - 1;
+    
+            if (cad !== "" && longitud === 10) {
+                for (i = 0; i < longcheck; i++) {
+                    if (i % 2 === 0) {
+                        var aux = cad.charAt(i) * 2;
+                        if (aux > 9) aux -= 9;
+                        total += aux;
+                    } else {
+                        total += parseInt(cad.charAt(i)); // parseInt o concatenará en lugar de sumar
+                    }
+                }
+
+                total = total % 10 ? 10 - total % 10 : 0;
+
+                return (cad.charAt(longitud - 1) == total); 
+            }
+
+            return false;
+        },
+    
+
         get_params: function(){
 
             // signup user (or reset password)
@@ -135,6 +161,8 @@ openerp.oemedical_auth_signup = function(instance) {
             var names = this.$("form input[name=names]").val();
             var last_names = this.$("form input[name=last_names]").val();
             var mobile = this.$("form input[name=mobile]").val();
+            var type_identification = this.$("form select[name=type_identification_list]").val();
+            var type_identification_value = this.$("form input[name=type_identification_value]").val();
             
             if (!db) {
                 this.showErrorMsg("No database selected !", 'db');
@@ -184,8 +212,26 @@ openerp.oemedical_auth_signup = function(instance) {
                 errorMsg = '';
                 return false;
             }
-
-
+            else if (!type_identification_value) {
+                this.showErrorMsg("Please enter a " + type_identification + "!", 'type_identification_value');                 
+                return false;
+            }
+            else if (type_identification_value) {
+                if(type_identification == 'cedula'){
+                    return this.validateCedula(type_identification_value);
+                }
+                else if(type_identification == 'ruc'){
+                    
+                    if(!this.validateCedula(type_identification_value))
+                       return false;
+                    if(!type_identification_value.endsWith('001'))
+                       return false;
+                    return true;
+                }
+                else if(type_identification == 'pasaporte'){
+                    return true;
+                }                 
+            }           
             else if (!mobile) {
                 this.showErrorMsg("Please enter a valid mobile number!", 'mobile');               
                 return false;
