@@ -286,6 +286,7 @@ openerp.oemedical_auth_signup = function(instance) {
                 return false;
             }
             else if (type_identification_value) {
+                type_identification_value = type_identification_value.trim();
                 if(type_identification == 'cedula'){
                     if(!this.validateCedula(type_identification_value)){
                        this.showErrorMsg("Cedula incorrecta !", 'type_identification_value');                 
