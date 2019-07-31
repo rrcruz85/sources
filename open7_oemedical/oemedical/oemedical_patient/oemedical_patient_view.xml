@@ -85,7 +85,8 @@
 	                                <group>
 	                                    <field name="phone" placeholder="e.g. 02.3149120"/>
 	                                    <field name="mobile" required="1" placeholder="e.g. 0955443322"/>                                    
-	                                    <field name="email" required="1" widget="email"/>										 
+	                                    <field name="mobile_operator" required="1"/>
+										<field name="email" required="1" widget="email"/>										 
 									    <field name="user_id" string="User"/>
 	                                </group>
 									<newline/>								

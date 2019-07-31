@@ -47,7 +47,12 @@ class res_users(osv.Model):
                 self._signup_create_user(cr, uid, values, context=context)
         else:
             # no token, sign up an external user
-            values['email'] = values.get('email') or values.get('login')
+            if values.get('use_email_for_logging_in'):
+                values['login'] = values.get('email')
+            else:
+                values['login'] = values.get('name')
+            values.pop('use_email_for_logging_in')
+
             self._signup_create_user(cr, uid, values, context=context)
 
         return (cr.dbname, values.get('login'), values.get('password'))
@@ -68,12 +73,39 @@ class res_users(osv.Model):
 
         # create a copy of the template user (attached to a specific partner_id if given)
         values['active'] = True
+        values['state'] = 'new'
         return self.copy(cr, uid, template_user_id, values, context=context)
 
     def create(self, cr, uid, values, context=None):
         # overridden to automatically invite user to sign up
         user_id = super(res_users, self).create(cr, uid, values, context=context)
         user = self.browse(cr, uid, user_id, context=context)
+
+        if user.partner_id:
+            country = self.pool.get('res.country').search(cr, uid, [('code', '=', 'EC')])
+            state = self.pool.get('res.country.state').search(cr, uid, [('country_id', '=', country[0]), ('code', '=', 'PIC')])
+
+            self.pool.get('res.partner').write(cr, uid, [user.partner_id.id], {
+                'user_id': user_id,
+                'country_id': country[0],
+                'state_id': state[0],
+                'city': 'Quito',
+                'street': '',
+                'street2': '',
+                'zip': ''
+            }, context=None)
+            self.pool.get('oemedical.patient').create(cr, uid, {
+                'sex': values.get('sex'),
+                'partner_id': user.partner_id.id,
+                'dob':   datetime.strptime(values.get('birthdate'), '%d-%m-%Y')
+            }, context=None)
+            group = self.pool.get('ir.model.data').get_object(cr, uid, 'oemedical', 'patient_group')
+            if group:
+                self.write(cr, uid, [user_id], {
+                    'groups_id': [(4, group.id)]
+                }, context=context)
+
+
         if context and context.get('reset_password') and user.email:
             ctx = dict(context, create_user=True)
             self.action_reset_password(cr, uid, [user.id], context=ctx)

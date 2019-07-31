@@ -5,72 +5,79 @@
     <t t-extend="Login">
 
         <t t-jquery="form ul:first li:contains('Name')" t-operation="replace">
-            <li style="width:100% !important" data-modes="signup reset">UserName</li>            
-        </t>
-
-        <t t-jquery="form ul:first li:has(input[name='name'])" t-operation="replace">
-            <li data-modes="signup reset"><input style="width:100% !important" name="name" type="text"/></li>
+            <li data-modes="signup reset">UserName</li>           
         </t>
 
         <t t-jquery="form ul:first li:contains('Username (Email)')" t-operation="replace">
-            <li data-modes="signup reset">Email</li>
-        </t>
-        
-        <t t-jquery="form ul:first li:has(input[name=login])" t-operation="after">
             <li data-modes="signup reset">
-                <div style="display: flex">
-                    <span>Use UserName for logging in</span>
-                    <input style="width:15px !important" name="use_name_for_logging_in" type="checkbox"/>
-                </div>
+                <span>Email</span>
+                <span style="padding-left:240px">Use Email for logging in</span>
             </li>
-        </t>
- 
-        <t t-jquery="form ul:first li:has(input[name=login])" t-operation="replace">             
-             <li data-modes="default signup reset">
-                <input style="width:100% !important" autofocus="autofocus" name="login" type="text" value=""/>
-             </li>  
-        </t>  
-
-        <t t-jquery="form ul:first li:has(input[name=password])" t-operation="replace">             
-            <li data-modes="default signup reset"><input style="width:100% !important" name="password" type="password"/></li>
-        </t>
-
-        <t t-jquery="form ul:first li:has(input[name=confirm_password])" t-operation="replace">             
-            <li data-modes="signup reset"><input style="width:100% !important" name="confirm_password" type="password"/></li>
-        </t>
+        </t> 
          
-        <t t-jquery="form ul:first li:has(input[name=confirm_password])" t-operation="after">
-            <li data-modes="signup reset">
-               <li data-modes="signup reset">Nombres</li>
-               <li data-modes="signup reset"><input style="width:100% !important" name="names" type="text"/></li>
+        <t t-jquery="form ul:first li:has(input[name=login]) input[name=login]" t-operation="after">
+            <input data-modes="signup reset" style="margin-left: 10px; width:15px !important" name="use_email_for_logging_in" type="checkbox"/>
+        </t>       
+
+        <t t-jquery="form ul:first li:has(input[name=password], input[name=confirm_password]), form ul:first li:contains('Password'), form ul:first li:contains('Confirm Password')" t-operation="replace">
+            <li data-modes="default signup reset">
+                <span>Password</span>
+                <span data-modes="signup reset" style="padding-left: 210px">Confirm Password</span>
             </li>
-            <li data-modes="signup reset">
-               <li data-modes="signup reset">Apellidos</li>
-               <li data-modes="signup reset"><input style="width:100% !important" name="last_names" type="text"/></li>
+            <li data-modes="default signup reset">
+                <input name="password" type="password"/>
+                <input name="confirm_password" type="password" data-modes="signup reset"/>
             </li>
+            
             <li data-modes="signup reset">
-               <li data-modes="signup reset"><span>Tipo de Identificacion</span><span style="padding-left:14px">Valor</span></li>
                <li data-modes="signup reset">
-                    <select name="type_identification_list" style="width:140px;height:28px;">
+                 <span>First Name</span>
+                 <span style="padding-left: 204px">Last Names</span>
+               </li>
+               <li data-modes="signup reset">
+                   <input name="names" type="text"/>  
+                   <input name="last_names" type="text"/>  
+               </li>
+            </li>
+
+            <li data-modes="signup reset">
+               <li data-modes="signup reset">
+                    <span>Gender</span>
+                    <span style="padding-left:225px">BirthDate</span>
+               </li>
+               <li data-modes="signup reset">
+                    <select name="gender" style="width:265px;height:28px;">
+                        <option value="m">Male</option>
+                        <option value="f">Female</option>                                              
+                    </select>
+                    <!--input name="birthdate" type="date" style="height:17px;"/ -->
+                    <input type="text" name="birthdate" placeholder="DD-MM-YYYY" 
+                        title="Enter a date in this format DD-MM-YYYY"/>
+                </li>
+            </li>
+
+            <li data-modes="signup reset">
+               <li data-modes="signup reset">
+                    <span>Identification Type</span>
+                    <span style="padding-left: 160px">Mobile</span>
+                    <span style="padding-left: 125px">Operator</span>
+               </li>
+               <li data-modes="signup reset">
+                    <select name="type_identification_list" style="width:120px;height:28px;">
                         <option value="cedula">Cedula</option>
                         <option value="ruc">Ruc</option>
                         <option value="pasaporte">Pasaporte</option>                         
                     </select>
-                    <input name="type_identification_value" type="text"/>
-                </li>
-            </li>
-            <li data-modes="signup reset">
-               <li data-modes="signup reset"><span>Mobile</span><span style="padding-left:230px">Operadora</span></li>
-               <li data-modes="signup reset">
-                    <input name="mobile" type="text"/>
-                    <select name="operadora_list" style="width:140px;height:28px;">
+                    <input name="type_identification_value" type="text" style="width:23.5%"/>
+                    <input name="mobile" type="text" style="width:29%"/>
+                    <select name="operator" style="width:88px;height:28px;">
                         <option value="claro">Claro</option>
                         <option value="cnt">CNT</option>
                         <option value="movistar">Movistar</option>                         
                     </select>
                 </li>
-            </li>
-        </t> 
+            </li>            
+        </t>
 
     </t>
 

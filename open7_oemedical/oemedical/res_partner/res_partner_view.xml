@@ -64,6 +64,7 @@
                         <group>                           
                             <field name="phone" placeholder="e.g. +32.81.81.37.00"/>
                             <field name="mobile"/>
+                            <field name="mobile_operator"/>
                             <field name="fax"/>
                             <field name="email" widget="email"/>                            
                         </group>

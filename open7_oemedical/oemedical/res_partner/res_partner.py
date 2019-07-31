@@ -57,6 +57,7 @@ def _check_ruc(ced_ruc, position):
         return True
     else:
         return False
+
 class ResPartner(osv.Model):
     _inherit = 'res.partner'
     
@@ -90,6 +91,8 @@ class ResPartner(osv.Model):
         'type_ced_ruc': fields.selection(
             [('ruc', 'Ruc'), ('cedula', 'Cédula'), ('pasaporte', 'Pasaporte')],
             string='Tipo identificación', select=True, readonly=False),
+        'mobile_operator': fields.selection([('claro', 'Claro'), ('cnt', 'CNT'), ('movistar', 'Movistar')],
+            string='Operadora'),
     }
 
     def _get_default_tipo_persona(self, cr, uid, context=None):
@@ -97,7 +100,8 @@ class ResPartner(osv.Model):
 
     _defaults = {
         'tipo_persona':  _get_default_tipo_persona,
-        'type_ced_ruc': 'cedula'
+        'type_ced_ruc': 'cedula',
+        'mobile_operator': 'claro'
     }
 
     def _check_ced_ruc(self, cr, uid, ids, context=None):

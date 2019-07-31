@@ -123,10 +123,10 @@ class OeMedicalPatient(osv.osv):
         return False
 
     _defaults = {
-        'ref': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'),               
+        'ref'         : lambda obj, cr, uid, context: obj.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'),
         'city'        : 'Quito',
         'country_id'  : _get_default_country,
-        'state_id'    : _get_default_state,        
+        'state_id'    : _get_default_state,             
     }
 
     def _check_mobile_contact_number(self, cr, uid, ids, context=None):        
