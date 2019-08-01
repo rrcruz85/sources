@@ -6,7 +6,10 @@
  			<field name="model">oemedical.patient</field> 
  			<field name="arch" type="xml"> 
  				<tree string="Patients"> 
- 					<field name="name" /> 
+ 					<field name="name" invisible="1"/>
+					<field name="first_name" string="First Name"/>
+					<field name="last_name" />
+					<field name="slastname" />
 					<field name="type_ced_ruc" /> 					 
  					<field name="ced_ruc" />  
 					<field name="ref" string = "Clinic History"/>						 
@@ -170,7 +173,7 @@
                                     <a type="open"><img t-att-src="kanban_image('oemedical.patient', 'image', record.id.value)" width="90" height="90" class="oe_employee_picture"/></a>
                                     <div class="oe_kanban_details">
                                         <h4>
-                                            <a type="open"><field name="name"/></a>                                           
+                                            <a type="open"><field name="first_name"/> <field name="last_name"/></a>
                                         </h4>
                                         <ul>
 										    <li t-if="record.ced_ruc.raw_value"><b>Id:</b> <field name="ced_ruc"/></li>
@@ -192,7 +195,9 @@
  			<field name="model">oemedical.patient</field> 
  			<field name="arch" type="xml"> 
  				<search string="Patients"> 
- 					<field name="name" /> 
+ 					<field name="name" invisible="1" />
+					<field name="first_name" />
+					<field name="last_name" />
 					<field name="ced_ruc" /> 
 					<field name="mobile" />
 					<field name="ref"/>	

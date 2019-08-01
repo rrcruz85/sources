@@ -6,6 +6,7 @@ from openerp.osv import osv, fields
 from openerp.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.addons.auth_signup.res_users import SignupError
 from openerp.tools.translate import _
+from urlparse import urljoin
 
 def random_token():
     # the token has an entropy of about 120 bits (6 bits/char * 20 chars)
@@ -90,9 +91,6 @@ class res_users(osv.Model):
                 'country_id': country[0],
                 'state_id': state[0],
                 'city': 'Quito',
-                'street': '',
-                'street2': '',
-                'zip': '',
                 'signup_token': token,
                 'signup_type': 'signup',
                 'signup_expiration': now(days=+1)
@@ -104,10 +102,16 @@ class res_users(osv.Model):
                 'dob':   datetime.strptime(values.get('birthdate'), '%d-%m-%Y')
             }, context=None)
 
-            group = self.pool.get('ir.model.data').get_object(cr, uid, 'oemedical', 'patient_group')
-            if group:
+            patient_group = self.pool.get('ir.model.data').get_object(cr, uid, 'oemedical', 'patient_group')
+            portal_group = self.pool.get('ir.model.data').get_object(cr, uid, 'portal', 'group_portal')
+
+            if patient_group:
                 self.write(cr, uid, [user_id], {
-                    'groups_id': [(4, group.id)]
+                    'groups_id': [(4, patient_group.id)]
+                }, context=context)
+            if portal_group:
+                self.write(cr, uid, [user_id], {
+                    'groups_id': [(3, portal_group.id)]
                 }, context=context)
 
             try:
@@ -128,3 +132,21 @@ class res_users(osv.Model):
         return user_id
 
 res_users()
+
+class res_partner(osv.Model):
+    _inherit = 'res.partner'
+
+    def _get_activation_link(self, cr, uid, ids, name, arg, context=None):
+        res = {}.fromkeys(ids, '')
+        base_url = self.pool.get('ir.config_parameter').get_param(cr, uid, 'web.base.url')
+        for element in self.browse(cr, uid, ids, context=context):
+            if element.signup_token:
+                res[element.id] = urljoin(base_url, "/validate?db=%(db)s&token=%(token)s" % {
+                    'db' : cr.dbname,
+                    'token' : element.signup_token
+                })
+        return res
+
+    _columns = {
+        'activation_link': fields.function(_get_activation_link, type='char', string='Activation Link'),
+    }

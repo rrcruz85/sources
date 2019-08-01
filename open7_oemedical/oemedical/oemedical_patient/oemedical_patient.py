@@ -9,7 +9,7 @@ class OeMedicalPatient(osv.osv):
     _inherits={
         'res.partner': 'partner_id',
     }
-    _name='oemedical.patient'
+    _name ='oemedical.patient'
    
     def _get_age(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
@@ -151,7 +151,7 @@ class OeMedicalPatient(osv.osv):
     
     def _check_emergency_fullname(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
-            if obj.emergency_person and not re.match(r'^[a-zA-Z]+\D*([a-zA-Z]\D*)*$', obj.emergency_person):
+            if obj.emergency_person and not re.match(r'^[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]+\D*([a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]\D*)*$', obj.emergency_person):
                 return False
         return True
 

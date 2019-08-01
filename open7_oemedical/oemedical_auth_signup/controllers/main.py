@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import simplejson
-import urllib
 import openerp
 import openerp.addons.web.http as openerpweb
 import openerp.addons.web.controllers.main as webmain
@@ -8,6 +6,7 @@ import re
 from openerp.modules.registry import RegistryManager
 from datetime import datetime
 from openerp.tools.translate import _
+from urlparse import urljoin
 
 error_html = """
 <!DOCTYPE html>
@@ -99,9 +98,8 @@ success_html = """
 </html>
 """
 
-
 class ValidateToken(openerpweb.Controller):
-    # http://hostname:8069/validate?db=kbamed&token=2UqutM23KC8CNWgXF7BA
+    # http://hostname:8069/validate?db=kbamed&token=12345
     _cp_path = "/validate"
 
     @openerpweb.httprequest
@@ -119,9 +117,11 @@ class ValidateToken(openerpweb.Controller):
         elif not re.match(r'^[a-zA-Z0-9]+$', token):
             errmsg = _('Invalid token format')
 
+        base_url = ''
         if not errmsg:
             registry = RegistryManager.get(db)
             with registry.cursor() as cr:
+                base_url = registry.get('ir.config_parameter').get_param(cr, openerp.SUPERUSER_ID, 'web.base.url')
                 res_partner = registry.get('res.partner')
                 partnerId = res_partner.search(cr, openerp.SUPERUSER_ID,[('signup_token', '=', token)])
                 if not partnerId:
@@ -140,17 +140,24 @@ class ValidateToken(openerpweb.Controller):
                             registry.get('res.users').write(cr, openerp.SUPERUSER_ID, [partner.user_id.id], {
                                 'active': True
                             })
+
+        company_name = ''
+        registry = RegistryManager.get(db)
+        with registry.cursor() as cr:
+            company_name = registry.get('res.users').browse(cr, openerp.SUPERUSER_ID, openerp.SUPERUSER_ID).company_id.name
+
         if errmsg:
             template = error_html % {
-                'company_name': 'Kubamed',
+                'company_name': company_name,
                 'db': db,
                 'error': errmsg
             }
         else:
+            base_url = urljoin(base_url, "?db=%(db)s" % {'db': db})
             template = success_html % {
-                'company_name': 'Kubamed',
+                'company_name': company_name,
                 'db': db,
-                'index_url': 'http://localhost:8069?db=kbamed',
+                'index_url': base_url,
                 'message': _('User Account Successfully Activated. In order to access our portal you have to go to login screen.'),
                 'link_message' : _('Back to Login Screen')
             }

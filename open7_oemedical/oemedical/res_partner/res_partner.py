@@ -121,21 +121,21 @@ class ResPartner(osv.Model):
                         return _check_cedula(partner.ced_ruc)
         return True
 
-    def _check_full_name(self, cr, uid, ids, context=None):
+    def _check_first_name(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
-            if (obj.is_doctor or obj.is_patient or obj.is_person) and not re.match(r'^[a-zA-Z]+\D*[a-zA-Z]*$', obj.first_name):
+            if (obj.is_doctor or obj.is_patient or obj.is_person) and not re.match(r'^[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]+\D*[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]*$', obj.first_name):
                 return False
         return True
 
     def _check_last_name(self, cr, uid, ids, context=None):    
         for obj in self.browse(cr, uid, ids, context=context):
-            if (obj.is_doctor or obj.is_patient or obj.is_person) and not re.match(r'^[a-zA-Z]+$', obj.last_name):
+            if (obj.is_doctor or obj.is_patient or obj.is_person) and not re.match(r'^[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]+$', obj.last_name):
                 return False
         return True
 
     def _check_slast_name(self, cr, uid, ids, context=None):        
         for obj in self.browse(cr, uid, ids, context=context):
-            if (obj.is_doctor or obj.is_patient or obj.is_person) and not re.match(r'^[a-zA-Z]+$', obj.slastname):
+            if (obj.is_doctor or obj.is_patient or obj.is_person) and not re.match(r'^[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]+$', obj.slastname):
                 return False
         return True
     
@@ -159,7 +159,7 @@ class ResPartner(osv.Model):
 
     _constraints = [
         (_check_ced_ruc, 'El número de cédula, ruc o pasaporte esta incorrecto', ['ced_ruc']),
-        (_check_full_name, 'El nombre esta incorrecto', ['first_name']),
+        (_check_first_name, 'El nombre esta incorrecto', ['first_name']),
         (_check_last_name, 'El primer apellido esta incorrecto', ['last_name']),
         (_check_slast_name, 'El segundo apellido esta incorrecto', ['slastname']),
         (_check_mobile_number, 'El número móvil esta incorrecto', ['mobile']),

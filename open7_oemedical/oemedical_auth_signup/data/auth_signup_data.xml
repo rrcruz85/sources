@@ -21,7 +21,7 @@
                         you have to click on the following link:
                     </p>
                     <ul>
-                        <li><a href="${object.signup_url}">Click here to activate your account</a></li>
+                        <li><a href="${object.activation_link}">Click here to activate your account</a></li>
                     </ul>
                     <p>
                         Thanks,
@@ -30,7 +30,7 @@
 ${object.company_id.name or ''}
 ${object.company_id.email or ''}
 ${object.company_id.phone or ''}
-${object.company_id.website or ''}
+${object.company_id.partner_id.website or ''}
                     </pre>
                 ]]>
             </field>
