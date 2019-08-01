@@ -87,6 +87,7 @@ class res_users(osv.Model):
             state = self.pool.get('res.country.state').search(cr, uid, [('country_id', '=', country[0]), ('code', '=', 'PIC')])
             token = random_token()
             self.pool.get('res.partner').write(cr, uid, [user.partner_id.id], {
+                'name': values['first_name'] + ' ' + values['last_name'] + ' ' + values['slastname'],
                 'user_id': user_id,
                 'country_id': country[0],
                 'state_id': state[0],

@@ -4,8 +4,6 @@ openerp.oemedical_auth_signup = function(instance) {
     var compSelected = '';
     var errorMsg = '';
 
-    //console.log(instance.web.Login.prototype);
-
     instance.web.Login.include({
 
         start: function() {
@@ -136,7 +134,7 @@ openerp.oemedical_auth_signup = function(instance) {
         },
 
         validateNames: function(names, areNames){
-            var namesRegex = /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/;
+            var namesRegex = /^[A-Za-zñÑáéíóúÁÉÍÓÚüÜ\s]+$/;
             if (!namesRegex.test(names)) { 
                 errorMsg = areNames ? "Names contains illegal characters !": "LastNames contains illegal characters !";                
                 return false;         
