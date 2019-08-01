@@ -13,7 +13,7 @@
                 "oemedical",
                 "auth_signup"
                ],
-    "data":[],
+    "data":['data/auth_signup_data.xml'],
     "demo_xml": [],
     "update_xml": [],
     "active": False,

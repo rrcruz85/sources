@@ -5,6 +5,7 @@ import random
 from openerp.osv import osv, fields
 from openerp.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.addons.auth_signup.res_users import SignupError
+from openerp.tools.translate import _
 
 def random_token():
     # the token has an entropy of about 120 bits (6 bits/char * 20 chars)
@@ -72,8 +73,7 @@ class res_users(osv.Model):
         assert values.get('partner_id') or values.get('name'), "Signup: no name or partner given for new user"
 
         # create a copy of the template user (attached to a specific partner_id if given)
-        values['active'] = True
-        values['state'] = 'new'
+        values['active'] = False
         return self.copy(cr, uid, template_user_id, values, context=context)
 
     def create(self, cr, uid, values, context=None):
@@ -84,7 +84,7 @@ class res_users(osv.Model):
         if user.partner_id:
             country = self.pool.get('res.country').search(cr, uid, [('code', '=', 'EC')])
             state = self.pool.get('res.country.state').search(cr, uid, [('country_id', '=', country[0]), ('code', '=', 'PIC')])
-
+            token = random_token()
             self.pool.get('res.partner').write(cr, uid, [user.partner_id.id], {
                 'user_id': user_id,
                 'country_id': country[0],
@@ -92,19 +92,35 @@ class res_users(osv.Model):
                 'city': 'Quito',
                 'street': '',
                 'street2': '',
-                'zip': ''
+                'zip': '',
+                'signup_token': token,
+                'signup_type': 'signup',
+                'signup_expiration': now(days=+1)
             }, context=None)
+
             self.pool.get('oemedical.patient').create(cr, uid, {
                 'sex': values.get('sex'),
                 'partner_id': user.partner_id.id,
                 'dob':   datetime.strptime(values.get('birthdate'), '%d-%m-%Y')
             }, context=None)
+
             group = self.pool.get('ir.model.data').get_object(cr, uid, 'oemedical', 'patient_group')
             if group:
                 self.write(cr, uid, [user_id], {
                     'groups_id': [(4, group.id)]
                 }, context=context)
 
+            try:
+                template = self.pool.get('ir.model.data').get_object(cr, uid, 'oemedical_auth_signup', 'activation_account_email')
+                if not user.email:
+                    raise osv.except_osv(_("Cannot send email: user has no email address."), user.name)
+                mail_id = self.pool.get('email.template').send_mail(cr, uid, template.id, user.id, True, context=context)
+                mail_obj = self.pool.get('mail.mail')
+                mail_state = mail_obj.read(cr, uid, mail_id, ['state'], context=context)
+                if mail_state and mail_state['state'] == 'exception':
+                    raise osv.except_osv(_("Cannot send email: no outgoing email server configured.\nYou can configure it under Settings/General Settings."), user.name)
+            except ValueError:
+                pass
 
         if context and context.get('reset_password') and user.email:
             ctx = dict(context, create_user=True)

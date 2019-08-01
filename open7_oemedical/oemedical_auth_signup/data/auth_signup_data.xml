@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="activation_account_email" model="email.template">
+            <field name="name">Account Activation Email</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="email_from"><![CDATA[${object.company_id.name} <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.email|safe}</field>
+            <field name="subject"><![CDATA[${object.company_id.name} Activation Account]]></field>
+            <field name="body_html">
+                <![CDATA[
+                    <p>
+                        Dear ${object.first_name} ${object.last_name} ${object.slastname},
+                    </p>
+                    <p>
+                        You have been successfully signed up into "${object.company_id.name}".
+                    </p>
+                    <p>
+                        In order to activate your user account ${object.name}) and be able to have access to our portal
+                        you have to click on the following link:
+                    </p>
+                    <ul>
+                        <li><a href="${object.signup_url}">Click here to activate your account</a></li>
+                    </ul>
+                    <p>
+                        Thanks,
+                    </p>
+                    <pre>
+${object.company_id.name or ''}
+${object.company_id.email or ''}
+${object.company_id.phone or ''}
+${object.company_id.website or ''}
+                    </pre>
+                ]]>
+            </field>
+        </record>
+
+    </data>
+</openerp>
