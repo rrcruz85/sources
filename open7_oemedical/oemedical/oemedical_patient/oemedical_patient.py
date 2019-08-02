@@ -6,10 +6,11 @@ from datetime import datetime
 import re
 
 class OeMedicalPatient(osv.osv):
-    _inherits={
+
+    _inherits = {
         'res.partner': 'partner_id',
     }
-    _name ='oemedical.patient'
+    _name = 'oemedical.patient'
    
     def _get_age(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
@@ -193,8 +194,25 @@ class OeMedicalPatient(osv.osv):
     
     def unlink(self, cr, uid, ids, context=None):
         partners = [r.partner_id.id for r in self.browse(cr,uid, ids)]
-        self.pool.get('res.partner').write(cr, uid, partners, {'active': False});
+        self.pool.get('res.partner').write(cr, uid, partners, {'active': False})
         return super(OeMedicalPatient, self).unlink(cr, uid, ids, context=context)
+
+    '''
+    def search(self, cr, user, args, offset=0, limit=None, order=None, context=None, count=False):
+        return super(OeMedicalPatient ,self).search(cr, user, args, offset, limit, order, context, count)
+
+    def name_get(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if not ids:
+            return []
+        reads = self.read(cr, uid, ids, ['name'], context=context)
+        res = []
+        for record in reads:
+            name = record['name']
+            res.append((record['id'], name))
+        return res
+    '''
     
 OeMedicalPatient()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

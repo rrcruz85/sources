@@ -124,6 +124,15 @@ class OeMedicalAppointment(osv.Model):
             odonto_specialty = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', '001')  
             return odonto_specialty[1]
         return False
+
+    def _get_default_patient(self, cr, uid, context = None):
+        patient_group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', 'patient_group')
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        for g in user.groups_id:
+            if g.id == patient_group[1]:
+                patient = self.pool.get('oemedical.patient').search(cr, uid, [('partner_id.user_id', '=', uid)])
+                return patient[0] if patient else False
+        return False
    
     _defaults = {         
         'stimated_duration': 30,
@@ -131,7 +140,8 @@ class OeMedicalAppointment(osv.Model):
         'state': 'draft',
         'start_date': time.strftime('%Y-%m-%d'),
         'start_time' : 8.5,
-        'specialty_id': _get_default_specialty        
+        'specialty_id': _get_default_specialty,
+        'patient_id': _get_default_patient
     }
 
     def _check_date_start_end(self, cr, uid, ids, context=None):

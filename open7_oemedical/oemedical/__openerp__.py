@@ -113,13 +113,13 @@ OeMedical at a glance:
         #'oemedical_genetics/data/disease_genes.xml',
         #'oemedical_lab/oemedical_lab_view.xml',
         'oemedical_treatment/oemedical_treatment_view.xml',
-        'security/ir.model.access.csv',
-        'security/oemedical_groups.xml',
-        'report/oemedical_patient_evalprint.xml', 
+        'report/oemedical_patient_evalprint.xml',
         'report/oemedical_patient_evolprint.xml', #removed because it's not functional
         'report/oemedical_prescription_print.xml',
         'report/oe_reports_webkit_header.xml',
         #'report/oemedical_patient_evaluation.xml',
+        'security/oemedical_groups.xml',
+        'security/ir.model.access.csv',
         'oemedical_menu.xml',
     ],
     "demo": [

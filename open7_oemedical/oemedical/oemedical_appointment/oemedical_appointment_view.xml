@@ -14,11 +14,11 @@
 					<field name="doctor_id" />
 					<field name="type" />
 					<field name="state" />
-					<button name="button_back" icon="gtk-go-back" states="confirm,waiting,in_consultation,done,canceled" string="Back"  type="object"/>
+					<button name="button_back" icon="gtk-go-back" states="confirm,waiting,in_consultation,done,canceled" string="Back"  type="object" groups="oemedical.doctor_group"/>
                     <button name="button_confirm" icon="STOCK_YES" states="draft" string="Confirm" class="oe_highlight"  type="object" />
-                    <button name="button_waiting" icon="kanban-pause" states="confirm" string="Waiting" class="oe_highlight"  type="object"/>
-                    <button name="button_in_consultation" icon="gtk-execute" states="waiting" string="In Consultation" class="oe_highlight"  type="object" />
-                    <button name="button_done" icon="terp-camera_test" states="in_consultation" string="Done" class="oe_highlight"  type="object" />
+                    <button name="button_waiting" icon="kanban-pause" states="confirm" string="Waiting" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
+                    <button name="button_in_consultation" icon="gtk-execute" states="waiting" string="In Consultation" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
+                    <button name="button_done" icon="terp-camera_test" states="in_consultation" string="Done" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
                     <button name="button_cancel" icon="terp-gtk-stop" states="confirm, in_consultation" string="Cancel"  type="object" />        
 				</tree>
 			</field>
@@ -30,11 +30,11 @@
 			<field name="arch" type="xml">
 				<form string="Appointment"  version="7.0">
                     <header>
-                        <button name="button_back" states="confirm,waiting,in_consultation,done,canceled" string="Back"  type="object"/>
+                        <button name="button_back" states="confirm,waiting,in_consultation,done,canceled" string="Back"  type="object" groups="oemedical.doctor_group"/>
                         <button name="button_confirm" states="draft" string="Confirm" class="oe_highlight"  type="object" />
-                        <button name="button_waiting" states="confirm" string="Waiting" class="oe_highlight"  type="object"/>
-                        <button name="button_in_consultation" states="waiting" string="In Consultation" class="oe_highlight"  type="object" />
-                        <button name="button_done" states="in_consultation" string="Done" class="oe_highlight"  type="object" />
+                        <button name="button_waiting" states="confirm" string="Waiting" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
+                        <button name="button_in_consultation" states="waiting" string="In Consultation" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
+                        <button name="button_done" states="in_consultation" string="Done" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
                         <button name="button_cancel" states="confirm, in_consultation" string="Cancel"  type="object" />
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,waiting,in_consultation,done,canceled" statusbar_colors='{"draft":"blue","done":"green","canceled":"red","confirm":"yellow","waiting":"gray", "in_consultation":"gray"}'/>
                     </header>
@@ -50,11 +50,11 @@
 					        <field name="start_time" widget="float_time" />							
 							<newline/>										    
 							<field name="end_date" attrs="{'invisible':[('state','!=','done')],'readonly':[('state','==','done')]}"  />
-							<field name="stimated_duration" />	
+							<field name="stimated_duration" groups="oemedical.doctor_group"/>
 							<newline/>
-							<field name="next_appointment_date" attrs="{'invisible':[('state','=','draft')]}"/>	
+							<field name="next_appointment_date" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.doctor_group"/>
 							<newline/>
-							<field name="next_appointment_hour" widget="float_time" attrs="{'invisible':[('state','=','draft')]}"/>							 								
+							<field name="next_appointment_hour" widget="float_time" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.doctor_group"/>
                         </group>                                                
                         <notebook>
                             <page string="Patient Information">  
@@ -74,7 +74,7 @@
 							    <group col="4" string="Motive Of the Appointment">
 					                <field name="motive" colspan="4" nolabel="1"/>
                                 </group>								
-								<group string="Enfermedades o padecimientos" colspan="4">
+								<group string="Enfermedades o padecimientos" colspan="4" groups="oemedical.doctor_group">
 								    <group>									      
 										<field name="cardiopatia"/>
 										<field name="diabetes"/>
@@ -95,16 +95,16 @@
 										<field name="asma"/>
 									</group>									 	
 								</group>
-								<label for="others_antecedents" attrs="{'invisible':[('other','=',False)]}"/>
-								<field name="others_antecedents" nolabel="1" colspan="4" attrs="{'invisible':[('other','=',False)]}"/>								 
-								<group col="4" string="Enfermedad Actual">
+								<label for="others_antecedents" attrs="{'invisible':[('other','=',False)]}" groups="oemedical.doctor_group"/>
+								<field name="others_antecedents" nolabel="1" colspan="4" attrs="{'invisible':[('other','=',False)]}" groups="oemedical.doctor_group"/>
+								<group col="4" string="Enfermedad Actual" groups="oemedical.doctor_group">
 					                <field name="info_diagnosis" colspan="4" nolabel="1"/>
                                 </group>								
                             </page>
-							 <page string="Treatments">
+							 <page string="Treatments" attrs="{'invisible':[('state','in',('draft','waiting','confirm','canceled'))]}">
                                 <field name="treatment_ids" nolabel="1" context="{'appointment_id': active_id}"/>
                             </page>
-                            <page string="History">
+                            <page string="History" groups="oemedical.doctor_group">
                                 <field name="history_ids" nolabel="1" readonly="1">
                                     <tree string="History">
     					                <field name="date" />
