@@ -41,7 +41,7 @@
                     <sheet>
 					    <group col="4">
 					        <field name="patient_id" attrs="{'readonly':[('state','!=','draft')]}" />
-							<field name="specialty_id" on_change="onchange_specialty_id(specialty_id)" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}"/>
+							<field name="specialty_id" on_change="onchange_specialty_id(specialty_id, doctor_id)" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}"/>
 							<field name="doctor_id" on_change="onchange_patient_doctor(patient_id, doctor_id)" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}"/>
 							<field name="type" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}"/>
 							<field name="start_date" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}"/>
@@ -55,9 +55,12 @@
 							<field name="next_appointment_date" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.doctor_group"/>
 							<newline/>
 							<field name="next_appointment_hour" widget="float_time" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.doctor_group"/>
-                        </group>                                                
+                        </group>
+						<group col="4" string="Motive Of the Appointment">
+							<field name="motive" nolabel="1" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}" />
+						</group>
                         <notebook>
-                            <page string="Patient Information">  
+                            <page string="Patient Information" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 							    <group col="8" string="Signos vitales y mediciones" attrs="{'invisible':[('state','in',('draft','confirm','canceled'))]}" groups="oemedical.doctor_group">
 	                        		<group col="4">
 	                        			<field name="pat_info" col="1" colspan="4"/>
@@ -71,9 +74,6 @@
 		                                <field name="size_info" col="1" colspan="2"/>
 		                            </group>
 	                            </group>
-							    <group col="4" string="Motive Of the Appointment">
-					                <field name="motive" colspan="4" nolabel="1" attrs="{'readonly':[('state','not in ',('draft', 'confirm'))]}" />
-                                </group>								
 								<group string="Enfermedades o padecimientos" colspan="4" groups="oemedical.doctor_group">
 								    <group>									      
 										<field name="cardiopatia"/>
@@ -104,7 +104,7 @@
 							 <page string="Treatments" attrs="{'invisible':[('state','in',('draft','waiting','confirm','canceled'))]}">
                                 <field name="treatment_ids" nolabel="1" context="{'appointment_id': active_id}"/>
                             </page>
-                            <page string="History" groups="oemedical.doctor_group">
+                            <page string="History" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
                                 <field name="history_ids" nolabel="1" readonly="1">
                                     <tree string="History">
     					                <field name="date" />

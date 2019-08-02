@@ -121,8 +121,18 @@ class OeMedicalAppointment(osv.Model):
     
     def _get_default_specialty(self, cr, uid, context = None):
         if context and 'odonto_specialty' in context and context['odonto_specialty']:
-            odonto_specialty = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', '001')  
+            odonto_specialty = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', '001')
             return odonto_specialty[1]
+        else:
+            doctor_group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', 'doctor_group')
+            user = self.pool.get('res.users').browse(cr, uid, uid)
+            for g in user.groups_id:
+                if g.id == doctor_group[1]:
+                    doctor = self.pool.get('oemedical.physician').search(cr, uid, [('physician_id.user_id', '=', uid)])
+                    if doctor:
+                        specialty = self.pool.get('oemedical.physician').browse(cr, uid, doctor[0]).specialty_id
+                        if specialty:
+                            return specialty.id
         return False
 
     def _get_default_patient(self, cr, uid, context = None):
@@ -133,6 +143,15 @@ class OeMedicalAppointment(osv.Model):
                 patient = self.pool.get('oemedical.patient').search(cr, uid, [('partner_id.user_id', '=', uid)])
                 return patient[0] if patient else False
         return False
+
+    def _get_default_doctor(self, cr, uid, context = None):
+        doctor_group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', 'doctor_group')
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        for g in user.groups_id:
+            if g.id == doctor_group[1]:
+                doctor = self.pool.get('oemedical.physician').search(cr, uid, [('physician_id.user_id', '=', uid)])
+                return doctor[0] if doctor else False
+        return False
    
     _defaults = {         
         'stimated_duration': 30,
@@ -141,7 +160,8 @@ class OeMedicalAppointment(osv.Model):
         'start_date': time.strftime('%Y-%m-%d'),
         'start_time' : 8.5,
         'specialty_id': _get_default_specialty,
-        'patient_id': _get_default_patient
+        'patient_id': _get_default_patient,
+        'doctor_id': _get_default_doctor
     }
 
     def _check_date_start_end(self, cr, uid, ids, context=None):
@@ -233,10 +253,15 @@ class OeMedicalAppointment(osv.Model):
                     res['value']['start_time'] = hour + minutes
         return res
 
-    def onchange_specialty_id(self, cr, uid, ids, specialty_id, context=None):
+    def onchange_specialty_id(self, cr, uid, ids, specialty_id, doctor_id=False, context=None):
         res = {}
         if specialty_id:
-            res['value'] = {'doctor_id': False}
+            is_valid = False
+            if doctor_id:
+                specialty = self.pool.get('oemedical.physician').browse(cr, uid, doctor_id).specialty_id
+                if specialty and specialty.id == specialty_id:
+                    is_valid = True
+            res['value'] = {'doctor_id': doctor_id if is_valid else False}
             res['domain'] = {'doctor_id': [('specialty_id', '=', specialty_id)]}
         return res
 

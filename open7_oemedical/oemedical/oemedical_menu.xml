@@ -14,7 +14,7 @@
 
 <!--Menu Doctors-->
         <menuitem name="Health Professionals" id="oemedical_physician_root"
-            parent="oemedical_root" sequence="20" groups="oemedical.doctor_group"/>
+            parent="oemedical_root" sequence="20" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
 
 		<menuitem id="oemedical_physician" name="Physicians" parent="oemedical_physician_root"
 			sequence="10" action="act_open_oemedical_physician_view" />

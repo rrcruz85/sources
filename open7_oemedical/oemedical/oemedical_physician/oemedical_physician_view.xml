@@ -6,7 +6,10 @@
 			<field name="model">oemedical.physician</field>			 
 			<field name="arch" type="xml">
 				<tree string="Physicians">
-					<field name="name" />
+					<field name="name" invisible="1" />
+					<field name="first_name" />
+		            <field name="last_name" />
+		            <field name="slastname" />
 					<field name="type_ced_ruc" /> 					 
  					<field name="ced_ruc" /> 
 					<field name="mobile" />
@@ -65,7 +68,7 @@
 						<notebook> 
 							<page string="General Information"> 
 								<group string="Contact Information">                            
-									<group>
+									<group groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 										<label for="street" string="Address"/>
 										<div>
 											<field name="street" placeholder="Street..."/>
@@ -86,11 +89,11 @@
 										<field name="mobile_operator" required="1"/>
 										<field name="email" required="1" widget="email"/>
 										<field name="title" class="oe_no_button" options='{"no_open": True,"no_quick_create":True,"no_create_edit": True}'/>
-										<field name="user_id" string="User"/>										
+										<field name="user_id" string="User" attrs="{'readonly':[('user_id','!=',False)]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
 									</group>
 									<newline/>
 								</group> 
-                                <group string="Academic Information">                           
+                                <group string="Academic Information" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 									 								
 									<group>
 										<field name="graduated_institution_id" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_form', 'default_is_institution': True, 'default_customer': False, 'default_supplier': False, 'default_employee': False}" />
@@ -103,7 +106,7 @@
 										<field name="registered_date"/> 	                                   
 									</group>									 
 								</group> 
-								<group string="Specialties">                            
+								<group string="Specialties" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 									<field name="specialty_ids" nolabel="1" context="{'physician_id': active_id}">
 									    <tree string="Physician Specialties">											 
 											<field name="specialty_id" />
@@ -151,7 +154,7 @@
 									</field>
 								</group> 														
 							</page>  
-							<page string = "Work Information"> 
+							<page string = "Work Information" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 							    <group>
 								      <field name="is_currently_working"/>
 									  <field name="work_institution_id" attrs="{'required':[('is_currently_working','=',True)]}"  context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_form','default_is_company': True, 'default_is_work': True, 'default_is_institution': False, 'default_customer': False, 'default_supplier': False, 'default_employee': False}"/> 
@@ -180,7 +183,11 @@
                                     <a type="open"><img t-att-src="kanban_image('oemedical.physician', 'image', record.id.value)" width="90" height="90" class="oe_employee_picture"/></a>
                                     <div class="oe_kanban_details">
                                         <h4>
-                                            <a type="open"><field name="name"/></a>                                           
+                                            <a type="open">
+												<field name="first_name" />
+												<field name="last_name" />
+												<field name="slastname" />
+											</a>
                                         </h4>
                                         <ul>
 										    <li t-if="record.ced_ruc.raw_value"><b>Id:</b> <field name="ced_ruc"/></li>
@@ -202,7 +209,10 @@
 			<field name="model">oemedical.physician</field>			 
 			<field name="arch" type="xml">
 				<search string="Physicians">
-					<field name="name" />					 				 
+					<field name="name" invisible="1"/>
+					<field name="first_name" />
+		            <field name="last_name" />
+		            <field name="slastname" />
  					<field name="ced_ruc" /> 
 					<field name="mobile" />
 					<field name="email" />
