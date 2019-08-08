@@ -7,7 +7,7 @@ from datetime import datetime
 class OeMedicalPhysician(osv.Model):
     _name = 'oemedical.physician'
 
-    _inherits={
+    _inherits = {
         'res.partner': 'physician_id'
     }
 
@@ -30,7 +30,7 @@ class OeMedicalPhysician(osv.Model):
         res = {}         
         now = datetime.now()
         for record in self.browse(cr, uid, ids, context=context):
-            if (record.dob):
+            if record.dob:
                 dob = datetime.strptime(str(record.dob), '%Y-%m-%d')
                 delta = relativedelta(now, dob)
                 years_months_days = delta.years
@@ -44,6 +44,9 @@ class OeMedicalPhysician(osv.Model):
         for line in self.pool.get('oemedical.physician.specialty').browse(cr, uid, ids, context=context):
             result.add(line.physician_id.id)
         return list(result)
+
+    def _current_user_is_patient(self, cr, uid, ids, field_name, arg, context=None):
+        return {}.fromkeys(ids, self.pool.get('res.users').has_group(cr, uid, 'oemedical.patient_group'))
 
     _columns = {
         'physician_id': fields.many2one('res.partner', string='Health Professional',required=True , help='Physician', 
@@ -80,6 +83,7 @@ class OeMedicalPhysician(osv.Model):
         'doctor_id': fields.char(string='Medical Record Id', size = 32, help="The id of the doctor registered in the MS, Cenescyt or Equivalent"),
         'registered_institution_id': fields.many2one('res.partner', string='Registered Institution', domain=['|',('is_institution', '=', True), ('is_school', '=', True)], help='Institution where she/he registered her/his title as a doctor' ),
         'registered_date': fields.date(string='Registration Date', help="Date on which the doctor was registered"),
+        'current_user_is_patient': fields.function(_current_user_is_patient, type='boolean', string='Current User Is Patient'),
     }
 
     def _get_default_country(self, cr, uid, context=None):

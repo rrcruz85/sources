@@ -176,8 +176,9 @@ class OeMedicalAppointment(osv.Model):
         return True
     
     def _check_start_time(self, cr, uid, ids, context=None):
-        for obj in self.browse(cr, uid, ids, context=context):          
-            if obj.start_time > 24 or obj.start_time < 0:
+        for obj in self.browse(cr, uid, ids, context=context):
+            start_date_time = get_datetime(obj.start_date, obj.start_time)
+            if obj.start_time > 24 or obj.start_time < 0 or start_date_time < datetime.now():
                 return False              
         return True
     

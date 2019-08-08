@@ -33,8 +33,9 @@
 							<div> 
                                  <h1> 
 								    <field name="id" invisible="1"/> 
-									<field name="name" invisible="1"/> 
-		                            <field name="first_name" default_focus="1" placeholder="Names" style="width: 40%%" required="1" on_change="onchange_name(first_name, last_name, slastname, context)" /> 
+									<field name="name" invisible="1"/>
+									<field name="current_user_is_patient" invisible="1"/>
+		                            <field name="first_name" default_focus="1" placeholder="Names" style="width: 40%%" required="1" on_change="onchange_name(first_name, last_name, slastname, context)" />
 		                            <field name="last_name" placeholder="Last Name" style="width: 22.5%%" required="1" on_change="onchange_name(first_name, last_name, slastname, context)" /> 
 		                            <field name="slastname" placeholder="S Last Name" style="width: 22.5%%" required="1" on_change="onchange_name(first_name, last_name, slastname, context)" /> 
 	                            </h1> 								 
@@ -43,22 +44,22 @@
 							<div style="width: 100%%;display: inline"> 					     
 								<div style="width: 15%%;display: inline; vertical-align: middle">
 									<label for="sex"/>
-									<field name="sex" required ="1" style="width: 10%%; vertical-align: middle"/>
+									<field name="sex" required ="1" style="width: 10%%; vertical-align: middle" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
 								</div>
 								<div style="width: 15%%;display: inline; vertical-align: middle">
 									<label for="type_ced_ruc"/>
-									<field name="type_ced_ruc" required ="1" style="width: 10%%; vertical-align: middle"/>
+									<field name="type_ced_ruc" attrs="{'readonly':[('current_user_is_patient','=',True)]}" required ="1" style="width: 10%%; vertical-align: middle" />
 								</div>
 								<div style="width: 25%%;display: inline; vertical-align: middle">
 									<label for="ced_ruc"/>
-									<field name="ced_ruc" required ="1" style="width: 25%%; vertical-align: middle"/>
+									<field name="ced_ruc" attrs="{'readonly':[('current_user_is_patient','=',True)]}" required ="1" style="width: 25%%; vertical-align: middle"/>
 								</div>                                 
 							</div>
 							<br/><br/>							 	
 							<div style="width: 100%%;display: inline"> 					     
 								<div style="width: 40%%;display: inline; vertical-align: middle">
 									<label for="dob"/> 
-									<field name="dob" required ="1" on_change="onchange_dob(dob)" style="width: 14%%;vertical-align: middle"/> 
+									<field name="dob" required ="1" on_change="onchange_dob(dob)" style="width: 14%%;vertical-align: middle" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
 									<label for="age"/> 
 									<field name="age" style="width: 10%%;vertical-align: middle"/>
 									<label for="ref"/> 
@@ -87,10 +88,10 @@
 	                                </group>								
 	                                <group>
 	                                    <field name="phone" placeholder="e.g. 02.3149120"/>
-	                                    <field name="mobile" required="1" placeholder="e.g. 0955443322"/>                                    
-	                                    <field name="mobile_operator" required="1"/>
-										<field name="email" required="1" widget="email"/>										 
-									    <field name="user_id" string="User" attrs="{'readonly':[('user_id','!=',False)]}"/>
+	                                    <field name="mobile" required="1" placeholder="e.g. 0955443322" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
+	                                    <field name="mobile_operator" required="1" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
+										<field name="email" required="1" widget="email" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
+									    <field name="user_id" string="User" attrs="{'readonly':[('user_id','!=',False)]}" context="{'form_view_ref': 'oemedical.oemedical_view_user_simple_form'}"/>
 	                                </group>
 									<newline/>								
 	                                <group string="Emergency Person's Contact">
@@ -100,14 +101,14 @@
 	                                </group>
 									<newline/>
 									<group>
-										<field name="referido_por" domain="[('is_person','=', True),('id','!=', id)]" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_person_form','default_is_company': False, 'default_is_work': False, 'default_is_institution': False, 'default_customer': False, 'default_supplier': False, 'default_employee': False, 'default_is_person': True}"/>	
+										<field name="referido_por" domain="[('is_person','=', True)]" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system" context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_person_form','default_is_company': False, 'default_is_work': False, 'default_is_institution': False, 'default_customer': False, 'default_supplier': False, 'default_employee': False, 'default_is_person': True}"/>
 									</group>								
 	                                <group string="General Information" colspan="4">
 	                                    <field name="general_info" nolabel="1"/>	                                     
 	                                </group>
 								  </group>               
 	         				</page>     
-	         				<page string="Medical Information"> 
+	         				<page string="Medical Information" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 							    <div style="width: 100%%;display: inline; vertical-align: middle">
 								    <label for="blood_type"/>
 								    <field name="blood_type" style="width: 20%%;vertical-align: middle"/>
@@ -238,6 +239,27 @@
  			<field name="view_mode">form</field> 
  			<field name="view_id" ref="view_oemedical_patient_form" /> 
  		</record> 
+
+		<record id="oemedical_view_user_simple_form" model="ir.ui.view">
+            <field name="name">oemedical.res.user.simplified.form</field>
+            <field name="model">res.users</field>
+            <field name="arch" type="xml">
+                <form string="User" version="7.0">
+                    <sheet>
+						<field name="image" widget='image' class="oe_left oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'/>
+						<div class="oe_title">
+							<div class="oe_edit_only">
+								<label for="name"/>
+							</div>
+							<h1>
+								<field name="name" default_focus="1" placeholder="Name" />
+							</h1>
+							<field name="category_id" widget="many2many_tags" placeholder="Tags..."/>
+						</div>
+                	</sheet>
+                </form>
+            </field>
+        </record>
 
 	</data>
 </openerp>

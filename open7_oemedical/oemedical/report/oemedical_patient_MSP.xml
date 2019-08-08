@@ -10,7 +10,8 @@
                 file="oemedical/report/oemedical_patient_eval_MSP.mako"
                 string="Formato MSP"
                 header="False"
-				report_type="webkit" />
+				report_type="webkit"
+                groups="oemedical.doctor_group,base.group_erp_manager,base.group_system" />
     <!--webkit_header="oemedical_header_webkit"-->
     </data>
 </openerp>

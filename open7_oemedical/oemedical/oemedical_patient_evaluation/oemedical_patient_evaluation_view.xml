@@ -397,7 +397,7 @@
 		</record-->
 
 
-<act_window domain="[('patient_id', '=', active_id)]" id="act_patient_eval_history" name="Evaluation" res_model="oemedical.patient.evaluation" src_model="oemedical.patient"/>
+		<act_window groups="oemedical.doctor_group,base.group_erp_manager,base.group_system" domain="[('patient_id', '=', active_id)]" id="act_patient_eval_history" name="Evaluation" res_model="oemedical.patient.evaluation" src_model="oemedical.patient"/>
 
 		<record model="ir.actions.act_window" id="act_open_oemedical_patient_evaluation_view">
 			<field name="name">Patient Evaluation</field>

@@ -6,6 +6,7 @@
                 name="oemedical_patient_evaluation_report"
                 string="Print official report" 
                 model="oemedical.patient.evaluation"
-                auto="False"/>
+                auto="False"
+				groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
 	</data>
 </openerp>

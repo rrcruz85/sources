@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-		<menuitem id="oemedical_root" name="Medical" sequence="10" />
+		<menuitem id="oemedical_root" name="Medical" sequence="10" groups="oemedical.patient_group,oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
 
 <!--Menu Patient-->
 

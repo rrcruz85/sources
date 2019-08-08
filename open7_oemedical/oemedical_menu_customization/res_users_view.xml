@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_res_users_oemedical_inherit_form" model="ir.ui.view">
+            <field name="name">res.users.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@string='Email Preferences']" position="replace">
+			    	<group string="Email Preferences" groups="base.group_erp_manager,base.group_system">
+                        <field name="email" widget="email" readonly="0"/>
+                        <field name="signature" readonly="0"/>
+                    </group>
+			    </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

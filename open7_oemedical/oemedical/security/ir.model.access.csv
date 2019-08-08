@@ -1,12 +1,10 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_res_partner_category_1,res.partner.category,base.model_res_partner_category,patient_group,1,0,0,0
 access_res_partner_1,res.partner,base.model_res_partner,patient_group,1,1,0,0
-access_res_users_1,res.users,base.model_res_users,patient_group,1,1,0,0
-access_oemedical_prescription_order_1,prescription.order,model_oemedical_prescription_order,patient_group,1,0,0,0
+access_res_users_1,res.users,base.model_res_users,patient_group,1,0,0,0
 access_oemedical_physician_1,physician,model_oemedical_physician,patient_group,1,0,0,0
 access_oemedical_physician_specialty_1,physician.specialty,model_oemedical_physician_specialty,patient_group,1,0,0,0
 access_oemedical_patient_1,patient,model_oemedical_patient,patient_group,1,1,0,0
-access_oemedical_prescription_line_1,prescription.line,model_oemedical_prescription_line,patient_group,1,0,0,0
 access_oemedical_appointment_1,appointment,model_oemedical_appointment,patient_group,1,1,1,0
 access_oemedical_appointment_history_1,appointment.history,model_oemedical_appointment_history,patient_group,1,0,1,0
 access_oemedical_specialty_1,specialty,model_oemedical_specialty,patient_group,1,0,0,0
@@ -43,3 +41,4 @@ access_oemedical_pathology,oemedical.pathology,model_oemedical_pathology,doctor_
 access_oemedical_medication_dosage,oemedical.medication.dosage,model_oemedical_medication_dosage,doctor_group,1,1,1,0
 access_oemedical_pathology_category,oemedical.pathology.category,model_oemedical_pathology_category,doctor_group,1,1,1,0
 access_oemedical_pathology_group,oemedical.pathology.group,model_oemedical_pathology_group,doctor_group,1,1,1,0
+access_ir_sequence_2,ir.sequence,base.model_ir_sequence,doctor_group,1,1,1,0

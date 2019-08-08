@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+	<t t-extend="UserMenu">
+	    <t t-jquery="ul.oe_dropdown_menu li:has(a[data-menu='account'])" t-operation="replace">				 
+	    </t>	
+		<t t-jquery="ul.oe_dropdown_menu li:has(a[data-menu='about'])" t-operation="replace">				 
+	    </t>
+		<t t-jquery="ul.oe_dropdown_menu li:has(a[data-menu='help'])" t-operation="replace">				 
+	    </t>		
+	</t>
+
+	<t t-extend="mail.ComposeMessageTopButton">
+		<t t-jquery="div.oe_topbar_item.oe_topbar_compose_full_email" t-operation="replace">
+             <!--
+			 <div title='Compose new Message' class="oe_topbar_item oe_topbar_compose_full_email">
+            	<button class="oe_e">%</button>
+			 </div> -->
+	    </t>
+	</t>
+
+	<t t-extend="WebClient">
+	    <t t-jquery="table.oe_webclient tr td div.oe_footer" t-operation="replace">
+	    </t>
+	</t>
+
+</templates>

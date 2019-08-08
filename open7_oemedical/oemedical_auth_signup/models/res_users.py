@@ -94,7 +94,8 @@ class res_users(osv.Model):
                 'city': 'Quito',
                 'signup_token': token,
                 'signup_type': 'signup',
-                'signup_expiration': now(days=+1)
+                'signup_expiration': now(days=+1),
+                'notification_email_send': 'none'
             }, context=None)
 
             self.pool.get('oemedical.patient').create(cr, uid, {

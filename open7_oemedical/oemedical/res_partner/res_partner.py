@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from osv import osv
 from osv import fields
-from dateutil.relativedelta import relativedelta
-from datetime import datetime
 import re
 
 def _check_cedula(identificador):

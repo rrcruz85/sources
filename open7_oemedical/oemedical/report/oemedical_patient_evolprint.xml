@@ -10,7 +10,9 @@
                 string="Patient Evolution"
                 header="True"
 				webkit_header="oemedical_header_webkit"
-                report_type="webkit"/>
+                report_type="webkit"
+                groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"
+        />
 
     </data>
 </openerp>

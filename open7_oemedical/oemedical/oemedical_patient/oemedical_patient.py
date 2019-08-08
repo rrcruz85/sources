@@ -17,7 +17,7 @@ class OeMedicalPatient(osv.osv):
         age = 0
         now = datetime.now()
         for record in self.browse(cr, uid, ids, context=context):
-            if (record.dob):
+            if record.dob:
                 dob = datetime.strptime(str(record.dob), '%Y-%m-%d')
                 delta = relativedelta(now, dob)
                 years_months_days = delta.years # + 'y ' \ + str(delta.months) + 'm ' \ + str(delta.days) + 'd' + deceased
@@ -30,7 +30,10 @@ class OeMedicalPatient(osv.osv):
             
             res[record.id] = age
         return res
-    
+
+    def _current_user_is_patient(self, cr, uid, ids, field_name, arg, context=None):
+        return {}.fromkeys(ids, self.pool.get('res.users').has_group(cr, uid, 'oemedical.patient_group'))
+
     _columns = {
         'partner_id': fields.many2one('res.partner', 'Related Partner', required=True, domain =[('is_doctor', '=', True)],
                                       ondelete='cascade', help='Partner-related data of the patient'),
@@ -109,7 +112,9 @@ class OeMedicalPatient(osv.osv):
         'emergency_phone': fields.char('Phone', size=64),
         'emergency_mobile': fields.char('Mobile', size=200),
 
-        'nationality_id': fields.many2one('res.country', string='Nationality'),        
+        'nationality_id': fields.many2one('res.country', string='Nationality'),
+        'current_user_is_patient': fields.function(_current_user_is_patient, type='boolean',
+                                                   string='Current User Is Patient'),
     }
 
     def _get_default_country(self, cr, uid, context=None):
