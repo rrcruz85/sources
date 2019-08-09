@@ -1,27 +1,6 @@
 # -*- coding: utf-8 -*-
-#/#############################################################################
-#
-#    Tech-Receptives Solutions Pvt. Ltd.
-#    Copyright (C) 2004-TODAY Tech-Receptives(<http://www.techreceptives.com>)
-#    Special Credit and Thanks to Thymbra Latinoamericana S.A.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#/#############################################################################
 from osv import osv
 from osv import fields
-
 
 class OeMedicalMedicament(osv.Model):
     _name = 'oemedical.medicament'
@@ -33,21 +12,14 @@ class OeMedicalMedicament(osv.Model):
         return res
 
     _columns = {
-        'product_id': fields.many2one('product.product', string='Medicament', requered=True, help='Product Name'),
-        'name': fields.function(_get_name, type='char', string='Medicament', help="", multi=False),
-        'category': fields.many2one('oemedical.medicament.category', 'Category',select=True),
+        'product_id': fields.many2one('product.product', string='Medicament', required=True, help='Product Name'),
+        'name': fields.function(_get_name, type='char', string='Medicament', multi=False),
+        'category': fields.many2one('oemedical.medicament.category', 'Category', select=True),
         'active_component': fields.char(size=256, string='Active component', help='Active Component'),
         'indications': fields.text(string='Indication', help='Indications'), 
         'therapeutic_action': fields.char(size=256, string='Therapeutic effect', help='Therapeutic action'),
-        'pregnancy_category': fields.selection([
-            ('A', 'A'),
-            ('B', 'B'),
-            ('C', 'C'),
-            ('D', 'D'),
-            ('X', 'X'),
-            ('N', 'N'),
-            ], string='Pregnancy Category', 
-            help='** FDA Pregancy Categories ***\n'\
+        'pregnancy_category': fields.selection([('A', 'A'),('B', 'B'),('C', 'C'),('D', 'D'),
+            ('X', 'X'),('N', 'N')], string='Pregnancy Category', help='** FDA Pregancy Categories ***\n'\
         'CATEGORY A :Adequate and well-controlled human studies have failed'\
         ' to demonstrate a risk to the fetus in the first trimester of'\
         ' pregnancy (and there is no evidence of risk in later'\
@@ -85,8 +57,9 @@ class OeMedicalMedicament(osv.Model):
                                  help='Warnings for Pregnant Women'),
         'presentation': fields.text(string='Presentation'),
         'composition': fields.text(string='Composition', help='Components'),
-        'concentration'    : fields.char(size=256, string='Concentracion'),
+        'concentration': fields.char(size=256, string='Concentracion'),
     }
 
 OeMedicalMedicament()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

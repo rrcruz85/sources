@@ -177,8 +177,8 @@ class OeMedicalAppointment(osv.Model):
     
     def _check_start_time(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
-            start_date_time = get_datetime(obj.start_date, obj.start_time)
-            if obj.start_time > 24 or obj.start_time < 0 or start_date_time < datetime.now():
+            #start_date_time = get_datetime(obj.start_date, obj.start_time)
+            if obj.start_time > 24 or obj.start_time < 0: #or start_date_time < datetime.now():
                 return False              
         return True
     
@@ -199,9 +199,9 @@ class OeMedicalAppointment(osv.Model):
     def _check_next_date_appointment(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
             if obj.next_appointment_date and obj.next_appointment_hour:
-                records = self.search(cr,uid, [('id', '!=', obj.id ),('is_planned', '=', False),('doctor_id', '=', obj.doctor_id.id),('start_date', '=', obj.next_appointment_date),('start_time', '>=', obj.next_appointment_hour), ('start_time', '<=', (obj.next_appointment_hour + 0.5))])
+                records = self.search(cr, uid, [('id', '!=', obj.id), ('is_planned', '=', False), ('doctor_id', '=', obj.doctor_id.id), ('start_date', '=', obj.next_appointment_date), ('start_time', '>=', obj.next_appointment_hour), ('start_time', '<=', (obj.next_appointment_hour + 0.5))])
                 if records:
-                    return False    
+                    return False
         return True
 
     def _check_next_date_appointment_vals(self, cr, uid, ids, context=None):

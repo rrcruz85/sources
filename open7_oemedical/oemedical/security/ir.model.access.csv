@@ -37,6 +37,8 @@ access_res_partner_category_2,res.partner.category,base.model_res_partner_catego
 access_res_partner_2,res.partner,base.model_res_partner,doctor_group,1,1,1,0
 access_product_template_2,product.template,product.model_product_template,doctor_group,1,1,1,0
 access_product_product_2,product.product,product.model_product_product,doctor_group,1,1,1,0
+access_product_product_uom_2,product.uom,product.model_product_uom,doctor_group,1,1,1,0
+access_product_product_category_2,product.category,product.model_product_category,doctor_group,1,1,1,0
 access_oemedical_pathology,oemedical.pathology,model_oemedical_pathology,doctor_group,1,1,1,0
 access_oemedical_pathology,oemedical.pathology,model_oemedical_pathology,doctor_group,1,1,1,0
 access_oemedical_medication_dosage,oemedical.medication.dosage,model_oemedical_medication_dosage,doctor_group,1,1,1,0

@@ -161,7 +161,7 @@
 									</field>
 								</group> 														
 							</page>  
-							<page string = "Work Information" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
+							<page string="Work Information" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 							    <group>
 								      <field name="is_currently_working"/>
 									  <field name="work_institution_id" attrs="{'required':[('is_currently_working','=',True)]}"  context="{'form_view_ref': 'oemedical.view_res_partner_oemedical_inherit_form','default_is_company': True, 'default_is_work': True, 'default_is_institution': False, 'default_customer': False, 'default_supplier': False, 'default_employee': False}"/> 

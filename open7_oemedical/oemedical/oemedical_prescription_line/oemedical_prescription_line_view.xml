@@ -35,8 +35,9 @@
 					<field name="active_component" /-->
 					<label for="active_compon" />
 					<field name="active_compon" />
-					<label for="form"/>
+					<newline/>
 					<div class="cantidad">
+						<label for="form"/>
 						<field name="form" class="oe_inline"/>
 						-
 						<field name="quantity" class="oe_inline" />

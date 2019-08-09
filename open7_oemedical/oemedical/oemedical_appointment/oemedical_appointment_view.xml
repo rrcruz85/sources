@@ -5,7 +5,7 @@
 			<field name="name">oemedical.appointment.tree</field>
 			<field name="model">oemedical.appointment</field>			 
 			<field name="arch" type="xml">
-				<tree string="Appointments" colors="red:state=='canceled';green:state in ('in_consultation', 'done');blue:state == 'draft'; brown:state == 'confirm'; gray:state == 'waiting'">
+				<tree string="Appointments" colors="red:state=='canceled';green:state =='done';blue:state == 'draft'; brown:state == 'confirm'; gray:state == 'waiting'; darkyellow:state=='in_consultation'">
 					<field name="appointment_time" invisible="1"/> 
 					<field name="start_date" /> 
 					<field name="start_time" widget="float_time"/> 
@@ -30,22 +30,22 @@
 			<field name="arch" type="xml">
 				<form string="Appointment"  version="7.0">
                     <header>
-                        <button name="button_back" states="confirm,waiting,in_consultation,done,canceled" string="Back"  type="object" groups="oemedical.doctor_group"/>
+                        <button name="button_back" states="waiting,in_consultation,done" string="Back"  type="object" groups="oemedical.doctor_group"/>
                         <button name="button_confirm" states="draft" string="Confirm" class="oe_highlight"  type="object" />
                         <button name="button_waiting" states="confirm" string="Waiting" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
                         <button name="button_in_consultation" states="waiting" string="In Consultation" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
                         <button name="button_done" states="in_consultation" string="Done" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
-                        <button name="button_cancel" states="confirm, in_consultation" string="Cancel"  type="object" />
+                        <button name="button_cancel" states="draft,confirm" string="Cancel"  type="object" />
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,waiting,in_consultation,done,canceled" statusbar_colors='{"draft":"blue","done":"green","canceled":"red","confirm":"yellow","waiting":"gray", "in_consultation":"gray"}'/>
                     </header>
                     <sheet>
 					    <group col="4">
 					        <field name="patient_id" attrs="{'readonly':[('state','!=','draft')]}" options="{'create': false, 'create_edit': false}"/>
-							<field name="specialty_id" on_change="onchange_specialty_id(specialty_id, doctor_id)" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}" options="{'create': false, 'create_edit': false}"/>
-							<field name="doctor_id" on_change="onchange_patient_doctor(patient_id, doctor_id)" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}" options="{'create': false, 'create_edit': false}"/>
-							<field name="type" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}"/>
-							<field name="start_date" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}"/>
-							<field name="is_planned" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}"/>
+							<field name="specialty_id" on_change="onchange_specialty_id(specialty_id, doctor_id)" attrs="{'readonly':[('state','in',('confirm','waiting','in_consultation','done','canceled'))]}" options="{'create': false, 'create_edit': false}"/>
+							<field name="doctor_id" on_change="onchange_patient_doctor(patient_id, doctor_id)" attrs="{'readonly':[('state','in',('confirm','waiting','in_consultation','done','canceled'))]}" options="{'create': false, 'create_edit': false}"/>
+							<field name="type" attrs="{'readonly':[('state','in',('confirm','waiting','in_consultation','done','canceled'))]}"/>
+							<field name="start_date" attrs="{'readonly':[('state','in',('confirm','waiting','in_consultation','done','canceled'))]}"/>
+							<field name="is_planned" attrs="{'readonly':[('state','in',('confirm','waiting','in_consultation','done','canceled'))]}"/>
 							<newline/>
 					        <field name="start_time" widget="float_time" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}"/>
 							<newline/>										    

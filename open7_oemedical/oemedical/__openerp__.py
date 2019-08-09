@@ -61,6 +61,7 @@ OeMedical at a glance:
         'data/res_country_state_data.xml',
         'data/res_partner_data.xml',
         'data/specialty_data.xml',
+        'data/product_data.xml',
         'sequence/oemedical_sequence.xml',
         'oemedical_secondary_condition/oemedical_secondary_condition_view.xml',
         'oemedical_pathology_category/oemedical_pathology_category_view.xml',
