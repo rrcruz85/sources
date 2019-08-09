@@ -48,19 +48,18 @@ class OeMedicalAppointment(osv.Model):
         return self.name_get(cr, user, ids, context=context)
     
     def _get_appointment_time(self, cr, uid, ids, field_name, arg, context=None):
-        res = {} 
-        
+        res = {}
         user = self.pool.get('res.users').browse(cr, uid, uid)
         tz_name = user.tz or 'UTC'
         user_tz = pytz.timezone(tz_name)
                 
         for record in self.browse(cr, uid, ids, context=context):
             start_time = get_datetime(record.start_date, record.start_time)            
-            timestamp = datetime.strptime(str(start_time), tools.DEFAULT_SERVER_DATETIME_FORMAT)  
-            timestamp = user_tz.localize(timestamp).astimezone(pytz.utc)             
+            timestamp = datetime.strptime(str(start_time), tools.DEFAULT_SERVER_DATETIME_FORMAT)
+            timestamp = user_tz.localize(timestamp).astimezone(pytz.utc)
             res[record.id] = {
-                'appointment_time' : timestamp,
-                'appointment_stimated_endtime': timestamp + timedelta(minutes = record.stimated_duration)
+                'appointment_time': timestamp,
+                'appointment_stimated_endtime': timestamp + timedelta(minutes=record.stimated_duration)
             } 
         return res   
     
@@ -71,11 +70,11 @@ class OeMedicalAppointment(osv.Model):
         'appointment_time'      : fields.function(_get_appointment_time, type='datetime', string='Appointment DateTime', 
             store={
                 'oemedical.appointment': (lambda self, cr, uid, ids, c={}: ids, ['start_date','start_time'], 10),                         
-        }, multi='time'),
+            }, multi='time'),
         'appointment_stimated_endtime': fields.function(_get_appointment_time, type='datetime', string='Stimated End Time', 
             store={
                 'oemedical.appointment': (lambda self, cr, uid, ids, c={}: ids, ['start_date','start_time','stimated_duration'], 10),                         
-        }, multi='time'),
+            }, multi='time'),
         'start_date'            : fields.date(string='Date',required=True),
         'start_time'            : fields.float(string='Time',required=True),
         'doctor_id'             : fields.many2one('oemedical.physician',  string='Doctor', required=True), 
@@ -177,8 +176,7 @@ class OeMedicalAppointment(osv.Model):
     
     def _check_start_time(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
-            #start_date_time = get_datetime(obj.start_date, obj.start_time)
-            if obj.start_time > 24 or obj.start_time < 0: #or start_date_time < datetime.now():
+            if obj.start_time > 24 or obj.start_time < 0:
                 return False              
         return True
     
@@ -262,6 +260,17 @@ class OeMedicalAppointment(osv.Model):
                 specialty = self.pool.get('oemedical.physician').browse(cr, uid, doctor_id).specialty_id
                 if specialty and specialty.id == specialty_id:
                     is_valid = True
+            else:
+                records = self.pool.get('oemedical.physician').search(cr, uid, [('specialty_id', '=', specialty_id)])
+                if not records:
+                    warning = {
+                        'title': _('No Doctors Found!'),
+                        'message': _('No doctors were found for the selected specialty')
+                    }
+                    res['warning'] = warning
+                else:
+                    is_valid = True
+                    doctor_id = records[0]
             res['value'] = {'doctor_id': doctor_id if is_valid else False}
             res['domain'] = {'doctor_id': [('specialty_id', '=', specialty_id)]}
         return res
@@ -270,7 +279,7 @@ class OeMedicalAppointment(osv.Model):
         val_history = {}
         val_history['user_id'] = uid
         val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        val_history['action'] = "Appointment Created"
+        val_history['action'] = _("Appointment Created")
         vals['history_ids'] = [(0, 0, val_history)] 
         
         hour = int(vals['start_time'])
@@ -288,20 +297,20 @@ class OeMedicalAppointment(osv.Model):
 
         for order in self.browse(cr, uid, ids, context=context):
             if order.state == 'confirm':
-                self.write(cr, uid, ids, {'state':'draft'} ,context=context)
-                val_history['action'] = "Changed to Draft"
+                self.write(cr, uid, ids, {'state': 'draft'}, context=context)
+                val_history['action'] = _("Changed to Draft")
             if order.state == 'waiting':
-                val_history['action'] = "Changed to Confirm"
-                self.write(cr, uid, ids, {'state':'confirm'} ,context=context)
+                val_history['action'] = _("Changed to Confirm")
+                self.write(cr, uid, ids, {'state': 'confirm'}, context=context)
             if order.state == 'in_consultation':
-                val_history['action'] = "Changed to Waiting"
-                self.write(cr, uid, ids, {'state':'waiting'} ,context=context)
+                val_history['action'] = _("Changed to Waiting")
+                self.write(cr, uid, ids, {'state': 'waiting'}, context=context)
             if order.state == 'done':
-                val_history['action'] = "Changed to In Consultation"
-                self.write(cr, uid, ids, {'state':'in_consultation'} ,context=context)
+                val_history['action'] = _("Changed to In Consultation")
+                self.write(cr, uid, ids, {'state': 'in_consultation'}, context=context)
             if order.state == 'canceled':
-                val_history['action'] = "Changed to Draft"
-                self.write(cr, uid, ids, {'state':'draft'} ,context=context)
+                val_history['action'] = _("Changed to Draft")
+                self.write(cr, uid, ids, {'state': 'draft'}, context=context)
 
         val_history['appointment_id'] = ids[0]
         val_history['user_id'] = uid
@@ -316,12 +325,12 @@ class OeMedicalAppointment(osv.Model):
         val_history = {}
         ait_obj = self.pool.get('oemedical.appointment.history')
 
-        self.write(cr, uid, ids, {'state':'confirm'} ,context=context)
+        self.write(cr, uid, ids, {'state': 'confirm'}, context=context)
 
         val_history['appointment_id'] = ids[0]
         val_history['user_id'] = uid
         val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        val_history['action'] = "Changed to Comfirm"
+        val_history['action'] = _("Changed to Comfirm")
         ait_obj.create(cr, uid, val_history)
 
         return True
@@ -331,12 +340,12 @@ class OeMedicalAppointment(osv.Model):
         val_history = {}
         ait_obj = self.pool.get('oemedical.appointment.history')
 
-        self.write(cr, uid, ids, {'state':'waiting'} ,context=context)
+        self.write(cr, uid, ids, {'state': 'waiting'},context=context)
 
         val_history['appointment_id'] = ids[0]
         val_history['user_id'] = uid
         val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        val_history['action'] = "Changed to Waiting"
+        val_history['action'] = _("Changed to Waiting")
         ait_obj.create(cr, uid, val_history)
 
         return True
@@ -346,26 +355,26 @@ class OeMedicalAppointment(osv.Model):
         val_history = {}
         ait_obj = self.pool.get('oemedical.appointment.history')
 
-        self.write(cr, uid, ids, {'state':'in_consultation'} ,context=context)
+        self.write(cr, uid, ids, {'state': 'in_consultation'}, context=context)
 
         val_history['appointment_id'] = ids[0]
         val_history['user_id'] = uid
         val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        val_history['action'] = "Changed to In Consultation"
+        val_history['action'] = _("Changed to In Consultation")
         ait_obj.create(cr, uid, val_history)
 
         return True
 
     def button_done(self, cr, uid, ids, context=None):
 
-        self.write(cr, uid, ids, {'state':'done', 'end_date': time.strftime('%Y-%m-%d %H:%M:%S')} ,context=context)
+        self.write(cr, uid, ids, {'state': 'done', 'end_date': time.strftime('%Y-%m-%d %H:%M:%S')}, context=context)
 
         ait_obj = self.pool.get('oemedical.appointment.history')
         val_history = {}
         val_history['appointment_id'] = ids[0]
         val_history['user_id'] = uid
         val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        val_history['action'] = "Changed to Done"
+        val_history['action'] = _("Changed to Done")
         ait_obj.create(cr, uid, val_history)
 
         return True
@@ -380,7 +389,7 @@ class OeMedicalAppointment(osv.Model):
         val_history['appointment_id'] = ids[0]
         val_history['user_id'] = uid
         val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        val_history['action'] = "Changed to Canceled"
+        val_history['action'] = _("Changed to Canceled")
         ait_obj.create(cr, uid, val_history)
 
         return True
@@ -406,8 +415,8 @@ class OeMedicalAppointment(osv.Model):
                 vals['linked_appointment_id'] = linked_appointment_id
             elif obj.linked_appointment_id:
                 update_vals = {
-                   'start_date'   : next_appointment_date,
-                   'start_time'   : next_appointment_hour
+                   'start_date': next_appointment_date,
+                   'start_time': next_appointment_hour
                 }
                 super(OeMedicalAppointment, self).write(cr, uid, [obj.linked_appointment_id.id], update_vals, context=context)
                 

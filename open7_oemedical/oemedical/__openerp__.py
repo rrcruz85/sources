@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-#===========================================================================
 {
-
     'name': 'OeMedical : Free Health and Hospital Information System',
     'version': '1.0',
     'author': "OeMEdical Team",
@@ -123,9 +121,7 @@ OeMedical at a glance:
         'security/ir.model.access.csv',
         'oemedical_menu.xml',
     ],
-    "demo": [
-
-    ],
+    "demo": [],
     'test':[
             'test/physician.yml',
             'test/patient.yml',
@@ -134,15 +130,9 @@ OeMedical at a glance:
             'test/insurance.yml',
             'test/physician_speciality.yml'
     ],
-    'css': [
-
-    ],
-    'js': [
-
-    ],
-    'qweb': [
-
-    ],
+    'css': [],
+    'js': ['static/src/js/scripts.js'],
+    'qweb': [],
     'installable': True,
     'auto_install': False,
 }
