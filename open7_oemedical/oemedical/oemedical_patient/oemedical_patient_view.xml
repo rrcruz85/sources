@@ -62,8 +62,8 @@
 									<field name="dob" required ="1" on_change="onchange_dob(dob)" style="width: 14%%;vertical-align: middle" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
 									<label for="age"/> 
 									<field name="age" style="width: 10%%;vertical-align: middle"/>
-									<label for="ref"/> 
-									<field string="Clinic History Number" required="1" name="ref" readonly="1" style="width: 20%%;vertical-align: middle"/>
+									<label for="ref" string="Clinic History Number"/>
+									<field name="ref" required="1" readonly="1" style="width: 20%%;vertical-align: middle"/>
 								</div>								 				 									
 							</div>						 					 
                         </div>

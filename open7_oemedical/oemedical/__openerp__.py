@@ -6,7 +6,7 @@
     'version': '1.0',
     'author': "OeMEdical Team",
     'category': 'Generic Modules/Others',
-    'depends': ['base', 'product', 'report_webkit', 'base_report_designer'],
+    'depends': ['base', 'product', 'report_webkit', 'base_report_designer', 'web_m2x_options'],
     'application': True,
     'description': """
 

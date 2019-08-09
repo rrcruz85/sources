@@ -15,6 +15,7 @@
 					<field name="mobile" />
 					<field name="email" />
 					<field name="specialty_id" />
+					<field name="ref" string="Medical Record Id" />
 					<field name="specialty_year_experience" invisible="1"/>					
 				</tree>
 			</field>
@@ -66,8 +67,8 @@
 									<field name="dob" required ="1" on_change="onchange_dob(dob)" style="width: 14%%;vertical-align: middle"/>
 									<label for="age"/> 
 									<field name="age" style="width: 10%%;vertical-align: middle"/>
-									<label for="doctor_id"/> 
-									<field name="doctor_id" required ="1" style="width: 25%%;vertical-align: middle"/>
+									<label for="ref" string="Medical Record Id"/>
+									<field name="ref" required ="1" style="width: 25%%;vertical-align: middle"/>
 								</div>								 				 									
 							</div>							 					 					 
                         </div>
@@ -197,7 +198,7 @@
                                         </h4>
                                         <ul>
 										    <li t-if="record.ced_ruc.raw_value"><b>Id:</b> <field name="ced_ruc"/></li>
-										    <li t-if="record.doctor_id.raw_value"><b>Doctor Id:</b> <field name="doctor_id"/></li>
+										    <li t-if="record.ref.raw_value"><b>Doctor Id:</b> <field name="ref"/></li>
 											<li t-if="record.mobile.raw_value"><b>Mobile:</b> <field name="mobile"/></li>
                                         	<li t-if="record.specialty_id.raw_value"><b>Esp:</b><field name="specialty_id"/></li> 
                                         </ul>
@@ -223,7 +224,7 @@
 					<field name="mobile" />
 					<field name="email" />
 					<field name="specialty_id" />
-					<field name="doctor_id" />				 
+					<field name="ref" string="Medical Record Id" />
 					<field name="nationality_id" />
 					<field name="academic_degree_id" />
 					<field name="work_institution_id" />

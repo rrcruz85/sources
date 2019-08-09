@@ -95,7 +95,8 @@ class res_users(osv.Model):
                 'signup_token': token,
                 'signup_type': 'signup',
                 'signup_expiration': now(days=+1),
-                'notification_email_send': 'none'
+                'notification_email_send': 'none',
+                'tz': 'America/Guayaquil'
             }, context=None)
 
             self.pool.get('oemedical.patient').create(cr, uid, {
@@ -106,6 +107,7 @@ class res_users(osv.Model):
 
             patient_group = self.pool.get('ir.model.data').get_object(cr, uid, 'oemedical', 'patient_group')
             portal_group = self.pool.get('ir.model.data').get_object(cr, uid, 'portal', 'group_portal')
+            employee_group = self.pool.get('ir.model.data').get_object(cr, uid, 'base', 'group_user')
 
             if patient_group:
                 self.write(cr, uid, [user_id], {
@@ -114,6 +116,11 @@ class res_users(osv.Model):
             if portal_group:
                 self.write(cr, uid, [user_id], {
                     'groups_id': [(3, portal_group.id)]
+                }, context=context)
+
+            if employee_group:
+                self.write(cr, uid, [user_id], {
+                    'groups_id': [(3, employee_group.id)]
                 }, context=context)
 
             try:

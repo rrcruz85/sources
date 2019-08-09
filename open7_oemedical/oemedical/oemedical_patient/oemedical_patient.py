@@ -10,46 +10,19 @@ class OeMedicalPatient(osv.osv):
     _inherits = {
         'res.partner': 'partner_id',
     }
+
     _name = 'oemedical.patient'
-   
-    def _get_age(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}
-        age = 0
-        now = datetime.now()
-        for record in self.browse(cr, uid, ids, context=context):
-            if record.dob:
-                dob = datetime.strptime(str(record.dob), '%Y-%m-%d')
-                delta = relativedelta(now, dob)
-                years_months_days = delta.years # + 'y ' \ + str(delta.months) + 'm ' \ + str(delta.days) + 'd' + deceased
-            else:
-                years_months_days = 0
-                
-            # Return the age in format y m d when the caller is the field name
-            if field_name == 'age':
-                age = years_months_days
-            
-            res[record.id] = age
-        return res
 
     def _current_user_is_patient(self, cr, uid, ids, field_name, arg, context=None):
         return {}.fromkeys(ids, self.pool.get('res.users').has_group(cr, uid, 'oemedical.patient_group'))
 
     _columns = {
-        'partner_id': fields.many2one('res.partner', 'Related Partner', required=True, domain =[('is_doctor', '=', True)],
+        'partner_id': fields.many2one('res.partner', 'Related Partner', required=True, domain=[('is_doctor', '=', True)],
                                       ondelete='cascade', help='Partner-related data of the patient'),
-        'ref': fields.char(size=256, string='Clinic History Number', help='Patient Clinic History Number'),
-        'sex': fields.selection([('m', 'Male'), ('f', 'Female'), ], string='Gender', required=True),
-        'blood_type': fields.selection([
-            ('A', 'A'),
-            ('B', 'B'),
-            ('AB', 'AB'),
-            ('O', 'O'), ], string='Blood Type'),
-        'rh': fields.selection([
-            ('+', '+'),
-            ('-', '-'), ], string='Rh'),
+        'blood_type': fields.selection([('A', 'A'), ('B', 'B'), ('AB', 'AB'), ('O', 'O'), ], string='Blood Type'),
+        'rh': fields.selection([('+', '+'), ('-', '-')], string='Rh'),
         'general_info': fields.text(string='General Information', help='General information about the patient'),
-        'primary_care_doctor': fields.many2one('oemedical.physician', 'Primary Care Doctor',
-                                               help='Current primary care / family doctor'),
+        'primary_care_doctor': fields.many2one('oemedical.physician', 'Primary Care Doctor', help='Current primary care / family doctor'),
         'childbearing_age': fields.boolean('Potential for Childbearing'),        
         'evaluations': fields.one2many('oemedical.patient.evaluation', 'patient_id', string='Evaluations'),        
         'critical_info': fields.text(string='Important disease, allergy or procedures information',
@@ -76,18 +49,9 @@ class OeMedicalPatient(osv.osv):
         'apf_info': fields.text(string='Antecedentes Patológicos Familiares'),
         'diseases': fields.one2many('oemedical.patient.disease', 'patient_id', string='Diseases',
                                     help='Mark if the patient has died'),        
-        'vaccinations': fields.one2many('oemedical.vaccination', 'patient_id', 'Vaccinations', ),
-        'dob': fields.date(string='BirthDate'),
-        'age': fields.function(_get_age, type='integer', string='Age', 
-            store={
-                'oemedical.patient': (lambda self, cr, uid, ids, c={}: ids, ['dob'], 10),                         
-            }),
-        'marital_status': fields.selection([('s', 'Single'), ('m', 'Married'),
-                                            ('w', 'Widowed'),
-                                            ('d', 'Divorced'),
-                                            ('x', 'Separated'),
-                                            ('z', 'law marriage'), ],
-                                           string='Marital Status', sort=False),
+        'vaccinations': fields.one2many('oemedical.vaccination', 'patient_id', 'Vaccinations'),
+        'marital_status': fields.selection([('s', 'Single'), ('m', 'Married'),('w', 'Widowed'),('d', 'Divorced'),
+                                            ('x', 'Separated'),('z', 'law marriage')], string='Marital Status', sort=False),
         'dod': fields.datetime(string='Date of Death'),
         'current_insurance': fields.char(string='Aseguradora', size=256,
                                          help='Insurance information. You may choose from the different insurances belonging to the patient'),
@@ -113,26 +77,11 @@ class OeMedicalPatient(osv.osv):
         'emergency_mobile': fields.char('Mobile', size=200),
 
         'nationality_id': fields.many2one('res.country', string='Nationality'),
-        'current_user_is_patient': fields.function(_current_user_is_patient, type='boolean',
-                                                   string='Current User Is Patient'),
+        'current_user_is_patient': fields.function(_current_user_is_patient, type='boolean',string='Current User Is Patient'),
     }
 
-    def _get_default_country(self, cr, uid, context=None):
-        result = self.pool.get('res.country').search(cr, uid, [('code', '=', 'EC')])
-        return result and result[0] or False
-    
-    def _get_default_state(self, cr, uid, context=None):
-        result = self.pool.get('res.country').search(cr, uid, [('code', '=', 'EC')])
-        if result and result[0]:
-            res = self.pool.get('res.country.state').search(cr, uid, [('country_id', '=', result[0]),('code', '=', 'PIC')])
-            return res and res[0] or False
-        return False
-
     _defaults = {
-        'ref'         : lambda obj, cr, uid, context: obj.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'),
-        'city'        : 'Quito',
-        'country_id'  : _get_default_country,
-        'state_id'    : _get_default_state,             
+        'ref': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'),
     }
 
     def _check_mobile_contact_number(self, cr, uid, ids, context=None):        
@@ -187,7 +136,7 @@ class OeMedicalPatient(osv.osv):
         if dob:
             delta = relativedelta(datetime.now(), datetime.strptime(str(dob), '%Y-%m-%d'))
             res['value'] = {
-                'age' : delta.years
+                'age': delta.years
             }
         return res
     
@@ -202,22 +151,5 @@ class OeMedicalPatient(osv.osv):
         self.pool.get('res.partner').write(cr, uid, partners, {'active': False})
         return super(OeMedicalPatient, self).unlink(cr, uid, ids, context=context)
 
-    '''
-    def search(self, cr, user, args, offset=0, limit=None, order=None, context=None, count=False):
-        return super(OeMedicalPatient ,self).search(cr, user, args, offset, limit, order, context, count)
-
-    def name_get(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        if not ids:
-            return []
-        reads = self.read(cr, uid, ids, ['name'], context=context)
-        res = []
-        for record in reads:
-            name = record['name']
-            res.append((record['id'], name))
-        return res
-    '''
-    
 OeMedicalPatient()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

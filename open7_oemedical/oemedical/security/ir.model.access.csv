@@ -11,6 +11,7 @@ access_oemedical_specialty_1,specialty,model_oemedical_specialty,patient_group,1
 access_oemedical_family_1,family,model_oemedical_family,patient_group,1,0,0,0
 access_oemedical_appointment_treatment_1,appointment.treatment,model_oemedical_appointment_treatment,patient_group,1,0,0,0
 access_oemedical_appointment_treatment_medicament_1,appointment.treatment.medicament,model_oemedical_appointment_treatment_medicament,patient_group,1,0,0,0
+access_ir_config_parameter_1,ir.config_parameter,base.model_ir_config_parameter,patient_group,1,0,0,0
 access_oemedical_prescription_order,prescription.order,model_oemedical_prescription_order,doctor_group,1,1,1,1
 access_oemedical_physician,physician,model_oemedical_physician,doctor_group,1,1,0,0
 access_oemedical_physician_specialty,physician.specialty,model_oemedical_physician_specialty,doctor_group,1,0,0,0
@@ -42,3 +43,4 @@ access_oemedical_medication_dosage,oemedical.medication.dosage,model_oemedical_m
 access_oemedical_pathology_category,oemedical.pathology.category,model_oemedical_pathology_category,doctor_group,1,1,1,0
 access_oemedical_pathology_group,oemedical.pathology.group,model_oemedical_pathology_group,doctor_group,1,1,1,0
 access_ir_sequence_2,ir.sequence,base.model_ir_sequence,doctor_group,1,1,1,0
+access_ir_config_parameter,ir.config_parameter,base.model_ir_config_parameter,doctor_group,1,0,0,0

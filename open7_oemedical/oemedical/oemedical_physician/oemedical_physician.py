@@ -26,19 +26,6 @@ class OeMedicalPhysician(osv.Model):
                     res[specialty.id]['specialty_year_experience'] = delta.years
         return res 
 
-    def _get_age(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}         
-        now = datetime.now()
-        for record in self.browse(cr, uid, ids, context=context):
-            if record.dob:
-                dob = datetime.strptime(str(record.dob), '%Y-%m-%d')
-                delta = relativedelta(now, dob)
-                years_months_days = delta.years
-            else:
-                years_months_days = 0
-            res[record.id] = years_months_days
-        return res    
-
     def _get_specialty_ids(self, cr, uid, ids, context=None):
         result = set()
         for line in self.pool.get('oemedical.physician.specialty').browse(cr, uid, ids, context=context):
@@ -65,12 +52,6 @@ class OeMedicalPhysician(osv.Model):
                 }),
         'info': fields.text(string='Extra info'),
 
-        'sex': fields.selection([('m', 'Male'), ('f', 'Female'), ], string='Gender', required=True),
-        'dob': fields.date(string='BirthDate'),
-        'age': fields.function(_get_age, type='integer', string='Age', 
-            store={
-                'oemedical.physician': (lambda self, cr, uid, ids, c={}: ids, ['dob'], 10),                         
-            }),
         'is_currently_working': fields.boolean(string='Is Currently Working'),
         'work_institution_id': fields.many2one('res.partner', string='Work Institution', domain=['|',('is_institution', '=', True),('is_work', '=', True)], help='Institution where she/he works' ),
         'work_since_date': fields.date(string='Work Date'),
@@ -80,29 +61,11 @@ class OeMedicalPhysician(osv.Model):
         'graduated_date': fields.date(string='Graduated Date'),
         'academic_degree_id': fields.many2one('res.partner.category', string='Academic Degree'),
         
-        'doctor_id': fields.char(string='Medical Record Id', size = 32, help="The id of the doctor registered in the MS, Cenescyt or Equivalent"),
         'registered_institution_id': fields.many2one('res.partner', string='Registered Institution', domain=['|',('is_institution', '=', True), ('is_school', '=', True)], help='Institution where she/he registered her/his title as a doctor' ),
         'registered_date': fields.date(string='Registration Date', help="Date on which the doctor was registered"),
         'current_user_is_patient': fields.function(_current_user_is_patient, type='boolean', string='Current User Is Patient'),
     }
 
-    def _get_default_country(self, cr, uid, context=None):
-        result = self.pool.get('res.country').search(cr, uid, [('code', '=', 'EC')])
-        return result and result[0] or False
-    
-    def _get_default_state(self, cr, uid, context=None):
-        result = self.pool.get('res.country').search(cr, uid, [('code', '=', 'EC')])
-        if result and result[0]:
-             res = self.pool.get('res.country.state').search(cr, uid, [('country_id', '=', result[0]),('code', '=', 'PIC')])
-             return res and res[0] or False
-        return False
-
-    _defaults = {               
-        'city'        : 'Quito',
-        'country_id'  : _get_default_country,
-        'state_id'    : _get_default_state
-    }
-    
     def _check_age(self, cr, uid, ids, context=None):        
         for obj in self.browse(cr, uid, ids, context=context):            
             dob = datetime.strptime(str(obj.dob), '%Y-%m-%d')
@@ -123,32 +86,32 @@ class OeMedicalPhysician(osv.Model):
         if slastname == False:
             slastname = ''
         res = {
-            'value':{
-                'name' : first_name + ' ' + last_name + ' ' + slastname
+            'value': {
+                'name': first_name + ' ' + last_name + ' ' + slastname
             }             
         }
         return res   
 
     def onchange_dob(self, cr, uid, ids, dob, context=None):
         res = {}
-        age = 0
         if dob:
             delta = relativedelta(datetime.now(), datetime.strptime(str(dob), '%Y-%m-%d'))
             res['value'] = {
-                'age' : delta.years
+                'age': delta.years
             }
         return res   
 
     def create(self, cr, uid, vals, context=None):             
         vals['is_doctor'] = True
         vals['is_person'] = True
+        vals['is_patient'] = False
         vals['is_company'] = False
         return super(OeMedicalPhysician, self).create(cr, uid, vals, context=context)
     
     def unlink(self, cr, uid, ids, context=None):
         partners = [r.physician_id.id for r in self.browse(cr,uid, ids)]
-        self.pool.get('res.partner').write(cr, uid, partners, {'active': False});
-        result = super(OeMedicalPhysician, self).unlink(cr, uid, ids, context=context)  
+        self.pool.get('res.partner').write(cr, uid, partners, {'active': False})
+        return super(OeMedicalPhysician, self).unlink(cr, uid, ids, context=context)
 
 OeMedicalPhysician()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
