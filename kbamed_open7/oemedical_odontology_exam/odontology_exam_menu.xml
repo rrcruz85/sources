@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<menuitem id="oemedical_odontology_exam_parent_menuitem"
+				  name="Odontological Exams"
+				  parent="oemedical.oemedical_root"
+				  sequence="35"/>
+
+        <menuitem id="oemedical_odontology_exam_menuitem"
+				  name="Odontological Exams"
+				  action="oemedical_odontology_exam_action"
+				  parent="oemedical_odontology_exam_parent_menuitem"
+				  sequence="10"/>
+	</data>
+</openerp>

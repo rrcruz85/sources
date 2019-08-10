@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_oemedical_appointment_notification_status,oemedical.appointment.notification.status,model_oemedical_appointment_notification_status,oemedical.patient_group,1,0,0,0
+access_oemedical_appointment_notification_status_2,oemedical.appointment.notification.status,model_oemedical_appointment_notification_status,oemedical.doctor_group,1,0,0,0

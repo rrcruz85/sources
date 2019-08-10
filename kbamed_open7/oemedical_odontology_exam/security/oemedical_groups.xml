@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+		 
+        <!-- Odontological Exam Rules -->
+        <!--
+        <record model="ir.rule" id="patient_odontological_exam_rule">
+            <field name="name">Patient Odontological Exam</field>
+            <field name="model_id" ref="model_oemedical_odontology_exam"/>            
+            <field name="domain_force">[('appointment_id.patient_id.user_id','=',user.id)]</field>
+        </record>
+        -->
+        
+        <record model="ir.rule" id="doctor_odontological_exam_rule">
+            <field name="name">Doctor Odontological Exam</field>
+            <field name="model_id" ref="model_oemedical_odontology_exam"/>             
+            <field name="domain_force">[('appointment_id.doctor_id.user_id','=',user.id)]</field>
+        </record>
+
+        <!--
+        <record model="res.groups" id="oemedical.patient_group">
+            <field name="rule_groups" eval="[(6,0,[ref('oemedical.patient_rule'), ref('oemedical.patient_prescription_order_rule'), ref('oemedical.patient_appointment_rule'), ref('oemedical_odontology_exam.patient_odontological_exam_rule')])]"/>            
+        </record>
+        -->
+
+        <record model="res.groups" id="oemedical.doctor_group">
+            <field name="rule_groups" eval="[(4, ref('oemedical_odontology_exam.doctor_odontological_exam_rule'))]"/>
+        </record>
+
+    </data>
+</openerp>

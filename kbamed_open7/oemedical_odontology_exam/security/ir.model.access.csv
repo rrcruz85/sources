@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_oemedical_mouth_health_indicator,oemedical.mouth.health.indicator,model_oemedical_mouth_health_indicator,oemedical.doctor_group,1,1,1,0
+access_oemedical_odontology_exam,oemedical.odontology.exam,model_oemedical_odontology_exam,oemedical.doctor_group,1,1,1,0
+access_oemedical_odontology_exam_evolution,oemedical.odontology.exam.evolution,model_oemedical_odontology_exam_evolution,oemedical.doctor_group,1,1,1,0

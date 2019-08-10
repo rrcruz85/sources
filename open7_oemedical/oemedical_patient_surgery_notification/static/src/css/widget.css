@@ -1,9 +1,0 @@
-div.ui-state-error.ui-notify-message.ui-notify-message-style{
-	height: 500px !important;
-	overflow-y: auto !important; 
-	width: 325px !important; 
-}
-
-div.ui-state-error.ui-notify-message.ui-notify-message-style a.ui-notify-cross.ui-notify-close{
-	font-size: 20px !important;	 
-}
