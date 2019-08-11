@@ -49,12 +49,12 @@
 							<newline/>
 					        <field name="start_time" widget="float_time" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}"/>
 							<newline/>										    
-							<field name="end_date" attrs="{'invisible':[('state','!=','done')],'readonly':[('state','==','done')]}"  />
-							<field name="stimated_duration" groups="oemedical.doctor_group"/>
+							<field name="end_date" attrs="{'invisible':[('state','!=','done')],'readonly':[('state','in',('done','canceled'))]}"  />
+							<field name="stimated_duration" attrs="{'invisible':[('state','in',('draft','waiting','confirm','canceled'))],'readonly':[('state','in',('done','canceled'))]}" groups="oemedical.doctor_group"/>
 							<newline/>
-							<field name="next_appointment_date" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.doctor_group"/>
+							<field name="next_appointment_date" attrs="{'invisible':[('state','in',('draft','waiting','confirm','canceled'))],'readonly':[('state','in',('canceled'))]}" groups="oemedical.doctor_group"/>
 							<newline/>
-							<field name="next_appointment_hour" widget="float_time" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.doctor_group"/>
+							<field name="next_appointment_hour" widget="float_time" attrs="{'invisible':[('state','in',('draft','waiting','confirm','canceled'))],'readonly':[('state','in',('canceled'))]}" groups="oemedical.doctor_group"/>
                         </group>
 						<group col="4" string="Motive Of the Appointment">
 							<field name="motive" nolabel="1" attrs="{'readonly':[('state','in',('waiting','in_consultation','done','canceled'))]}" />
@@ -75,30 +75,30 @@
 		                            </group>
 	                            </group>
 								<group string="Enfermedades o padecimientos" colspan="4" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
-								    <group>									      
-										<field name="cardiopatia"/>
-										<field name="diabetes"/>
-										<field name="enf_car"/>	 
-										<field name="hipertension"/>	
-										<field name="antibotic_allergic"/>	 
-										<field name="anesthesia_allergic"/>	
-										<field name="hemorrhage"/>										         				  
-										<field name="other"/>
+								    <group>
+										<field name="cardiopatia" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="diabetes" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="enf_car" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="hipertension" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="antibotic_allergic" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="anesthesia_allergic" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="hemorrhage" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="other" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
 									</group>									
-									<group>												          				  
-										<field name="cancer"/>	         				  
-										<field name="tuberculosis"/>	         				  
-										<field name="enf_men"/>	         				  
-										<field name="enf_inf"/>
-										<field name="mal_for"/>
-										<field name="vih_sida"/>	 
-										<field name="asma"/>
+									<group>
+										<field name="cancer" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="tuberculosis" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="enf_men" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="enf_inf" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="mal_for" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="vih_sida" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+										<field name="asma" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
 									</group>									 	
 								</group>
-								<label for="others_antecedents" attrs="{'invisible':[('other','=',False)]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
-								<field name="others_antecedents" nolabel="1" colspan="4" attrs="{'invisible':[('other','=',False)]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+								<label for="others_antecedents" attrs="{'readonly':[('state','in',('done','canceled'))],'invisible':[('other','=',False)]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+								<field name="others_antecedents" nolabel="1" colspan="4" attrs="{'readonly':[('state','in',('draft','confirm','done','canceled'))],'invisible':[('other','=',False)]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
 								<group col="4" string="Enfermedad Actual" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
-					                <field name="info_diagnosis" colspan="4" nolabel="1"/>
+					                <field name="info_diagnosis" colspan="4" nolabel="1" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
                                 </group>								
                             </page>
 							<page string="Treatments" attrs="{'invisible':[('state','in',('draft','confirm','canceled'))]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">

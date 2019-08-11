@@ -2,10 +2,7 @@
 from openerp.osv import osv, fields
 import time
 from datetime import datetime, timedelta
-#from dateutil.relativedelta import relativedelta
 from openerp.tools.translate import _
-from openerp import tools
-import pytz
 
 def get_datetime(pdate, float_time):
     hour = int(float_time)
@@ -62,14 +59,8 @@ class OeMedicalAppointment(osv.Model):
     
     def _get_appointment_time(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-        #user = self.pool.get('res.users').browse(cr, uid, uid)
-        #tz_name = user.tz or 'UTC'
-        #user_tz = pytz.timezone(tz_name)
-                
         for record in self.browse(cr, uid, ids, context=context):
             start_time = get_datetime(record.start_date, record.start_time)            
-            #timestamp = datetime.strptime(str(start_time), tools.DEFAULT_SERVER_DATETIME_FORMAT)
-            #timestamp = user_tz.localize(timestamp).astimezone(pytz.utc)
             res[record.id] = {
                 'appointment_time': start_time,
                 'appointment_stimated_endtime': start_time + timedelta(minutes=record.stimated_duration)
@@ -123,11 +114,11 @@ class OeMedicalAppointment(osv.Model):
         'enf_men': fields.related('patient_id', 'enf_men', type='boolean', string='Enfermedad Mental'),
         'enf_inf': fields.related('patient_id', 'enf_inf', type='boolean', string='Enfermedad Infecciosa'),
         'mal_for': fields.related('patient_id', 'mal_for', type='boolean', string='Mal Formación'),
-        'antibotic_allergic' : fields.related('patient_id', 'antibotic_allergic', type='boolean', string='Alergia a antibioticos'),
-        'anesthesia_allergic' : fields.related('patient_id', 'anesthesia_allergic', type='boolean',string='Alergia a anestesia'),
-        'hemorrhage' : fields.related('patient_id', 'hemorrhage', type='boolean', string='Hemorragia'),
-        'vih_sida' : fields.related('patient_id', 'vih_sida', type='boolean', string='VIH/SIDA'),        
-        'asma' : fields.related('patient_id', 'asma', type='boolean', string='Asma'),
+        'antibotic_allergic': fields.related('patient_id', 'antibotic_allergic', type='boolean', string='Alergia a antibioticos'),
+        'anesthesia_allergic': fields.related('patient_id', 'anesthesia_allergic', type='boolean',string='Alergia a anestesia'),
+        'hemorrhage': fields.related('patient_id', 'hemorrhage', type='boolean', string='Hemorragia'),
+        'vih_sida': fields.related('patient_id', 'vih_sida', type='boolean', string='VIH/SIDA'),
+        'asma': fields.related('patient_id', 'asma', type='boolean', string='Asma'),
         'other': fields.related('patient_id', 'other', type='boolean', string='Otra'),
         'others_antecedents': fields.related('patient_id', 'others_antecedents', type='text', string='Descripción de otros antescedentes'),        
     }
@@ -306,10 +297,9 @@ class OeMedicalAppointment(osv.Model):
 
     def button_back(self, cr, uid, ids, context=None):
 
-        val_history = {}
         ait_obj = self.pool.get('oemedical.appointment.history')
-
         for order in self.browse(cr, uid, ids, context=context):
+            val_history = {}
             if order.state == 'confirm':
                 self.write(cr, uid, ids, {'state': 'draft'}, context=context)
                 val_history['action'] = _("Changed to Draft")
@@ -325,64 +315,64 @@ class OeMedicalAppointment(osv.Model):
             if order.state == 'canceled':
                 val_history['action'] = _("Changed to Draft")
                 self.write(cr, uid, ids, {'state': 'draft'}, context=context)
-
-        val_history['appointment_id'] = ids[0]
-        val_history['user_id'] = uid
-        val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-
-        ait_obj.create(cr, uid, val_history)
+            val_history['appointment_id'] = order.id
+            val_history['user_id'] = uid
+            val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
+            ait_obj.create(cr, uid, val_history)
 
         return True
 
     def button_confirm(self, cr, uid, ids, context=None):
-
-        val_history = {}
         ait_obj = self.pool.get('oemedical.appointment.history')
         self.write(cr, uid, ids, {'state': 'confirm'}, context=context)
-
-        val_history['appointment_id'] = ids[0]
-        val_history['user_id'] = uid
-        val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        val_history['action'] = _("Changed to Confirmed")
-        ait_obj.create(cr, uid, val_history)
-
+        for rec_id in ids:
+            val_history = {}
+            val_history['appointment_id'] = rec_id
+            val_history['user_id'] = uid
+            val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
+            val_history['action'] = _("Changed to Confirmed")
+            ait_obj.create(cr, uid, val_history)
         return True
 
     def button_waiting(self, cr, uid, ids, context=None):
-
-        val_history = {}
-        ait_obj = self.pool.get('oemedical.appointment.history')
-
         self.write(cr, uid, ids, {'state': 'waiting'}, context=context)
-
-        val_history['appointment_id'] = ids[0]
-        val_history['user_id'] = uid
-        val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        val_history['action'] = _("Changed to Waiting")
-        ait_obj.create(cr, uid, val_history)
-
+        ait_obj = self.pool.get('oemedical.appointment.history')
+        for appointment in self.browse(cr, uid, ids, context=context):
+            appointment_time = datetime.strptime(appointment.appointment_time, '%Y-%m-%d %H:%M:%S')
+            if appointment_time > datetime.now():
+                raise osv.except_osv(_('Error!'), _('You can not change the status until the appointment datetime is reached'))
+            val_history = {}
+            val_history['appointment_id'] = appointment.id
+            val_history['user_id'] = uid
+            val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
+            val_history['action'] = _("Changed to Waiting")
+            ait_obj.create(cr, uid, val_history)
         return True
 
     def button_in_consultation(self, cr, uid, ids, context=None):
-
-        val_history = {}
         ait_obj = self.pool.get('oemedical.appointment.history')
         self.write(cr, uid, ids, {'state': 'in_consultation'}, context=context)
-
-        val_history['appointment_id'] = ids[0]
-        val_history['user_id'] = uid
-        val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        val_history['action'] = _("Changed to In Consultation")
-        ait_obj.create(cr, uid, val_history)
-
+        for appointment in self.browse(cr, uid, ids, context=context):
+            appointment_time = datetime.strptime(appointment.appointment_time, '%Y-%m-%d %H:%M:%S')
+            if appointment_time > datetime.now():
+                raise osv.except_osv(_('Error!'), _('You can not change the status until the appointment datetime is reached'))
+            val_history = {}
+            val_history['appointment_id'] = appointment.id
+            val_history['user_id'] = uid
+            val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
+            val_history['action'] = _("Changed to In Consultation")
+            ait_obj.create(cr, uid, val_history)
         return True
 
     def button_done(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'done', 'end_date': time.strftime('%Y-%m-%d %H:%M:%S')}, context=context)
         ait_obj = self.pool.get('oemedical.appointment.history')
-        for rec_id in ids:
+        for appointment in self.browse(cr, uid, ids, context=context):
+            appointment_time = datetime.strptime(appointment.appointment_time, '%Y-%m-%d %H:%M:%S')
+            if appointment_time > datetime.now():
+                raise osv.except_osv(_('Error!'), _('You can not change the status until the appointment datetime is reached'))
             val_history = {}
-            val_history['appointment_id'] = rec_id
+            val_history['appointment_id'] = appointment.id
             val_history['user_id'] = uid
             val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
             val_history['action'] = _("Changed to Done")
