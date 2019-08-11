@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="patient_appointment_canceled" model="email.template">
+            <field name="name">Medical Appointment Canceled</field>
+            <field name="model_id" ref="oemedical.model_oemedical_appointment"/>
+            <field name="email_from"><![CDATA[${object.patient_id.partner_id.company_id.name} <${(object.patient_id.partner_id.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.patient_id.partner_id.email|safe}</field>
+            <field name="subject">Medical Appointment Canceled</field>
+            <field name="body_html">
+                <![CDATA[
+                    <p>
+                        Dear <strong>${object.patient_id.partner_id.first_name} ${object.patient_id.partner_id.last_name} ${object.patient_id.partner_id.slastname}</strong>,
+                    </p>
+                    <p>
+                        <strong>${object.patient_id.partner_id.company_id.name}</strong> Team informs you that the appointment scheduled at "${object.appointment_time}" with doctor <strong>"${object.doctor_id.physician_id.first_name} ${object.doctor_id.physician_id.last_name} ${object.doctor_id.physician_id.slastname}"</strong> of <strong>${object.specialty_id.name}</strong>Specialty<br>
+                        has been canceled because this appointment has not been updated and it has been idled for more than one hour.
+                    </p>
+                    <p>
+                        Best Regards,
+                    </p>
+                    <pre>
+${object.patient_id.partner_id.company_id.name or ''}
+${object.patient_id.partner_id.company_id.email or ''}
+${object.patient_id.partner_id.company_id.phone or ''}
+${object.patient_id.partner_id.company_id.partner_id.website or ''}
+                    </pre>
+                ]]>
+            </field>
+        </record>
+
+        <record id="patient_appointment_waiting" model="email.template">
+            <field name="name">Patient Appointment Waiting</field>
+            <field name="model_id" ref="oemedical.model_oemedical_appointment"/>
+            <field name="email_from"><![CDATA[${object.patient_id.partner_id.company_id.name} <${(object.patient_id.partner_id.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.doctor_id.physician_id.email|safe}</field>
+            <field name="subject"><![CDATA[Patient ${object.patient_id.partner_id.first_name} ${object.patient_id.partner_id.last_name} is waiting for you]]></field>
+            <field name="body_html">
+                <![CDATA[
+                    <p>
+                        Dear Doctor <strong>${object.doctor_id.physician_id.first_name} ${object.doctor_id.physician_id.last_name} ${object.doctor_id.physician_id.slastname}</strong>,
+                    </p>
+                    <p>
+                        Patient <strong>${object.patient_id.partner_id.first_name} ${object.patient_id.partner_id.last_name} ${object.patient_id.partner_id.slastname}</strong> has an appointment with you scheduled at <strong>"${object.appointment_time}"</strong> and he is waiting for you.<br>
+                        If you have some sort of delay or issue please let him knows that you won't be able to attend him, otherwise please cancel the appointment.<br>
+                        This is the patient's contact info:<br>
+                        <a href="mailto:${object.patient_id.partner_id.email}">${object.patient_id.partner_id.email}</a><br>
+                        <a href="tel:${object.patient_id.partner_id.mobile}">Call ${object.patient_id.partner_id.mobile}</a>
+                    </p>
+                    <p>
+                        Best Regards,
+                    </p>
+                    <pre>
+${object.doctor_id.physician_id.company_id.name or ''}
+${object.doctor_id.physician_id.company_id.email or ''}
+${object.doctor_id.physician_id.company_id.phone or ''}
+${object.doctor_id.physician_id.company_id.partner_id.website or ''}
+                    </pre>
+                ]]>
+            </field>
+        </record>
+
+        <record id="patient_appointment_done" model="email.template">
+            <field name="name">Patient Appointment Done</field>
+            <field name="model_id" ref="oemedical.model_oemedical_appointment"/>
+            <field name="email_from"><![CDATA[${object.patient_id.partner_id.company_id.name} <${(object.patient_id.partner_id.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.doctor_id.physician_id.email|safe}</field>
+            <field name="subject">Patient Appointment Done Reminder</field>
+            <field name="body_html">
+                <![CDATA[
+                    <p>
+                        Dear Doctor <strong>${object.doctor_id.physician_id.first_name} ${object.doctor_id.physician_id.last_name} ${object.doctor_id.physician_id.slastname}</strong>,
+                    </p>
+                    <p>
+                        <strong>${object.patient_id.partner_id.company_id.name}</strong> Team informs you that it seems that you forgot to update "in consultation" appointment status to "done" status with patient <strong>${object.patient_id.partner_id.first_name} ${object.patient_id.partner_id.last_name} ${object.patient_id.partner_id.slastname}</strong> scheduled at <strong>"${object.appointment_time}"</strong>.<br>
+                        Please be carefully and take care of updating the appointment's statuses after finishing them.<br>
+                        If you finished the appointment please set its status to "done".
+                    </p>
+                    <p>
+                        Best Regards,
+                    </p>
+                    <pre>
+${object.doctor_id.physician_id.company_id.name or ''}
+${object.doctor_id.physician_id.company_id.email or ''}
+${object.doctor_id.physician_id.company_id.phone or ''}
+${object.doctor_id.physician_id.company_id.partner_id.website or ''}
+                    </pre>
+                ]]>
+            </field>
+        </record>
+
+        <record id="doctor_waiting_appointment_canceled" model="email.template">
+            <field name="name">Patient Waiting Appointment Canceled</field>
+            <field name="model_id" ref="oemedical.model_oemedical_appointment"/>
+            <field name="email_from"><![CDATA[${object.patient_id.partner_id.company_id.name} <${(object.patient_id.partner_id.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.doctor_id.physician_id.email|safe}</field>
+            <field name="subject"><![CDATA[Appointment with patient ${object.patient_id.partner_id.first_name} ${object.patient_id.partner_id.last_name} canceled]]></field>
+            <field name="body_html">
+                <![CDATA[
+                    <p>
+                        Dear Doctor <strong>${object.doctor_id.physician_id.first_name} ${object.doctor_id.physician_id.last_name} ${object.doctor_id.physician_id.slastname}</strong>,
+                    </p>
+                    <p>
+                        Appointment with patient <strong>${object.patient_id.partner_id.first_name} ${object.patient_id.partner_id.last_name} ${object.patient_id.partner_id.slastname}</strong> scheduled at <strong>"${object.appointment_time}"</strong> was canceled because you couldn't attend it.<br>
+                        We hope that you have been to able to communicate to the patient the reason why couldn't attend him.<br>
+                        This is the patient's contact info in case you haven't done it:<br>
+                        <a href="mailto:${object.patient_id.partner_id.email}">${object.patient_id.partner_id.email}</a><br>
+                        <a href="tel:${object.patient_id.partner_id.mobile}">Call ${object.patient_id.partner_id.mobile}</a>
+                    </p>
+                    <p>
+                        Best Regards,
+                    </p>
+                    <pre>
+${object.doctor_id.physician_id.company_id.name or ''}
+${object.doctor_id.physician_id.company_id.email or ''}
+${object.doctor_id.physician_id.company_id.phone or ''}
+${object.doctor_id.physician_id.company_id.partner_id.website or ''}
+                    </pre>
+                ]]>
+            </field>
+        </record>
+
+        <record id="patient_waiting_appointment_canceled" model="email.template">
+            <field name="name">Patient Waiting Appointment Canceled</field>
+            <field name="model_id" ref="oemedical.model_oemedical_appointment"/>
+            <field name="email_from"><![CDATA[${object.patient_id.partner_id.company_id.name} <${(object.patient_id.partner_id.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.patient_id.partner_id.email|safe}</field>
+            <field name="subject"><![CDATA[Appointment with doctor ${object.doctor_id.physician_id.first_name} ${object.doctor_id.physician_id.last_name} canceled]]></field>
+            <field name="body_html">
+                <![CDATA[
+                    <p>
+                        Dear <strong>${object.patient_id.partner_id.first_name} ${object.patient_id.partner_id.last_name} ${object.patient_id.partner_id.slastname}</strong>,
+                    </p>
+                    <p>
+                        Appointment with doctor <strong>${object.doctor_id.physician_id.first_name} ${object.doctor_id.physician_id.last_name} ${object.doctor_id.physician_id.slastname}</strong> scheduled at <strong>"${object.appointment_time}"</strong> was canceled because he couldn't attend.<br>
+                        We sorry for all the inconveniences, please contact the doctor to re-schedule another appointment.<br>
+                        This is the doctor's contact info:<br>
+                        <a href="mailto:${object.doctor_id.physician_id.email}">${object.doctor_id.physician_id.email}</a><br>
+                        <a href="tel:${object.doctor_id.physician_id.mobile}">Call ${object.doctor_id.physician_id.mobile}</a>
+                    </p>
+                    <p>
+                        Best Regards,
+                    </p>
+                    <pre>
+${object.patient_id.partner_id.company_id.name or ''}
+${object.patient_id.partner_id.company_id.email or ''}
+${object.patient_id.partner_id.company_id.phone or ''}
+${object.patient_id.partner_id.company_id.partner_id.website or ''}
+                    </pre>
+                ]]>
+            </field>
+        </record>
+
+    </data>
+</openerp>

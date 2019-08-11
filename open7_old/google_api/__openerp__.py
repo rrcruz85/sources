@@ -29,7 +29,7 @@
 	""",
     'category' : 'Google Apps',
     'data': [
-             'data/scheduler.xml',
+             'data/appointment_status_scheduler.xml',
              'security/res_groups.xml',
              'security/ir.model.access.csv',
              'view/google_calendar_view.xml'

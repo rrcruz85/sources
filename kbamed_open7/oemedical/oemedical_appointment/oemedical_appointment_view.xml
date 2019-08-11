@@ -61,7 +61,7 @@
 						</group>
                         <notebook>
                             <page string="Patient Information" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
-							    <group col="8" string="Signos vitales y mediciones" attrs="{'invisible':[('state','in',('draft','confirm','canceled'))]}" groups="oemedical.doctor_group">
+							    <group col="8" string="Signos vitales y mediciones" attrs="{'invisible':[('state','in',('draft','confirm','canceled'))]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 	                        		<group col="4">
 	                        			<field name="pat_info" col="1" colspan="4"/>
 		                                <field name="ppm_info" col="1" colspan="4"/>
@@ -74,7 +74,7 @@
 		                                <field name="size_info" col="1" colspan="2"/>
 		                            </group>
 	                            </group>
-								<group string="Enfermedades o padecimientos" colspan="4" groups="oemedical.doctor_group">
+								<group string="Enfermedades o padecimientos" colspan="4" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 								    <group>									      
 										<field name="cardiopatia"/>
 										<field name="diabetes"/>
@@ -95,17 +95,17 @@
 										<field name="asma"/>
 									</group>									 	
 								</group>
-								<label for="others_antecedents" attrs="{'invisible':[('other','=',False)]}" groups="oemedical.doctor_group"/>
-								<field name="others_antecedents" nolabel="1" colspan="4" attrs="{'invisible':[('other','=',False)]}" groups="oemedical.doctor_group"/>
-								<group col="4" string="Enfermedad Actual" groups="oemedical.doctor_group">
+								<label for="others_antecedents" attrs="{'invisible':[('other','=',False)]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+								<field name="others_antecedents" nolabel="1" colspan="4" attrs="{'invisible':[('other','=',False)]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+								<group col="4" string="Enfermedad Actual" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 					                <field name="info_diagnosis" colspan="4" nolabel="1"/>
                                 </group>								
                             </page>
-							<page string="Treatments" attrs="{'invisible':[('state','in',('draft','waiting','confirm','canceled'))]}">
+							<page string="Treatments" attrs="{'invisible':[('state','in',('draft','confirm','canceled'))]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
                                 <field name="treatment_ids" nolabel="1" context="{'appointment_id': active_id}"/>
                             </page>
-                            <page string="Comments" groups="oemedical.doctor_group">
-								<field name="comments" nolabel="1" attrs="{'invisible':[('state','=','draft')]}"/>
+                            <page string="Comments" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
+								<field name="comments" nolabel="1"/>
 							</page>
 						</notebook>
                     </sheet>

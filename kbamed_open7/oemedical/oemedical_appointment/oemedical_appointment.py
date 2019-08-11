@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from openerp.osv import osv, fields
 import time
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 #from dateutil.relativedelta import relativedelta
 from openerp.tools.translate import _
 from openerp import tools
@@ -11,6 +11,18 @@ def get_datetime(pdate, float_time):
     hour = int(float_time)
     minute = int(round(float_time - hour, 2) * 60)
     return datetime.strptime(str(pdate) + ' ' + str(hour) + '-' + str(minute), '%Y-%m-%d %H-%M')
+
+def send_email_notification(self, cr, uid, template_name, appointment_ids, context = None):
+    try:
+        template = self.pool.get('ir.model.data').get_object(cr, uid, 'oemedical', template_name)
+        if template:
+            appointments = self.pool.get('oemedical.appointment').browse(cr, uid, appointment_ids)
+            for appointment in appointments:
+                if appointment.patient_id.partner_id.email:
+                    self.pool.get('email.template').send_mail(cr, uid, template.id, appointment.id, True, context=context)
+    except ValueError as e:
+        print e
+        pass
 
 class OeMedicalAppointment(osv.Model):
     _name = 'oemedical.appointment'
@@ -67,7 +79,7 @@ class OeMedicalAppointment(osv.Model):
     _columns = {
         'patient_id'            : fields.many2one('oemedical.patient', string='Patient', required=True, select=True),
         'specialty_id'          : fields.many2one('oemedical.specialty', string='Specialty'),
-        'type'                  : fields.selection([('c', 'Control Normal'),('1c', 'Primer Control'),('2c', 'Segundo Control'),('cp', 'Control Periodico'),('u', 'Urgencia')], string='Type', required=True),
+        'type'                  : fields.selection([('c', 'Control Normal'), ('1c', 'Primer Control'), ('2c', 'Segundo Control'), ('cp', 'Control Periodico'), ('u', 'Urgencia')], string='Type', required=True),
         'appointment_time'      : fields.function(_get_appointment_time, type='datetime', string='Appointment DateTime', 
             store={
                 'oemedical.appointment': (lambda self, cr, uid, ids, c={}: ids, ['start_date','start_time'], 10),                         
@@ -76,8 +88,8 @@ class OeMedicalAppointment(osv.Model):
             store={
                 'oemedical.appointment': (lambda self, cr, uid, ids, c={}: ids, ['start_date','start_time','stimated_duration'], 10),                         
             }, multi='time'),
-        'start_date'            : fields.date(string='Date',required=True),
-        'start_time'            : fields.float(string='Time',required=True),
+        'start_date'            : fields.date(string='Date', required=True),
+        'start_time'            : fields.float(string='Time', required=True),
         'doctor_id'             : fields.many2one('oemedical.physician',  string='Doctor', required=True), 
         'end_date'              : fields.datetime(string='End DateTime'),        
         'stimated_duration'     : fields.integer('Stimated Duration', help="Stimated Time in minutes [15-120] that the appointment last"),                
@@ -159,7 +171,7 @@ class OeMedicalAppointment(osv.Model):
         'type': 'c',
         'state': 'draft',
         'start_date': time.strftime('%Y-%m-%d'),
-        'start_time' : 8.5,
+        'start_time': 8.5,
         'specialty_id': _get_default_specialty,
         'patient_id': _get_default_patient,
         'doctor_id': _get_default_doctor
@@ -191,7 +203,7 @@ class OeMedicalAppointment(osv.Model):
     def _check_overlapped(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context): 
             date_start = get_datetime(obj.start_date, obj.start_time)  
-            records = self.search(cr,uid, [('id', '!=', obj.id ),('doctor_id', '=', obj.doctor_id.id),('appointment_time', '<=', str(date_start)),('appointment_stimated_endtime', '>', str(date_start))])
+            records = self.search(cr, uid, [('id', '!=', obj.id), ('state', '!=', 'canceled'), ('doctor_id', '=', obj.doctor_id.id), ('appointment_time', '<=', str(date_start)),('appointment_stimated_endtime', '>', str(date_start))])
             if records:
                 return False    
         return True
@@ -199,7 +211,7 @@ class OeMedicalAppointment(osv.Model):
     def _check_next_date_appointment(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
             if obj.next_appointment_date and obj.next_appointment_hour:
-                records = self.search(cr, uid, [('id', '!=', obj.id), ('is_planned', '=', False), ('doctor_id', '=', obj.doctor_id.id), ('start_date', '=', obj.next_appointment_date), ('start_time', '>=', obj.next_appointment_hour), ('start_time', '<=', (obj.next_appointment_hour + 0.5))])
+                records = self.search(cr, uid, [('id', '!=', obj.id), ('state', '!=', 'canceled'), ('is_planned', '=', False), ('doctor_id', '=', obj.doctor_id.id), ('start_date', '=', obj.next_appointment_date), ('start_time', '>=', obj.next_appointment_hour), ('start_time', '<=', (obj.next_appointment_hour + 0.5))])
                 if records:
                     return False
         return True
@@ -355,7 +367,6 @@ class OeMedicalAppointment(osv.Model):
 
         val_history = {}
         ait_obj = self.pool.get('oemedical.appointment.history')
-
         self.write(cr, uid, ids, {'state': 'in_consultation'}, context=context)
 
         val_history['appointment_id'] = ids[0]
@@ -367,32 +378,27 @@ class OeMedicalAppointment(osv.Model):
         return True
 
     def button_done(self, cr, uid, ids, context=None):
-
-        val_history = {}
         self.write(cr, uid, ids, {'state': 'done', 'end_date': time.strftime('%Y-%m-%d %H:%M:%S')}, context=context)
-
         ait_obj = self.pool.get('oemedical.appointment.history')
-        val_history['appointment_id'] = ids[0]
-        val_history['user_id'] = uid
-        val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        val_history['action'] = _("Changed to Done")
-        ait_obj.create(cr, uid, val_history)
-
+        for rec_id in ids:
+            val_history = {}
+            val_history['appointment_id'] = rec_id
+            val_history['user_id'] = uid
+            val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
+            val_history['action'] = _("Changed to Done")
+            ait_obj.create(cr, uid, val_history)
         return True
 
     def button_cancel(self, cr, uid, ids, context=None):
-
-        val_history = {}
-        ait_obj = self.pool.get('oemedical.appointment.history')
-
         self.write(cr, uid, ids, {'state': 'canceled'}, context=context)
-
-        val_history['appointment_id'] = ids[0]
-        val_history['user_id'] = uid
-        val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        val_history['action'] = _("Changed to Canceled")
-        ait_obj.create(cr, uid, val_history)
-
+        ait_obj = self.pool.get('oemedical.appointment.history')
+        for rec_id in ids:
+            val_history = {}
+            val_history['appointment_id'] = rec_id
+            val_history['user_id'] = uid
+            val_history['date'] = time.strftime('%Y-%m-%d %H:%M:%S')
+            val_history['action'] = _("Changed to Canceled")
+            ait_obj.create(cr, uid, val_history)
         return True
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -422,6 +428,44 @@ class OeMedicalAppointment(osv.Model):
                 super(OeMedicalAppointment, self).write(cr, uid, [obj.linked_appointment_id.id], update_vals, context=context)
                 
         return super(OeMedicalAppointment, self).write(cr, uid, ids, vals, context=context)
+
+    def check_status(self, cr, uid, ids = False, context=None):
+        """WARNING: meant for cron usage only"""
+
+        one_hour_late = datetime.now() - timedelta(hours=1)
+        late_appointment_ids = self.search(cr, uid, [('state', 'in', ('draft', 'confirm')), ('appointment_time', '<=', one_hour_late.strftime('%Y-%m-%d %H:%M:%S'))])
+        if late_appointment_ids:
+            self.button_cancel(cr, uid, late_appointment_ids)
+            self.write(cr, uid, late_appointment_ids, {
+                'comments': _('Canceled by the system due to no actions were not made over the current appointment')
+            })
+            send_email_notification(self, cr, uid, 'patient_appointment_canceled', late_appointment_ids, context)
+
+        two_hours = datetime.now() - timedelta(hours=2)
+        two_hours_waiting_ids = self.search(cr, uid, [('state', '=', 'waiting'), ('appointment_time', '<=', two_hours.strftime('%Y-%m-%d %H:%M:%S'))])
+        if two_hours_waiting_ids:
+            self.button_cancel(cr, uid, two_hours_waiting_ids)
+            self.write(cr, uid, two_hours_waiting_ids, {
+                'comments': _('Canceled by the system due to no actions were not made over the current appointment')
+            })
+            send_email_notification(self, cr, uid, 'patient_waiting_appointment_canceled', two_hours_waiting_ids, context)
+            send_email_notification(self, cr, uid, 'doctor_waiting_appointment_canceled', two_hours_waiting_ids, context)
+
+        one_hour = datetime.now() - timedelta(hours=1)
+        one_hour_waiting_ids = self.search(cr, uid, [('state', '=', 'waiting'), ('appointment_time', '<=', one_hour.strftime('%Y-%m-%d %H:%M:%S'))])
+        if one_hour_waiting_ids:
+            send_email_notification(self, cr, uid, 'patient_appointment_waiting', one_hour_waiting_ids, context)
+
+        tree_hours = datetime.now() - timedelta(hours=3)
+        tree_hours_under_treatment_ids = self.search(cr, uid, [('state', '=', 'in_consultation'), ('appointment_time', '<=', tree_hours.strftime('%Y-%m-%d %H:%M:%S'))])
+        if tree_hours_under_treatment_ids:
+            self.button_done(cr, uid, tree_hours_under_treatment_ids)
+            self.write(cr, uid, late_appointment_ids, {
+                'comments': _('Done by the system due to no actions were not made over the current appointment')
+            })
+            send_email_notification(self, cr, uid, 'patient_appointment_done', tree_hours_under_treatment_ids, context)
+
+        return True
 
 OeMedicalAppointment()
 
