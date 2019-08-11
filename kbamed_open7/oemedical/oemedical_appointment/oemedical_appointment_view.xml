@@ -63,15 +63,15 @@
                             <page string="Patient Information" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 							    <group col="8" string="Signos vitales y mediciones" attrs="{'invisible':[('state','in',('draft','confirm','canceled'))]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 	                        		<group col="4">
-	                        			<field name="pat_info" col="1" colspan="4"/>
-		                                <field name="ppm_info" col="1" colspan="4"/>
-		                                <field name="ppr_info" col="1" colspan="4"/>
+	                        			<field name="pat_info" col="1" colspan="4" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+		                                <field name="ppm_info" col="1" colspan="4" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+		                                <field name="ppr_info" col="1" colspan="4" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
 	                        		</group>	                        		
 		                            <group col="2">
-		                                <field name="tem_info" col="1" colspan="2"/>
-		                                <field name="tem2_info" col="1" colspan="2"/>
-		                                <field name="pes_info" col="1" colspan="2"/>
-		                                <field name="size_info" col="1" colspan="2"/>
+		                                <field name="tem_info" col="1" colspan="2" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+		                                <field name="tem2_info" col="1" colspan="2" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+		                                <field name="pes_info" col="1" colspan="2" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
+		                                <field name="size_info" col="1" colspan="2" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
 		                            </group>
 	                            </group>
 								<group string="Enfermedades o padecimientos" colspan="4" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
@@ -95,8 +95,8 @@
 										<field name="asma" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
 									</group>									 	
 								</group>
-								<label for="others_antecedents" attrs="{'readonly':[('state','in',('done','canceled'))],'invisible':[('other','=',False)]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
-								<field name="others_antecedents" nolabel="1" colspan="4" attrs="{'readonly':[('state','in',('draft','confirm','done','canceled'))],'invisible':[('other','=',False)]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+								<label for="others_antecedents" attrs="{'readonly':[('state','in',('done','canceled'))]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+								<field name="others_antecedents" nolabel="1" colspan="4" attrs="{'readonly':[('state','in',('draft','confirm','done','canceled'))]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
 								<group col="4" string="Enfermedad Actual" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 					                <field name="info_diagnosis" colspan="4" nolabel="1" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
                                 </group>								
@@ -104,8 +104,8 @@
 							<page string="Treatments" attrs="{'invisible':[('state','in',('draft','confirm','canceled'))]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
                                 <field name="treatment_ids" nolabel="1" context="{'appointment_id': active_id}"/>
                             </page>
-                            <page string="Comments" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
-								<field name="comments" nolabel="1"/>
+                            <page string="Comments" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.patient_group,oemedical.doctor_group,base.group_erp_manager,base.group_system">
+								<field name="comments" nolabel="1" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
 							</page>
 						</notebook>
                     </sheet>
