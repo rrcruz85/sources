@@ -58,8 +58,8 @@
 							<br/><br/>							 	
 							<div style="width: 100%%;display: inline"> 					     
 								<div style="width: 40%%;display: inline; vertical-align: middle">
-									<label for="dob"/> 
-									<field name="dob" required ="1" on_change="onchange_dob(dob)" style="width: 14%%;vertical-align: middle" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
+									<label for="birthdate"/>
+									<field name="birthdate" required ="1" on_change="onchange_dob(birthdate)" style="width: 14%%;vertical-align: middle" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
 									<label for="age"/> 
 									<field name="age" style="width: 10%%;vertical-align: middle"/>
 									<label for="ref" string="Clinic History Number"/>
@@ -91,7 +91,7 @@
 	                                    <field name="mobile" required="1" placeholder="e.g. 0955443322" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
 	                                    <field name="mobile_operator" required="1" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
 										<field name="email" required="1" widget="email" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
-									    <field name="user_id" string="User" attrs="{'readonly':[('user_id','!=',False)]}" context="{'form_view_ref': 'oemedical.oemedical_view_user_simple_form'}"/>
+									    <field name="user_id" string="User" attrs="{'readonly':[('user_id','!=',False)]}" options="{'create': false, 'create_edit': false}" context="{'form_view_ref': 'oemedical.oemedical_view_user_simple_form'}"/>
 	                                </group>
 									<newline/>								
 	                                <group string="Emergency Person's Contact">

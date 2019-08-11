@@ -114,8 +114,8 @@
                             <br/>
 							<div style="width: 100%%;display: inline">
 								<div style="width: 40%%;display: inline; vertical-align: middle">
-									<label for="dob"/>
-									<field name="dob" required ="1" on_change="onchange_dob(dob)" style="width: 14%%;vertical-align: middle"/>
+									<label for="birthdate"/>
+									<field name="birthdate" required ="1" on_change="onchange_dob(birthdate)" style="width: 14%%;vertical-align: middle"/>
 									<label for="age"/>
 									<field name="age" style="width: 10%%;vertical-align: middle"/>
                                 </div>

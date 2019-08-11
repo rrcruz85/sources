@@ -104,7 +104,7 @@
 							<page string="Treatments" attrs="{'invisible':[('state','in',('draft','confirm','canceled'))]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
                                 <field name="treatment_ids" nolabel="1" context="{'appointment_id': active_id}"/>
                             </page>
-                            <page string="Comments" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.patient_group,oemedical.doctor_group,base.group_erp_manager,base.group_system">
+                            <page string="Comments" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 								<field name="comments" nolabel="1" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
 							</page>
 						</notebook>

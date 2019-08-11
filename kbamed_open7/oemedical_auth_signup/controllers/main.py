@@ -159,7 +159,7 @@ class ValidateToken(openerpweb.Controller):
                 'db': db,
                 'index_url': base_url,
                 'message': _('User Account Successfully Activated. In order to access our portal you have to go to login screen.'),
-                'link_message' : _('Back to Login Screen')
+                'link_message': _('Back to Login Screen')
             }
         return template
 

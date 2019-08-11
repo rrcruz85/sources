@@ -10,10 +10,13 @@
     "website": "https://www.easysdev.com",
     "category": "Extra Tools",
     "depends": [
-                "oemedical",
-                "auth_signup"
-               ],
-    "data":['data/auth_signup_data.xml'],
+        "oemedical",
+        "auth_signup"
+    ],
+    "data": [
+        'data/auth_signup_data.xml',
+        'views/res_users_view.xml'
+    ],
     "demo_xml": [],
     "update_xml": [],
     "active": False,

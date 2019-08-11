@@ -98,8 +98,8 @@ class OeMedicalPatient(osv.osv):
 
     def _check_age(self, cr, uid, ids, context=None):        
         for obj in self.browse(cr, uid, ids, context=context):            
-            dob = datetime.strptime(str(obj.dob), '%Y-%m-%d')
-            delta = relativedelta(datetime.now(), dob)
+            birthdate = datetime.strptime(str(obj.birthdate), '%Y-%m-%d')
+            delta = relativedelta(datetime.now(), birthdate)
             if delta.years == 0 and delta.months == 0:
                 return False
         return True
@@ -125,21 +125,21 @@ class OeMedicalPatient(osv.osv):
         if slastname == False:
             slastname = ''
         res = {
-            'value':{
-                'name' : first_name + ' ' + last_name + ' ' + slastname
-            }             
+            'value': {
+                'name': first_name + ' ' + last_name + ' ' + slastname
+            }
         }
         return res
 
-    def onchange_dob(self, cr, uid, ids, dob, context=None):
+    def onchange_dob(self, cr, uid, ids, birthdate, context=None):
         res = {}
-        if dob:
-            delta = relativedelta(datetime.now(), datetime.strptime(str(dob), '%Y-%m-%d'))
+        if birthdate:
+            delta = relativedelta(datetime.now(), datetime.strptime(str(birthdate), '%Y-%m-%d'))
             res['value'] = {
                 'age': delta.years
             }
         return res
-    
+
     def create(self, cr, uid, vals, context=None):
         vals['is_patient'] = True
         vals['is_person'] = True

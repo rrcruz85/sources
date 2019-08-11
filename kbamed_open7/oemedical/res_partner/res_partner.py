@@ -5,11 +5,14 @@ import re
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 
-def _check_cedula(identificador):
+def _check_cedula(identificador, cedula):
     try:
         ident=int(identificador)
     except ValueError:
         raise osv.except_osv(('Aviso !'), 'La cedula no puede contener caracteres')
+
+    if cedula and len(identificador) != 10:
+        return False
 
     if len(identificador) == 13 and not identificador[10:13] == '001':
         return False
@@ -22,7 +25,7 @@ def _check_cedula(identificador):
     for c in cedula:
         val = int(c) * coef.pop()
         suma += val > 9 and val-9 or val
-    result = 10 - ((suma % 10)!=0 and suma%10 or 10)
+    result = 10 - ((suma % 10) != 0 and suma%10 or 10)
     if result == int(identificador[9:10]):
         return True
     else:
@@ -38,7 +41,7 @@ def _check_ruc(ced_ruc, position):
         verificador = int(ruc[8:9])
     else:
         if int(ruc[2:3]) < 6:
-            return _check_cedula(ced_ruc) 
+            return _check_cedula(ced_ruc, False)
         if ruc[2:3] == '9':
             coef = [4,3,2,7,6,5,4,3,2,0]
             coef.reverse()
@@ -66,9 +69,9 @@ class ResPartner(osv.Model):
         age = 0
         now = datetime.now()
         for record in self.browse(cr, uid, ids, context=context):
-            if (record.is_person or record.is_patient or record.is_doctor) and record.dob:
-                dob = datetime.strptime(str(record.dob), '%Y-%m-%d')
-                delta = relativedelta(now, dob)
+            if (record.is_person or record.is_patient or record.is_doctor) and record.birthdate:
+                birthdate = datetime.strptime(str(record.birthdate), '%Y-%m-%d')
+                delta = relativedelta(now, birthdate)
                 years_months_days = delta.years  # + 'y ' \ + str(delta.months) + 'm ' \ + str(delta.days) + 'd' + deceased
             else:
                 years_months_days = 0
@@ -112,10 +115,10 @@ class ResPartner(osv.Model):
         'mobile_operator': fields.selection([('claro', 'Claro'), ('cnt', 'CNT'), ('movistar', 'Movistar')],
             string='Operadora'),
         'sex': fields.selection([('m', 'Male'), ('f', 'Female'), ], string='Gender', required=True),
-        'dob': fields.date(string='BirthDate'),
+        'birthdate': fields.date(string='Birthdate'),
         'age': fields.function(_get_age, type='integer', string='Age',
                                store={
-                                   'res.partner': (lambda self, cr, uid, ids, c={}: ids, ['dob'], 10),
+                                   'res.partner': (lambda self, cr, uid, ids, c={}: ids, ['birthdate'], 10),
                                }),
     }
 
@@ -157,24 +160,24 @@ class ResPartner(osv.Model):
                     if partner.ced_ruc[:2] == '51':
                         return True
                     else:
-                        return _check_cedula(partner.ced_ruc)
+                        return _check_cedula(partner.ced_ruc, partner.type_ced_ruc == 'cedula')
         return True
 
     def _check_first_name(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
-            if (obj.is_doctor or obj.is_patient or obj.is_person) and not re.match(r'^[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]+\D*[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]*$', obj.first_name):
+            if (obj.is_doctor or obj.is_patient or obj.is_person) and obj.first_name and not re.match(r'^[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]+\D*[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]*$', obj.first_name):
                 return False
         return True
 
     def _check_last_name(self, cr, uid, ids, context=None):    
         for obj in self.browse(cr, uid, ids, context=context):
-            if (obj.is_doctor or obj.is_patient or obj.is_person) and not re.match(r'^[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]+$', obj.last_name):
+            if (obj.is_doctor or obj.is_patient or obj.is_person) and obj.last_name and not re.match(r'^[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]+$', obj.last_name):
                 return False
         return True
 
     def _check_slast_name(self, cr, uid, ids, context=None):        
         for obj in self.browse(cr, uid, ids, context=context):
-            if (obj.is_doctor or obj.is_patient or obj.is_person) and not re.match(r'^[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]+$', obj.slastname):
+            if (obj.is_doctor or obj.is_patient or obj.is_person) and obj.slastname and not re.match(r'^[a-zA-ZáÁéÉíÍóÓúÚüÜñÑ]+$', obj.slastname):
                 return False
         return True
     

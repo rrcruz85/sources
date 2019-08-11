@@ -418,7 +418,7 @@ openerp.oemedical_auth_signup = function(instance) {
                 name: name,
                 login: login,
                 password: password,
-                use_email_for_logging_in: use_email_for_logging_in,
+                use_email: use_email_for_logging_in,
                 first_name: names,
                 last_name: words.length > 0 ? words[0] : '', 
                 slastname: words.length > 1 ? words[1] : '',               
@@ -463,7 +463,10 @@ openerp.oemedical_auth_signup = function(instance) {
                 var params = self.get_params();
                 if (_.isEmpty(params)){
                     return false;
-                }                
+                }
+                context = {
+                   'create_patient': true
+                }
                 self.rpc('/auth_signup/signup', params)
                     .done(function(result) {
  

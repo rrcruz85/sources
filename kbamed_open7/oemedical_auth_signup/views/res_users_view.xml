@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="oemedical_res_users_view" model="ir.ui.view">
+            <field name="name">oemedical.res.users</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="mail.view_users_form_mail"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='email']" position="replace"></xpath>
+                <xpath expr="//field[@name='alias_domain']" position="replace"></xpath>
+                <xpath expr="//field[@name='alias_id']" position="replace"></xpath>
+                <xpath expr="//div[@class='oe_form_box_info oe_text_center']" position="replace"></xpath>
+                <xpath expr="//div[@class='oe_right oe_button_box']" position="replace"></xpath>
+                <xpath expr="//field[@name='image']" position="replace"></xpath>
+                <xpath expr="//field[@name='company_id']" position="replace"></xpath>
+                <xpath expr="//field[@name='active']" position="replace"></xpath>
+                <xpath expr="//div[@class='oe_title']" position="before">
+                    <div style="width: 100%%">
+                            <field name="image" style="height: 140px" widget='image' class="oe_left oe_avatar"/>
+							<div>
+                                 <h1>
+								    <field name="id" invisible="1"/>
+									<field name="name" invisible="1"/>
+								    <field name="first_name" default_focus="1" placeholder="Names" style="width: 40%%" required="1" on_change="onchange_name(first_name, last_name, slastname, context)" />
+		                            <field name="last_name" placeholder="Last Name" style="width: 22.5%%" required="1" on_change="onchange_name(first_name, last_name, slastname, context)" />
+		                            <field name="slastname" placeholder="S Last Name" style="width: 22.5%%" required="1" on_change="onchange_name(first_name, last_name, slastname, context)" />
+	                            </h1>
+                                <div style="width: 80%%; float: left">
+                                    <label for="sex"/>
+                                    <field name="sex" required ="1" style="width: 10%%; vertical-align: middle"/>
+                                    <label for="type_ced_ruc"/>
+                                    <field name="type_ced_ruc" required= "1" style="width: 15%%; vertical-align: middle"/>
+                                    <label for="ced_ruc"/>
+                                    <field name="ced_ruc" required ="1" style="width: 25%%; vertical-align: middle"/>
+                                    <br/>
+                                    <label for="birthdate"/>
+									<field name="birthdate" required ="1" on_change="onchange_dob(birthdate)" style="width: 14%%;vertical-align: middle; padding-right: 5px"/>
+							        <label for="age" style="padding-left: 5px"/>
+									<field name="age" style="width: 15%%;vertical-align: middle"/>
+                                </div>
+                            </div>
+                            <br/>
+                            <div style="width: 25%%; float: left">
+                                <label for="login" class="oe_edit_only"/>
+                                <field name="login" required="1"/>
+                            </div>
+                            <div style="width: 28%%; float: left; padding-left: 5px">
+                                <label for="email" class="oe_edit_only"/>
+                                <field name="email" required="1" placeholder="myemail@example.com"/>
+                            </div>
+                            <div style="width: 10%%; float: left; padding-left: 5px">
+                                <label for="use_email" class="oe_edit_only"/>
+                                <field name="use_email" style="vertical-align: middle"/>
+                            </div>
+                            <div style="width: 20%%; float: left; padding-left: 5px">
+                                <label for="mobile" class="oe_edit_only"/>
+                                <field name="mobile" required="1" placeholder="091122334455"/>
+                            </div>
+                            <br/>
+                            <div style="width: 30%%;float: left;margin-top: 5px">
+                                <label for="company_id" class="oe_edit_only"/>
+                                <field name="company_id" required="1"/>
+                            </div>
+                            <div style="width: 5%%; float: left;padding-left:10px;margin-top: 5px">
+                                <label for="active" class="oe_edit_only"/>
+                                <field name="active"/>
+                            </div>
+                    </div>
+                </xpath>
+
+                <xpath expr="//div[@class='oe_title']" position="replace"></xpath>
+
+            </field>
+        </record>
+
+    </data>
+</openerp>
