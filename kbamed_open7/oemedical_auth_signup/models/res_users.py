@@ -146,6 +146,10 @@ class res_users(osv.Model):
         if context and context.get('create_patient'):
             values['active'] = False
 
+        values['tmp_name'] = values['login']
+        if values['use_email']:
+            values['login'] = values['email']
+
         user_id = super(res_users, self).create(cr, uid, values, context=context)
         user = self.browse(cr, uid, user_id, context=context)
 
@@ -217,6 +221,18 @@ class res_users(osv.Model):
             pass
         return user_id
 
+    def write(self, cr, uid, ids, values, context=None):
+        for user in self.browse(cr, uid, ids):
+            if 'use_email' in values:
+                if values['use_email']:
+                    values['login'] = values['email'] if 'email' in values else user.email
+                else:
+                    values['login'] = user.tmp_name if 'login' not in values else values['login']
+
+            if 'login' in values and not values['use_email']:
+                values['tmp_name'] = values['login']
+        return super(res_users, self).write(cr, uid, ids, values, context=context)
+
     def onchange_name(self, cr, uid, ids, first_name, last_name, slastname, context=None):
         if first_name == False:
             first_name = ''
@@ -242,6 +258,7 @@ class res_users(osv.Model):
 
     _columns = {
         'use_email': fields.boolean(string='Use Email', help="Use email for logging in"),
+        'tmp_name': fields.char(string='Tmp Name', size=128),
     }
 
     _defaults = {
@@ -319,6 +336,20 @@ class res_users(osv.Model):
             return counts == 0
         return True
 
+    def _check_password_strength(self, cr, uid, ids, context=None):
+        for user in self.browse(cr, uid, ids):
+            if user.active and not re.search('[a-z]+', user.password):
+                return False
+            if user.active and not re.search('[A-Z]+', user.password):
+                return False
+            if user.active and not re.search('[0-9]+', user.password):
+                return False
+            if user.active and not re.search('[!@#\$%\^&\*]+', user.password):
+                return False
+            if user.active and len(user.password) < 8:
+                return False
+        return True
+
     _constraints = [
         (_check_ced_ruc, 'El número de cédula, ruc o pasaporte esta incorrecto', ['ced_ruc']),
         (_check_first_name, 'El nombre esta incorrecto', ['first_name']),
@@ -329,6 +360,12 @@ class res_users(osv.Model):
         (_check_unique_ced_ruc, 'El número de cédula, ruc o pasaporte debe ser unico', ['ced_ruc']),
         (_check_unique_email, 'El correo electrónico debe ser unico', ['email']),
         (_check_unique_login, 'El login de usuario debe ser unico', ['email']),
+        (_check_password_strength, 'La contraseña no cumple las políticas de seguridad:\n'
+                                   '1-Debe contener al menos 1 letra en minúscula.\n'
+                                   '2-Debe contener al menos 1 letra en mayúscula.\n'
+                                   '3-Debe contener al menos 1 dígito.\n'
+                                   '4-Debe contener al menos un caracter especial.\n'
+                                   '5-Su longitud mínima debe ser de 8 caracteres.', ['password']),
     ]
 
 res_users()
@@ -347,8 +384,20 @@ class res_partner(osv.Model):
                 })
         return res
 
+    def _get_password_reset_link(self, cr, uid, ids, name, arg, context=None):
+        res = {}.fromkeys(ids, '')
+        base_url = self.pool.get('ir.config_parameter').get_param(cr, uid, 'web.base.url')
+        for element in self.browse(cr, uid, ids, context=context):
+            if element.signup_token:
+                res[element.id] = urljoin(base_url, "?db=%(db)s#token=%(token)s&type=reset" % {
+                    'db': cr.dbname,
+                    'token': element.signup_token
+                })
+        return res
+
     _columns = {
         'activation_link': fields.function(_get_activation_link, type='char', string='Activation Link'),
+        'password_reset_link': fields.function(_get_password_reset_link, type='char', string='Password Reset Link'),
     }
 
     def signup_retrieve_info(self, cr, uid, token, context=None):

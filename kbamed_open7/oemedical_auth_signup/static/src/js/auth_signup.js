@@ -162,7 +162,8 @@ openerp.oemedical_auth_signup = function(instance) {
             compSelected = field;
             $('.oe_login_logo').css('display', 'none');
             $('.oe_login_error_message').css('display', 'inline-block');
-            this.highLightComponent(field);
+            if(field)
+                this.highLightComponent(field);
             this.show_error(_t(msg));
             window.setTimeout(this.hideErrorMessage, 3000);
         },
@@ -464,9 +465,6 @@ openerp.oemedical_auth_signup = function(instance) {
                 if (_.isEmpty(params)){
                     return false;
                 }
-                context = {
-                   'create_patient': true
-                }
 
                 if(login_mode == 'signup'){
                     self.rpc('/auth_signup/signup', params)
@@ -492,19 +490,22 @@ openerp.oemedical_auth_signup = function(instance) {
                         });
                 }
                 else{
-
                      self.rpc("/web/session/set_password",{
-                        'fields': $("form").serializeArray()
+                        'fields': params
                         }).done(function(result) {
-                               self.show_error('AAAAAAAA');
-                               console.log(result);
                                if (result.error) {
-                                  self.show_error(_t('AAAAAAAA'));
-                                  return;
+                                   self.showErrorMsg(result.error, false);
+                                   window.setTimeout(self.hideErrorMessage, 10000);
+                                   return;
                                }
                                else {
                                   self.clearForm();
                                   self.set('login_mode', 'default');
+                                  self.do_notify(_t("Changed Password"), _t("Password has been changed successfully"));
+                                  window.setTimeout(function(){
+                                    window.location = result.base_url;
+                                    self.clearForm();
+                                  }, 2000);
                                }
                          });
                 }

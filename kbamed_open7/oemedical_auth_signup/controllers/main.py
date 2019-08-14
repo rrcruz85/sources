@@ -7,6 +7,10 @@ from openerp.modules.registry import RegistryManager
 from datetime import datetime
 from openerp.tools.translate import _
 from urlparse import urljoin
+import operator
+import logging
+
+_logger = logging.getLogger(__name__)
 
 error_html = """
 <!DOCTYPE html>
@@ -118,6 +122,7 @@ class ValidateToken(openerpweb.Controller):
             errmsg = _('Invalid token format')
 
         base_url = ''
+        company_name = ''
         if not errmsg:
             registry = RegistryManager.get(db)
             with registry.cursor() as cr:
@@ -128,6 +133,7 @@ class ValidateToken(openerpweb.Controller):
                     errmsg = _('Invalid Activation Link')
                 else:
                     partner = res_partner.browse(cr, openerp.SUPERUSER_ID, partnerId[0])
+                    company_name = partner.company_id.name
                     if not partner.signup_expiration or datetime.strptime(partner.signup_expiration, '%Y-%m-%d %H:%M:%S') <= datetime.now():
                         errmsg = _('Activation Link Expired. You have to request a new one by clicking reset password option on login screen.')
                     else:
@@ -141,10 +147,6 @@ class ValidateToken(openerpweb.Controller):
                             registry.get('res.users').write(cr, openerp.SUPERUSER_ID, [partner.user_id.id], {
                                 'active': True
                             })
-        company_name = ''
-        registry = RegistryManager.get(db)
-        with registry.cursor() as cr:
-            company_name = registry.get('res.users').browse(cr, openerp.SUPERUSER_ID, openerp.SUPERUSER_ID).company_id.name
 
         if errmsg:
             template = error_html % {
@@ -168,14 +170,85 @@ class OemedicalSession(webmain.Session):
     @openerpweb.jsonrequest
     def set_password(self, req, fields):
 
-        if 'aa' != 'bb':
+        if not fields:
+            return {'error': _('Invalid url, no params provided')}
+
+        if 'dbname' not in fields or not fields['dbname']:
+            return {'error': _('Invalid url, db param not found')}
+        else:
+            db_list = webmain.db_list(req)
+            if fields['dbname'] not in db_list:
+                return {'error': _('Invalid database name')}
+
+        if 'token' not in fields or not fields['token']:
+            return {'error': _('Invalid url, token param not found')}
+        elif len(fields['token']) != 20:
+            return {'error': _('Invalid url, token param is incorrect')}
+        elif not re.match(r'^[a-zA-Z0-9]+$', fields['token']):
+            return {'error': _('Invalid url, token format is incorrect')}
+
+        if 'password' not in fields or not fields['password']:
+            return {'error': _('Invalid url, password param not found')}
+
+        registry = RegistryManager.get(fields['dbname'])
+        with registry.cursor() as cr:
+            base_url = registry.get('ir.config_parameter').get_param(cr, openerp.SUPERUSER_ID, 'web.base.url')
+            res_partner = registry.get('res.partner')
+            partner_id = res_partner.search(cr, openerp.SUPERUSER_ID, [('signup_token', '=', fields.get('token'))])
+            if not partner_id:
+                return {'error': _('Invalid Reset Password Link')}
+            else:
+                partner = res_partner.browse(cr, openerp.SUPERUSER_ID, partner_id[0])
+
+                if partner.name != fields['name']:
+                    return {'error': _('Incorrect UserName')}
+
+                if partner.user_id.login != fields['login']:
+                    return {'error': _('Incorrect Login Name')}
+
+                if not partner.signup_expiration or datetime.strptime(partner.signup_expiration, '%Y-%m-%d %H:%M:%S') <= datetime.now():
+                    return {'error': _('Reset Password Link Expired. You have to request a new one by clicking reset password option on login screen.')}
+                else:
+                    res_partner.write(cr, openerp.SUPERUSER_ID, partner_id, {
+                        'signup_type': False,
+                        'signup_expiration': False,
+                        'signup_token': False
+                    })
+
+                    if partner.user_id:
+                        registry.get('res.users').write(cr, openerp.SUPERUSER_ID, [partner.user_id.id], {
+                            'active': True,
+                            'password': fields['password']
+                        })
+
+                    return {'error': False, 'base_url': urljoin(base_url, "?db=%(db)s" % {'db': fields['dbname']})}
+
+    @openerpweb.jsonrequest
+    def change_password(self, req, fields):
+        old_password, new_password, confirm_password = operator.itemgetter('old_pwd', 'new_password', 'confirm_pwd')(
+            dict(map(operator.itemgetter('name', 'value'), fields)))
+        if not (old_password.strip() and new_password.strip() and confirm_password.strip()):
+            return {'error': _('You cannot leave any password empty.'), 'title': _('Change Password')}
+        if new_password != confirm_password:
             return {'error': _('The new password and its confirmation must be identical.'),
                     'title': _('Change Password')}
+        if old_password.strip() == new_password.strip():
+            return {'error': _('The new password can not be the same of the old password.'),
+                    'title': _('Change Password')}
+        if new_password.strip().find(old_password.strip()) != -1:
+            return {'error': _('The new password can not be contained in the old password.'),
+                    'title': _('Change Password')}
+        if old_password.strip().find(new_password.strip()) != -1:
+            return {'error': _('The new password can not contains the old password.'),
+                    'title': _('Change Password')}
         try:
-            if req.session.model('res.users').write('AAAAA'):
-                return {'new_password': 'AAAAA'}
-        except Exception:
-            return {'error': _('The old password you provided is incorrect, your password was not changed.'),
+            if req.session.model('res.users').change_password(
+                    old_password, new_password):
+                return {'new_password': new_password}
+        except Exception as e:
+            msg = e.faultCode[e.faultCode.find(':')+2:]
+            msg = msg.replace('\n', '<br/>')
+            return {'error': _(msg),
                     'title': _('Change Password')}
         return {'error': _('Error, password not changed !'), 'title': _('Change Password')}
 

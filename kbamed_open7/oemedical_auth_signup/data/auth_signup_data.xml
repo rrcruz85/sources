@@ -52,7 +52,7 @@ ${object.company_id.partner_id.website or ''}
                         you have to click on the following link to set your password:
                     </p>
                     <ul>
-                        <li><a href="${object.signup_url}">Click here to set your password</a></li>
+                        <li><a href="${object.password_reset_link}">Click here to set your password</a></li>
                     </ul>
                     <p>
                         Thanks,
