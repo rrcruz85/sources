@@ -9,6 +9,9 @@ from openerp.addons.auth_signup.res_users import SignupError
 from openerp.tools.translate import _
 from urlparse import urljoin
 from dateutil.relativedelta import relativedelta
+import logging
+
+_logger = logging.getLogger(__name__)
 
 def random_token():
     # the token has an entropy of about 120 bits (6 bits/char * 20 chars)
@@ -137,13 +140,20 @@ class res_users(osv.Model):
 
     def create(self, cr, uid, values, context=None):
         # overridden to automatically invite user to sign up
+        if context and context.get('reset_password'):
+            context.pop('reset_password')
+
+        if context and context.get('create_patient'):
+            values['active'] = False
+
         user_id = super(res_users, self).create(cr, uid, values, context=context)
         user = self.browse(cr, uid, user_id, context=context)
 
+        token = random_token()
         if context and context.get('create_patient') and user.partner_id:
             country = self.pool.get('res.country').search(cr, uid, [('code', '=', 'EC')])
             state = self.pool.get('res.country.state').search(cr, uid, [('country_id', '=', country[0]), ('code', '=', 'PIC')])
-            token = random_token()
+
             self.pool.get('res.partner').write(cr, uid, [user.partner_id.id], {
                 'name': values['first_name'] + ' ' + values['last_name'] + ' ' + values['slastname'],
                 'user_id': user_id,
@@ -179,22 +189,32 @@ class res_users(osv.Model):
                 self.write(cr, uid, [user_id], {
                     'groups_id': [(3, employee_group.id)]
                 }, context=context)
+        else:
+            self.pool.get('res.partner').write(cr, uid, [user.partner_id.id], {
+                'user_id': user_id,
+                'signup_token': token,
+                'signup_type': 'reset',
+                'signup_expiration': now(days=+1),
+            }, context=None)
 
-            try:
-                template = self.pool.get('ir.model.data').get_object(cr, uid, 'oemedical_auth_signup', 'activation_account_email')
-                if not user.email:
-                    raise osv.except_osv(_("Cannot send email: user has no email address."), user.name)
-                mail_id = self.pool.get('email.template').send_mail(cr, uid, template.id, user.id, True, context=context)
-                mail_obj = self.pool.get('mail.mail')
-                mail_state = mail_obj.read(cr, uid, mail_id, ['state'], context=context)
-                if mail_state and mail_state['state'] == 'exception':
-                    raise osv.except_osv(_("Cannot send email: no outgoing email server configured.\nYou can configure it under Settings/General Settings."), user.name)
-            except ValueError:
-                pass
+        if context and context.get('create_patient'):
+            template = self.pool.get('ir.model.data').get_object(cr, uid, 'oemedical_auth_signup', 'activation_account_email')
+        else:
+            template = self.pool.get('ir.model.data').get_object(cr, uid, 'oemedical_auth_signup', 'activation_created_account_email')
 
-        if context and context.get('reset_password') and user.email:
-            ctx = dict(context, create_user=True)
-            self.action_reset_password(cr, uid, [user.id], context=ctx)
+        try:
+            if not template:
+                raise osv.except_osv(_("Cannot send email: email template not found."), user.name)
+            if not user.email:
+                raise osv.except_osv(_("Cannot send email: user has no email address."), user.name)
+            mail_id = self.pool.get('email.template').send_mail(cr, uid, template.id, user.id, True, context=context)
+            mail_obj = self.pool.get('mail.mail')
+            mail_state = mail_obj.read(cr, uid, mail_id, ['state'], context=context)
+            if mail_state and mail_state['state'] == 'exception':
+                raise osv.except_osv(_("Cannot send email: no outgoing email server configured.\nYou can configure it under Settings/General Settings."), user.name)
+        except ValueError as e:
+            _logger.exception(e.message)
+            pass
         return user_id
 
     def onchange_name(self, cr, uid, ids, first_name, last_name, slastname, context=None):
@@ -222,6 +242,10 @@ class res_users(osv.Model):
 
     _columns = {
         'use_email': fields.boolean(string='Use Email', help="Use email for logging in"),
+    }
+
+    _defaults = {
+        'active': False,
     }
 
     def _check_ced_ruc(self, cr, uid, ids, context=None):
@@ -318,13 +342,27 @@ class res_partner(osv.Model):
         for element in self.browse(cr, uid, ids, context=context):
             if element.signup_token:
                 res[element.id] = urljoin(base_url, "/validate?db=%(db)s&token=%(token)s" % {
-                    'db' : cr.dbname,
-                    'token' : element.signup_token
+                    'db': cr.dbname,
+                    'token': element.signup_token
                 })
         return res
 
     _columns = {
         'activation_link': fields.function(_get_activation_link, type='char', string='Activation Link'),
     }
+
+    def signup_retrieve_info(self, cr, uid, token, context=None):
+        partner = self._signup_retrieve_partner(cr, uid, token, raise_exception=True, context=None)
+        res = {'db': cr.dbname}
+        if partner.signup_valid:
+            res['token'] = token
+            res['name'] = partner.name
+        if partner.user_ids:
+            res['login'] = partner.user_ids[0].login
+        elif partner.user_id:
+            res['login'] = partner.user_id.login
+        else:
+            res['email'] = partner.email or ''
+        return res
 
 res_partner()

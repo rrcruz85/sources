@@ -8,15 +8,19 @@
             <li data-modes="signup reset">UserName</li>           
         </t>
 
+        <t t-jquery="form ul:first li:has(input[name=name])" t-operation="replace">
+            <li data-modes="signup"><input name="name" type="text"/></li>
+        </t>
+
         <t t-jquery="form ul:first li:contains('Username (Email)')" t-operation="replace">
-            <li data-modes="signup reset">
+            <li data-modes="signup">
                 <span>Email</span>
                 <span style="padding-left:240px">Use Email for logging in</span>
             </li>
         </t> 
          
         <t t-jquery="form ul:first li:has(input[name=login]) input[name=login]" t-operation="after">
-            <input data-modes="signup reset" style="margin-left: 10px; width:15px !important" name="use_email_for_logging_in" type="checkbox"/>
+            <input data-modes="signup" style="margin-left: 10px; width:15px !important" name="use_email_for_logging_in" type="checkbox"/>
         </t>       
 
         <t t-jquery="form ul:first li:has(input[name=password], input[name=confirm_password]), form ul:first li:contains('Password'), form ul:first li:contains('Confirm Password')" t-operation="replace">
@@ -29,40 +33,39 @@
                 <input name="confirm_password" type="password" data-modes="signup reset"/>
             </li>
             
-            <li data-modes="signup reset">
-               <li data-modes="signup reset">
+            <li data-modes="signup">
+               <li data-modes="signup">
                  <span>First Name</span>
                  <span style="padding-left: 204px">Last Names</span>
                </li>
-               <li data-modes="signup reset">
+               <li data-modes="signup">
                    <input name="names" type="text"/>  
                    <input name="last_names" type="text"/>  
                </li>
             </li>
 
-            <li data-modes="signup reset">
-               <li data-modes="signup reset">
+            <li data-modes="signup">
+               <li data-modes="signup">
                     <span>Gender</span>
                     <span style="padding-left:225px">BirthDate</span>
                </li>
-               <li data-modes="signup reset">
+               <li data-modes="signup">
                     <select name="gender" style="width:265px;height:28px;">
                         <option value="m">Male</option>
                         <option value="f">Female</option>                                              
                     </select>
-                    <!--input name="birthdate" type="date" style="height:17px;"/ -->
                     <input type="text" name="birthdate" placeholder="DD-MM-YYYY" 
                         title="Enter a date in this format DD-MM-YYYY"/>
                 </li>
             </li>
 
-            <li data-modes="signup reset">
-               <li data-modes="signup reset">
+            <li data-modes="signup">
+               <li data-modes="signup">
                     <span>Identification Type</span>
                     <span style="padding-left: 160px">Mobile</span>
                     <span style="padding-left: 125px">Operator</span>
                </li>
-               <li data-modes="signup reset">
+               <li data-modes="signup">
                     <select name="type_identification_list" style="width:120px;height:28px;">
                         <option value="cedula">Cedula</option>
                         <option value="ruc">Ruc</option>

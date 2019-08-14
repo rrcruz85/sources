@@ -30,6 +30,8 @@ openerp.oemedical_auth_signup = function(instance) {
                 });
                 self.$('a.oe_signup_back').click(function(ev) {
                     self.clearForm();
+                    self.$("form input[name=name]").attr("readonly", false);
+                    self.$("form input[name=login]").attr("readonly", false);
                     self.set('login_mode', 'default');
                     delete self.params.token;                    
                     return false;
@@ -65,7 +67,6 @@ openerp.oemedical_auth_signup = function(instance) {
                             self.rpc("/auth_signup/retrieve", {dbname: dbname, token: self.params.token})
                                 .then(self.on_token_loaded, self.on_token_failed);
                         }
-
                     });
                 } 
                 else {                     
@@ -286,10 +287,10 @@ openerp.oemedical_auth_signup = function(instance) {
         },
 
         get_params: function(){
-
             // signup user (or reset password)
+            var self = this;
             this.hideErrorMessage();
-           
+            var login_mode = self.get('login_mode');
             var db = this.$("form [name=db]").val();
             var name = this.$("form input[name=name]").val();
             var login = this.$("form input[name=login]").val();
@@ -308,28 +309,28 @@ openerp.oemedical_auth_signup = function(instance) {
             if (!db) {
                 this.showErrorMsg("No database selected !", 'db');
                 return false;
-            } else if (!name) {
+            } else if (!name && (login_mode == 'default' || login_mode == 'signup')) {
                 this.showErrorMsg("Please enter a UserName !", 'name');
                 return false;
             } 
-            else if (!this.validateUserName(name)) {                          
+            else if (!this.validateUserName(name) && (login_mode == 'default' || login_mode == 'signup')){
                 this.showErrorMsg(errorMsg, 'name');
                 errorMsg = '';
                 return false;
             }
-            else if (!login) {
+            else if (!login && (login_mode == 'signup')) {
                 this.showErrorMsg("Please enter an Email !", 'login');
                 return false;
             }
-            else if(!this.validateEmail(login)){ 
+            else if(!this.validateEmail(login) && (login_mode == 'signup')){
                 this.showErrorMsg("Email Address is incorrect !", 'login');
                 return false
             }  
-            else if (!password || !confirm_password) {
+            else if (!password || (!confirm_password && (login_mode == 'reset' || login_mode == 'signup'))){
                 this.showErrorMsg("Please enter a password and confirm it !", 'password');
                 return false;
             } 
-            else if (password !== confirm_password) {
+            else if (password !== confirm_password && (login_mode == 'reset' || login_mode == 'signup')) {
                 this.showErrorMsg("Passwords do not match; please retype them !", 'confirm_password');
                 return false;
             }
@@ -338,39 +339,39 @@ openerp.oemedical_auth_signup = function(instance) {
                 errorMsg = '';
                 return false;
             }
-            else if (!names) {
+            else if (!names && (login_mode == 'signup')) {
                 this.showErrorMsg("Please enter a name!", 'names');                
                 return false;
             }
-            else if (!this.validateNames(names, true)) {
+            else if (!this.validateNames(names, true) && (login_mode == 'signup')) {
                 this.showErrorMsg(errorMsg, 'names');
                 errorMsg = '';
                 return false;
             }
-            else if (!last_names) {
+            else if (!last_names && (login_mode == 'signup')) {
                 this.showErrorMsg("Please enter a last name!", 'last_names');                 
                 return false;
             }
-            else if (!this.validateNames(last_names, false)) {
+            else if (!this.validateNames(last_names, false) && (login_mode == 'signup')) {
                 this.showErrorMsg(errorMsg, 'last_names');
                 errorMsg = '';
                 return false;
             }
-            else if (!birthdate) {
+            else if (!birthdate && (login_mode == 'signup')) {
                 this.showErrorMsg("Please enter a birthdate!", 'birthdate');                 
                 return false;
             }
-            else if (!this.validateDate(birthdate)) {
+            else if (!this.validateDate(birthdate) && (login_mode == 'signup')) {
                 this.showErrorMsg(errorMsg, 'birthdate'); 
                 errorMsg = '';                
                 return false;
             }
-            else if (!type_identification_value) {
+            else if (!type_identification_value && (login_mode == 'signup')) {
                 this.showErrorMsg("Please enter a " + type_identification + "!", 'type_identification_value');                 
                 return false;
             }
             
-            if (type_identification_value) {
+            if (type_identification_value && (login_mode == 'signup')) {
                 type_identification_value = type_identification_value.trim();
                 if(type_identification == 'cedula'){
                     if(!this.validateCedula(type_identification_value)){
@@ -400,11 +401,11 @@ openerp.oemedical_auth_signup = function(instance) {
                 }                 
             }           
             
-            if (!mobile) {
+            if (!mobile &&(login_mode == 'signup')) {
                 this.showErrorMsg("Please enter a valid mobile number!", 'mobile');               
                 return false;
             }
-            else if (!this.validateMobileNumber(mobile)) {
+            else if (!this.validateMobileNumber(mobile) && (login_mode == 'signup')) {
                 this.showErrorMsg(errorMsg, 'mobile');
                 errorMsg = '';
                 return false;
@@ -453,7 +454,6 @@ openerp.oemedical_auth_signup = function(instance) {
         },
 
         on_submit: function(ev) {
-            
             var self = this, super_ = this._super;
             if (ev) {
                 ev.preventDefault();
@@ -467,31 +467,76 @@ openerp.oemedical_auth_signup = function(instance) {
                 context = {
                    'create_patient': true
                 }
-                self.rpc('/auth_signup/signup', params)
-                    .done(function(result) {
- 
-                        if (result.error) {
-                            $('.oe_login_logo').css('display', 'none');
-                            $('.oe_login_error_message').css('display', 'inline-block'); 
-                            self.show_error(_t(result.error));
-                            window.setTimeout(self.hideErrorMessage, 3000);
-                        } 
-                        else {
-                            self.clearForm();
-                            $('.oe_login_logo').css('display', 'none');
-                            $('.oe_login_error_message').css({
-                                'display':'inline-block',
-                                'background-color': 'darkgreen'
-                            });
-                            $('.oe_login_error_message').text(_t("User has been successfully signed up.\nPlease check your email account and click in the link that we sent you to activate your account."));
-                            window.setTimeout(self.hideErrorMessage, 10000);                            
-                            self.set('login_mode', 'default');
-                        }
-                    });
+
+                if(login_mode == 'signup'){
+                    self.rpc('/auth_signup/signup', params)
+                        .done(function(result) {
+
+                            if (result.error) {
+                                $('.oe_login_logo').css('display', 'none');
+                                $('.oe_login_error_message').css('display', 'inline-block');
+                                self.show_error(_t(result.error));
+                                window.setTimeout(self.hideErrorMessage, 3000);
+                            }
+                            else {
+                                self.clearForm();
+                                $('.oe_login_logo').css('display', 'none');
+                                $('.oe_login_error_message').css({
+                                    'display':'inline-block',
+                                    'background-color': 'darkgreen'
+                                });
+                                $('.oe_login_error_message').text(_t("User has been successfully signed up.\nPlease check your email account and click in the link that we sent you to activate your account."));
+                                window.setTimeout(self.hideErrorMessage, 10000);
+                                self.set('login_mode', 'default');
+                            }
+                        });
+                }
+                else{
+
+                     self.rpc("/web/session/set_password",{
+                        'fields': $("form").serializeArray()
+                        }).done(function(result) {
+                               self.show_error('AAAAAAAA');
+                               console.log(result);
+                               if (result.error) {
+                                  self.show_error(_t('AAAAAAAA'));
+                                  return;
+                               }
+                               else {
+                                  self.clearForm();
+                                  self.set('login_mode', 'default');
+                               }
+                         });
+                }
             } else {
                 // regular login
                 self._super(ev);
             }
         },
+
+        /*
+        do_reset_password: function(ev) {
+
+            if (ev) {
+                ev.preventDefault();
+            }
+            var self = this;
+            var db = this.$("form [name=db]").val();
+            var login = this.$("form input[name=login]").val();
+            if (!db) {
+                this.do_warn(_t("Login"), _t("No database selected !"));
+                return $.Deferred().reject();
+            } else if (!login) {
+                this.do_warn(_t("Login"), _t("Please enter a username or email address."));
+                return $.Deferred().reject();
+            }
+            return self.rpc("/auth_signup/reset_password", { dbname: db, login: login }).done(function(result) {
+                self.show_error(_t("An email has been sent with credentials to reset your password"));
+                self.set('login_mode', 'default');
+            }).fail(function(result, ev) {
+                ev.preventDefault();
+                self.show_error(result.message);
+            });
+        },*/
     });
 };

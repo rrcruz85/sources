@@ -123,7 +123,7 @@ class ValidateToken(openerpweb.Controller):
             with registry.cursor() as cr:
                 base_url = registry.get('ir.config_parameter').get_param(cr, openerp.SUPERUSER_ID, 'web.base.url')
                 res_partner = registry.get('res.partner')
-                partnerId = res_partner.search(cr, openerp.SUPERUSER_ID,[('signup_token', '=', token)])
+                partnerId = res_partner.search(cr, openerp.SUPERUSER_ID, [('signup_token', '=', token)])
                 if not partnerId:
                     errmsg = _('Invalid Activation Link')
                 else:
@@ -136,11 +136,11 @@ class ValidateToken(openerpweb.Controller):
                             'signup_expiration': False,
                             'signup_token': False
                         })
+
                         if partner.user_id:
                             registry.get('res.users').write(cr, openerp.SUPERUSER_ID, [partner.user_id.id], {
                                 'active': True
                             })
-
         company_name = ''
         registry = RegistryManager.get(db)
         with registry.cursor() as cr:
@@ -162,5 +162,21 @@ class ValidateToken(openerpweb.Controller):
                 'link_message': _('Back to Login Screen')
             }
         return template
+
+class OemedicalSession(webmain.Session):
+
+    @openerpweb.jsonrequest
+    def set_password(self, req, fields):
+
+        if 'aa' != 'bb':
+            return {'error': _('The new password and its confirmation must be identical.'),
+                    'title': _('Change Password')}
+        try:
+            if req.session.model('res.users').write('AAAAA'):
+                return {'new_password': 'AAAAA'}
+        except Exception:
+            return {'error': _('The old password you provided is incorrect, your password was not changed.'),
+                    'title': _('Change Password')}
+        return {'error': _('Error, password not changed !'), 'title': _('Change Password')}
 
 # vim:expandtab:tabstop=4:softtabstop=4:shiftwidth=4:

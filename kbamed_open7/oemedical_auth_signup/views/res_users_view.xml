@@ -11,7 +11,13 @@
                 <xpath expr="//field[@name='alias_domain']" position="replace"></xpath>
                 <xpath expr="//field[@name='alias_id']" position="replace"></xpath>
                 <xpath expr="//div[@class='oe_form_box_info oe_text_center']" position="replace"></xpath>
-                <xpath expr="//div[@class='oe_right oe_button_box']" position="replace"></xpath>
+                <xpath expr="//div[@class='oe_right oe_button_box']" position="replace">
+                     <div class="oe_right oe_button_box">
+                        <button string="Send reset password link by email"
+                                type="object" name="action_reset_password"
+                                attrs="{'invisible': [('state', '!=', 'active')]}"/>
+                    </div>
+                </xpath>
                 <xpath expr="//field[@name='image']" position="replace"></xpath>
                 <xpath expr="//field[@name='company_id']" position="replace"></xpath>
                 <xpath expr="//field[@name='active']" position="replace"></xpath>
@@ -63,8 +69,8 @@
                                 <field name="company_id" required="1"/>
                             </div>
                             <div style="width: 5%%; float: left;padding-left:10px;margin-top: 5px">
-                                <label for="active" class="oe_edit_only"/>
-                                <field name="active"/>
+                                <label for="active" class="oe_edit_only" attrs="{'invisible': [('active','=', False)]}"/>
+                                <field name="active" attrs="{'invisible': [('active','=', False)]}"/>
                             </div>
                     </div>
                 </xpath>
