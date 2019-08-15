@@ -10,6 +10,7 @@ from openerp.tools.translate import _
 from urlparse import urljoin
 from dateutil.relativedelta import relativedelta
 import logging
+from openerp import SUPERUSER_ID
 
 _logger = logging.getLogger(__name__)
 
@@ -233,6 +234,37 @@ class res_users(osv.Model):
                 values['tmp_name'] = values['login']
         return super(res_users, self).write(cr, uid, ids, values, context=context)
 
+    def action_reset_password(self, cr, uid, ids, context=None):
+        """ create signup token for each user, and send their signup url by email """
+        # prepare reset password signup
+        res_partner = self.pool.get('res.partner')
+        partner_ids = [user.partner_id.id for user in self.browse(cr, uid, ids, context)]
+        res_partner.signup_prepare(cr, uid, partner_ids, signup_type="reset", expiration=now(days=+1), context=context)
+        self.write(cr, uid, ids, {'active': False})
+
+        if not context:
+            context = {}
+
+        # send email to users with their signup url
+        template = self.pool.get('ir.model.data').get_object(cr, uid, 'auth_signup', 'reset_password_email')
+        mail_obj = self.pool.get('mail.mail')
+        assert template._name == 'email.template'
+        for user in self.browse(cr, uid, ids, context):
+            if not user.email:
+                raise osv.except_osv(_("Cannot send email: user has no email address."), user.name)
+            mail_id = self.pool.get('email.template').send_mail(cr, uid, template.id, user.id, True, context=context)
+            mail_state = mail_obj.read(cr, uid, mail_id, ['state'], context=context)
+            if mail_state and mail_state['state'] == 'exception':
+                raise osv.except_osv(_("Cannot send email: no outgoing email server configured.\nYou can configure it under Settings/General Settings."), user.name)
+            else:
+                return True
+
+    def change_password(self, cr, uid, old_passwd, new_passwd, context=None):
+        self.check(cr.dbname, uid, old_passwd)
+        if new_passwd:
+            return self.write(cr, SUPERUSER_ID, uid, {'password': new_passwd, 'active': True})
+        raise osv.except_osv(_('Warning!'), _("Setting empty passwords is not allowed for security reasons!"))
+
     def onchange_name(self, cr, uid, ids, first_name, last_name, slastname, context=None):
         if first_name == False:
             first_name = ''
@@ -261,8 +293,29 @@ class res_users(osv.Model):
         'tmp_name': fields.char(string='Tmp Name', size=128),
     }
 
+    def _get_default_country(self, cr, uid, context=None):
+        result = self.pool.get('res.country').search(cr, uid, [('code', '=', 'EC')])
+        return result and result[0] or False
+
+    def _get_default_state(self, cr, uid, context=None):
+        result = self.pool.get('res.country').search(cr, uid, [('code', '=', 'EC')])
+        if result and result[0]:
+            res = self.pool.get('res.country.state').search(cr, uid,[('country_id', '=', result[0]), ('code', '=', 'PIC')])
+            return res and res[0] or False
+        return False
+
     _defaults = {
         'active': False,
+        'is_person': True,
+        'tipo_persona':  '6',
+        'type_ced_ruc': 'cedula',
+        'mobile_operator': 'claro',
+        'city': 'Quito',
+        'country_id': _get_default_country,
+        'state_id': _get_default_state,
+        'tz': 'America/Guayaquil',
+        'notification_email_send': 'none',
+        'groups_id': [],
     }
 
     def _check_ced_ruc(self, cr, uid, ids, context=None):
@@ -350,6 +403,17 @@ class res_users(osv.Model):
                 return False
         return True
 
+    def _check_groups(self, cr, uid, ids, context=None):
+        patient_group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', 'patient_group')
+        doctor_group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', 'doctor_group')
+        for user in self.browse(cr, uid, ids):
+            if user.groups_id:
+                has_patient_group = filter(lambda g: g.id == patient_group[1], user.groups_id)
+                has_doctor_group = filter(lambda g: g.id == doctor_group[1], user.groups_id)
+                if len(has_patient_group) and len(has_doctor_group):
+                    return False
+        return True
+
     _constraints = [
         (_check_ced_ruc, 'El número de cédula, ruc o pasaporte esta incorrecto', ['ced_ruc']),
         (_check_first_name, 'El nombre esta incorrecto', ['first_name']),
@@ -366,6 +430,8 @@ class res_users(osv.Model):
                                    '3-Debe contener al menos 1 dígito.\n'
                                    '4-Debe contener al menos un caracter especial.\n'
                                    '5-Su longitud mínima debe ser de 8 caracteres.', ['password']),
+        (_check_groups, 'El usuario no puede tener los roles de doctor y paciente a la misma vez.', ['groups_id']),
+
     ]
 
 res_users()

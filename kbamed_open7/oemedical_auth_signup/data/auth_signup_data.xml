@@ -67,5 +67,13 @@ ${object.company_id.partner_id.website or ''}
             </field>
         </record>
 
+        <record id="auth_signup.reset_password_email" model="email.template">
+            <field name="body_html"><![CDATA[
+<p>A password reset was requested for the <strong>${object.company_id.name}</strong> account linked to this email.</p>
+
+<p>You may change your password by following <a href="${object.password_reset_link}">this link</a>.</p>
+
+<p>Note: If you do not expect this, you can safely ignore this email.</p>]]></field>
+        </record>
     </data>
 </openerp>

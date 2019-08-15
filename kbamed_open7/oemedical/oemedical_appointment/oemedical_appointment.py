@@ -31,7 +31,7 @@ class OeMedicalAppointment(osv.Model):
         for exam in self.browse(cr, uid, ids, context=context):
             patient_name = exam.patient_id.first_name + ' ' + exam.patient_id.last_name
             formatted_hours = get_datetime(exam.start_date, exam.start_time).strftime("%Y-%m-%d %H:%M")
-            res.append((exam.id, patient_name + '(' +  exam.patient_id.ced_ruc + ') / (' + formatted_hours + ') / (' + exam.specialty_id.name + ')'))
+            res.append((exam.id, patient_name + '(' + exam.patient_id.ced_ruc + ') / (' + formatted_hours + ') / (' + exam.specialty_id.name + ')'))
         return res
     
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
