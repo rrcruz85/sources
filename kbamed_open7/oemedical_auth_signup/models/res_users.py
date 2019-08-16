@@ -195,11 +195,32 @@ class res_users(osv.Model):
                     'groups_id': [(3, employee_group.id)]
                 }, context=context)
         else:
+            is_patient = False
+            is_doctor = False
+            patient_group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', 'patient_group')
+            patient_group_id = filter(lambda g: g.id == patient_group[1], user.groups_id)
+            if len(patient_group_id):
+                is_patient = True
+                self.pool.get('oemedical.patient').create(cr, uid, {
+                    'partner_id': user.partner_id.id,
+                    'ref': self.pool.get('ir.sequence').get(cr, uid, 'oemedical.patient'),
+                }, context=None)
+
+            doctor_group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', 'doctor_group')
+            doctor_group_id = filter(lambda g: g.id == doctor_group[1], user.groups_id)
+            if len(doctor_group_id):
+                is_doctor = True
+                self.pool.get('oemedical.physician').create(cr, uid, {
+                    'physician_id': user.partner_id.id
+                }, context=None)
+
             self.pool.get('res.partner').write(cr, uid, [user.partner_id.id], {
                 'user_id': user_id,
                 'signup_token': token,
                 'signup_type': 'reset',
                 'signup_expiration': now(days=+1),
+                'is_patient': is_patient,
+                'is_doctor': is_doctor
             }, context=None)
 
         if context and context.get('create_patient'):
@@ -407,10 +428,21 @@ class res_users(osv.Model):
         patient_group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', 'patient_group')
         doctor_group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', 'doctor_group')
         for user in self.browse(cr, uid, ids):
-            if user.groups_id:
+            if user.id != SUPERUSER_ID and user.groups_id:
                 has_patient_group = filter(lambda g: g.id == patient_group[1], user.groups_id)
                 has_doctor_group = filter(lambda g: g.id == doctor_group[1], user.groups_id)
                 if len(has_patient_group) and len(has_doctor_group):
+                    return False
+        return True
+
+    def _check_groups_2(self, cr, uid, ids, context=None):
+        patient_group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', 'patient_group')
+        doctor_group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'oemedical', 'doctor_group')
+        for user in self.browse(cr, uid, ids):
+            if user.id != SUPERUSER_ID and user.groups_id:
+                has_patient_group = filter(lambda g: g.id == patient_group[1], user.groups_id)
+                has_doctor_group = filter(lambda g: g.id == doctor_group[1], user.groups_id)
+                if not len(has_patient_group) and not len(has_doctor_group):
                     return False
         return True
 
@@ -431,7 +463,7 @@ class res_users(osv.Model):
                                    '4-Debe contener al menos un caracter especial.\n'
                                    '5-Su longitud mínima debe ser de 8 caracteres.', ['password']),
         (_check_groups, 'El usuario no puede tener los roles de doctor y paciente a la misma vez.', ['groups_id']),
-
+        (_check_groups_2, 'El usuario tiene que tener el rol de doctor o de paciente.', ['groups_id']),
     ]
 
 res_users()

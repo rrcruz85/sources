@@ -70,13 +70,23 @@ class OeMedicalPhysician(osv.Model):
         for obj in self.browse(cr, uid, ids, context=context):            
             birthdate = datetime.strptime(str(obj.birthdate), '%Y-%m-%d')
             delta = relativedelta(datetime.now(), birthdate)
-            if delta.years == 0 and delta.months == 0:
+            if delta.years < 23:
                 return False
         return True
 
+    def _check_unique_user(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.user_id:
+                counts = self.search(cr, uid, [('id', '!=', obj.id), ('active', '=', True), ('user_id', '=', obj.user_id.id)],
+                                     count=True)
+                if counts:
+                    return False
+        return True
+
     _constraints = [        
-        (_check_age, 'La edad del doctor no puede ser cero', ['age']),
-    ] 
+        (_check_age, 'La edad del doctor debe ser superior a los 23 años.', ['age']),
+        (_check_unique_user, 'Ya existe otro registro con el mismo usuario. El usuario debe ser único.', ['user_id']),
+    ]
 
     def onchange_name(self, cr, uid, ids, first_name, last_name, slastname, context=None):
         if first_name == False:

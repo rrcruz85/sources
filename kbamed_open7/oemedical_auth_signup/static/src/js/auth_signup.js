@@ -28,6 +28,7 @@ openerp.oemedical_auth_signup = function(instance) {
                     self.set('login_mode', 'signup');
                     return false;
                 });
+
                 self.$('a.oe_signup_back').click(function(ev) {
                     self.clearForm();
                     self.$("form input[name=name]").attr("readonly", false);
@@ -51,6 +52,12 @@ openerp.oemedical_auth_signup = function(instance) {
 
                 // bind reset password link
                 self.$('a.oe_signup_reset_password').click(self.do_reset_password);
+
+                self.$("form input[name=birthdate]").keyup(function(e) {
+                  //var val = $(this).val();
+                  //console.log('Pressed:');
+                  //console.log(e.key);
+                });
 
                 if (dbname) {
                     self.rpc("/auth_signup/get_config", {dbname: dbname}).then(function(result) {
@@ -515,29 +522,29 @@ openerp.oemedical_auth_signup = function(instance) {
             }
         },
 
-        /*
-        do_reset_password: function(ev) {
-
-            if (ev) {
-                ev.preventDefault();
-            }
+        do_login: function (db, login, password) {
             var self = this;
-            var db = this.$("form [name=db]").val();
-            var login = this.$("form input[name=login]").val();
-            if (!db) {
-                this.do_warn(_t("Login"), _t("No database selected !"));
-                return $.Deferred().reject();
-            } else if (!login) {
-                this.do_warn(_t("Login"), _t("Please enter a username or email address."));
-                return $.Deferred().reject();
-            }
-            return self.rpc("/auth_signup/reset_password", { dbname: db, login: login }).done(function(result) {
-                self.show_error(_t("An email has been sent with credentials to reset your password"));
-                self.set('login_mode', 'default');
-            }).fail(function(result, ev) {
-                ev.preventDefault();
-                self.show_error(result.message);
+            self.hide_error();
+            self.$(".oe_login_pane").fadeOut("slow");
+            return this.session.session_authenticate(db, login, password).then(function() {
+                self.remember_last_used_database(db);
+                if (self.has_local_storage && self.remember_credentials) {
+                    localStorage.setItem(db + '|last_login', login);
+                }
+                self.trigger('login_successful');
+            }, function () {
+                $(".oe_login_pane").fadeIn("fast", function(){
+                    $('.oe_login_logo').css('display', 'none');
+                    $('.oe_login_error_message').css('display', 'inline-block');
+                    $(".oe_login_error_message").text(_t("Invalid username or password"));
+                });
+                window.setTimeout(function(){
+                    $('.oe_login_logo').css('display', 'inline-block');
+                    $('.oe_login_error_message').css('display', 'none');
+                    $(".oe_login_error_message").text("");
+                }, 2000);
             });
-        },*/
+        },
+
     });
 };

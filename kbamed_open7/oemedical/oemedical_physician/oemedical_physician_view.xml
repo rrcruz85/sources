@@ -97,7 +97,7 @@
 										<field name="mobile_operator" required="1" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
 										<field name="email" required="1" widget="email" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
 										<field name="title" class="oe_no_button" options='{"no_open": True,"no_quick_create":True,"no_create_edit": True}' groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
-										<field name="user_id" string="User" attrs="{'readonly':[('user_id','!=',False)]}" options="{'create': false, 'create_edit': false}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+										<field name="user_id" string="User" domain="[('is_doctor', '=', True)]" options="{'create': false, 'create_edit': false}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
 									</group>
 								</group> 
                                 <group string="Academic Information" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">

@@ -193,7 +193,7 @@ class ResPartner(osv.Model):
                 return False
         return True
 
-    def _check_email(self, cr, uid, ids, context=None):        
+    def _check_email(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
             if obj.email and not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', obj.email):
                 return False
@@ -206,7 +206,7 @@ class ResPartner(osv.Model):
         (_check_slast_name, 'El segundo apellido esta incorrecto', ['slastname']),
         (_check_mobile_number, 'El número móvil esta incorrecto', ['mobile']),
         (_check_email, 'El correo electrónico esta incorrecto', ['email']),
-    ]
+   ]
 
 ResPartner()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

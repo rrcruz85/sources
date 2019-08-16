@@ -4,7 +4,7 @@
     'version': '1.0.0',
     'author': "Easys Dev Solutions",
     'category': 'Web',
-    'depends': ['web','auth_signup'],    
+    'depends': ['oemedical_auth_signup'],
     'description': """This module allows to:
 =================================
 1- Change the backgroud color

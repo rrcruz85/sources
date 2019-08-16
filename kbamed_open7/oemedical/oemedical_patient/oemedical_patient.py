@@ -77,7 +77,7 @@ class OeMedicalPatient(osv.osv):
         'emergency_mobile': fields.char('Mobile', size=200),
 
         'nationality_id': fields.many2one('res.country', string='Nationality'),
-        'current_user_is_patient': fields.function(_current_user_is_patient, type='boolean',string='Current User Is Patient'),
+        'current_user_is_patient': fields.function(_current_user_is_patient, type='boolean', string='Current User Is Patient'),
     }
 
     _defaults = {

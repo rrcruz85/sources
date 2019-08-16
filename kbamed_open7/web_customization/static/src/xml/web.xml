@@ -12,16 +12,6 @@
                     <input name="db" t-att-value="widget.selected_db || ''"/>
             </div>
 	    </t>
-        <!--
-		<t t-jquery="div.oe_login div.oe_login_pane form ul" t-operation="replace">
-			<ul>
-                <li>Usuario</li>
-                <li><input name="login" type="text" value="" autofocus="autofocus"/></li>
-                <li>Contraseña</li>
-                <li><input name="password" type="password" value=""/></li>
-				<li><button name="submit">Ingresar</button></li>				              
-            </ul> 
-	    </t> -->
 
 		<t t-jquery="div.oe_login div.oe_login_footer" t-operation="replace">
 			<div class="oe_login_footer">
@@ -30,15 +20,6 @@
 	    </t>
 	</t>
 
-	<t t-extend="UserMenu">
-	    <t t-jquery="ul.oe_dropdown_menu li:has(a[data-menu='account'])" t-operation="replace">				 
-	    </t>	
-		<t t-jquery="ul.oe_dropdown_menu li:has(a[data-menu='about'])" t-operation="replace">				 
-	    </t>
-		<t t-jquery="ul.oe_dropdown_menu li:has(a[data-menu='help'])" t-operation="replace">				 
-	    </t>		
-	</t>
-     
 	<t t-jquery="form ul:first li:has(button[name=submit])" t-operation="replace">
             <li>
                 <button name="submit">
@@ -48,7 +29,6 @@
                 </button>
                 <a class="oe_signup_signup" data-modes="default" href="#">Registrar</a>
                 <a class="oe_signup_back" data-modes="signup reset" href="#">Regresar a Ingresar</a>
-                <a class="oe_signup_reset_password" data-modes="default" href="#">Resetear Contraseña</a>
             </li>
     </t> 
 

@@ -8,6 +8,9 @@
             <li data-modes="signup reset">UserName</li>           
         </t>
 
+        <t t-jquery="a[class='oe_signup_reset_password']" t-operation="replace">
+        </t>
+
         <t t-jquery="form ul:first li:has(input[name=name])" t-operation="replace">
             <li data-modes="signup"><input name="name" type="text"/></li>
         </t>

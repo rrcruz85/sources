@@ -91,7 +91,7 @@
 	                                    <field name="mobile" required="1" placeholder="e.g. 0955443322" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
 	                                    <field name="mobile_operator" required="1" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
 										<field name="email" required="1" widget="email" attrs="{'readonly':[('current_user_is_patient','=',True)]}"/>
-									    <field name="user_id" string="User" attrs="{'readonly':[('user_id','!=',False)]}" options="{'create': false, 'create_edit': false}" context="{'form_view_ref': 'oemedical.oemedical_view_user_simple_form'}"/>
+									    <field name="user_id" string="User" domain="[('is_patient', '=', True)]" attrs="{'readonly':[('current_user_is_patient','=',True)]}" options="{'create': false, 'create_edit': false}" context="{'form_view_ref': 'oemedical.oemedical_view_user_simple_form'}"/> <!-- attrs="{'readonly':[('user_id','!=',False)]}" -->
 	                                </group>
 									<newline/>								
 	                                <group string="Emergency Person's Contact">
