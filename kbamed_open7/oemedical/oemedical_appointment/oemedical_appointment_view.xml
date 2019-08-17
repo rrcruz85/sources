@@ -14,7 +14,8 @@
 					<field name="doctor_id" />
 					<field name="type" />
 					<field name="state" />
-					<button name="button_back" icon="gtk-go-back" states="confirm,waiting,in_consultation,done,canceled" string="Back"  type="object" groups="oemedical.doctor_group"/>
+
+					<button name="button_back" icon="gtk-go-back" states="draft,confirm,waiting,in_consultation" string="Back"  type="object" groups="oemedical.doctor_group"/>
                     <button name="button_confirm" icon="STOCK_YES" states="draft" string="Confirm" class="oe_highlight"  type="object" />
                     <button name="button_waiting" icon="kanban-pause" states="confirm" string="Waiting" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
                     <button name="button_in_consultation" icon="gtk-execute" states="waiting" string="In Consultation" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
@@ -30,11 +31,11 @@
 			<field name="arch" type="xml">
 				<form string="Appointment"  version="7.0">
                     <header>
-                        <button name="button_back" states="waiting,in_consultation,done" string="Back"  type="object" groups="oemedical.doctor_group"/>
+                        <button name="button_back" states="confirm, in_consultation, done" string="Back"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
                         <button name="button_confirm" states="draft" string="Confirm" class="oe_highlight"  type="object" />
-                        <button name="button_waiting" states="confirm" string="Waiting" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
-                        <button name="button_in_consultation" states="waiting" string="In Consultation" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
-                        <button name="button_done" states="in_consultation" string="Done" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
+                        <button name="button_waiting" states="confirm" string="Waiting" class="oe_highlight"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+                        <button name="button_in_consultation" states="waiting" string="In Consultation" class="oe_highlight"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+                        <button name="button_done" states="in_consultation" string="Done" class="oe_highlight"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
                         <button name="button_cancel" states="draft,confirm" string="Cancel"  type="object" />
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,waiting,in_consultation,done,canceled" statusbar_colors='{"draft":"blue","done":"green","canceled":"red","confirm":"yellow","waiting":"gray", "in_consultation":"gray"}'/>
                     </header>
@@ -101,9 +102,18 @@
 					                <field name="info_diagnosis" colspan="4" nolabel="1" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
                                 </group>								
                             </page>
-							<page string="Treatments" attrs="{'invisible':[('state','in',('draft','confirm','canceled'))]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
+							<page string="Treatments" attrs="{'invisible':[('state','in',('draft','confirm','waiting','canceled'))]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
                                 <field name="treatment_ids" nolabel="1" context="{'appointment_id': active_id}"/>
-                            </page>
+								<group class="oe_subtotal_footer oe_right" style="font-size: initial; font-weight: bolder">
+									<field name="appointment_specialty_cost" widget="monetary"/>
+									<field name="appointment_treatments_cost" widget="monetary"/>
+									<field name="appointment_subtotal" widget="monetary"/>
+									<field name="appointment_iva" widget="monetary"/>
+									<field name="appointment_total" widget="monetary"/>
+                            	</group>
+                                <div class="oe_clear">
+                                </div>
+							</page>
                             <page string="Comments" attrs="{'invisible':[('state','=','draft')]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
 								<field name="comments" nolabel="1" attrs="{'readonly':[('state','in',('done','canceled'))]}"/>
 							</page>

@@ -19,8 +19,11 @@
 			<field name="model">oemedical.treatment</field>			 
 			<field name="arch" type="xml">
 				<form string="Treatment">
-					<field name="name" required="1"/>		
-					<field name="cost" widget="monetary"/>			 
+					<field name="name" required="1" colspan="4"/>
+					<newline/>
+					<field name="description" colspan="4"/>
+					<newline/>
+					<field name="cost" widget="monetary" required="1" colspan="2"/>
 				</form>
 			</field>
 		</record>
@@ -41,8 +44,8 @@
 				<tree string="Treatments">
 					<field name="treatment_id" />  
                     <field name="treatment_date" />
-                    <field name="doctor_id" /> 
-					<field name="cost"/>                 			 
+                    <field name="doctor_id" invisible="1"/>
+					<field name="cost" sum="Total"/>
 				</tree>
 			</field>
 		</record>

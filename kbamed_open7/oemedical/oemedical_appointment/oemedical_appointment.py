@@ -66,7 +66,21 @@ class OeMedicalAppointment(osv.Model):
                 'appointment_stimated_endtime': start_time + timedelta(minutes=record.stimated_duration)
             } 
         return res   
-    
+
+    def _get_appointment_costs(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for obj in self.browse(cr, uid, ids, context=context):
+            specialty_cost = obj.specialty_id.cost
+            treatment_cost = sum([treatment.cost for treatment in obj.treatment_ids])
+            res[obj.id] = {
+                'appointment_specialty_cost': specialty_cost,
+                'appointment_treatments_cost': treatment_cost,
+                'appointment_subtotal': specialty_cost + treatment_cost,
+                'appointment_iva': (specialty_cost + treatment_cost) * 0.12,
+                'appointment_total': (specialty_cost + treatment_cost) * 1.12
+            }
+        return res
+
     _columns = {
         'patient_id'            : fields.many2one('oemedical.patient', string='Patient', required=True, select=True),
         'specialty_id'          : fields.many2one('oemedical.specialty', string='Specialty'),
@@ -120,7 +134,13 @@ class OeMedicalAppointment(osv.Model):
         'vih_sida': fields.related('patient_id', 'vih_sida', type='boolean', string='VIH/SIDA'),
         'asma': fields.related('patient_id', 'asma', type='boolean', string='Asma'),
         'other': fields.related('patient_id', 'other', type='boolean', string='Otra'),
-        'others_antecedents': fields.related('patient_id', 'others_antecedents', type='text', string='Descripción de otros antescedentes'),        
+        'others_antecedents': fields.related('patient_id', 'others_antecedents', type='text', string='Descripción de otros antescedentes'),
+
+        'appointment_specialty_cost': fields.function(_get_appointment_costs, type='float', string='Appointment Cost', multi='cost'),
+        'appointment_treatments_cost': fields.function(_get_appointment_costs, type='float', string='Treatment Costs', multi='cost'),
+        'appointment_subtotal': fields.function(_get_appointment_costs, type='float', string='Subtotal', multi='cost'),
+        'appointment_iva': fields.function(_get_appointment_costs, type='float', string='Iva', multi='cost'),
+        'appointment_total': fields.function(_get_appointment_costs, type='float', string='Total', multi='cost'),
     }
     
     def _get_default_specialty(self, cr, uid, context = None):
@@ -210,9 +230,23 @@ class OeMedicalAppointment(osv.Model):
     def _check_next_date_appointment_vals(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
             if obj.next_appointment_date and (obj.next_appointment_date <= datetime.now().date or obj.next_appointment_date <= obj.start_date):
-                return False 
+                return False
             if obj.next_appointment_date and obj.next_appointment_hour and (obj.next_appointment_hour <= 0 or obj.next_appointment_hour >= 24):
-                return False               
+                return False
+        return True
+
+    def _check_required_treatment(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.state == 'done' and not obj.treatment_ids:
+                return False
+        return True
+
+    def _check_appointment_cost(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.state == 'done':
+                total_cost = obj.specialty_id.cost + sum([treatment.cost for treatment in obj.treatment_ids])
+                if total_cost <= 0:
+                    return False
         return True
 
     _constraints = [    
@@ -221,7 +255,9 @@ class OeMedicalAppointment(osv.Model):
         (_check_overlapped, 'En la fecha y hora seleccionada el doctor ya tiene una cita, debe escoger otro horario', []),
         (_check_stimated_time, 'El tiempo estimado de la cita esta incorrecto, el rango correcto es [15-120]', []),
         (_check_next_date_appointment, 'La fecha y hora de la proxima cita estan incorrectas. El doctor ya tiene una cita agendada en esa fecha y hora', []),        
-        (_check_next_date_appointment_vals, 'La fecha y hora de la proxima cita estan incorrectas. La fecha y hora deben ser posteriores a la fecha y hora actual y de esta cita', []),        
+        (_check_next_date_appointment_vals, 'La fecha y hora de la proxima cita estan incorrectas. La fecha y hora deben ser posteriores a la fecha y hora actual y de esta cita', []),
+        (_check_required_treatment, 'Debe especificar el tratamiento realizado sobre el paciente.', []),
+        (_check_appointment_cost, 'El costo de la consulta no puede ser cero.', []),
     ]
 
     def onchange_patient_doctor(self, cr, uid, ids, patient_id, doctor_id, context=None):
@@ -466,7 +502,7 @@ class OeMedicalAppointmentHistory(osv.Model):
         'appointment_id' :  fields.many2one('oemedical.appointment','History', ondelete='cascade'),
         'date': fields.datetime(string='Date and Time'),
         'user_id': fields.many2one('res.users', string='User'),
-	    'action' : fields.text('Action'),
+	    'action' : fields.text('Action')
     }   
 
 OeMedicalAppointmentHistory()

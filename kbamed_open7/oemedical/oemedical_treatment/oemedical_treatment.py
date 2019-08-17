@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
-import time
-from openerp.osv import fields, osv, orm
-from openerp.tools.translate import _
-from openerp import tools
+from openerp.osv import fields, osv
 
 class OeMedicalTreatment(osv.Model):
     _name = 'oemedical.treatment'
 
     _columns = {
-        'name'   : fields.char(size=512, string='Name'), 
-        'cost'   : fields.float(string='Cost'),     
+        'name': fields.char(size=512, required=True, string='Name'),
+        'cost': fields.float(string='Cost', required=True),
+        'description': fields.text(string='Description'),
     }
+
+    def _check_cost(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.cost <= 0:
+                return False
+        return True
+
+    _constraints = [
+        (_check_cost, 'El costo no puede ser menor o igual a cero.', []),
+    ]
 
 OeMedicalTreatment()
 
@@ -42,17 +50,27 @@ class OeMedicalAppointmentTreatment(osv.Model):
     def onchange_appointment(self, cr, uid, ids, appointment_id, context = None):
         res = {'value': {}}    
         if appointment_id:
-            obj = self.pool.get('oemedical.appointment').browse(cr,uid,appointment_id)
-            res['value']['treatment_date'] =  obj.appointment_time
+            obj = self.pool.get('oemedical.appointment').browse(cr, uid, appointment_id)
+            res['value']['treatment_date'] = obj.appointment_time
             res['value']['doctor_id'] = obj.doctor_id.id
         return res
     
     def onchange_treatment(self, cr, uid, ids, treatment_id, context = None):
         res = {'value': {}}    
         if treatment_id:
-            obj = self.pool.get('oemedical.treatment').browse(cr,uid,treatment_id)
-            res['value']['cost'] =  obj.cost            
+            obj = self.pool.get('oemedical.treatment').browse(cr, uid, treatment_id)
+            res['value']['cost'] = obj.cost
         return res
+
+    def _check_cost(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.cost <= 0:
+                return False
+        return True
+
+    _constraints = [
+        (_check_cost, 'El costo no puede ser menor o igual a cero.', []),
+    ]
 
 OeMedicalAppointmentTreatment()
 

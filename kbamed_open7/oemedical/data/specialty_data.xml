@@ -4,142 +4,170 @@
 
         <record id="001" model="oemedical.specialty">
             <field name="code">001</field>
-            <field name="name">Odontologia</field>            
+            <field name="name">Odontologia</field>
+            <field name="cost">40</field>
         </record>
         
         <record id="002" model="oemedical.specialty">
             <field name="code">002</field>
-            <field name="name">Alergologia</field>            
+            <field name="name">Alergologia</field>
+            <field name="cost">40</field>
         </record>
 
         <record id="003" model="oemedical.specialty">
             <field name="code">003</field>
-            <field name="name">Anestesiologia y reanimación</field>            
+            <field name="name">Anestesiologia y reanimación</field>
+            <field name="cost">40</field>
         </record>
 
         <record id="004" model="oemedical.specialty">
             <field name="code">004</field>
-            <field name="name">Cardiologia</field>            
+            <field name="name">Cardiologia</field>
+            <field name="cost">40</field>
         </record>
 
         <record id="005" model="oemedical.specialty">
             <field name="code">005</field>
-            <field name="name">Gastroenterologia</field>            
+            <field name="name">Gastroenterologia</field>
+            <field name="cost">40</field>
         </record>
 
         <record id="006" model="oemedical.specialty">
             <field name="code">006</field>
-            <field name="name">Endocrinologia</field>            
+            <field name="name">Endocrinologia</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="007" model="oemedical.specialty">
             <field name="code">007</field>
-            <field name="name">Geriatria</field>            
+            <field name="name">Geriatria</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="008" model="oemedical.specialty">
             <field name="code">008</field>
-            <field name="name">Hematologia y hemoterapia</field>            
+            <field name="name">Hematologia y hemoterapia</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="009" model="oemedical.specialty">
             <field name="code">009</field>
-            <field name="name">Infectologia</field>            
+            <field name="name">Infectologia</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="010" model="oemedical.specialty">
             <field name="code">010</field>
-            <field name="name">Rehabilitación</field>            
+            <field name="name">Rehabilitación</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="010" model="oemedical.specialty">
             <field name="code">010</field>
-            <field name="name">Medicina fisica y Rehabilitación</field>            
+            <field name="name">Medicina fisica y Rehabilitación</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="011" model="oemedical.specialty">
             <field name="code">011</field>
-            <field name="name">Medicina intensiva</field>            
+            <field name="name">Medicina intensiva</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="012" model="oemedical.specialty">
             <field name="code">012</field>
-            <field name="name">Medicina interna</field>            
+            <field name="name">Medicina interna</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="013" model="oemedical.specialty">
             <field name="code">013</field>
-            <field name="name">Medicina legal y forense</field>            
+            <field name="name">Medicina legal y forense</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="014" model="oemedical.specialty">
             <field name="code">014</field>
-            <field name="name">Medicina veterinaria</field>            
+            <field name="name">Medicina veterinaria</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="015" model="oemedical.specialty">
             <field name="code">015</field>
-            <field name="name">Nefrologia</field>            
+            <field name="name">Nefrologia</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="016" model="oemedical.specialty">
             <field name="code">016</field>
-            <field name="name">Neumologia</field>            
+            <field name="name">Neumologia</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="017" model="oemedical.specialty">
             <field name="code">017</field>
-            <field name="name">Neurologia</field>            
+            <field name="name">Neurologia</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="018" model="oemedical.specialty">
             <field name="code">018</field>
-            <field name="name">Nutriologia</field>            
+            <field name="name">Nutriologia</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="019" model="oemedical.specialty">
             <field name="code">019</field>
-            <field name="name">Oftalmologia</field>            
+            <field name="name">Oftalmologia</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="020" model="oemedical.specialty">
             <field name="code">020</field>
-            <field name="name">Oncologia médica</field>            
+            <field name="name">Oncologia médica</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="021" model="oemedical.specialty">
             <field name="code">021</field>
-            <field name="name">Oncologia radioterápica</field>            
+            <field name="name">Oncologia radioterápica</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="022" model="oemedical.specialty">
             <field name="code">022</field>
-            <field name="name">Pediatria</field>            
+            <field name="name">Pediatria</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="023" model="oemedical.specialty">
             <field name="code">023</field>
-            <field name="name">Psiquiatria</field>            
+            <field name="name">Psiquiatria</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="024" model="oemedical.specialty">
             <field name="code">024</field>
-            <field name="name">Reumatologia</field>            
+            <field name="name">Reumatologia</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="025" model="oemedical.specialty">
             <field name="code">025</field>
-            <field name="name">Toxicologia</field>            
+            <field name="name">Toxicologia</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="026" model="oemedical.specialty">
             <field name="code">026</field>
-            <field name="name">Urologia</field>            
+            <field name="name">Urologia</field>
+             <field name="cost">40</field>
         </record>
 
         <record id="027" model="oemedical.specialty">
             <field name="code">027</field>
-            <field name="name">Ginecologia</field>            
+            <field name="name">Ginecologia</field>
+             <field name="cost">40</field>
         </record>         
 
     </data>

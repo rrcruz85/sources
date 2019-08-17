@@ -342,7 +342,7 @@ class res_users(osv.Model):
     def _check_ced_ruc(self, cr, uid, ids, context=None):
         for user in self.browse(cr, uid, ids):
             if user.type_ced_ruc == 'pasaporte':
-                return re.match(r'^[a-zA-Z0-9]+$', user.partnet_id.ced_ruc)
+                return re.match(r'^[a-zA-Z0-9]+$', user.ced_ruc)
             if user.ced_ruc == '9999999999999':
                 return True
             if user.type_ced_ruc == 'ruc':
