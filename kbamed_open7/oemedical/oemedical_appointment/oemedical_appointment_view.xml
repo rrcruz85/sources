@@ -5,7 +5,7 @@
 			<field name="name">oemedical.appointment.tree</field>
 			<field name="model">oemedical.appointment</field>			 
 			<field name="arch" type="xml">
-				<tree string="Appointments" colors="red:state=='canceled';green:state =='done';blue:state == 'draft'; brown:state == 'confirm'; gray:state == 'waiting'; darkyellow:state=='in_consultation'">
+				<tree string="Appointments" colors="red:state=='canceled';green:state =='done';yellow:state == 'draft'; blue:state == 'confirm'; purple:state == 'waiting'; olive:state=='in_consultation'">
 					<field name="appointment_time" invisible="1"/> 
 					<field name="start_date" /> 
 					<field name="start_time" widget="float_time"/> 
@@ -14,13 +14,12 @@
 					<field name="doctor_id" />
 					<field name="type" />
 					<field name="state" />
-
-					<button name="button_back" icon="gtk-go-back" states="draft,confirm,waiting,in_consultation" string="Back"  type="object" groups="oemedical.doctor_group"/>
-                    <button name="button_confirm" icon="STOCK_YES" states="draft" string="Confirm" class="oe_highlight"  type="object" />
-                    <button name="button_waiting" icon="kanban-pause" states="confirm" string="Waiting" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
-                    <button name="button_in_consultation" icon="gtk-execute" states="waiting" string="In Consultation" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
-                    <button name="button_done" icon="terp-camera_test" states="in_consultation" string="Done" class="oe_highlight"  type="object" groups="oemedical.doctor_group"/>
-                    <button name="button_cancel" icon="terp-gtk-stop" states="confirm, in_consultation" string="Cancel"  type="object" />        
+				    <button name="button_back" icon="gtk-go-back" states="confirm,in_consultation,done" string="Back"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+					<button name="button_confirm" icon="STOCK_YES" states="draft" string="Confirm" class="oe_highlight"  type="object" />
+                    <button name="button_waiting" icon="kanban-pause" states="confirm" string="Waiting" class="oe_highlight"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+                    <button name="button_in_consultation" icon="gtk-execute" states="waiting" string="In Consultation" class="oe_highlight"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+                    <button name="button_done" icon="terp-camera_test" states="in_consultation" string="Done" class="oe_highlight"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+                    <button name="button_cancel" icon="terp-gtk-stop" states="draft,confirm" string="Cancel"  type="object" />
 				</tree>
 			</field>
 		</record>
@@ -31,7 +30,7 @@
 			<field name="arch" type="xml">
 				<form string="Appointment"  version="7.0">
                     <header>
-                        <button name="button_back" states="confirm, in_consultation, done" string="Back"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
+                        <button name="button_back" states="confirm,in_consultation,done" string="Back"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
                         <button name="button_confirm" states="draft" string="Confirm" class="oe_highlight"  type="object" />
                         <button name="button_waiting" states="confirm" string="Waiting" class="oe_highlight"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
                         <button name="button_in_consultation" states="waiting" string="In Consultation" class="oe_highlight"  type="object" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system"/>
@@ -103,10 +102,11 @@
                                 </group>								
                             </page>
 							<page string="Treatments" attrs="{'invisible':[('state','in',('draft','confirm','waiting','canceled'))]}" groups="oemedical.doctor_group,base.group_erp_manager,base.group_system">
-                                <field name="treatment_ids" nolabel="1" context="{'appointment_id': active_id}"/>
+                                <field name="treatment_ids" attrs="{'readonly':[('state','=','done')]}"  nolabel="1" context="{'appointment_id': active_id}"/>
 								<group class="oe_subtotal_footer oe_right" style="font-size: initial; font-weight: bolder">
 									<field name="appointment_specialty_cost" widget="monetary"/>
 									<field name="appointment_treatments_cost" widget="monetary"/>
+									<field name="discount" widget="monetary" attrs="{'readonly':[('state','=','done')]}" on_change="onchange_discount(discount, appointment_specialty_cost, appointment_treatments_cost)"/>
 									<field name="appointment_subtotal" widget="monetary"/>
 									<field name="appointment_iva" widget="monetary"/>
 									<field name="appointment_total" widget="monetary"/>

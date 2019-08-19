@@ -205,8 +205,28 @@ class ResPartner(osv.Model):
         (_check_last_name, 'El primer apellido esta incorrecto', ['last_name']),
         (_check_slast_name, 'El segundo apellido esta incorrecto', ['slastname']),
         (_check_mobile_number, 'El número móvil esta incorrecto', ['mobile']),
-        (_check_email, 'El correo electrónico esta incorrecto', ['email']),
-   ]
+        (_check_email, 'El correo electrónico esta incorrecto', ['email'])
+    ]
 
 ResPartner()
+
+class ResCompany(osv.Model):
+    _inherit = 'res.company'
+
+    _columns = {
+        'iva_tax': fields.float(string='Iva Tax', help="Percentage value (%) applied over sales"),
+    }
+
+    def _check_iva_tax(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.iva_tax < 0 or obj.iva_tax > 100:
+                return False
+        return True
+
+    _constraints = [
+        (_check_iva_tax, 'El valor del porcentaje del impuesto iva esta incorrecto.', ['iva_tax']),
+    ]
+
+ResCompany()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -70,14 +70,17 @@ class OeMedicalAppointment(osv.Model):
     def _get_appointment_costs(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for obj in self.browse(cr, uid, ids, context=context):
+            iva_tax = obj.doctor_id.company_id.iva_tax
             specialty_cost = obj.specialty_id.cost
             treatment_cost = sum([treatment.cost for treatment in obj.treatment_ids])
+            subtotal = (specialty_cost + treatment_cost) - obj.discount
+            iva = subtotal * iva_tax / 100
             res[obj.id] = {
                 'appointment_specialty_cost': specialty_cost,
                 'appointment_treatments_cost': treatment_cost,
-                'appointment_subtotal': specialty_cost + treatment_cost,
-                'appointment_iva': (specialty_cost + treatment_cost) * 0.12,
-                'appointment_total': (specialty_cost + treatment_cost) * 1.12
+                'appointment_subtotal': subtotal,
+                'appointment_iva': iva,
+                'appointment_total': subtotal + iva
             }
         return res
 
@@ -141,6 +144,7 @@ class OeMedicalAppointment(osv.Model):
         'appointment_subtotal': fields.function(_get_appointment_costs, type='float', string='Subtotal', multi='cost'),
         'appointment_iva': fields.function(_get_appointment_costs, type='float', string='Iva', multi='cost'),
         'appointment_total': fields.function(_get_appointment_costs, type='float', string='Total', multi='cost'),
+        'discount': fields.float(string='Discount'),
     }
     
     def _get_default_specialty(self, cr, uid, context = None):
@@ -238,6 +242,8 @@ class OeMedicalAppointment(osv.Model):
     def _check_required_treatment(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
             if obj.state == 'done' and not obj.treatment_ids:
+                if obj.comments and 'Done by the system' in obj.comments:
+                    return True
                 return False
         return True
 
@@ -246,6 +252,14 @@ class OeMedicalAppointment(osv.Model):
             if obj.state == 'done':
                 total_cost = obj.specialty_id.cost + sum([treatment.cost for treatment in obj.treatment_ids])
                 if total_cost <= 0:
+                    return False
+        return True
+
+    def _check_discount(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.state == 'done':
+                total_cost = obj.specialty_id.cost + sum([treatment.cost for treatment in obj.treatment_ids])
+                if obj.discount < 0 or obj.discount > total_cost:
                     return False
         return True
 
@@ -258,6 +272,7 @@ class OeMedicalAppointment(osv.Model):
         (_check_next_date_appointment_vals, 'La fecha y hora de la proxima cita estan incorrectas. La fecha y hora deben ser posteriores a la fecha y hora actual y de esta cita', []),
         (_check_required_treatment, 'Debe especificar el tratamiento realizado sobre el paciente.', []),
         (_check_appointment_cost, 'El costo de la consulta no puede ser cero.', []),
+        (_check_discount, 'El valor del descuento esta incorrecto.', []),
     ]
 
     def onchange_patient_doctor(self, cr, uid, ids, patient_id, doctor_id, context=None):
@@ -314,6 +329,27 @@ class OeMedicalAppointment(osv.Model):
                     doctor_id = records[0]
             res['value'] = {'doctor_id': doctor_id if is_valid else False}
             res['domain'] = {'doctor_id': [('specialty_id', '=', specialty_id)]}
+        return res
+
+    def onchange_discount(self, cr, uid, ids, discount, appointment_specialty_cost, appointment_treatments_cost, context=None):
+        res = {}
+        if discount:
+            if discount < 0 or discount > (appointment_specialty_cost + appointment_treatments_cost):
+                warning = {
+                    'title': _('Discount value incorrect!'),
+                    'message': _('The discount value must be higher than 0 and lower than the subtotal')
+                }
+                res['value'] = {}
+                res['warning'] = warning
+                return res
+            else:
+                iva_tax = self.pool.get('res.users').browse(cr, uid, uid).company_id.iva_tax/100
+                tmp_val = (appointment_specialty_cost + appointment_treatments_cost) - discount
+                res['value'] = {
+                    'appointment_subtotal': tmp_val,
+                    'appointment_iva': tmp_val * iva_tax,
+                    'appointment_total': tmp_val * (1 + iva_tax)
+                }
         return res
 
     def create(self, cr, uid, vals, context=None):
@@ -485,10 +521,10 @@ class OeMedicalAppointment(osv.Model):
         tree_hours = datetime.now() - timedelta(hours=3)
         tree_hours_under_treatment_ids = self.search(cr, uid, [('state', '=', 'in_consultation'), ('appointment_time', '<=', tree_hours.strftime('%Y-%m-%d %H:%M:%S'))])
         if tree_hours_under_treatment_ids:
-            self.button_done(cr, uid, tree_hours_under_treatment_ids)
             self.write(cr, uid, late_appointment_ids, {
                 'comments': _('Done by the system due to no actions were not made over the current appointment')
             })
+            self.button_done(cr, uid, tree_hours_under_treatment_ids, context=context)
             send_email_notification(self, cr, uid, 'patient_appointment_done', tree_hours_under_treatment_ids, context)
 
         return True
