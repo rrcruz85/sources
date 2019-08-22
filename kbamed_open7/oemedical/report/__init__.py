@@ -1,1 +1,2 @@
 import oemedical_patient_evaluation
+import oemedical_appointment_analytic_entries_report

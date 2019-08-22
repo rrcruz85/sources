@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <record id="view_oemedical_appointment_analytic_entries_report_tree" model="ir.ui.view">
+        <field name="name">oemedical.appointment.analytic.entries.report.tree</field>
+        <field name="model">oemedical.appointment.analytic.entries.report</field>
+        <field name="arch" type="xml">
+            <tree string="Analytic Entries Analysis" create="false">
+                <field name="start_datetime" invisible="1"/>
+                <field name="end_datetime" invisible="1"/>
+                <field name="year" invisible="1"/>
+                <field name="day" invisible="1"/>
+                <field name="month" invisible="1"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="specialty_id"/>
+                <field name="state"/>
+                <field name="total_invoiced" sum="Total"/>
+                <field name="hours" invisible="1"/>
+                <field name="minutes" widget="float_time" invisible="1"/>
+                <field name="patient_creation_datetime" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_oemedical_appointment_analytic_entries_report_search" model="ir.ui.view">
+        <field name="name">oemedical.appointment.analytic.entries.report.search</field>
+        <field name="model">oemedical.appointment.analytic.entries.report</field>
+        <field name="arch" type="xml">
+            <search string="Analytic Entries Analysis">
+                <filter name="today" string="Today" domain="[('day','=',time.strftime('%%Y-%%m-%%d'))]"/>
+                <field name="day"/>
+                <field name="month"/>
+                <field name="start_datetime"/>
+                <field name="state"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="specialty_id"/>
+                <group expand="0" string="Group By...">
+                    <filter string="State" icon="terp-stock_symbol-selection" context="{'group_by':'state'}"/>
+                    <filter string="Patient" icon="terp-partner" context="{'group_by':'patient_id'}"/>
+                    <filter string="Specialty" icon="STOCK_SELECT_COLOR" name="Specialty" context="{'group_by':'specialty_id'}"/>
+                    <filter string="Doctor" icon="terp-personal+" context="{'group_by':'doctor_id'}"/>
+                    <filter string="Month" name="Month" icon="terp-go-month" context="{'group_by':'month'}"/>
+                    <filter string="Day"  name="Day" icon="terp-go-today" context="{'group_by':'day'}"/>
+                    <filter string="Year" icon="terp-go-year" context="{'group_by':'year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_oemedical_appointment_analytic_entries_graph" model="ir.ui.view">
+         <field name="name">oemedical.appointment.analytic.entries.report.graph</field>
+         <field name="model">oemedical.appointment.analytic.entries.report</field>
+         <field name="arch" type="xml">
+             <graph string="Total Invoiced" type="bar">
+                <field name="day"/>
+                <field name="total_invoiced" operator="+"/>
+             </graph>
+         </field>
+    </record>
+
+    <record id="action_oemedical_appointment_analytic_entries_report" model="ir.actions.act_window">
+        <field name="name">Total Invoiced</field>
+        <field name="res_model">oemedical.appointment.analytic.entries.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,graph</field>
+        <field name="context">{'search_default_year':1,'search_default_month':1,'search_default_today':1,'search_default_Month':1,'search_default_Day':1, 'group_by':['month','day']}</field>
+        <field name="search_view_id" ref="view_oemedical_appointment_analytic_entries_report_search"/>
+    </record>
+
+    <menuitem id="menu_oemedical_appointment_analytic_entries_report" name="Total Invoiced"
+        action="action_oemedical_appointment_analytic_entries_report"
+        parent="menu_oemedical_appointment_analytic_entries_report_root" sequence="1"/>
+
+</data>
+</openerp>

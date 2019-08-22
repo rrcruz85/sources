@@ -227,6 +227,9 @@
 			action="act_open_oemedical_vaccination_view" />
 			-->
 
+		<!-- Reporting -->
+		<menuitem id="menu_oemedical_appointment_analytic_entries_report_root"  name="Analytic Entries Analysis"
+        	parent="base.menu_reporting" sequence="4"/>
 
 	</data>
 </openerp>

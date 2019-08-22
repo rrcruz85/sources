@@ -117,11 +117,12 @@ OeMedical at a glance:
         #'oemedical_lab/oemedical_lab_view.xml',
         'oemedical_treatment/oemedical_treatment_view.xml',
         'report/oemedical_patient_evalprint.xml',
-        'report/oemedical_patient_evolprint.xml', #removed because it's not functional
+        'report/oemedical_patient_evolprint.xml',
         'report/oemedical_prescription_print.xml',
         'report/oe_reports_webkit_header.xml',
         #'report/oemedical_patient_evaluation.xml',
         'oemedical_menu.xml',
+        'report/oemedical_appointment_analytic_entries_report_view.xml',
     ],
     "demo": [],
     'test':[
